@@ -1,7 +1,20 @@
-// Prisma client is stubbed out because the Prisma engine binaries cannot be
-// compiled on this Windows environment. All API routes use mocked responses.
-// To re-enable Prisma: run `npx prisma generate` and restore the original file.
+import { PrismaClient } from "@prisma/client";
 
-const prisma = null;
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL,
+      },
+    },
+    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+  });
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export default prisma;

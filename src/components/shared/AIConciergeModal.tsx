@@ -50,26 +50,49 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
     };
   }, [isOpen]);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || isTyping) return;
 
-    // Add user message
-    const userMsg: Message = { id: Date.now().toString(), sender: "user", text: inputValue };
-    setMessages((prev) => [...prev, userMsg]);
+    const userText = inputValue.trim();
+    const userMsg: Message = { id: Date.now().toString(), sender: "user", text: userText };
+    const updatedMessages = [...messages, userMsg];
+
+    setMessages(updatedMessages);
     setInputValue("");
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: updatedMessages.map((m) => ({
+            role: m.sender === "user" ? "user" : "assistant",
+            content: m.text,
+          })),
+        }),
+      });
+
+      const data = await response.json();
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: "ai",
-        text: "That sounds amazing! Based on what you shared, I'd highly recommend our **Classic Truck Package**. It's perfect for outdoor gatherings and gives you that nostalgic charm. Would you like me to start a quote for this?"
+        text: data.message || "I'm having trouble responding right now. Please call us at 617-999-3803!",
       };
       setMessages((prev) => [...prev, aiMsg]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          sender: "ai",
+          text: "Sorry, I'm experiencing a connection issue. Please call us at 617-999-3803!",
+        },
+      ]);
+    } finally {
       setIsTyping(false);
-    }, 2000);
+    }
   };
 
   return (
