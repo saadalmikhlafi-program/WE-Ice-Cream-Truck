@@ -1,90 +1,146 @@
+"use client";
+
 import Link from "next/link";
-import { TRUCK_PACKAGES } from "@/lib/packages-data";
+import Image from "next/image";
+import { TRUCK_PACKAGES, VAN_PACKAGES } from "@/lib/packages-data";
 import { formatPrice } from "@/lib/utils";
 import { ArrowRight, Check } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function PackagesPreview() {
-  // Only showcase the top 3 curated experiences on the homepage
-  const featuredPackages = TRUCK_PACKAGES.slice(0, 3);
+  const featuredPackages = [
+    TRUCK_PACKAGES[0],
+    VAN_PACKAGES[0],
+  ].filter(Boolean);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, type: "spring" } },
+  };
 
   return (
-    <section className="bg-cream py-24 md:py-40">
-      <div className="container mx-auto px-6 md:px-12 lg:px-24">
+    <section className="relative bg-cream py-24 md:py-32 overflow-hidden">
+      {/* Playful background element */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-coral/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+      
+      <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-20 md:mb-32">
-          <div className="max-w-2xl">
-            <h2 className="font-display font-light text-[clamp(3rem,6vw,5.5rem)] leading-tight text-navy mb-6 tracking-tighter">
-              Curated <span className="italic text-coral">Experiences</span>
-            </h2>
-            <p className="font-sans text-navy/70 text-[clamp(1.125rem,1.5vw,1.35rem)] leading-relaxed">
-              Transparent pricing. Premium service. No hidden fees. Select the perfect fleet experience for your guest count.
-            </p>
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 md:mb-24 text-center lg:text-left">
+          <div className="max-w-2xl mx-auto lg:mx-0">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="font-display font-black text-[clamp(2.5rem,5vw,4.5rem)] leading-tight text-navy mb-4"
+            >
+              Sweet <span className="text-coral underline decoration-wavy decoration-coral/30 underline-offset-8">Packages</span>
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="font-sans text-navy/70 text-[clamp(1.125rem,1.5vw,1.25rem)] leading-relaxed font-medium"
+            >
+              Whether it's the classic truck or the premium van, we have the perfect sweet experience for your event.
+            </motion.p>
           </div>
-          <Link 
-            href="/packages"
-            className="group flex items-center gap-3 font-sans font-bold text-navy uppercase tracking-widest text-[0.75rem] border-b-2 border-navy/20 pb-2 hover:border-coral hover:text-coral transition-colors"
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
           >
-            Explore All Packages 
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </Link>
+            <Link 
+              href="/packages"
+              className="group inline-flex items-center gap-3 font-sans font-bold text-navy uppercase tracking-widest text-sm bg-white px-8 py-4 rounded-full border-2 border-navy/10 hover:border-coral hover:text-coral transition-all shadow-sm hover:shadow-md"
+            >
+              See All Packages 
+              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
         </div>
 
-        {/* High-End Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 xl:gap-12">
+        {/* High-End Playful Cards */}
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto"
+        >
           {featuredPackages.map((pkg) => (
-            <div 
-              key={pkg.id} 
-              className={`group flex flex-col bg-white rounded-[2rem] p-8 md:p-12 border transition-all duration-500 hover:shadow-float ${
-                pkg.isPopular ? "border-coral/30 shadow-sm relative overflow-hidden" : "border-navy/5"
+            <motion.div 
+              key={pkg.id}
+              variants={itemVariants}
+              whileHover={{ y: -10 }}
+              className={`group flex flex-col bg-white rounded-[2.5rem] overflow-hidden border-4 transition-all duration-300 shadow-xl ${
+                pkg.isPopular ? "border-coral shadow-coral/20 relative" : "border-white"
               }`}
             >
-              {/* Subtle top highlight for popular package */}
-              {pkg.isPopular && (
-                <div className="absolute top-0 left-0 right-0 h-1.5 bg-coral" />
-              )}
-
-              <div className="mb-8">
+              {/* Image Header */}
+              <div className="relative h-64 w-full bg-navy/5 overflow-hidden">
+                <Image 
+                  src={pkg.vehicleType === "TRUCK" ? "/images/classic-truck.jpg" : "/images/van-premium.jpg"}
+                  alt={pkg.name}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                />
                 {pkg.isPopular && (
-                  <span className="inline-block px-4 py-1.5 bg-coral/10 text-coral text-[0.65rem] font-bold uppercase tracking-widest rounded-full mb-6">
+                  <div className="absolute top-4 right-4 bg-coral text-white font-bold px-4 py-2 rounded-full text-xs uppercase tracking-widest shadow-lg z-10 animate-bounce">
                     Most Popular
-                  </span>
+                  </div>
                 )}
-                <h3 className="font-display font-medium text-3xl text-navy mb-3">{pkg.name}</h3>
-                <p className="font-sans text-navy/60 text-lg">{pkg.tagline}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent z-0" />
+                <h3 className="absolute bottom-6 left-8 font-display font-black text-3xl text-white z-10">{pkg.name}</h3>
               </div>
 
-              <div className="mb-10 pb-10 border-b border-navy/5 flex-1">
-                <div className="flex items-baseline gap-2 mb-2">
-                  <span className="font-sans font-light text-[3.5rem] tracking-tighter text-navy">{formatPrice(pkg.price)}</span>
+              <div className="p-8 md:p-10 flex flex-col flex-1">
+                <p className="font-sans text-navy/70 text-lg font-medium mb-6 min-h-[56px]">{pkg.tagline}</p>
+
+                <div className="mb-8 pb-8 border-b-2 border-navy/5 flex-1 flex items-end gap-3">
+                  <span className="font-sans font-black text-[3.5rem] leading-none tracking-tighter text-coral">{formatPrice(pkg.price)}</span>
+                  <div className="flex flex-col text-navy/50 font-bold text-xs uppercase tracking-widest mb-1.5">
+                    <span>{pkg.servings} Guests</span>
+                    <span>{pkg.durationMins / 60} Hours</span>
+                  </div>
                 </div>
-                <div className="font-sans text-navy/50 font-bold text-xs uppercase tracking-widest">
-                  {pkg.servings} Guests &bull; {pkg.durationMins / 60} Hours
-                </div>
+
+                <ul className="flex flex-col gap-4 mb-10">
+                  {pkg.features.slice(0, 4).map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-4">
+                      <div className="bg-coral/10 p-1 rounded-full shrink-0 mt-0.5">
+                        <Check className="w-4 h-4 text-coral" />
+                      </div>
+                      <span className="font-sans text-navy/80 font-bold text-[0.95rem]">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href={`/get-a-quote?package=${pkg.slug}`}
+                  className={`w-full py-5 rounded-full text-center font-sans font-black text-[0.9rem] tracking-widest uppercase transition-all duration-300 transform active:scale-95 ${
+                    pkg.isPopular
+                      ? "bg-coral text-white shadow-lg shadow-coral/30 hover:bg-navy"
+                      : "bg-navy/5 text-navy hover:bg-navy hover:text-white"
+                  }`}
+                >
+                  Book This Experience
+                </Link>
               </div>
-
-              <ul className="flex flex-col gap-5 mb-12">
-                {pkg.features.slice(0, 4).map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-4">
-                    <Check className="w-5 h-5 text-coral shrink-0 mt-0.5" />
-                    <span className="font-sans text-navy/80 leading-relaxed font-medium text-[0.95rem]">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                href={`/get-a-quote?package=${pkg.slug}`}
-                className={`w-full py-5 rounded-full text-center font-sans font-bold text-[0.8rem] tracking-widest uppercase transition-colors ${
-                  pkg.isPopular
-                    ? "bg-coral text-white hover:bg-navy"
-                    : "bg-navy/5 text-navy hover:bg-navy hover:text-white"
-                }`}
-              >
-                Select Package
-              </Link>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>
