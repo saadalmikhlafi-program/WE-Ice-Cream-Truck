@@ -4,7 +4,7 @@ import { getAllServices } from '@/lib/services-data';
 import { getTopCities } from '@/lib/cities-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = BUSINESS_CONFIG.url;
+  const baseUrl = BUSINESS_CONFIG.domain;
 
   // Static routes
   const routes = [
