@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model QuoteRequest {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  
+  // Event Details
+  eventType   String
+  guestCount  String
+  date        String
+  time        String
+  city        String
+  
+  // Package Selection
+  packageId   String
+  
+  // Contact Details
+  firstName   String
+  lastName    String
+  email       String
+  phone       String
+  notes       String?  // Optional field
+  
+  // Status tracking
+  status      String   @default("PENDING") // PENDING, RESPONDED, BOOKED, ARCHIVED
+}
+
+model ContactMessage {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  
+  firstName   String
+  lastName    String
+  email       String
+  message     String
+  
+  status      String   @default("UNREAD") // UNREAD, READ, REPLIED
+}
