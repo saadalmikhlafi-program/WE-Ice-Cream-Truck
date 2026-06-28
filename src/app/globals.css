@@ -5,15 +5,15 @@
   --color-cream: #FFFBF5;
   --color-sand: #F5EDE3;
   --color-white: #FFFFFF;
-  --color-navy: #0F0A1E;
-  --color-navy-mid: #1C1440;
+  --color-navy: #0A1128;
+  --color-navy-mid: #1A2440;
 
-  --color-coral: #FF6347;
-  --color-coral-dark: #E8522E;
-  --color-coral-light: #FFE8E3;
+  --color-coral: #FF6B6B;
+  --color-coral-dark: #E65A5A;
+  --color-coral-light: #FF8F8F;
   
-  --color-gold: #F5A623;
-  --color-gold-light: #FFF4DD;
+  --color-gold: #D4AF37;
+  --color-gold-light: #F3E5AB;
   
   --color-mint: #4ECDC4;
   --color-mint-light: #E8FAF8;
@@ -29,7 +29,7 @@
 
   /* Typography */
   --font-display: var(--font-playfair);
-  --font-sans: var(--font-jakarta);
+  --font-sans: var(--font-outfit);
 
   /* Spacing */
   --spacing-1: 4px;
@@ -58,15 +58,16 @@
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-xs: 0 1px 3px rgba(15, 10, 30, 0.06);
-  --shadow-sm: 0 2px 8px rgba(15, 10, 30, 0.08);
-  --shadow-md: 0 8px 24px rgba(15, 10, 30, 0.10);
-  --shadow-lg: 0 16px 48px rgba(15, 10, 30, 0.12);
-  --shadow-xl: 0 24px 64px rgba(15, 10, 30, 0.16);
-  --shadow-2xl: 0 32px 80px rgba(15, 10, 30, 0.20);
-  --shadow-coral: 0 8px 32px rgba(255, 99, 71, 0.35);
-  --shadow-coral-lg: 0 16px 48px rgba(255, 99, 71, 0.40);
-  --shadow-gold: 0 4px 20px rgba(245, 166, 35, 0.30);
+  --shadow-xs: 0 1px 3px rgba(10, 17, 40, 0.04);
+  --shadow-sm: 0 2px 8px rgba(10, 17, 40, 0.06);
+  --shadow-md: 0 8px 24px rgba(10, 17, 40, 0.08);
+  --shadow-lg: 0 16px 48px rgba(10, 17, 40, 0.10);
+  --shadow-xl: 0 24px 64px rgba(10, 17, 40, 0.12);
+  --shadow-2xl: 0 32px 80px rgba(10, 17, 40, 0.16);
+  --shadow-float: 0 20px 40px -15px rgba(10, 17, 40, 0.05);
+  --shadow-coral: 0 8px 32px rgba(255, 107, 107, 0.35);
+  --shadow-coral-lg: 0 16px 48px rgba(255, 107, 107, 0.40);
+  --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.30);
 
   /* Animations */
   --animate-marquee: marquee 30s linear infinite;

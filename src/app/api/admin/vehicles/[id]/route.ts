@@ -4,7 +4,7 @@ import { requirePermission } from "@/lib/rbac";
 
 export const dynamic = "force-dynamic";
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "settings.update");
     if (!auth.success) {
@@ -20,7 +20,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (status !== undefined) updateData.status = status;
 
     const vehicle = await prisma.vehicle.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: updateData
     });
 
@@ -41,7 +41,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "settings.update");
     if (!auth.success) {
@@ -49,8 +49,8 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     }
 
     // Check if the vehicle is attached to bookings
-    const bookingsCount = await prisma.booking.count({ where: { vehicleId: params.id } });
-    const assignmentsCount = await prisma.vehicleAssignment.count({ where: { vehicleId: params.id } });
+    const bookingsCount = await prisma.booking.count({ where: { vehicleId: (await params).id } });
+    const assignmentsCount = await prisma.vehicleAssignment.count({ where: { vehicleId: (await params).id } });
     
     if (bookingsCount > 0 || assignmentsCount > 0) {
       return NextResponse.json({
@@ -59,16 +59,16 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     }
 
     await prisma.vehicle.delete({
-      where: { id: params.id }
+      where: { id: (await params).id }
     });
 
     // Write audit log
     await prisma.auditLog.create({
       data: {
         entityType: "VEHICLE",
-        entityId: params.id,
+        entityId: (await params).id,
         action: "VEHICLE_DELETED",
-        metadataJson: JSON.stringify({ id: params.id })
+        metadataJson: JSON.stringify({ id: (await params).id })
       }
     });
 

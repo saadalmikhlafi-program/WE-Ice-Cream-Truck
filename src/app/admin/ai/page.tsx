@@ -16,7 +16,7 @@ async function getAIResponse(userMsg: string, messageHistory: Msg[]): Promise<{ 
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ 
-      messages: messageHistory.filter(m => !m.text.includes("Welcome to the Legend Copilot")).concat({ role: "user", text: userMsg }).map(m => ({
+      messages: messageHistory.filter(m => !m.text.includes("Welcome to the WE Concierge")).concat({ role: "user", text: userMsg }).map(m => ({
         role: m.role,
         content: m.text
       }))
@@ -86,7 +86,7 @@ const ACTION_CARDS = [
 
 export default function AICopilotPage() {
   const [msgs, setMsgs] = useState<Msg[]>([
-    { role: "assistant", text: "## Welcome to the Legend Copilot\n\nI am your advanced AI operations assistant. I have full read access to bookings, fleet status, revenue, and tasks.\n\n**How can I help you optimize Boston Legend today?**" },
+    { role: "assistant", text: "## Welcome to the WE Concierge\n\nI am your advanced AI operations assistant. I have full read access to bookings, fleet status, revenue, and tasks.\n\n**How can I help you optimize WE Ice Cream Truck today?**" },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoad] = useState(false);
@@ -182,7 +182,7 @@ export default function AICopilotPage() {
               </div>
               <div>
                 <div className="text-[#000223] font-black text-sm tracking-tight flex items-center gap-1.5">
-                  Legend Copilot v2.0
+                  WE Concierge v2.0
                   <span className="hidden sm:inline-flex px-2 py-0.5 rounded-md bg-emerald-50 text-[9px] font-black text-emerald-600 uppercase tracking-wider border border-emerald-200">Database Connected</span>
                 </div>
                 <div className="flex items-center gap-1 mt-0.5">
@@ -194,7 +194,7 @@ export default function AICopilotPage() {
             
             <div className="flex items-center gap-2">
               <button 
-                onClick={() => setMsgs([{ role: "assistant", text: "## Welcome to the Legend Copilot\n\nI am your advanced AI operations assistant. I have full read access to bookings, fleet status, revenue, and tasks.\n\n**How can I help you optimize Boston Legend today?**" }])}
+                onClick={() => setMsgs([{ role: "assistant", text: "## Welcome to the WE Concierge\n\nI am your advanced AI operations assistant. I have full read access to bookings, fleet status, revenue, and tasks.\n\n**How can I help you optimize WE Ice Cream Truck today?**" }])}
                 className="p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-500 hover:text-slate-800 transition-all"
                 title="Clear Conversation"
               >
@@ -342,3 +342,4 @@ export default function AICopilotPage() {
     </div>
   );
 }
+

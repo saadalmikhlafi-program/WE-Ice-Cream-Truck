@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/rbac";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "bookings.view");
     if (!auth.success) {
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 
     const task = await prisma.task.findUnique({
-      where: { id: params.id },
+      where: { id: (await params).id },
       include: {
         assignedTo: { select: { id: true, name: true } },
         inquiry: true,
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "bookings.update");
     if (!auth.success) {
@@ -46,7 +46,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (assignedToId !== undefined) updateData.assignedToId = assignedToId;
 
     const updated = await prisma.task.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: updateData,
       include: {
         assignedTo: { select: { id: true, name: true } }
@@ -69,7 +69,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "bookings.update");
     if (!auth.success) {
@@ -77,13 +77,13 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     }
 
     await prisma.task.delete({
-      where: { id: params.id }
+      where: { id: (await params).id }
     });
 
     await prisma.auditLog.create({
       data: {
         entityType: "TASK",
-        entityId: params.id,
+        entityId: (await params).id,
         action: "TASK_DELETED",
         metadataJson: JSON.stringify({})
       }

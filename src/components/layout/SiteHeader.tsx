@@ -29,16 +29,16 @@ export default function SiteHeader() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled
-          ? "bg-navy/90 backdrop-blur-md shadow-md py-3"
-          : "bg-transparent py-5"
+          ? "bg-cream/80 backdrop-blur-xl shadow-sm border-b border-navy/5 py-4"
+          : "bg-transparent py-6"
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="z-50">
-          <Logo variant={isScrolled ? "dark" : "light"} />
+          <Logo variant="dark" />
         </Link>
 
         {/* Desktop Nav */}
@@ -47,7 +47,7 @@ export default function SiteHeader() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-sm font-medium text-cream hover:text-coral transition-colors"
+              className="text-[0.9rem] font-semibold tracking-wide text-navy/80 hover:text-coral transition-colors"
             >
               {link.label}
             </Link>
@@ -58,14 +58,14 @@ export default function SiteHeader() {
         <div className="hidden md:flex items-center gap-4">
           <a
             href={`tel:${BUSINESS_CONFIG.contact.phone1Formatted}`}
-            className="flex items-center gap-2 text-cream hover:text-coral transition-colors text-sm font-medium"
+            className="flex items-center gap-2 text-navy/80 hover:text-coral transition-colors text-[0.9rem] font-semibold"
           >
             <Phone size={16} />
             <span>{BUSINESS_CONFIG.contact.phone1}</span>
           </a>
           <Link
             href="/get-a-quote"
-            className="px-6 py-2.5 bg-coral text-white text-sm font-bold rounded-full hover:bg-coral-dark hover:scale-105 transition-all shadow-coral"
+            className="px-8 py-3 bg-navy text-cream text-[0.9rem] font-bold rounded-full hover:bg-coral transition-all shadow-md hover:shadow-coral"
           >
             Get a Quote
           </Link>
@@ -73,7 +73,7 @@ export default function SiteHeader() {
 
         {/* Mobile Menu Toggle */}
         <button
-          className="md:hidden text-cream z-50 p-2 -mr-2"
+          className="md:hidden text-navy z-50 p-2 -mr-2"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle Menu"
         >
@@ -84,7 +84,7 @@ export default function SiteHeader() {
       {/* Mobile Menu Overlay */}
       <div
         className={cn(
-          "fixed inset-0 bg-navy z-40 flex flex-col justify-center px-6 transition-all duration-300 ease-in-out md:hidden",
+          "fixed inset-0 bg-cream z-40 flex flex-col justify-center px-6 transition-all duration-500 ease-in-out md:hidden",
           isMobileMenuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -95,7 +95,7 @@ export default function SiteHeader() {
             <Link
               key={link.label}
               href={link.href}
-              className="text-2xl font-display text-cream hover:text-coral transition-colors"
+              className="text-3xl font-display text-navy hover:text-coral transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {link.label}
@@ -103,14 +103,14 @@ export default function SiteHeader() {
           ))}
           <Link
             href="/get-a-quote"
-            className="mt-4 px-8 py-4 bg-coral text-white text-lg font-bold rounded-full inline-block"
+            className="mt-6 px-8 py-4 bg-navy text-cream text-xl font-bold rounded-full inline-block"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Get a Free Quote
           </Link>
           <a
             href={`tel:${BUSINESS_CONFIG.contact.phone1Formatted}`}
-            className="mt-6 flex items-center justify-center gap-2 text-cream/80 text-lg"
+            className="mt-8 flex items-center justify-center gap-2 text-navy/70 text-lg font-medium"
           >
             <Phone size={20} />
             <span>{BUSINESS_CONFIG.contact.phone1}</span>

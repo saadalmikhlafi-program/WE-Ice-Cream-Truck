@@ -1,64 +1,57 @@
-"use client";
-
 import Link from "next/link";
-import { motion } from "framer-motion";
-import AnimatedSection from "@/components/shared/AnimatedSection";
-import { fadeUp } from "@/lib/animations";
 import { BUSINESS_CONFIG } from "@/lib/config";
-import { Calendar, Phone } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 
 export default function FinalCTA() {
   return (
-    <section className="relative py-32 bg-navy flex items-center justify-center overflow-hidden">
+    <section className="relative w-full py-32 md:py-48 bg-navy flex items-center justify-center overflow-hidden border-t border-white/5">
       {/* Background Image & Overlay */}
       <div className="absolute inset-0 z-0">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40 mix-blend-overlay"
-          // Placeholder image - replace with actual Cloudinary asset
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30 mix-blend-overlay"
           style={{ backgroundImage: `url('/images/final-cta-bg.jpg')` }}
         />
-        <div className="absolute inset-0 bg-navy/70 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/80 to-navy" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10 text-center">
-        <AnimatedSection className="max-w-3xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-display font-bold text-cream leading-tight mb-6">
-            Ready to Make It <span className="text-coral italic font-light">Unforgettable?</span>
+      <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10 text-center">
+        <div className="max-w-4xl mx-auto flex flex-col items-center">
+          
+          <span className="font-sans font-bold tracking-[0.2em] uppercase text-coral text-[0.75rem] mb-8 block">
+            Limited Summer Availability
+          </span>
+          
+          <h2 className="text-[clamp(3.5rem,8vw,7rem)] font-display font-light text-cream leading-[0.95] tracking-tighter mb-10">
+            Ready to Make It <br />
+            <span className="italic text-coral">Unforgettable?</span>
           </h2>
           
-          <p className="text-xl text-cream/80 mb-8 max-w-2xl mx-auto">
-            Join {BUSINESS_CONFIG.stats.eventsServed}+ families who trusted {BUSINESS_CONFIG.name} for their most special moments.
+          <p className="font-sans text-[clamp(1.125rem,1.5vw,1.35rem)] text-cream/70 mb-12 max-w-2xl leading-relaxed">
+            Join {BUSINESS_CONFIG.stats.eventsServed}+ families and organizations who trusted {BUSINESS_CONFIG.name} for their most special moments.
           </p>
 
-          <motion.div 
-            variants={fadeUp}
-            className="flex items-center justify-center gap-2 mb-10 text-gold font-bold bg-navy-mid/50 border border-gold/20 inline-flex px-6 py-3 rounded-full backdrop-blur-md"
-          >
-            <Calendar size={20} />
-            Summer dates are filling up fast.
-          </motion.div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full sm:w-auto">
             <Link 
               href="/get-a-quote"
-              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-coral text-white font-bold text-lg rounded-full shadow-coral-lg hover:bg-coral-dark hover:scale-105 transition-all min-w-[220px]"
+              className="group relative w-full sm:w-auto inline-flex items-center justify-center px-12 py-5 bg-coral text-white font-sans font-bold text-[0.85rem] tracking-widest uppercase rounded-full overflow-hidden transition-transform hover:scale-[1.02] active:scale-[0.98] shadow-coral"
             >
-              Get a Free Quote &rarr;
+              <span className="relative z-10 flex items-center gap-3">
+                Get a Free Quote
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </span>
             </Link>
             
             <a 
               href={`tel:${BUSINESS_CONFIG.contact.phone1Formatted}`}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 text-cream font-bold text-lg rounded-full backdrop-blur-md border border-white/20 hover:bg-white/20 transition-all min-w-[220px]"
+              className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-10 py-5 bg-transparent text-cream font-sans font-bold text-[0.85rem] tracking-widest uppercase rounded-full border border-white/10 hover:border-white/30 transition-colors"
             >
-              <Phone size={20} />
+              <Phone className="w-4 h-4 text-cream/50 group-hover:text-coral transition-colors" />
               {BUSINESS_CONFIG.contact.phone1}
             </a>
           </div>
-        </AnimatedSection>
-      </div>
 
-      {/* Confetti / Particle effect container (placeholder for 3D/canvas implementation) */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-30" />
+        </div>
+      </div>
     </section>
   );
 }

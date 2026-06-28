@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/rbac";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "bookings.view");
     if (!auth.success) {
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 
     const inquiry = await prisma.inquiry.findUnique({
-      where: { id: params.id },
+      where: { id: (await params).id },
       include: {
         assignedTo: { select: { id: true, name: true } },
         tasks: true,
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "bookings.update");
     if (!auth.success) {
@@ -42,7 +42,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (internalNote !== undefined) updateData.internalNote = internalNote;
 
     const updated = await prisma.inquiry.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: updateData,
       include: {
         assignedTo: { select: { id: true, name: true } }

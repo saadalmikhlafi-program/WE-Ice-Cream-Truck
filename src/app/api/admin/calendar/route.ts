@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const events = bookings.map((b) => {
+    const events = bookings.map((b: any) => {
       const eventDate = new Date(b.eventDate);
       const [hours, minutes] = (b.startTime || "12:00").split(":");
       

@@ -4,7 +4,7 @@ import { requirePermission } from "@/lib/rbac";
 
 export const dynamic = "force-dynamic";
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "packages.update");
     if (!auth.success) {
@@ -29,7 +29,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     if (data.badge !== undefined) updateData.badge = data.badge;
 
     const updated = await prisma.package.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: updateData
     });
 
@@ -40,7 +40,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "packages.delete");
     if (!auth.success) {
@@ -48,7 +48,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     // Check if package is used in bookings
-    const bookingsCount = await prisma.booking.count({ where: { packageId: params.id } });
+    const bookingsCount = await prisma.booking.count({ where: { packageId: (await params).id } });
     if (bookingsCount > 0) {
       return NextResponse.json({ 
         success: false, 
@@ -56,7 +56,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       }, { status: 400 });
     }
 
-    await prisma.package.delete({ where: { id: params.id } });
+    await prisma.package.delete({ where: { id: (await params).id } });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

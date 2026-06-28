@@ -4,7 +4,7 @@ import { getSessionUser, hasPermission, unauthenticated, unauthorized } from "@/
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser(req);
     if (!user) return unauthenticated();
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 
     const booking = await prisma.booking.findUnique({
-      where: { id: params.id },
+      where: { id: (await params).id },
       include: {
         customer: true,
         package: true,

@@ -1,79 +1,83 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { fadeUp, staggerContainer } from "@/lib/animations";
-import AnimatedSection from "@/components/shared/AnimatedSection";
+import { ArrowRight } from "lucide-react";
 
 export default function GalleryStrip() {
   const images = [
     { src: "/images/gallery-1.jpg", alt: "Corporate event serving", type: "Corporate" },
     { src: "/images/gallery-2.jpg", alt: "Kids birthday party", type: "Birthday" },
     { src: "/images/gallery-3.jpg", alt: "Wedding reception ice cream", type: "Wedding" },
-    { src: "/images/gallery-4.jpg", alt: "School festival", type: "School" },
-    { src: "/images/gallery-5.jpg", alt: "Ice cream truck at sunset", type: "Festival" },
   ];
 
   return (
-    <section className="py-24 bg-white overflow-hidden">
-      <div className="container mx-auto px-4 mb-12">
-        <AnimatedSection className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="max-w-xl">
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-charcoal mb-4">
-              Real Events. <span className="text-coral italic font-light">Real Smiles.</span>
+    <section className="bg-white py-24 md:py-40">
+      <div className="container mx-auto px-6 md:px-12 lg:px-24">
+        
+        {/* Section Header */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 md:mb-24">
+          <div className="max-w-2xl">
+            <h2 className="font-display font-light text-[clamp(3rem,6vw,5.5rem)] leading-[1.05] text-navy mb-6 tracking-tighter">
+              Real Events.<br />
+              <span className="italic text-coral">Real Smiles.</span>
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="font-sans text-navy/70 text-[clamp(1.125rem,1.5vw,1.35rem)] leading-relaxed">
               Don't just take our word for it. See the joy we bring to celebrations across Massachusetts.
             </p>
           </div>
           <Link 
-            href="/gallery" 
-            className="inline-flex items-center text-navy font-bold hover:text-coral transition-colors group"
+            href="/gallery"
+            className="group flex items-center gap-3 font-sans font-bold text-navy uppercase tracking-widest text-[0.75rem] border-b-2 border-navy/20 pb-2 hover:border-coral hover:text-coral transition-colors"
           >
             View Full Gallery 
-            <span className="ml-2 group-hover:translate-x-1 transition-transform">&rarr;</span>
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
-        </AnimatedSection>
-      </div>
+        </div>
 
-      <AnimatedSection 
-        variants={staggerContainer}
-        className="flex gap-4 md:gap-6 px-4 md:px-8 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-8 max-w-[2000px] mx-auto"
-      >
-        {images.map((img, idx) => (
-          <motion.div 
-            key={idx} 
-            variants={fadeUp}
-            className="snap-center shrink-0 w-[280px] md:w-[400px] aspect-[4/5] md:aspect-square relative rounded-[2rem] overflow-hidden group cursor-pointer shadow-md"
-          >
-            {/* Image Placeholder */}
+        {/* Asymmetric Gallery Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+          
+          <div className="md:col-span-8 group relative rounded-[2rem] overflow-hidden aspect-[4/3] md:aspect-auto md:h-[650px] bg-navy/5">
             <div 
-              className="absolute inset-0 bg-gray-200 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-              style={{ backgroundImage: `url('${img.src}')` }}
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-[1.5s] group-hover:scale-105"
+              style={{ backgroundImage: `url('${images[0].src}')` }}
             />
-            
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent opacity-60 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            
-            {/* Content */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:translate-y-4 md:opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-              <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-bold uppercase tracking-wider rounded-full">
-                {img.type}
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute bottom-8 left-8 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+              <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md text-white font-sans text-[0.65rem] font-bold uppercase tracking-widest rounded-full border border-white/20">
+                {images[0].type}
               </span>
             </div>
-          </motion.div>
-        ))}
-      </AnimatedSection>
+          </div>
 
-      <style jsx global>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
+          <div className="md:col-span-4 flex flex-col gap-6 md:gap-8 md:h-[650px]">
+            <div className="flex-1 group relative rounded-[2rem] overflow-hidden bg-navy/5 aspect-[4/3] md:aspect-auto">
+              <div 
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-[1.5s] group-hover:scale-105"
+                style={{ backgroundImage: `url('${images[1].src}')` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute bottom-6 left-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md text-white font-sans text-[0.65rem] font-bold uppercase tracking-widest rounded-full border border-white/20">
+                  {images[1].type}
+                </span>
+              </div>
+            </div>
+            <div className="flex-1 group relative rounded-[2rem] overflow-hidden bg-navy/5 aspect-[4/3] md:aspect-auto">
+              <div 
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-[1.5s] group-hover:scale-105"
+                style={{ backgroundImage: `url('${images[2].src}')` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute bottom-6 left-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-md text-white font-sans text-[0.65rem] font-bold uppercase tracking-widest rounded-full border border-white/20">
+                  {images[2].type}
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
     </section>
   );
 }

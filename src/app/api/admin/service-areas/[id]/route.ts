@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 // PATCH — update a ZIP code record
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requirePermission(req, "serviceAreas.update");
   if (!auth.success) {
@@ -19,7 +19,7 @@ export async function PATCH(
 
   try {
     const record = await prisma.serviceZipCode.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: {
         ...(city !== undefined && { city: city.trim() }),
         ...(county !== undefined && { county: county?.trim() || null }),
@@ -36,7 +36,7 @@ export async function PATCH(
 // DELETE — delete a single ZIP code
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await requirePermission(req, "serviceAreas.delete");
   if (!auth.success) {
@@ -44,7 +44,7 @@ export async function DELETE(
   }
 
   try {
-    await prisma.serviceZipCode.delete({ where: { id: params.id } });
+    await prisma.serviceZipCode.delete({ where: { id: (await params).id } });
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Not found" }, { status: 404 });

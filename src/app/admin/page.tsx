@@ -469,7 +469,7 @@ export default function AdminDashboard() {
             {getGreeting()}, {displayName}
           </h1>
           <p className="text-slate-500 mt-1 font-medium text-sm">
-            Here's what's happening with Boston Legend today.
+            Here's what's happening with WE Ice Cream Truck today.
           </p>
         </div>
         <Link href="/booking" target="_blank" className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#020617] text-white hover:bg-[#FFA000] hover:text-[#020617] font-bold text-sm shadow-md transition-all">
@@ -671,3 +671,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+

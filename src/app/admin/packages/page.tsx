@@ -318,7 +318,7 @@ export default function AdminPackagesPage() {
             <PackageIcon className="w-8 h-8 text-[#FFA000]" />
             Manage Packages
           </h1>
-          <p className="text-slate-500 font-semibold mt-1 text-sm">Add, edit, or disable Boston Legend packages. Changes sync instantly.</p>
+          <p className="text-slate-500 font-semibold mt-1 text-sm">Add, edit, or disable WE Ice Cream Truck packages. Changes sync instantly.</p>
         </div>
         <button onClick={openAdd} className="btn-primary py-2.5 px-5 flex items-center gap-2">
           <Plus className="w-5 h-5" /> New Package
@@ -492,3 +492,4 @@ export default function AdminPackagesPage() {
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
+import { Playfair_Display, Outfit } from "next/font/google";
 import "./globals.css";
 import { BUSINESS_CONFIG } from "@/lib/config";
 import { constructMetadata } from "@/lib/seo";
@@ -7,7 +7,7 @@ import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import FloatingQuoteButton from "@/components/layout/FloatingQuoteButton";
-import SeasonalBanner from "@/components/layout/SeasonalBanner";
+import { Providers } from "./providers";
 
 // ─── FONTS ──────────────────────────────────────────────────────────
 
@@ -19,10 +19,10 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
-const jakarta = Plus_Jakarta_Sans({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-jakarta",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-outfit",
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -47,13 +47,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${playfair.variable} ${jakarta.variable} font-sans bg-cream text-charcoal antialiased min-h-screen flex flex-col`}
+        className={`${playfair.variable} ${outfit.variable} font-sans bg-cream text-charcoal antialiased min-h-screen flex flex-col`}
       >
-        <SeasonalBanner />
         <SiteHeader />
         
         <main className="flex-1 flex flex-col w-full pt-[88px]">
-          {children}
+          <Providers>{children}</Providers>
         </main>
 
         <SiteFooter />

@@ -7,7 +7,7 @@ import { googleCalendarService } from "@/lib/google-calendar";
 
 export const dynamic = "force-dynamic";
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const user = await getSessionUser(req);
     if (!user) return unauthenticated();
@@ -52,7 +52,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       // Update BookingItem of lineType "PACKAGE"
       await prisma.bookingItem.updateMany({
         where: {
-          bookingId: params.id,
+          bookingId: (await params).id,
           lineType: "PACKAGE"
         },
         data: {
@@ -63,7 +63,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
       // Fetch existing quote to update its snapshotJson
       const existingQuote = await prisma.quote.findUnique({
-        where: { bookingId: params.id }
+        where: { bookingId: (await params).id }
       });
       if (existingQuote) {
         let snap: any = {};
@@ -74,7 +74,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         snap.estimatedTotal = priceNum;
         
         await prisma.quote.update({
-          where: { bookingId: params.id },
+          where: { bookingId: (await params).id },
           data: {
             basePrice: priceNum,
             totalAmount: priceNum,
@@ -85,7 +85,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const booking = await prisma.booking.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: updateData,
       include: {
         customer: true,
@@ -191,7 +191,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       if (status === "CONFIRMED" || status === "PENDING_PAYMENT") {
         // Re-fetch with all relations needed for calendar
         const bookingForCal = await prisma.booking.findUnique({
-          where: { id: params.id },
+          where: { id: (await params).id },
           include: { customer: true, package: true },
         });
         if (bookingForCal) {

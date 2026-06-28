@@ -4,7 +4,7 @@ import { requirePermission, unauthenticated, unauthorized } from "@/lib/rbac";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "bookings.assign");
     if (!auth.success) {
@@ -37,14 +37,14 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     // Upsert VehicleAssignment for this booking
     const assignment = await prisma.vehicleAssignment.upsert({
-      where: { bookingId: params.id },
+      where: { bookingId: (await params).id },
       update: {
         vehicleId,
         driverId: actualDriverId,
         jobStatus: "PENDING"
       },
       create: {
-        bookingId: params.id,
+        bookingId: (await params).id,
         vehicleId,
         driverId: actualDriverId,
         jobStatus: "PENDING"
@@ -55,8 +55,8 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     await prisma.auditLog.create({
       data: {
         entityType: "BOOKING",
-        entityId: params.id,
-        bookingId: params.id,
+        entityId: (await params).id,
+        bookingId: (await params).id,
         action: "VEHICLE_ASSIGNED",
         metadataJson: JSON.stringify({ vehicleId, driverId, assignmentId: assignment.id }),
         actorId: user.id
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     // Sync vehicleId on Booking table
     await prisma.booking.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: { vehicleId }
     });
 

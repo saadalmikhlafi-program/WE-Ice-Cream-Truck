@@ -22,8 +22,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
     }
 
-    const settings = await withRetry(() => prisma.setting.findMany());
-    const dict = settings.reduce((acc, s) => { acc[s.key] = s.value; return acc; }, {} as Record<string,string>);
+    const settings = await withRetry(() => prisma.setting.findMany()) as any[];
+    const dict = (settings).reduce((acc: Record<string,string>, s: any) => { acc[s.key] = s.value; return acc; }, {} as Record<string,string>);
     return NextResponse.json(dict);
   } catch (error: any) {
     console.error("Settings API GET error:", error.message);

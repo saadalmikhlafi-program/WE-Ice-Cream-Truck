@@ -105,7 +105,7 @@ export default function AdminInquiriesPage() {
       const res = await fetch(`/api/admin/inquiries/${selected.id}/reply`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subject: "Re: Your Inquiry with Boston Legend", body: replyBody })
+        body: JSON.stringify({ subject: "Re: Your Inquiry with WE Ice Cream Truck", body: replyBody })
       });
       const json = await res.json();
       if (res.ok && json.success) {
@@ -335,3 +335,4 @@ export default function AdminInquiriesPage() {
     </div>
   );
 }
+

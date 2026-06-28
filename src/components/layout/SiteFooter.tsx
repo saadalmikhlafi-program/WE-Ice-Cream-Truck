@@ -14,7 +14,7 @@ export default function SiteFooter() {
           {/* Brand */}
           <div className="space-y-6">
             <Link href="/" className="inline-block">
-              <Logo variant="dark" />
+              <Logo variant="light" />
             </Link>
             <p className="text-cream/70 text-sm max-w-sm">
               {BUSINESS_CONFIG.description}

@@ -210,7 +210,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://cdn.prod.website-files.com/67dc601bc29781a5af1632a2/67e3936366827af4bed1d0d0_logo-boston-legend-ice-cream-truck.avif"
-            alt="Boston Legend"
+            alt="WE Ice Cream Truck"
             style={{ height: "36px", width: "auto", filter: "brightness(0) invert(1)" }}
           />
           <button className="md:hidden text-white/50 hover:text-white" onClick={() => setMobileMenuOpen(false)}>
@@ -440,3 +440,4 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
+

@@ -1,11 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { ChevronLeft, User, MapPin, CalendarClock, DollarSign, Truck, CheckCircle2, XCircle, AlertCircle, Loader2 } from "lucide-react";
 
 type DetailBooking = any;
 
-export default function AdminBookingDetailPage({ params }: { params: { id: string } }) {
+export default function AdminBookingDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [booking, setBooking] = useState<DetailBooking | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState("");
@@ -22,7 +23,7 @@ export default function AdminBookingDetailPage({ params }: { params: { id: strin
   const loadBooking = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/bookings/${params.id}`);
+      const res = await fetch(`/api/admin/bookings/${id}`);
       if (res.ok) {
         const json = await res.json();
         setBooking(json.data);
@@ -59,12 +60,12 @@ export default function AdminBookingDetailPage({ params }: { params: { id: strin
       }
     };
     fetchDropdowns();
-  }, [params.id]);
+  }, [id]);
 
   const saveAssignment = async () => {
     setAssigning(true);
     try {
-      const res = await fetch(`/api/admin/bookings/${params.id}/assign`, {
+      const res = await fetch(`/api/admin/bookings/${id}/assign`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -89,7 +90,7 @@ export default function AdminBookingDetailPage({ params }: { params: { id: strin
   const updateStatus = async (status: string) => {
     setUpdating(status);
     try {
-      await fetch(`/api/admin/bookings/${params.id}/status`, {
+      await fetch(`/api/admin/bookings/${id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status, internalNote, customPrice, customerNotes })

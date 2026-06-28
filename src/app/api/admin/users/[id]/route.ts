@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/rbac";
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "users.update");
     if (!auth.success) {
@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 
     // Fetch target user first to check if they are OWNER
     const targetUser = await prisma.user.findUnique({
-      where: { id: params.id }
+      where: { id: (await params).id }
     });
 
     if (!targetUser) {
@@ -39,7 +39,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     if (active !== undefined) data.active = active;
 
     const updatedUser = await prisma.user.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data,
       select: { id: true, name: true, email: true, role: true, permissions: true, active: true }
     });

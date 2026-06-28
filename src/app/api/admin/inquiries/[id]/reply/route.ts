@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/rbac";
 import { sendEmail } from "@/lib/email";
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const auth = await requirePermission(req, "bookings.update");
     if (!auth.success) {
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     const { subject, body } = await req.json();
 
-    const inquiry = await prisma.inquiry.findUnique({ where: { id: params.id } });
+    const inquiry = await prisma.inquiry.findUnique({ where: { id: (await params).id } });
     if (!inquiry) return NextResponse.json({ success: false, error: "Inquiry not found" }, { status: 404 });
 
     // Ensure we have a real email address

@@ -1,9 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
-import CountUp from "@/components/shared/CountUp";
-import AnimatedSection from "@/components/shared/AnimatedSection";
-import { staggerContainer, fadeUp } from "@/lib/animations";
 import { BUSINESS_CONFIG } from "@/lib/config";
 
 export default function TrustStats() {
@@ -15,36 +9,24 @@ export default function TrustStats() {
   ];
 
   return (
-    <AnimatedSection className="py-20 bg-cream">
-      <div className="container mx-auto px-4">
-        <motion.div 
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8"
-        >
+    <section className="w-full bg-cream py-16 md:py-24 border-b border-navy/5">
+      <div className="container mx-auto px-6 md:px-12 lg:px-24">
+        <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-navy/10 border-y border-navy/10">
           {stats.map((stat, index) => (
-            <motion.div 
+            <div 
               key={index}
-              variants={fadeUp}
-              className="bg-white rounded-3xl p-6 md:p-8 text-center shadow-sm hover:shadow-md transition-shadow"
+              className="py-12 lg:py-16 px-4 md:px-8 text-center flex flex-col justify-center items-center group"
             >
-              <div className="text-4xl md:text-5xl font-display font-extrabold text-coral mb-2">
-                <CountUp 
-                  end={stat.value} 
-                  suffix={stat.suffix} 
-                  decimals={stat.decimals}
-                  duration={2.5}
-                />
+              <div className="text-[clamp(3rem,6vw,4.5rem)] font-sans font-light text-navy mb-2 tracking-tighter group-hover:scale-105 transition-transform duration-500">
+                {stat.value}{stat.suffix}
               </div>
-              <p className="text-charcoal font-semibold text-sm md:text-base">
+              <p className="text-navy/60 font-sans tracking-[0.15em] uppercase text-[0.75rem] font-bold">
                 {stat.label}
               </p>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
-    </AnimatedSection>
+    </section>
   );
 }
