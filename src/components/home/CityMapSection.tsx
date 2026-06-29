@@ -45,7 +45,7 @@ export default function CityMapSection() {
             href="/cities" 
             className="font-sans font-bold text-cream uppercase tracking-widest text-[0.75rem] border-b-2 border-cream/20 pb-2 hover:border-coral hover:text-coral transition-colors"
           >
-            View all 140+ Cities
+            View all 500+ Cities
           </Link>
         </div>
 
@@ -88,7 +88,7 @@ export default function CityMapSection() {
                     fill="none"
                     stroke="white"
                     strokeWidth="1"
-                    strokeOpacity={hoveredCity === city.slug || hoveredCity === 'boston' ? 0.4 : 0.05}
+                    strokeOpacity={hoveredCity === city.slug || hoveredCity === 'boston' ? 0.8 : 0.2}
                     className="transition-all duration-500"
                   />
                 );
@@ -119,18 +119,18 @@ export default function CityMapSection() {
                   <Link href={`/cities/${city.slug}`} className="relative group/pin block">
                     {/* Pulsing ring for major cities */}
                     {city.slug === 'boston' && (
-                      <div className="absolute inset-0 w-16 h-16 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-full bg-coral/20 animate-ping" />
+                      <div className="absolute inset-0 w-16 h-16 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-full bg-coral/40 animate-ping" />
                     )}
                     
-                    {/* The Pin */}
+                    {/* The Pin - INCREASED VISIBILITY */}
                     <div className={cn(
-                      "w-4 h-4 rounded-full border border-white shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all duration-500",
-                      isHovered ? "bg-coral scale-[2] border-transparent" : "bg-navy"
+                      "w-4 h-4 rounded-full border-[2px] shadow-[0_0_20px_rgba(255,255,255,1)] transition-all duration-500 relative z-20",
+                      isHovered ? "bg-coral scale-[2.5] border-white" : "bg-white border-coral"
                     )} />
                     
                     {/* Tooltip Label */}
                     <div className={cn(
-                      "absolute top-full left-1/2 -translate-x-1/2 mt-4 px-4 py-2 rounded-lg bg-white text-navy text-[0.75rem] uppercase tracking-widest font-bold whitespace-nowrap shadow-xl transition-all duration-300 pointer-events-none",
+                      "absolute top-full left-1/2 -translate-x-1/2 mt-4 px-4 py-2 rounded-lg bg-white text-navy text-[0.75rem] uppercase tracking-widest font-bold whitespace-nowrap shadow-xl transition-all duration-300 pointer-events-none z-30",
                       isHovered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
                     )}>
                       {city.name}
@@ -141,8 +141,8 @@ export default function CityMapSection() {
             })}
           </div>
 
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/30 text-[0.65rem] font-bold tracking-widest uppercase flex items-center gap-2 pointer-events-none bg-navy/50 px-6 py-2.5 rounded-full backdrop-blur-md border border-white/5">
-            <MapPin size={12} /> Hover points to explore
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/50 text-[0.65rem] font-bold tracking-widest uppercase flex items-center gap-2 pointer-events-none bg-[#061021]/80 px-6 py-2.5 rounded-full backdrop-blur-md border border-white/10 z-20 shadow-xl">
+            <MapPin size={12} className="text-coral" /> Hover points to explore
           </div>
         </div>
 
