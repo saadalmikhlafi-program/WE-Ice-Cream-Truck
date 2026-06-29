@@ -18,7 +18,7 @@ export const servicesData: Record<string, ServiceData> = {
     icon: "Gift",
     features: ["Customized music playlist", "Premium artisan ice cream options", "Photo opportunities inside the truck", "Allergen-friendly options available"],
     ctaText: "Book Your Birthday Surprise",
-    imagePath: "/images/gallery-2.jpg", // Using kids gallery image
+    imagePath: "/images/birthday-parties.jpg",
   },
   "corporate-events": {
     slug: "corporate-events",
@@ -28,7 +28,7 @@ export const servicesData: Record<string, ServiceData> = {
     icon: "Building",
     features: ["Rapid serving for large groups (up to 500/hr)", "Corporate branding options available", "Flexible billing and invoicing", "Professional, uniformed staff"],
     ctaText: "Plan Your Corporate Event",
-    imagePath: "/images/corporate-event.jpg",
+    imagePath: "/images/corporate-parties.jpg",
   },
   "weddings": {
     slug: "weddings",
@@ -38,7 +38,7 @@ export const servicesData: Record<string, ServiceData> = {
     icon: "Heart",
     features: ["Elegant vintage truck aesthetics", "Custom 'Just Married' signage", "Premium late-night dessert catering", "Beautiful golden hour/night illumination"],
     ctaText: "Reserve for Your Wedding",
-    imagePath: "/images/wedding-event.jpg",
+    imagePath: "/images/sweeter-together.jpg",
   },
   "school-events": {
     slug: "school-events",
@@ -48,7 +48,7 @@ export const servicesData: Record<string, ServiceData> = {
     icon: "GraduationCap",
     features: ["Nut-free and allergy-safe options", "Fast serving for large student bodies", "Teacher appreciation specials", "Fun, upbeat atmosphere"],
     ctaText: "Book for Your School",
-    imagePath: "/images/school-event.jpg",
+    imagePath: "/images/photo-sessions.jpg",
   },
   "fundraisers": {
     slug: "fundraisers",
@@ -58,7 +58,7 @@ export const servicesData: Record<string, ServiceData> = {
     icon: "HeartHandshake",
     features: ["Percentage-of-sales giveback programs", "High community draw and engagement", "Marketing materials provided", "Zero hassle for organizers"],
     ctaText: "Start Fundraising",
-    imagePath: "/images/gallery-5.jpg",
+    imagePath: "/images/fundraise.jpg",
   },
   "festivals": {
     slug: "festivals",
@@ -78,7 +78,7 @@ export const servicesData: Record<string, ServiceData> = {
     icon: "Home",
     features: ["Nostalgic neighborhood experience", "Options for pre-paid or cash-bar", "Classic ice cream truck music", "Perfect for summer evenings"],
     ctaText: "Schedule a Block Party",
-    imagePath: "/images/gallery-3.jpg",
+    imagePath: "/images/block-parties.jpg",
   },
   "graduations": {
     slug: "graduations",
@@ -98,7 +98,7 @@ export const servicesData: Record<string, ServiceData> = {
     icon: "Rocket",
     features: ["Sleek, modern truck aesthetic", "Custom brand integration available", "High social media engagement", "Premium VIP experience"],
     ctaText: "Elevate Your Launch",
-    imagePath: "/images/corporate-event.jpg",
+    imagePath: "/images/launch-parties.jpg",
   },
   "marketing-events": {
     slug: "marketing-events",
@@ -108,7 +108,7 @@ export const servicesData: Record<string, ServiceData> = {
     icon: "Megaphone",
     features: ["Unmatched crowd attraction", "Extended engagement time with prospects", "Customized treats", "High ROI for marketing activations"],
     ctaText: "Attract Your Crowd",
-    imagePath: "/images/gallery-4.jpg",
+    imagePath: "/images/marketing-events.jpg",
   }
 };
 
