@@ -17,7 +17,7 @@ export default function PackagesPage() {
   return (
     <div className="bg-sand min-h-screen pt-[88px]">
       {/* Header */}
-      <section className="py-20 bg-navy/80 backdrop-blur-2xl text-cream relative overflow-hidden">
+      <section className="py-20 bg-navy text-cream relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/hero-cinematic.jpg')] opacity-20 bg-cover bg-center mix-blend-overlay" />
         <div className="container mx-auto px-4 relative z-10 text-center">
           <AnimatedSection className="max-w-3xl mx-auto">
@@ -169,7 +169,7 @@ export default function PackagesPage() {
       </section>
 
       {/* Add-ons & Custom Quote CTA */}
-      <section className="py-24 bg-navy/80 backdrop-blur-2xl text-cream relative">
+      <section className="py-24 bg-navy text-cream relative">
         <div className="container mx-auto px-4 max-w-4xl text-center">
           <AnimatedSection>
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-6">Need Something Bigger?</h2>

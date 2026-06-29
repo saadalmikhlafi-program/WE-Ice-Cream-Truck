@@ -54,7 +54,7 @@ const THEMES = [
   {
     flavor: "Strawberry",
     image: "/images/cities/strawberry.png",
-    heroBgClass: "bg-[#FFF0F4]/60 backdrop-blur-3xl",
+    heroBgClass: "bg-[#FFF0F4]",
     textDarkClass: "text-[#8A1A3A]",
     primaryColorClass: "text-coral",
     bgGlowClass: "bg-coral/20",
@@ -64,7 +64,7 @@ const THEMES = [
   {
     flavor: "Mint",
     image: "/images/cities/mint.png",
-    heroBgClass: "bg-[#F0FFF4]/60 backdrop-blur-3xl",
+    heroBgClass: "bg-[#F0FFF4]",
     textDarkClass: "text-[#1A5336]",
     primaryColorClass: "text-mint",
     bgGlowClass: "bg-mint/20",
@@ -74,7 +74,7 @@ const THEMES = [
   {
     flavor: "Vanilla",
     image: "/images/cities/vanilla.png",
-    heroBgClass: "bg-[#FFFDF0]/60 backdrop-blur-3xl",
+    heroBgClass: "bg-[#FFFDF0]",
     textDarkClass: "text-[#6B5A1A]",
     primaryColorClass: "text-gold",
     bgGlowClass: "bg-gold/20",
@@ -84,7 +84,7 @@ const THEMES = [
   {
     flavor: "Blueberry",
     image: "/images/cities/blueberry.png",
-    heroBgClass: "bg-[#F0F4FF]/60 backdrop-blur-3xl",
+    heroBgClass: "bg-[#F0F4FF]",
     textDarkClass: "text-[#1A337A]",
     primaryColorClass: "text-blue-500",
     bgGlowClass: "bg-blue-500/20",
@@ -94,7 +94,7 @@ const THEMES = [
   {
     flavor: "Chocolate",
     image: "/images/cities/chocolate.png",
-    heroBgClass: "bg-[#FFF5F0]/60 backdrop-blur-3xl",
+    heroBgClass: "bg-[#FFF5F0]",
     textDarkClass: "text-[#5C2E16]",
     primaryColorClass: "text-amber-700",
     bgGlowClass: "bg-amber-700/20",

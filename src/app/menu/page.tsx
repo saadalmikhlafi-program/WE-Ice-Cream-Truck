@@ -133,7 +133,7 @@ export default function MenuPage() {
       </section>
 
       {/* Dietary Notice */}
-      <section className="py-20 bg-navy/80 backdrop-blur-2xl relative overflow-hidden">
+      <section className="py-20 bg-navy relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/hero-cinematic.jpg')] opacity-10 bg-cover bg-center mix-blend-overlay" />
         <div className="container mx-auto px-6 md:px-12 relative z-10 text-center max-w-4xl">
           <div className="inline-block p-4 bg-coral rounded-full mb-8">

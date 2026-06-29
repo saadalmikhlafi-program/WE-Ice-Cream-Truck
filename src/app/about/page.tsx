@@ -34,7 +34,7 @@ export default function AboutPage() {
     <div className="relative min-h-screen pt-[88px] overflow-hidden">
       {/* Hero Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-navy/80 backdrop-blur-2xl">
+        <div className="absolute inset-0 bg-navy">
           <div className="absolute inset-0 bg-[url('/images/hero-cinematic.jpg')] opacity-20 bg-cover bg-center mix-blend-overlay" />
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/80 to-transparent" />
         </div>
@@ -101,7 +101,7 @@ export default function AboutPage() {
       </section>
 
       {/* The Promise Section */}
-      <section className="py-24 md:py-32 bg-navy/80 backdrop-blur-2xl relative overflow-hidden">
+      <section className="py-24 md:py-32 bg-navy relative overflow-hidden">
         <div className="absolute -top-[300px] -left-[300px] w-[600px] h-[600px] bg-coral/10 rounded-full blur-3xl pointer-events-none" />
         
         <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">

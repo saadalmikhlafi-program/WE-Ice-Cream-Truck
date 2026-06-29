@@ -4,7 +4,7 @@ import { ArrowRight, Phone } from "lucide-react";
 
 export default function FinalCTA() {
   return (
-    <section className="relative w-full py-32 md:py-48 bg-navy/80 backdrop-blur-2xl flex items-center justify-center overflow-hidden border-t border-white/5">
+    <section className="relative w-full py-32 md:py-48 bg-navy flex items-center justify-center overflow-hidden border-t border-white/5">
       {/* Background Image & Overlay */}
       <div className="absolute inset-0 z-0">
         <div 
