@@ -5,7 +5,7 @@ import Image from "next/image";
 import { TRUCK_PACKAGES, VAN_PACKAGES } from "@/lib/packages-data";
 import { formatPrice } from "@/lib/utils";
 import { ArrowRight, Check } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 export default function PackagesPreview() {
   const featuredPackages = [
@@ -13,7 +13,7 @@ export default function PackagesPreview() {
     VAN_PACKAGES[0],
   ].filter(Boolean);
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -23,7 +23,7 @@ export default function PackagesPreview() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     show: { opacity: 1, y: 0, transition: { duration: 0.6, type: "spring" } },
   };
