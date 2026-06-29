@@ -12,28 +12,28 @@ export default function FlavorBlobs() {
   if (!mounted) return null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden bg-cream">
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-cream">
       {/* Strawberry Scoop Blob */}
       <div 
-        className="absolute top-[-10%] left-[-5%] w-[40vw] h-[40vw] min-w-[300px] min-h-[300px] bg-coral/20 rounded-full blur-[80px] animate-blob" 
+        className="absolute top-[-5%] left-[-5%] w-[40vw] h-[40vw] min-w-[250px] min-h-[250px] bg-coral/20 rounded-full blur-[60px] md:blur-[80px] animate-blob transform-gpu" 
         style={{ animationDuration: '20s' }}
       />
       
       {/* Mint Scoop Blob */}
       <div 
-        className="absolute top-[20%] right-[-10%] w-[35vw] h-[35vw] min-w-[250px] min-h-[250px] bg-mint/20 rounded-full blur-[100px] animate-blob animation-delay-2000" 
+        className="absolute top-[20%] right-[-10%] w-[35vw] h-[35vw] min-w-[200px] min-h-[200px] bg-mint/20 rounded-full blur-[70px] md:blur-[100px] animate-blob animation-delay-2000 transform-gpu" 
         style={{ animationDuration: '25s' }}
       />
       
       {/* Blueberry Scoop Blob */}
       <div 
-        className="absolute bottom-[-10%] left-[10%] w-[45vw] h-[45vw] min-w-[350px] min-h-[350px] bg-blue-400/20 rounded-full blur-[120px] animate-blob animation-delay-4000" 
+        className="absolute bottom-[5%] left-[5%] w-[45vw] h-[45vw] min-w-[250px] min-h-[250px] bg-blue-400/20 rounded-full blur-[80px] md:blur-[120px] animate-blob animation-delay-4000 transform-gpu" 
         style={{ animationDuration: '22s' }}
       />
 
       {/* Vanilla Scoop Blob */}
       <div 
-        className="absolute bottom-[10%] right-[20%] w-[30vw] h-[30vw] min-w-[200px] min-h-[200px] bg-gold/20 rounded-full blur-[90px] animate-blob animation-delay-6000" 
+        className="absolute bottom-[20%] right-[10%] w-[30vw] h-[30vw] min-w-[150px] min-h-[150px] bg-gold/20 rounded-full blur-[60px] md:blur-[90px] animate-blob animation-delay-6000 transform-gpu" 
         style={{ animationDuration: '18s' }}
       />
 

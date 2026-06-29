@@ -15,12 +15,19 @@ export default function SiteHeader() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Reset immediately on route change to prevent flash
+    setIsScrolled(false);
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
+    
+    // Check initial scroll position in case of page reload or back button
+    handleScroll();
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
 
   const services = getAllServices();
   const topServices = services.slice(0, 6); // Show top 6 services in dropdown
