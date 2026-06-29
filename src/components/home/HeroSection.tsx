@@ -92,7 +92,7 @@ export default function HeroSection() {
           {/* Main Photo */}
           <div className="relative aspect-square w-full rounded-3xl overflow-hidden border-8 border-white shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 z-20">
             <Image 
-              src="/images/photo_2026-06-29_02-14-11.jpg" 
+              src="/images/fundraise.jpg" 
               alt="Happy kids with ice cream" 
               fill
               className="object-cover"
@@ -103,7 +103,7 @@ export default function HeroSection() {
           {/* Secondary Photo 1 */}
           <div className="absolute -bottom-10 -left-10 w-2/3 aspect-[4/3] rounded-3xl overflow-hidden border-8 border-white shadow-xl -rotate-6 hover:-rotate-2 transition-transform duration-500 z-30 hidden md:block">
             <Image 
-              src="/images/photo_2026-06-29_02-17-09.jpg" 
+              src="/images/marketing-events.jpg" 
               alt="Ice cream truck event" 
               fill
               className="object-cover"
@@ -113,7 +113,7 @@ export default function HeroSection() {
           {/* Secondary Photo 2 */}
           <div className="absolute -top-10 -right-10 w-1/2 aspect-square rounded-full overflow-hidden border-8 border-white shadow-xl rotate-12 hover:rotate-6 transition-transform duration-500 z-10 hidden md:block">
             <Image 
-              src="/images/photo_2026-06-29_02-14-03.jpg" 
+              src="/images/launch-parties.jpg" 
               alt="Delicious ice cream" 
               fill
               className="object-cover"
