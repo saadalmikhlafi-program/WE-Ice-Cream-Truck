@@ -7,7 +7,7 @@ export default function SiteFooter() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-navy text-cream pt-20 pb-10 border-t border-white/10">
+    <footer className="relative z-10 bg-navy text-cream pt-20 pb-10 border-t border-white/10">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
           
