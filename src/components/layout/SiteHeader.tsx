@@ -2,14 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { BUSINESS_CONFIG } from "@/lib/config";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Menu, X, Phone } from "lucide-react";
+import { UserCircle2, ChevronDown } from "lucide-react";
 import Logo from "@/components/shared/Logo";
+import { getAllServices } from "@/lib/services-data";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function SiteHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,11 +22,15 @@ export default function SiteHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const services = getAllServices();
+  const topServices = services.slice(0, 6); // Show top 6 services in dropdown
+
   const navLinks = [
+    { label: "Home", href: "/" },
+    { label: "About", href: "/about" },
+    { label: "Menu", href: "/menu" },
     { label: "Packages", href: "/packages" },
-    { label: "Gallery", href: "/gallery" },
-    { label: "Cities", href: "/cities" },
-    { label: "FAQ", href: "/faq" },
+    { label: "Contact", href: "/contact" },
   ];
 
   return (
@@ -31,91 +38,113 @@ export default function SiteHeader() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled
-          ? "bg-cream/80 backdrop-blur-xl shadow-sm border-b border-navy/5 py-4"
-          : "bg-transparent py-6"
+          ? "bg-cream/90 backdrop-blur-xl shadow-sm border-b border-navy/5 py-3"
+          : "bg-transparent py-5 md:py-6"
       )}
     >
-      <div className="container mx-auto px-4 flex items-center justify-between">
+      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="z-50">
+        <Link href="/" className="z-50 relative group">
+          <div className="absolute -inset-2 bg-coral/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           <Logo variant="dark" />
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-[0.9rem] font-semibold tracking-wide text-navy/80 hover:text-coral transition-colors"
+        <nav className="hidden md:flex items-center gap-1 xl:gap-2">
+          {/* Home, About, Menu */}
+          {navLinks.slice(0, 3).map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.label}
+                href={link.href}
+                className={cn(
+                  "relative px-4 py-2 text-[0.95rem] font-bold tracking-wide transition-colors rounded-full",
+                  isActive ? "text-coral bg-coral/5" : "text-navy/80 hover:text-navy hover:bg-navy/5"
+                )}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+
+          {/* Occasions Dropdown */}
+          <div 
+            className="relative"
+            onMouseEnter={() => setActiveDropdown("occasions")}
+            onMouseLeave={() => setActiveDropdown(null)}
+          >
+            <button
+              className={cn(
+                "flex items-center gap-1 px-4 py-2 text-[0.95rem] font-bold tracking-wide transition-colors rounded-full",
+                pathname.startsWith("/services") ? "text-coral bg-coral/5" : "text-navy/80 hover:text-navy hover:bg-navy/5"
+              )}
             >
-              {link.label}
-            </Link>
-          ))}
+              Occasions
+              <ChevronDown className={cn("w-4 h-4 transition-transform duration-300", activeDropdown === "occasions" && "rotate-180")} />
+            </button>
+
+            <AnimatePresence>
+              {activeDropdown === "occasions" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-navy/5 overflow-hidden z-50 py-2"
+                >
+                  {topServices.map((service) => (
+                    <Link
+                      key={service.slug}
+                      href={`/services/${service.slug}`}
+                      className="block px-6 py-3 text-[0.9rem] font-semibold text-navy/70 hover:text-coral hover:bg-cream transition-colors"
+                      onClick={() => setActiveDropdown(null)}
+                    >
+                      {service.name}
+                    </Link>
+                  ))}
+                  <div className="border-t border-navy/5 mt-2 pt-2 px-4 pb-2">
+                    <Link
+                      href="/services"
+                      className="block w-full text-center py-2 bg-coral/10 text-coral font-bold rounded-xl text-sm hover:bg-coral hover:text-white transition-colors"
+                      onClick={() => setActiveDropdown(null)}
+                    >
+                      View All Occasions
+                    </Link>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Packages, Contact */}
+          {navLinks.slice(3).map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.label}
+                href={link.href}
+                className={cn(
+                  "relative px-4 py-2 text-[0.95rem] font-bold tracking-wide transition-colors rounded-full",
+                  isActive ? "text-coral bg-coral/5" : "text-navy/80 hover:text-navy hover:bg-navy/5"
+                )}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center gap-4">
-          <a
-            href={`tel:${BUSINESS_CONFIG.contact.phone1Formatted}`}
-            className="flex items-center gap-2 text-navy/80 hover:text-coral transition-colors text-[0.9rem] font-semibold"
-          >
-            <Phone size={16} />
-            <span>{BUSINESS_CONFIG.contact.phone1}</span>
-          </a>
+        {/* Authentication / User Area (Desktop & Mobile) */}
+        <div className="flex items-center gap-3">
           <Link
-            href="/get-a-quote"
-            className="px-8 py-3 bg-navy text-cream text-[0.9rem] font-bold rounded-full hover:bg-coral transition-all shadow-md hover:shadow-coral"
+            href="/admin"
+            className="group flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-navy/10 rounded-full hover:border-coral transition-all shadow-sm hover:shadow-md"
           >
-            Get a Quote
+            <UserCircle2 className="w-5 h-5 text-navy/70 group-hover:text-coral transition-colors" />
+            <span className="font-bold text-[0.9rem] text-navy hidden sm:block">Sign In</span>
           </Link>
         </div>
-
-        {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-navy z-50 p-2 -mr-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle Menu"
-        >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </div>
-
-      {/* Mobile Menu Overlay */}
-      <div
-        className={cn(
-          "fixed inset-0 bg-cream z-40 flex flex-col justify-center px-6 transition-all duration-500 ease-in-out md:hidden",
-          isMobileMenuOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        )}
-      >
-        <nav className="flex flex-col gap-6 text-center">
-          {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-3xl font-display text-navy hover:text-coral transition-colors"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <Link
-            href="/get-a-quote"
-            className="mt-6 px-8 py-4 bg-navy text-cream text-xl font-bold rounded-full inline-block"
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            Get a Free Quote
-          </Link>
-          <a
-            href={`tel:${BUSINESS_CONFIG.contact.phone1Formatted}`}
-            className="mt-8 flex items-center justify-center gap-2 text-navy/70 text-lg font-medium"
-          >
-            <Phone size={20} />
-            <span>{BUSINESS_CONFIG.contact.phone1}</span>
-          </a>
-        </nav>
       </div>
     </header>
   );
