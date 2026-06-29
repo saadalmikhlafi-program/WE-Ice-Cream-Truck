@@ -66,7 +66,7 @@ export const BUSINESS_CONFIG = {
     eventsServed: 500,
     rating: 4.9,
     reviewCount: 127,
-    citiesServed: 140,
+    citiesServed: 500,
     yearsInBusiness: 5,
     satisfactionRate: 100,
   },

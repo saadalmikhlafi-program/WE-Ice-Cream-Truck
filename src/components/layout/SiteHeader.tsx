@@ -35,6 +35,7 @@ export default function SiteHeader() {
 
   return (
     <header
+      suppressHydrationWarning
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled
@@ -42,10 +43,9 @@ export default function SiteHeader() {
           : "bg-transparent py-5 md:py-6"
       )}
     >
-      <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+      <div suppressHydrationWarning className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="z-50 relative group">
-          <div className="absolute -inset-2 bg-coral/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <Link href="/" className="z-50">
           <Logo variant="dark" />
         </Link>
 
