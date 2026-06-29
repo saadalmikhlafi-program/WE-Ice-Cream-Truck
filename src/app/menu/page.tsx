@@ -74,7 +74,7 @@ const faqs = [
 
 export default function MenuPage() {
   return (
-    <div className="bg-cream min-h-screen pt-[88px] overflow-hidden">
+    <div className="relative min-h-screen pt-[88px] overflow-hidden">
       {/* Hero Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-coral/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />

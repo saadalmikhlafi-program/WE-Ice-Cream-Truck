@@ -9,7 +9,7 @@ export default function TrustStats() {
   ];
 
   return (
-    <section className="w-full bg-cream py-16 md:py-24 border-b border-navy/5">
+    <section className="w-full relative py-16 md:py-24 border-b border-navy/5">
       <div className="container mx-auto px-6 md:px-12 lg:px-24">
         <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-navy/10 border-y border-navy/10">
           {stats.map((stat, index) => (

@@ -15,7 +15,7 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section className="bg-sand py-24 md:py-40">
+    <section className="relative py-24 md:py-40">
       <div className="container mx-auto px-6 md:px-12 lg:px-24">
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">

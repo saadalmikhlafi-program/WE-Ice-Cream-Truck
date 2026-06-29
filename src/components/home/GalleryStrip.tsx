@@ -9,7 +9,7 @@ export default function GalleryStrip() {
   ];
 
   return (
-    <section className="bg-white py-24 md:py-40">
+    <section className="relative py-24 md:py-40">
       <div className="container mx-auto px-6 md:px-12 lg:px-24">
         
         {/* Section Header */}

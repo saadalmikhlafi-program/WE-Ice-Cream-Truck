@@ -29,7 +29,7 @@ export default function PackagesPreview() {
   };
 
   return (
-    <section className="relative bg-cream py-24 md:py-32 overflow-hidden">
+    <section className="relative py-24 md:py-32 overflow-hidden">
       {/* Playful background element */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-coral/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
       

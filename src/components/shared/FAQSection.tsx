@@ -26,7 +26,7 @@ export default function FAQSection({
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className={cn("py-20 md:py-32 bg-cream", className)}>
+    <section className={cn("py-20 md:py-32 relative", className)}>
       <div className="container mx-auto px-6 md:px-12 lg:px-24">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <motion.h2 

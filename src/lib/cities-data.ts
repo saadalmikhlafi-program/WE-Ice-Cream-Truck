@@ -25,6 +25,7 @@ export type CityData = {
   // Content
   neighborhoods?: string[];
   nearbyAreas: string[];
+  zipCodes?: string[];
   landmarkMentions?: string[];
   localFAQs: { question: string; answer: string }[];
 
@@ -42,6 +43,46 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "boston",
     name: "Boston",
+    zipCodes: [
+      "02108",
+      "02109",
+      "02110",
+      "02111",
+      "02112",
+      "02113",
+      "02114",
+      "02115",
+      "02116",
+      "02117",
+      "02118",
+      "02123",
+      "02127",
+      "02128",
+      "02133",
+      "02163",
+      "02196",
+      "02199",
+      "02201",
+      "02203",
+      "02204",
+      "02205",
+      "02206",
+      "02210",
+      "02211",
+      "02212",
+      "02215",
+      "02217",
+      "02222",
+      "02241",
+      "02266",
+      "02283",
+      "02284",
+      "02293",
+      "02295",
+      "02297",
+      "02298",
+      "02216",
+    ],
     county: "Suffolk County",
     region: "Greater Boston",
     population: 675647,
@@ -112,6 +153,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "cambridge",
     name: "Cambridge",
+    zipCodes: ["02138", "02139", "02140", "02141", "02142", "02238", "02239"],
     county: "Middlesex County",
     region: "Greater Boston",
     population: 118977,
@@ -175,6 +217,24 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "worcester",
     name: "Worcester",
+    zipCodes: [
+      "01601",
+      "01602",
+      "01603",
+      "01604",
+      "01605",
+      "01606",
+      "01607",
+      "01608",
+      "01609",
+      "01610",
+      "01613",
+      "01614",
+      "01615",
+      "01653",
+      "01654",
+      "01655",
+    ],
     county: "Worcester County",
     region: "Central Massachusetts",
     population: 206518,
@@ -238,6 +298,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "somerville",
     name: "Somerville",
+    zipCodes: ["02143", "02144", "02145"],
     county: "Middlesex County",
     region: "Greater Boston",
     lat: 42.3876,
@@ -290,6 +351,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "newton",
     name: "Newton",
+    zipCodes: ["02458"],
     county: "Middlesex County",
     region: "Greater Boston",
     lat: 42.337,
@@ -344,6 +406,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "quincy",
     name: "Quincy",
+    zipCodes: ["02169", "02170", "02171", "02269"],
     county: "Norfolk County",
     region: "Greater Boston",
     lat: 42.2529,
@@ -398,6 +461,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "brookline",
     name: "Brookline",
+    zipCodes: ["02445", "02446"],
     county: "Norfolk County",
     region: "Greater Boston",
     lat: 42.3318,
@@ -450,6 +514,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "salem",
     name: "Salem",
+    zipCodes: ["01970", "01971"],
     county: "Essex County",
     region: "North Shore",
     lat: 42.5195,
@@ -510,6 +575,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "medford",
     name: "Medford",
+    zipCodes: ["02153", "02155"],
     county: "Middlesex County",
     region: "Greater Boston",
     lat: 42.4184,
@@ -554,6 +620,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "waltham",
     name: "Waltham",
+    zipCodes: ["02451", "02452", "02453", "02454"],
     county: "Middlesex County",
     region: "Greater Boston",
     lat: 42.3765,
@@ -596,6 +663,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lynn",
     name: "Lynn",
+    zipCodes: ["01901", "01902", "01903", "01904", "01905", "01910"],
     county: "Essex County",
     region: "North Shore",
     lat: 42.4668,
@@ -638,6 +706,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lowell",
     name: "Lowell",
+    zipCodes: ["01850", "01851", "01852", "01853", "01854"],
     county: "Middlesex County",
     region: "Merrimack Valley",
     lat: 42.6334,
@@ -688,6 +757,28 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "springfield",
     name: "Springfield",
+    zipCodes: [
+      "01101",
+      "01102",
+      "01103",
+      "01104",
+      "01105",
+      "01107",
+      "01108",
+      "01109",
+      "01111",
+      "01115",
+      "01118",
+      "01119",
+      "01128",
+      "01129",
+      "01138",
+      "01139",
+      "01144",
+      "01152",
+      "01199",
+      "01133",
+    ],
     county: "Hampden County",
     region: "Pioneer Valley",
     lat: 42.1015,
@@ -738,6 +829,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "framingham",
     name: "Framingham",
+    zipCodes: ["01701", "01702", "01703", "01704", "01705"],
     county: "Middlesex County",
     region: "MetroWest",
     lat: 42.2793,
@@ -787,6 +879,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "brockton",
     name: "Brockton",
+    zipCodes: ["02301", "02302", "02303", "02304", "02305"],
     county: "Plymouth County",
     region: "South Shore",
     lat: 42.0834,
@@ -830,6 +923,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "plymouth",
     name: "Plymouth",
+    zipCodes: ["02360", "02361", "02362"],
     county: "Plymouth County",
     region: "South Shore",
     lat: 41.9584,
@@ -875,6 +969,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "revere",
     name: "Revere",
+    zipCodes: ["02151"],
     county: "Suffolk County",
     region: "Greater Boston",
     lat: 42.4084,
@@ -929,6 +1024,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "agawam",
     name: "Agawam",
+    zipCodes: ["01001"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.140549,
@@ -966,6 +1062,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "amherst",
     name: "Amherst",
+    zipCodes: ["01002", "01003", "01004"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.367092,
@@ -1004,6 +1101,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "barre",
     name: "Barre",
+    zipCodes: ["01005"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.32916,
@@ -1040,6 +1138,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "belchertown",
     name: "Belchertown",
+    zipCodes: ["01007"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.280267,
@@ -1078,6 +1177,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "blandford",
     name: "Blandford",
+    zipCodes: ["01008"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.177833,
@@ -1116,6 +1216,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "bondsville",
     name: "Bondsville",
+    zipCodes: ["01009"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.206092,
@@ -1154,6 +1255,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "brimfield",
     name: "Brimfield",
+    zipCodes: ["01010"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.108585,
@@ -1192,6 +1294,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "chester",
     name: "Chester",
+    zipCodes: ["01011"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.294259,
@@ -1230,6 +1333,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "chesterfield",
     name: "Chesterfield",
+    zipCodes: ["01012"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.392274,
@@ -1270,6 +1374,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "chicopee",
     name: "Chicopee",
+    zipCodes: ["01013", "01014", "01020", "01021", "01022"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.161492,
@@ -1308,6 +1413,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "cummington",
     name: "Cummington",
+    zipCodes: ["01026"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.428617,
@@ -1346,6 +1452,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "easthampton",
     name: "Easthampton",
+    zipCodes: ["01027"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.368303,
@@ -1384,6 +1491,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-longmeadow",
     name: "East Longmeadow",
+    zipCodes: ["01028"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.062009,
@@ -1425,6 +1533,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-otis",
     name: "East Otis",
+    zipCodes: ["01029"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.190904,
@@ -1463,6 +1572,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "feeding-hills",
     name: "Feeding Hills",
+    zipCodes: ["01030"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.189335,
@@ -1503,6 +1613,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "gilbertville",
     name: "Gilbertville",
+    zipCodes: ["01031"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.352554,
@@ -1543,6 +1654,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "goshen",
     name: "Goshen",
+    zipCodes: ["01032"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.443837,
@@ -1580,6 +1692,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "granby",
     name: "Granby",
+    zipCodes: ["01033"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.262285,
@@ -1617,6 +1730,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "granville",
     name: "Granville",
+    zipCodes: ["01034"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.112748,
@@ -1655,6 +1769,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hadley",
     name: "Hadley",
+    zipCodes: ["01035"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.356804,
@@ -1692,6 +1807,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hampden",
     name: "Hampden",
+    zipCodes: ["01036"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.067614,
@@ -1730,6 +1846,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hardwick",
     name: "Hardwick",
+    zipCodes: ["01037"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.347856,
@@ -1768,6 +1885,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hatfield",
     name: "Hatfield",
+    zipCodes: ["01038"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.387269,
@@ -1806,6 +1924,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "haydenville",
     name: "Haydenville",
+    zipCodes: ["01039"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.35641,
@@ -1844,6 +1963,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "holyoke",
     name: "Holyoke",
+    zipCodes: ["01040", "01041"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.198291,
@@ -1882,6 +2002,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "huntington",
     name: "Huntington",
+    zipCodes: ["01050"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.313427,
@@ -1920,6 +2041,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "leeds",
     name: "Leeds",
+    zipCodes: ["01053"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.353838,
@@ -1956,6 +2078,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "leverett",
     name: "Leverett",
+    zipCodes: ["01054"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.474681,
@@ -1994,6 +2117,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "ludlow",
     name: "Ludlow",
+    zipCodes: ["01056"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.173276,
@@ -2031,6 +2155,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "monson",
     name: "Monson",
+    zipCodes: ["01057"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.095323,
@@ -2068,6 +2193,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-amherst",
     name: "North Amherst",
+    zipCodes: ["01059"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.369562,
@@ -2108,6 +2234,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "northampton",
     name: "Northampton",
+    zipCodes: ["01060", "01061", "01063"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.415154,
@@ -2146,6 +2273,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "florence",
     name: "Florence",
+    zipCodes: ["01062"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.328838,
@@ -2184,6 +2312,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-hatfield",
     name: "North Hatfield",
+    zipCodes: ["01066"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.406697,
@@ -2225,6 +2354,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "oakham",
     name: "Oakham",
+    zipCodes: ["01068"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.346144,
@@ -2262,6 +2392,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "palmer",
     name: "Palmer",
+    zipCodes: ["01069"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.176131,
@@ -2299,6 +2430,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "plainfield",
     name: "Plainfield",
+    zipCodes: ["01070"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.448984,
@@ -2337,6 +2469,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "russell",
     name: "Russell",
+    zipCodes: ["01071"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.177432,
@@ -2375,6 +2508,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "shutesbury",
     name: "Shutesbury",
+    zipCodes: ["01072"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.471562,
@@ -2413,6 +2547,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "southampton",
     name: "Southampton",
+    zipCodes: ["01073"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.230008,
@@ -2451,6 +2586,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-barre",
     name: "South Barre",
+    zipCodes: ["01074"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.375998,
@@ -2489,6 +2625,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-hadley",
     name: "South Hadley",
+    zipCodes: ["01075"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.24984,
@@ -2529,6 +2666,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "southwick",
     name: "Southwick",
+    zipCodes: ["01077"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.066644,
@@ -2567,6 +2705,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "thorndike",
     name: "Thorndike",
+    zipCodes: ["01079"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.192892,
@@ -2605,6 +2744,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "three-rivers",
     name: "Three Rivers",
+    zipCodes: ["01080"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.179805,
@@ -2645,6 +2785,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wales",
     name: "Wales",
+    zipCodes: ["01081"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.061948,
@@ -2681,6 +2822,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "ware",
     name: "Ware",
+    zipCodes: ["01082"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.377471,
@@ -2717,6 +2859,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "warren",
     name: "Warren",
+    zipCodes: ["01083"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.204027,
@@ -2754,6 +2897,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-chesterfield",
     name: "West Chesterfield",
+    zipCodes: ["01084"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.390303,
@@ -2795,6 +2939,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "westfield",
     name: "Westfield",
+    zipCodes: ["01085", "01086"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.14869,
@@ -2833,6 +2978,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-hatfield",
     name: "West Hatfield",
+    zipCodes: ["01088"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.390583,
@@ -2873,6 +3019,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-springfield",
     name: "West Springfield",
+    zipCodes: ["01089", "01090"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.125793,
@@ -2914,6 +3061,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-warren",
     name: "West Warren",
+    zipCodes: ["01092"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.202887,
@@ -2952,6 +3100,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "whately",
     name: "Whately",
+    zipCodes: ["01093"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.442673,
@@ -2990,6 +3139,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wheelwright",
     name: "Wheelwright",
+    zipCodes: ["01094"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.358201,
@@ -3028,6 +3178,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wilbraham",
     name: "Wilbraham",
+    zipCodes: ["01095"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.125974,
@@ -3066,6 +3217,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "williamsburg",
     name: "Williamsburg",
+    zipCodes: ["01096"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.413069,
@@ -3106,6 +3258,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "woronoco",
     name: "Woronoco",
+    zipCodes: ["01097"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.161743,
@@ -3144,6 +3297,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "worthington",
     name: "Worthington",
+    zipCodes: ["01098"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.40494,
@@ -3182,6 +3336,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "longmeadow",
     name: "Longmeadow",
+    zipCodes: ["01106", "01116"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.049194,
@@ -3220,6 +3375,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "indian-orchard",
     name: "Indian Orchard",
+    zipCodes: ["01151"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.150593,
@@ -3261,6 +3417,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "pittsfield",
     name: "Pittsfield",
+    zipCodes: ["01201", "01202", "01203"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.479475,
@@ -3299,6 +3456,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "adams",
     name: "Adams",
+    zipCodes: ["01220"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.385595,
@@ -3335,6 +3493,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "ashley-falls",
     name: "Ashley Falls",
+    zipCodes: ["01222"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.185969,
@@ -3375,6 +3534,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "becket",
     name: "Becket",
+    zipCodes: ["01223"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.3418,
@@ -3412,6 +3572,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "berkshire",
     name: "Berkshire",
+    zipCodes: ["01224"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.3929,
@@ -3450,6 +3611,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "cheshire",
     name: "Cheshire",
+    zipCodes: ["01225"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.482125,
@@ -3488,6 +3650,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "dalton",
     name: "Dalton",
+    zipCodes: ["01226", "01227"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.470296,
@@ -3525,6 +3688,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "glendale",
     name: "Glendale",
+    zipCodes: ["01229"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.279292,
@@ -3563,6 +3727,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "great-barrington",
     name: "Great Barrington",
+    zipCodes: ["01230"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.299392,
@@ -3604,6 +3769,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hinsdale",
     name: "Hinsdale",
+    zipCodes: ["01235"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.29237,
@@ -3642,6 +3808,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "housatonic",
     name: "Housatonic",
+    zipCodes: ["01236"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.291299,
@@ -3680,6 +3847,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lanesboro",
     name: "Lanesboro",
+    zipCodes: ["01237"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.487569,
@@ -3718,6 +3886,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lee",
     name: "Lee",
+    zipCodes: ["01238"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.369856,
@@ -3754,6 +3923,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lenox",
     name: "Lenox",
+    zipCodes: ["01240"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.459202,
@@ -3790,6 +3960,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lenox-dale",
     name: "Lenox Dale",
+    zipCodes: ["01242"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.338594,
@@ -3828,6 +3999,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "middlefield",
     name: "Middlefield",
+    zipCodes: ["01243"],
     county: "Hampshire County",
     region: "Massachusetts",
     lat: 42.356088,
@@ -3866,6 +4038,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "mill-river",
     name: "Mill River",
+    zipCodes: ["01244"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.122827,
@@ -3904,6 +4077,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "monterey",
     name: "Monterey",
+    zipCodes: ["01245"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.18669,
@@ -3942,6 +4116,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-adams",
     name: "North Adams",
+    zipCodes: ["01247"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.426974,
@@ -3980,6 +4155,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-egremont",
     name: "North Egremont",
+    zipCodes: ["01252"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.198648,
@@ -4021,6 +4197,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "otis",
     name: "Otis",
+    zipCodes: ["01253"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.213156,
@@ -4057,6 +4234,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "richmond",
     name: "Richmond",
+    zipCodes: ["01254"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.233105,
@@ -4095,6 +4273,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sandisfield",
     name: "Sandisfield",
+    zipCodes: ["01255"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.148975,
@@ -4133,6 +4312,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "savoy",
     name: "Savoy",
+    zipCodes: ["01256"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.367341,
@@ -4169,6 +4349,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sheffield",
     name: "Sheffield",
+    zipCodes: ["01257"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.314564,
@@ -4207,6 +4388,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-egremont",
     name: "South Egremont",
+    zipCodes: ["01258"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.128075,
@@ -4248,6 +4430,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "southfield",
     name: "Southfield",
+    zipCodes: ["01259"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.198712,
@@ -4286,6 +4469,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-lee",
     name: "South Lee",
+    zipCodes: ["01260"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.286586,
@@ -4324,6 +4508,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "stockbridge",
     name: "Stockbridge",
+    zipCodes: ["01262", "01263"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.304604,
@@ -4362,6 +4547,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "tyringham",
     name: "Tyringham",
+    zipCodes: ["01264"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.220001,
@@ -4400,6 +4586,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-stockbridge",
     name: "West Stockbridge",
+    zipCodes: ["01266"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.360482,
@@ -4441,6 +4628,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "williamstown",
     name: "Williamstown",
+    zipCodes: ["01267"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.642075,
@@ -4481,6 +4669,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "windsor",
     name: "Windsor",
+    zipCodes: ["01270"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.443726,
@@ -4519,6 +4708,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "greenfield",
     name: "Greenfield",
+    zipCodes: ["01301", "01302"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.601335,
@@ -4557,6 +4747,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "ashfield",
     name: "Ashfield",
+    zipCodes: ["01330"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.562391,
@@ -4595,6 +4786,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "athol",
     name: "Athol",
+    zipCodes: ["01331"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.547302,
@@ -4631,6 +4823,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "bernardston",
     name: "Bernardston",
+    zipCodes: ["01337"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.62706,
@@ -4669,6 +4862,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "buckland",
     name: "Buckland",
+    zipCodes: ["01338"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.573832,
@@ -4707,6 +4901,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "charlemont",
     name: "Charlemont",
+    zipCodes: ["01339"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.594252,
@@ -4745,6 +4940,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "colrain",
     name: "Colrain",
+    zipCodes: ["01340"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.681539,
@@ -4783,6 +4979,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "conway",
     name: "Conway",
+    zipCodes: ["01341"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.590824,
@@ -4820,6 +5017,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "deerfield",
     name: "Deerfield",
+    zipCodes: ["01342"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.54723,
@@ -4858,6 +5056,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "drury",
     name: "Drury",
+    zipCodes: ["01343"],
     county: "Berkshire County",
     region: "Massachusetts",
     lat: 42.642666,
@@ -4894,6 +5093,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "erving",
     name: "Erving",
+    zipCodes: ["01344"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.627072,
@@ -4931,6 +5131,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "heath",
     name: "Heath",
+    zipCodes: ["01346"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.618011,
@@ -4967,6 +5168,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lake-pleasant",
     name: "Lake Pleasant",
+    zipCodes: ["01347"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.556558,
@@ -5007,6 +5209,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "turners-falls",
     name: "Turners Falls",
+    zipCodes: ["01376"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.621412,
@@ -5047,6 +5250,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "monroe-bridge",
     name: "Monroe Bridge",
+    zipCodes: ["01350"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.721456,
@@ -5087,6 +5291,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "montague",
     name: "Montague",
+    zipCodes: ["01351"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.548107,
@@ -5125,6 +5330,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "northfield",
     name: "Northfield",
+    zipCodes: ["01360"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.522178,
@@ -5163,6 +5369,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "new-salem",
     name: "New Salem",
+    zipCodes: ["01355"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.518718,
@@ -5201,6 +5408,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "orange",
     name: "Orange",
+    zipCodes: ["01364"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.578325,
@@ -5238,6 +5446,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "petersham",
     name: "Petersham",
+    zipCodes: ["01366"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.459632,
@@ -5276,6 +5485,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "rowe",
     name: "Rowe",
+    zipCodes: ["01367"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.683065,
@@ -5312,6 +5522,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "royalston",
     name: "Royalston",
+    zipCodes: ["01368"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.672182,
@@ -5390,6 +5601,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "shelburne-falls",
     name: "Shelburne Falls",
+    zipCodes: ["01370"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.588812,
@@ -5431,6 +5643,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-deerfield",
     name: "South Deerfield",
+    zipCodes: ["01373"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.464522,
@@ -5472,6 +5685,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sunderland",
     name: "Sunderland",
+    zipCodes: ["01375"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.565346,
@@ -5510,6 +5724,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "warwick",
     name: "Warwick",
+    zipCodes: ["01378"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.667059,
@@ -5548,6 +5763,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wendell",
     name: "Wendell",
+    zipCodes: ["01379"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.581007,
@@ -5586,6 +5802,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wendell-depot",
     name: "Wendell Depot",
+    zipCodes: ["01380"],
     county: "Franklin County",
     region: "Massachusetts",
     lat: 42.553431,
@@ -5626,6 +5843,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "fitchburg",
     name: "Fitchburg",
+    zipCodes: ["01420"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.583689,
@@ -5664,6 +5882,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "ashburnham",
     name: "Ashburnham",
+    zipCodes: ["01430"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.654906,
@@ -5702,6 +5921,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "ashby",
     name: "Ashby",
+    zipCodes: ["01431"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -5738,6 +5958,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "ayer",
     name: "Ayer",
+    zipCodes: ["01432"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -5774,6 +5995,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "baldwinville",
     name: "Baldwinville",
+    zipCodes: ["01436"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.601427,
@@ -5814,6 +6036,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-templeton",
     name: "East Templeton",
+    zipCodes: ["01438"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.551681,
@@ -5855,6 +6078,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "gardner",
     name: "Gardner",
+    zipCodes: ["01440"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.582529,
@@ -5893,6 +6117,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "westminster",
     name: "Westminster",
+    zipCodes: ["01441", "01473"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.364807,
@@ -5931,6 +6156,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "groton",
     name: "Groton",
+    zipCodes: ["01450", "01470", "01471"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -5968,6 +6194,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "harvard",
     name: "Harvard",
+    zipCodes: ["01451"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.500187,
@@ -6006,6 +6233,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hubbardston",
     name: "Hubbardston",
+    zipCodes: ["01452"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.483895,
@@ -6044,6 +6272,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "leominster",
     name: "Leominster",
+    zipCodes: ["01453"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.471316,
@@ -6082,6 +6311,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "littleton",
     name: "Littleton",
+    zipCodes: ["01460"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -6120,6 +6350,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lunenburg",
     name: "Lunenburg",
+    zipCodes: ["01462"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.583322,
@@ -6158,6 +6389,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "pepperell",
     name: "Pepperell",
+    zipCodes: ["01463"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -6196,6 +6428,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "shirley",
     name: "Shirley",
+    zipCodes: ["01464"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -6234,6 +6467,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "still-river",
     name: "Still River",
+    zipCodes: ["01467"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.487056,
@@ -6272,6 +6506,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "templeton",
     name: "Templeton",
+    zipCodes: ["01468"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.555059,
@@ -6310,6 +6545,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "townsend",
     name: "Townsend",
+    zipCodes: ["01469"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -6348,6 +6584,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-groton",
     name: "West Groton",
+    zipCodes: ["01472"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -6386,6 +6623,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-townsend",
     name: "West Townsend",
+    zipCodes: ["01474"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -6426,6 +6664,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "winchendon",
     name: "Winchendon",
+    zipCodes: ["01475"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.661612,
@@ -6464,6 +6703,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "winchendon-springs",
     name: "Winchendon Springs",
+    zipCodes: ["01477"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.364807,
@@ -6505,6 +6745,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "auburn",
     name: "Auburn",
+    zipCodes: ["01501"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.184835,
@@ -6542,6 +6783,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "berlin",
     name: "Berlin",
+    zipCodes: ["01503"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.3129,
@@ -6579,6 +6821,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "blackstone",
     name: "Blackstone",
+    zipCodes: ["01504"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.114078,
@@ -6617,6 +6860,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "boylston",
     name: "Boylston",
+    zipCodes: ["01505"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.300037,
@@ -6655,6 +6899,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "brookfield",
     name: "Brookfield",
+    zipCodes: ["01506"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.19169,
@@ -6693,6 +6938,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "charlton",
     name: "Charlton",
+    zipCodes: ["01507"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.13277,
@@ -6731,6 +6977,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "charlton-city",
     name: "Charlton City",
+    zipCodes: ["01508"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.109748,
@@ -6771,6 +7018,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "charlton-depot",
     name: "Charlton Depot",
+    zipCodes: ["01509"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.364807,
@@ -6812,6 +7060,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "clinton",
     name: "Clinton",
+    zipCodes: ["01510"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.413972,
@@ -6850,6 +7099,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-brookfield",
     name: "East Brookfield",
+    zipCodes: ["01515"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.205311,
@@ -6891,6 +7141,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "douglas",
     name: "Douglas",
+    zipCodes: ["01516"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.113076,
@@ -6929,6 +7180,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-princeton",
     name: "East Princeton",
+    zipCodes: ["01517"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.364807,
@@ -6970,6 +7222,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "fiskdale",
     name: "Fiskdale",
+    zipCodes: ["01518"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.106405,
@@ -7008,6 +7261,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "grafton",
     name: "Grafton",
+    zipCodes: ["01519"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.203944,
@@ -7046,6 +7300,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "holden",
     name: "Holden",
+    zipCodes: ["01520"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.336791,
@@ -7083,6 +7338,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "holland",
     name: "Holland",
+    zipCodes: ["01521"],
     county: "Hampden County",
     region: "Massachusetts",
     lat: 42.061063,
@@ -7121,6 +7377,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "jefferson",
     name: "Jefferson",
+    zipCodes: ["01522"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.264629,
@@ -7159,6 +7416,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lancaster",
     name: "Lancaster",
+    zipCodes: ["01523"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.427188,
@@ -7197,6 +7455,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "leicester",
     name: "Leicester",
+    zipCodes: ["01524"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.238192,
@@ -7235,6 +7494,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "linwood",
     name: "Linwood",
+    zipCodes: ["01525"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.364807,
@@ -7273,6 +7533,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "manchaug",
     name: "Manchaug",
+    zipCodes: ["01526"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.364807,
@@ -7311,6 +7572,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "millbury",
     name: "Millbury",
+    zipCodes: ["01527"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.255642,
@@ -7349,6 +7611,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "millville",
     name: "Millville",
+    zipCodes: ["01529"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.124662,
@@ -7387,6 +7650,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "new-braintree",
     name: "New Braintree",
+    zipCodes: ["01531"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.320938,
@@ -7427,6 +7691,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "northborough",
     name: "Northborough",
+    zipCodes: ["01532"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.322118,
@@ -7467,6 +7732,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "northbridge",
     name: "Northbridge",
+    zipCodes: ["01534"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.207191,
@@ -7505,6 +7771,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-brookfield",
     name: "North Brookfield",
+    zipCodes: ["01535"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.275382,
@@ -7546,6 +7813,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-grafton",
     name: "North Grafton",
+    zipCodes: ["01536"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.407556,
@@ -7586,6 +7854,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-oxford",
     name: "North Oxford",
+    zipCodes: ["01537"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.166241,
@@ -7626,6 +7895,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-uxbridge",
     name: "North Uxbridge",
+    zipCodes: ["01538"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.364807,
@@ -7667,6 +7937,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "oxford",
     name: "Oxford",
+    zipCodes: ["01540"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.109223,
@@ -7704,6 +7975,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "princeton",
     name: "Princeton",
+    zipCodes: ["01541"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.451926,
@@ -7742,6 +8014,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "rochdale",
     name: "Rochdale",
+    zipCodes: ["01542"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.220085,
@@ -7780,6 +8053,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "rutland",
     name: "Rutland",
+    zipCodes: ["01543"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.383516,
@@ -7818,6 +8092,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "shrewsbury",
     name: "Shrewsbury",
+    zipCodes: ["01545", "01546"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.286992,
@@ -7856,6 +8131,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "southbridge",
     name: "Southbridge",
+    zipCodes: ["01550"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.129251,
@@ -7894,6 +8170,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-grafton",
     name: "South Grafton",
+    zipCodes: ["01560"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.176544,
@@ -7934,6 +8211,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-lancaster",
     name: "South Lancaster",
+    zipCodes: ["01561"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.443539,
@@ -7975,6 +8253,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "spencer",
     name: "Spencer",
+    zipCodes: ["01562"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.254837,
@@ -8013,6 +8292,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sterling",
     name: "Sterling",
+    zipCodes: ["01564"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.366765,
@@ -8051,6 +8331,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sturbridge",
     name: "Sturbridge",
+    zipCodes: ["01566"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.10273,
@@ -8089,6 +8370,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "upton",
     name: "Upton",
+    zipCodes: ["01568"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.175591,
@@ -8125,6 +8407,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "uxbridge",
     name: "Uxbridge",
+    zipCodes: ["01569"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.059736,
@@ -8163,6 +8446,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "webster",
     name: "Webster",
+    zipCodes: ["01570"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.1351,
@@ -8201,6 +8485,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "dudley",
     name: "Dudley",
+    zipCodes: ["01571"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.059189,
@@ -8238,6 +8523,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "westborough",
     name: "Westborough",
+    zipCodes: ["01580", "01581", "01582"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.364807,
@@ -8276,6 +8562,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-boylston",
     name: "West Boylston",
+    zipCodes: ["01583"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.362783,
@@ -8316,6 +8603,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-brookfield",
     name: "West Brookfield",
+    zipCodes: ["01585"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.235638,
@@ -8357,6 +8645,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-millbury",
     name: "West Millbury",
+    zipCodes: ["01586"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.364807,
@@ -8397,6 +8686,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "whitinsville",
     name: "Whitinsville",
+    zipCodes: ["01588"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.166554,
@@ -8437,6 +8727,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sutton",
     name: "Sutton",
+    zipCodes: ["01590"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.126575,
@@ -8474,6 +8765,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "cherry-valley",
     name: "Cherry Valley",
+    zipCodes: ["01611"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.239392,
@@ -8514,6 +8806,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "paxton",
     name: "Paxton",
+    zipCodes: ["01612"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.304675,
@@ -8551,6 +8844,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "village-of-nagog-woods",
     name: "Village Of Nagog Woods",
+    zipCodes: ["01718"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -8592,6 +8886,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "boxborough",
     name: "Boxborough",
+    zipCodes: ["01719"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -8630,6 +8925,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "acton",
     name: "Acton",
+    zipCodes: ["01720"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -8666,6 +8962,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "ashland",
     name: "Ashland",
+    zipCodes: ["01721"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -8704,6 +9001,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "bedford",
     name: "Bedford",
+    zipCodes: ["01730"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -8742,6 +9040,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hanscom-afb",
     name: "Hanscom Afb",
+    zipCodes: ["01731"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -8780,6 +9079,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "bolton",
     name: "Bolton",
+    zipCodes: ["01740"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.436043,
@@ -8817,6 +9117,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "carlisle",
     name: "Carlisle",
+    zipCodes: ["01741"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -8855,6 +9156,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "concord",
     name: "Concord",
+    zipCodes: ["01742"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -8893,6 +9195,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "fayville",
     name: "Fayville",
+    zipCodes: ["01745"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.293442,
@@ -8931,6 +9234,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "holliston",
     name: "Holliston",
+    zipCodes: ["01746"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -8969,6 +9273,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hopedale",
     name: "Hopedale",
+    zipCodes: ["01747"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.127515,
@@ -9007,6 +9312,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hopkinton",
     name: "Hopkinton",
+    zipCodes: ["01748"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9045,6 +9351,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hudson",
     name: "Hudson",
+    zipCodes: ["01749"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9082,6 +9389,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "marlborough",
     name: "Marlborough",
+    zipCodes: ["01752"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9120,6 +9428,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "maynard",
     name: "Maynard",
+    zipCodes: ["01754"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9158,6 +9467,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "mendon",
     name: "Mendon",
+    zipCodes: ["01756"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.100352,
@@ -9195,6 +9505,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "milford",
     name: "Milford",
+    zipCodes: ["01757"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.147087,
@@ -9233,6 +9544,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "natick",
     name: "Natick",
+    zipCodes: ["01760"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9270,6 +9582,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sherborn",
     name: "Sherborn",
+    zipCodes: ["01770"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9308,6 +9621,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "southborough",
     name: "Southborough",
+    zipCodes: ["01772"],
     county: "Worcester County",
     region: "Massachusetts",
     lat: 42.296842,
@@ -9348,6 +9662,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lincoln",
     name: "Lincoln",
+    zipCodes: ["01773"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9386,6 +9701,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "stow",
     name: "Stow",
+    zipCodes: ["01775"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9422,6 +9738,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sudbury",
     name: "Sudbury",
+    zipCodes: ["01776"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9460,6 +9777,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wayland",
     name: "Wayland",
+    zipCodes: ["01778"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9498,6 +9816,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "woodville",
     name: "Woodville",
+    zipCodes: ["01784"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9536,6 +9855,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "woburn",
     name: "Woburn",
+    zipCodes: ["01801", "01807", "01813", "01815", "01888", "01808"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.488595,
@@ -9573,6 +9893,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "burlington",
     name: "Burlington",
+    zipCodes: ["01803", "01805"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.504844,
@@ -9611,6 +9932,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "andover",
     name: "Andover",
+    zipCodes: ["01810", "01812", "01899", "05501", "05544"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.647991,
@@ -9649,6 +9971,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "billerica",
     name: "Billerica",
+    zipCodes: ["01821", "01822"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9687,6 +10010,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "chelmsford",
     name: "Chelmsford",
+    zipCodes: ["01824"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9725,6 +10049,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "dracut",
     name: "Dracut",
+    zipCodes: ["01826"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9762,6 +10087,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "dunstable",
     name: "Dunstable",
+    zipCodes: ["01827"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -9800,6 +10126,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "haverhill",
     name: "Haverhill",
+    zipCodes: ["01830", "01831", "01832", "01835"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.792639,
@@ -9838,6 +10165,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "georgetown",
     name: "Georgetown",
+    zipCodes: ["01833"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.72377,
@@ -9876,6 +10204,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "groveland",
     name: "Groveland",
+    zipCodes: ["01834"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.751074,
@@ -9914,6 +10243,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lawrence",
     name: "Lawrence",
+    zipCodes: ["01840", "01841", "01842", "01843"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.70734,
@@ -9952,6 +10282,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "methuen",
     name: "Methuen",
+    zipCodes: ["01844"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.73184,
@@ -9990,6 +10321,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-andover",
     name: "North Andover",
+    zipCodes: ["01845"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.672835,
@@ -10030,6 +10362,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "merrimac",
     name: "Merrimac",
+    zipCodes: ["01860"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.802441,
@@ -10068,6 +10401,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-billerica",
     name: "North Billerica",
+    zipCodes: ["01862"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -10109,6 +10443,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-chelmsford",
     name: "North Chelmsford",
+    zipCodes: ["01863"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -10150,6 +10485,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-reading",
     name: "North Reading",
+    zipCodes: ["01864", "01889"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.581332,
@@ -10190,6 +10526,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "nutting-lake",
     name: "Nutting Lake",
+    zipCodes: ["01865"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -10230,6 +10567,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "pinehurst",
     name: "Pinehurst",
+    zipCodes: ["01866"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -10268,6 +10606,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "reading",
     name: "Reading",
+    zipCodes: ["01867"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.537065,
@@ -10306,6 +10645,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "tewksbury",
     name: "Tewksbury",
+    zipCodes: ["01876"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -10344,6 +10684,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "tyngsboro",
     name: "Tyngsboro",
+    zipCodes: ["01879"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -10382,6 +10723,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wakefield",
     name: "Wakefield",
+    zipCodes: ["01880"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.499891,
@@ -10420,6 +10762,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-boxford",
     name: "West Boxford",
+    zipCodes: ["01885"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.635443,
@@ -10460,6 +10803,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "westford",
     name: "Westford",
+    zipCodes: ["01886"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -10498,6 +10842,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wilmington",
     name: "Wilmington",
+    zipCodes: ["01887"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.561782,
@@ -10536,6 +10881,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "winchester",
     name: "Winchester",
+    zipCodes: ["01890"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.454545,
@@ -10574,6 +10920,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "saugus",
     name: "Saugus",
+    zipCodes: ["01906"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.472112,
@@ -10611,6 +10958,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "swampscott",
     name: "Swampscott",
+    zipCodes: ["01907"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.513295,
@@ -10649,6 +10997,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "nahant",
     name: "Nahant",
+    zipCodes: ["01908"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.427296,
@@ -10686,6 +11035,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "amesbury",
     name: "Amesbury",
+    zipCodes: ["01913"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.853539,
@@ -10724,6 +11074,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "beverly",
     name: "Beverly",
+    zipCodes: ["01915"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.565145,
@@ -10762,6 +11113,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "boxford",
     name: "Boxford",
+    zipCodes: ["01921"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.683256,
@@ -10800,6 +11152,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "byfield",
     name: "Byfield",
+    zipCodes: ["01922"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.763216,
@@ -10838,6 +11191,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "danvers",
     name: "Danvers",
+    zipCodes: ["01923"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.577188,
@@ -10876,6 +11230,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "essex",
     name: "Essex",
+    zipCodes: ["01929"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.62781,
@@ -10912,6 +11267,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "gloucester",
     name: "Gloucester",
+    zipCodes: ["01930", "01931"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.630011,
@@ -10950,6 +11306,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hamilton",
     name: "Hamilton",
+    zipCodes: ["01936"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.635443,
@@ -10988,6 +11345,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hathorne",
     name: "Hathorne",
+    zipCodes: ["01937"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.635443,
@@ -11026,6 +11384,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "ipswich",
     name: "Ipswich",
+    zipCodes: ["01938"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.68571,
@@ -11064,6 +11423,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lynnfield",
     name: "Lynnfield",
+    zipCodes: ["01940"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.533732,
@@ -11102,6 +11462,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "manchester",
     name: "Manchester",
+    zipCodes: ["01944"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.579503,
@@ -11140,6 +11501,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "marblehead",
     name: "Marblehead",
+    zipCodes: ["01945"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.56142,
@@ -11178,6 +11540,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "middleton",
     name: "Middleton",
+    zipCodes: ["01949"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.644942,
@@ -11216,6 +11579,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "newburyport",
     name: "Newburyport",
+    zipCodes: ["01950"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.80965,
@@ -11254,6 +11618,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "newbury",
     name: "Newbury",
+    zipCodes: ["01951"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.777524,
@@ -11292,6 +11657,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "salisbury",
     name: "Salisbury",
+    zipCodes: ["01952"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.851234,
@@ -11330,6 +11696,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "peabody",
     name: "Peabody",
+    zipCodes: ["01960", "01961"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.536996,
@@ -11368,6 +11735,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "prides-crossing",
     name: "Prides Crossing",
+    zipCodes: ["01965"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.558113,
@@ -11409,6 +11777,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "rockport",
     name: "Rockport",
+    zipCodes: ["01966"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.657866,
@@ -11447,6 +11816,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "rowley",
     name: "Rowley",
+    zipCodes: ["01969"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.716155,
@@ -11484,6 +11854,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-hamilton",
     name: "South Hamilton",
+    zipCodes: ["01982"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.626664,
@@ -11525,6 +11896,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "topsfield",
     name: "Topsfield",
+    zipCodes: ["01983"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.661793,
@@ -11563,6 +11935,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wenham",
     name: "Wenham",
+    zipCodes: ["01984"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.597691,
@@ -11600,6 +11973,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-newbury",
     name: "West Newbury",
+    zipCodes: ["01985"],
     county: "Essex County",
     region: "Massachusetts",
     lat: 42.79414,
@@ -11640,6 +12014,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "accord",
     name: "Accord",
+    zipCodes: ["02018"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.970474,
@@ -11677,6 +12052,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "bellingham",
     name: "Bellingham",
+    zipCodes: ["02019"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.076501,
@@ -11715,6 +12091,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "brant-rock",
     name: "Brant Rock",
+    zipCodes: ["02020"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.081825,
@@ -11753,6 +12130,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "canton",
     name: "Canton",
+    zipCodes: ["02021"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.179146,
@@ -11790,6 +12168,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "cohasset",
     name: "Cohasset",
+    zipCodes: ["02025"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.233938,
@@ -11828,6 +12207,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "dedham",
     name: "Dedham",
+    zipCodes: ["02026", "02027"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.244733,
@@ -11865,6 +12245,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "dover",
     name: "Dover",
+    zipCodes: ["02030"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.236114,
@@ -11942,6 +12323,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-walpole",
     name: "East Walpole",
+    zipCodes: ["02032"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.153786,
@@ -11982,6 +12364,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "foxboro",
     name: "Foxboro",
+    zipCodes: ["02035"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.062204,
@@ -12020,6 +12403,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "franklin",
     name: "Franklin",
+    zipCodes: ["02038"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.08868,
@@ -12058,6 +12442,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "greenbush",
     name: "Greenbush",
+    zipCodes: ["02040"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.970474,
@@ -12096,6 +12481,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "green-harbor",
     name: "Green Harbor",
+    zipCodes: ["02041"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.069642,
@@ -12136,6 +12522,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hingham",
     name: "Hingham",
+    zipCodes: ["02043", "02044"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.212105,
@@ -12174,6 +12561,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hull",
     name: "Hull",
+    zipCodes: ["02045"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.284413,
@@ -12210,6 +12598,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "humarock",
     name: "Humarock",
+    zipCodes: ["02047"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.142836,
@@ -12248,6 +12637,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "mansfield",
     name: "Mansfield",
+    zipCodes: ["02048", "02031"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 42.013182,
@@ -12286,6 +12676,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "marshfield",
     name: "Marshfield",
+    zipCodes: ["02050"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.111805,
@@ -12324,6 +12715,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "marshfield-hills",
     name: "Marshfield Hills",
+    zipCodes: ["02051"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.151202,
@@ -12365,6 +12757,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "medfield",
     name: "Medfield",
+    zipCodes: ["02052"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.181265,
@@ -12403,6 +12796,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "medway",
     name: "Medway",
+    zipCodes: ["02053"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.156282,
@@ -12440,6 +12834,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "millis",
     name: "Millis",
+    zipCodes: ["02054"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.165249,
@@ -12477,6 +12872,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "minot",
     name: "Minot",
+    zipCodes: ["02055"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.970474,
@@ -12513,6 +12909,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "norfolk",
     name: "Norfolk",
+    zipCodes: ["02056"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.117511,
@@ -12551,6 +12948,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-marshfield",
     name: "North Marshfield",
+    zipCodes: ["02059"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.970474,
@@ -12592,6 +12990,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-scituate",
     name: "North Scituate",
+    zipCodes: ["02060"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.970474,
@@ -12633,6 +13032,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "norwell",
     name: "Norwell",
+    zipCodes: ["02061"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.154145,
@@ -12671,6 +13071,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "norwood",
     name: "Norwood",
+    zipCodes: ["02062"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.182798,
@@ -12709,6 +13110,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "ocean-bluff",
     name: "Ocean Bluff",
+    zipCodes: ["02065"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.097219,
@@ -12747,6 +13149,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "scituate",
     name: "Scituate",
+    zipCodes: ["02066"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.207254,
@@ -12785,6 +13188,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sharon",
     name: "Sharon",
+    zipCodes: ["02067"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.105288,
@@ -12822,6 +13226,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sheldonville",
     name: "Sheldonville",
+    zipCodes: ["02070"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.180048,
@@ -12862,6 +13267,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-walpole",
     name: "South Walpole",
+    zipCodes: ["02071"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.100399,
@@ -12902,6 +13308,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "stoughton",
     name: "Stoughton",
+    zipCodes: ["02072"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.118416,
@@ -12940,6 +13347,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "walpole",
     name: "Walpole",
+    zipCodes: ["02081"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.148624,
@@ -12978,6 +13386,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "westwood",
     name: "Westwood",
+    zipCodes: ["02090"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.220548,
@@ -13016,6 +13425,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wrentham",
     name: "Wrentham",
+    zipCodes: ["02093"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.054311,
@@ -13054,6 +13464,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "mattapan",
     name: "Mattapan",
+    zipCodes: ["02126"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.301247,
@@ -13092,6 +13503,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "charlestown",
     name: "Charlestown",
+    zipCodes: ["02129"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.382588,
@@ -13130,6 +13542,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "jamaica-plain",
     name: "Jamaica Plain",
+    zipCodes: ["02130"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.309661,
@@ -13170,6 +13583,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "roslindale",
     name: "Roslindale",
+    zipCodes: ["02131"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.284197,
@@ -13208,6 +13622,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-roxbury",
     name: "West Roxbury",
+    zipCodes: ["02132"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.277897,
@@ -13248,6 +13663,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "allston",
     name: "Allston",
+    zipCodes: ["02134"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.357169,
@@ -13286,6 +13702,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "brighton",
     name: "Brighton",
+    zipCodes: ["02135"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.349768,
@@ -13324,6 +13741,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hyde-park",
     name: "Hyde Park",
+    zipCodes: ["02136"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.254248,
@@ -13362,6 +13780,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "readville",
     name: "Readville",
+    zipCodes: ["02137"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.338947,
@@ -13400,6 +13819,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "malden",
     name: "Malden",
+    zipCodes: ["02148"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.436545,
@@ -13437,6 +13857,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "everett",
     name: "Everett",
+    zipCodes: ["02149"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.407396,
@@ -13475,6 +13896,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "chelsea",
     name: "Chelsea",
+    zipCodes: ["02150"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.378197,
@@ -13513,6 +13935,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "winthrop",
     name: "Winthrop",
+    zipCodes: ["02152"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.378447,
@@ -13551,6 +13974,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-medford",
     name: "West Medford",
+    zipCodes: ["02156"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -13591,6 +14015,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "melrose",
     name: "Melrose",
+    zipCodes: ["02176"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.458995,
@@ -13629,6 +14054,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "stoneham",
     name: "Stoneham",
+    zipCodes: ["02180"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.474595,
@@ -13667,6 +14093,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "braintree",
     name: "Braintree",
+    zipCodes: ["02184", "02185"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.202216,
@@ -13705,6 +14132,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "milton",
     name: "Milton",
+    zipCodes: ["02186"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.240598,
@@ -13742,6 +14170,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "milton-village",
     name: "Milton Village",
+    zipCodes: ["02187"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.180048,
@@ -13783,6 +14212,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "weymouth",
     name: "Weymouth",
+    zipCodes: ["02188"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.20794,
@@ -13821,6 +14251,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-boston",
     name: "East Boston",
+    zipCodes: ["02228"],
     county: "Suffolk County",
     region: "Massachusetts",
     lat: 42.375,
@@ -13859,6 +14290,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "avon",
     name: "Avon",
+    zipCodes: ["02322"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.126049,
@@ -13895,6 +14327,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "bridgewater",
     name: "Bridgewater",
+    zipCodes: ["02324", "02325"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.973741,
@@ -13933,6 +14366,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "bryantville",
     name: "Bryantville",
+    zipCodes: ["02327"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.040708,
@@ -13971,6 +14405,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "carver",
     name: "Carver",
+    zipCodes: ["02330"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.896238,
@@ -14008,6 +14443,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "duxbury",
     name: "Duxbury",
+    zipCodes: ["02331", "02332"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.970474,
@@ -14046,6 +14482,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-bridgewater",
     name: "East Bridgewater",
+    zipCodes: ["02333"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.02285,
@@ -14087,6 +14524,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "easton",
     name: "Easton",
+    zipCodes: ["02334"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 42.023528,
@@ -14124,6 +14562,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "elmwood",
     name: "Elmwood",
+    zipCodes: ["02337"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.022225,
@@ -14162,6 +14601,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "halifax",
     name: "Halifax",
+    zipCodes: ["02338"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.988351,
@@ -14200,6 +14640,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hanover",
     name: "Hanover",
+    zipCodes: ["02339", "02340"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.123534,
@@ -14238,6 +14679,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hanson",
     name: "Hanson",
+    zipCodes: ["02341"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.055701,
@@ -14275,6 +14717,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "holbrook",
     name: "Holbrook",
+    zipCodes: ["02343"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.144424,
@@ -14313,6 +14756,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "middleboro",
     name: "Middleboro",
+    zipCodes: ["02344", "02346", "02349"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.970474,
@@ -14351,6 +14795,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "manomet",
     name: "Manomet",
+    zipCodes: ["02345"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.888198,
@@ -14389,6 +14834,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lakeville",
     name: "Lakeville",
+    zipCodes: ["02348", "02347"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.843757,
@@ -14427,6 +14873,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "monponsett",
     name: "Monponsett",
+    zipCodes: ["02350"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.018525,
@@ -14465,6 +14912,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "abington",
     name: "Abington",
+    zipCodes: ["02351"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.11749,
@@ -14503,6 +14951,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-carver",
     name: "North Carver",
+    zipCodes: ["02355"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.916918,
@@ -14543,6 +14992,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-easton",
     name: "North Easton",
+    zipCodes: ["02356", "02357"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 42.053408,
@@ -14583,6 +15033,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-pembroke",
     name: "North Pembroke",
+    zipCodes: ["02358"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.95351,
@@ -14624,6 +15075,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "pembroke",
     name: "Pembroke",
+    zipCodes: ["02359"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.065702,
@@ -14662,6 +15114,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "kingston",
     name: "Kingston",
+    zipCodes: ["02364"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.979405,
@@ -14700,6 +15153,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-carver",
     name: "South Carver",
+    zipCodes: ["02366"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.850087,
@@ -14740,6 +15194,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "plympton",
     name: "Plympton",
+    zipCodes: ["02367"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.96914,
@@ -14778,6 +15233,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "randolph",
     name: "Randolph",
+    zipCodes: ["02368"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.171467,
@@ -14816,6 +15272,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "rockland",
     name: "Rockland",
+    zipCodes: ["02370"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.954199,
@@ -14854,6 +15311,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-easton",
     name: "South Easton",
+    zipCodes: ["02375"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 42.023199,
@@ -14894,6 +15352,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-bridgewater",
     name: "West Bridgewater",
+    zipCodes: ["02379"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.02165,
@@ -14935,6 +15394,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "white-horse-beach",
     name: "White Horse Beach",
+    zipCodes: ["02381"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.931602,
@@ -14976,6 +15436,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "whitman",
     name: "Whitman",
+    zipCodes: ["02382"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 42.0785,
@@ -15014,6 +15475,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "lexington",
     name: "Lexington",
+    zipCodes: ["02420", "02421"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.45631,
@@ -15052,6 +15514,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "brookline-village",
     name: "Brookline Village",
+    zipCodes: ["02447"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.180048,
@@ -15093,6 +15556,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-waltham",
     name: "North Waltham",
+    zipCodes: ["02455"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.404644,
@@ -15133,6 +15597,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "new-town",
     name: "New Town",
+    zipCodes: ["02456"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -15171,6 +15636,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "babson-park",
     name: "Babson Park",
+    zipCodes: ["02457"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.180048,
@@ -15209,6 +15675,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "newton-center",
     name: "Newton Center",
+    zipCodes: ["02459"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.334146,
@@ -15249,6 +15716,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "newtonville",
     name: "Newtonville",
+    zipCodes: ["02460"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.374296,
@@ -15287,6 +15755,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "newton-highlands",
     name: "Newton Highlands",
+    zipCodes: ["02461"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.361196,
@@ -15328,6 +15797,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "newton-lower-falls",
     name: "Newton Lower Falls",
+    zipCodes: ["02462"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.349496,
@@ -15369,6 +15839,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "newton-upper-falls",
     name: "Newton Upper Falls",
+    zipCodes: ["02464"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.36599,
@@ -15410,6 +15881,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-newton",
     name: "West Newton",
+    zipCodes: ["02465"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.378145,
@@ -15448,6 +15920,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "auburndale",
     name: "Auburndale",
+    zipCodes: ["02466"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.346696,
@@ -15486,6 +15959,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "chestnut-hill",
     name: "Chestnut Hill",
+    zipCodes: ["02467"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.357564,
@@ -15526,6 +16000,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "waban",
     name: "Waban",
+    zipCodes: ["02468"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.327146,
@@ -15562,6 +16037,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "watertown",
     name: "Watertown",
+    zipCodes: ["02471", "02472", "02477"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -15600,6 +16076,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "arlington",
     name: "Arlington",
+    zipCodes: ["02474", "02476"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.417595,
@@ -15638,6 +16115,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "arlington-heights",
     name: "Arlington Heights",
+    zipCodes: ["02475"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -15679,6 +16157,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "belmont",
     name: "Belmont",
+    zipCodes: ["02478"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.412795,
@@ -15717,6 +16196,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "waverley",
     name: "Waverley",
+    zipCodes: ["02479"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -15755,6 +16235,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wellesley-hills",
     name: "Wellesley Hills",
+    zipCodes: ["02481"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.310597,
@@ -15796,6 +16277,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wellesley",
     name: "Wellesley",
+    zipCodes: ["02482"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.294546,
@@ -15834,6 +16316,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "needham",
     name: "Needham",
+    zipCodes: ["02492"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.279797,
@@ -15872,6 +16355,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "weston",
     name: "Weston",
+    zipCodes: ["02493"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.375925,
@@ -15909,6 +16393,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "needham-heights",
     name: "Needham Heights",
+    zipCodes: ["02494"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.300147,
@@ -15950,6 +16435,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "nonantum",
     name: "Nonantum",
+    zipCodes: ["02495"],
     county: "Middlesex County",
     region: "Massachusetts",
     lat: 42.446396,
@@ -15988,6 +16474,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "buzzards-bay",
     name: "Buzzards Bay",
+    zipCodes: ["02532", "02542"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.745505,
@@ -16028,6 +16515,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "cataumet",
     name: "Cataumet",
+    zipCodes: ["02534"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.669373,
@@ -16066,6 +16554,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "chilmark",
     name: "Chilmark",
+    zipCodes: ["02535"],
     county: "Dukes County",
     region: "Massachusetts",
     lat: 41.379034,
@@ -16104,6 +16593,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-falmouth",
     name: "East Falmouth",
+    zipCodes: ["02536"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.662506,
@@ -16144,6 +16634,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-sandwich",
     name: "East Sandwich",
+    zipCodes: ["02537"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.72832,
@@ -16184,6 +16675,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-wareham",
     name: "East Wareham",
+    zipCodes: ["02538"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.77544,
@@ -16224,6 +16716,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "edgartown",
     name: "Edgartown",
+    zipCodes: ["02539"],
     county: "Dukes County",
     region: "Massachusetts",
     lat: 41.401176,
@@ -16262,6 +16755,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "falmouth",
     name: "Falmouth",
+    zipCodes: ["02540", "02541"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.614199,
@@ -16300,6 +16794,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "woods-hole",
     name: "Woods Hole",
+    zipCodes: ["02543"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.593809,
@@ -16338,6 +16833,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "menemsha",
     name: "Menemsha",
+    zipCodes: ["02552"],
     county: "Dukes County",
     region: "Massachusetts",
     lat: 41.379836,
@@ -16376,6 +16872,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "monument-beach",
     name: "Monument Beach",
+    zipCodes: ["02553"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.67336,
@@ -16417,6 +16914,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "nantucket",
     name: "Nantucket",
+    zipCodes: ["02554", "02584"],
     county: "Nantucket County",
     region: "Massachusetts",
     lat: 41.287647,
@@ -16455,6 +16953,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-falmouth",
     name: "North Falmouth",
+    zipCodes: ["02556"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.652967,
@@ -16496,6 +16995,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "oak-bluffs",
     name: "Oak Bluffs",
+    zipCodes: ["02557"],
     county: "Dukes County",
     region: "Massachusetts",
     lat: 41.417376,
@@ -16534,6 +17034,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "onset",
     name: "Onset",
+    zipCodes: ["02558"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.74756,
@@ -16570,6 +17071,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "pocasset",
     name: "Pocasset",
+    zipCodes: ["02559"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.694771,
@@ -16608,6 +17110,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sagamore",
     name: "Sagamore",
+    zipCodes: ["02561"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.770254,
@@ -16646,6 +17149,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sagamore-beach",
     name: "Sagamore Beach",
+    zipCodes: ["02562"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.793263,
@@ -16687,6 +17191,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "sandwich",
     name: "Sandwich",
+    zipCodes: ["02563"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.711291,
@@ -16725,6 +17230,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "siasconset",
     name: "Siasconset",
+    zipCodes: ["02564"],
     county: "Nantucket County",
     region: "Massachusetts",
     lat: 41.273949,
@@ -16763,6 +17269,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "silver-beach",
     name: "Silver Beach",
+    zipCodes: ["02565"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.799312,
@@ -16803,6 +17310,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "vineyard-haven",
     name: "Vineyard Haven",
+    zipCodes: ["02568"],
     county: "Dukes County",
     region: "Massachusetts",
     lat: 41.41595,
@@ -16844,6 +17352,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wareham",
     name: "Wareham",
+    zipCodes: ["02571"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.760216,
@@ -16882,6 +17391,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-chop",
     name: "West Chop",
+    zipCodes: ["02573"],
     county: "Dukes County",
     region: "Massachusetts",
     lat: 41.379836,
@@ -16920,6 +17430,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-falmouth",
     name: "West Falmouth",
+    zipCodes: ["02574"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.603946,
@@ -16960,6 +17471,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-tisbury",
     name: "West Tisbury",
+    zipCodes: ["02575"],
     county: "Dukes County",
     region: "Massachusetts",
     lat: 41.42125,
@@ -17000,6 +17512,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-wareham",
     name: "West Wareham",
+    zipCodes: ["02576"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.769863,
@@ -17040,6 +17553,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hyannis",
     name: "Hyannis",
+    zipCodes: ["02601"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.829813,
@@ -17078,6 +17592,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "barnstable",
     name: "Barnstable",
+    zipCodes: ["02630"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.697313,
@@ -17116,6 +17631,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "brewster",
     name: "Brewster",
+    zipCodes: ["02631"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.852997,
@@ -17154,6 +17670,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "centerville",
     name: "Centerville",
+    zipCodes: ["02632", "02634", "02636"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.796311,
@@ -17192,6 +17709,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "chatham",
     name: "Chatham",
+    zipCodes: ["02633"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.859559,
@@ -17230,6 +17748,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "cotuit",
     name: "Cotuit",
+    zipCodes: ["02635"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.624341,
@@ -17267,6 +17786,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "cummaquid",
     name: "Cummaquid",
+    zipCodes: ["02637"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.701438,
@@ -17305,6 +17825,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "dennis",
     name: "Dennis",
+    zipCodes: ["02638"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.725716,
@@ -17342,6 +17863,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "dennis-port",
     name: "Dennis Port",
+    zipCodes: ["02639"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.750745,
@@ -17380,6 +17902,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-dennis",
     name: "East Dennis",
+    zipCodes: ["02641"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.734713,
@@ -17418,6 +17941,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "eastham",
     name: "Eastham",
+    zipCodes: ["02642"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.850612,
@@ -17456,6 +17980,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-orleans",
     name: "East Orleans",
+    zipCodes: ["02643"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.784308,
@@ -17496,6 +18021,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "forestdale",
     name: "Forestdale",
+    zipCodes: ["02644"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.790031,
@@ -17534,6 +18060,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "harwich",
     name: "Harwich",
+    zipCodes: ["02645"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.835582,
@@ -17572,6 +18099,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "harwich-port",
     name: "Harwich Port",
+    zipCodes: ["02646"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.845717,
@@ -17612,6 +18140,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "hyannis-port",
     name: "Hyannis Port",
+    zipCodes: ["02647"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.635004,
@@ -17652,6 +18181,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "marstons-mills",
     name: "Marstons Mills",
+    zipCodes: ["02648"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.813034,
@@ -17693,6 +18223,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "mashpee",
     name: "Mashpee",
+    zipCodes: ["02649"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.788337,
@@ -17731,6 +18262,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-chatham",
     name: "North Chatham",
+    zipCodes: ["02650"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.73497,
@@ -17771,6 +18303,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-eastham",
     name: "North Eastham",
+    zipCodes: ["02651"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.824264,
@@ -17811,6 +18344,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-truro",
     name: "North Truro",
+    zipCodes: ["02652"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.931061,
@@ -17849,6 +18383,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "orleans",
     name: "Orleans",
+    zipCodes: ["02653"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.852933,
@@ -17887,6 +18422,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "osterville",
     name: "Osterville",
+    zipCodes: ["02655"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.810178,
@@ -17925,6 +18461,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "provincetown",
     name: "Provincetown",
+    zipCodes: ["02657"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.888775,
@@ -17965,6 +18502,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-chatham",
     name: "South Chatham",
+    zipCodes: ["02659"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.848932,
@@ -18005,6 +18543,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-dennis",
     name: "South Dennis",
+    zipCodes: ["02660"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.80038,
@@ -18045,6 +18584,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-harwich",
     name: "South Harwich",
+    zipCodes: ["02661"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.686205,
@@ -18085,6 +18625,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-orleans",
     name: "South Orleans",
+    zipCodes: ["02662"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.756694,
@@ -18125,6 +18666,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-wellfleet",
     name: "South Wellfleet",
+    zipCodes: ["02663"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.800531,
@@ -18166,6 +18708,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-yarmouth",
     name: "South Yarmouth",
+    zipCodes: ["02664"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.82412,
@@ -18207,6 +18750,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "truro",
     name: "Truro",
+    zipCodes: ["02666"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.987377,
@@ -18243,6 +18787,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "wellfleet",
     name: "Wellfleet",
+    zipCodes: ["02667"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.821307,
@@ -18281,6 +18826,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-barnstable",
     name: "West Barnstable",
+    zipCodes: ["02668"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.79055,
@@ -18322,6 +18868,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-chatham",
     name: "West Chatham",
+    zipCodes: ["02669"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.698721,
@@ -18362,6 +18909,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-dennis",
     name: "West Dennis",
+    zipCodes: ["02670"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.710855,
@@ -18400,6 +18948,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-harwich",
     name: "West Harwich",
+    zipCodes: ["02671"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.846719,
@@ -18440,6 +18989,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-hyannisport",
     name: "West Hyannisport",
+    zipCodes: ["02672"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.635635,
@@ -18481,6 +19031,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "west-yarmouth",
     name: "West Yarmouth",
+    zipCodes: ["02673"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.776105,
@@ -18521,6 +19072,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "yarmouth-port",
     name: "Yarmouth Port",
+    zipCodes: ["02675"],
     county: "Barnstable County",
     region: "Massachusetts",
     lat: 41.716271,
@@ -18561,6 +19113,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "assonet",
     name: "Assonet",
+    zipCodes: ["02702"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.782993,
@@ -18599,6 +19152,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "attleboro",
     name: "Attleboro",
+    zipCodes: ["02703"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.938976,
@@ -18637,6 +19191,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "chartley",
     name: "Chartley",
+    zipCodes: ["02712"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.756214,
@@ -18675,6 +19230,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "cuttyhunk",
     name: "Cuttyhunk",
+    zipCodes: ["02713"],
     county: "Dukes County",
     region: "Massachusetts",
     lat: 41.42178,
@@ -18713,6 +19269,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "dartmouth",
     name: "Dartmouth",
+    zipCodes: ["02714"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.756214,
@@ -18751,6 +19308,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "dighton",
     name: "Dighton",
+    zipCodes: ["02715"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.817659,
@@ -18789,6 +19347,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-freetown",
     name: "East Freetown",
+    zipCodes: ["02717"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.747358,
@@ -18829,6 +19388,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "east-taunton",
     name: "East Taunton",
+    zipCodes: ["02718"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.871407,
@@ -18869,6 +19429,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "fairhaven",
     name: "Fairhaven",
+    zipCodes: ["02719"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.631672,
@@ -18907,6 +19468,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "fall-river",
     name: "Fall River",
+    zipCodes: ["02720", "02721", "02722", "02723", "02724"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.819766,
@@ -18945,6 +19507,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "somerset",
     name: "Somerset",
+    zipCodes: ["02725", "02726"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.723851,
@@ -18983,6 +19546,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "marion",
     name: "Marion",
+    zipCodes: ["02738"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.736735,
@@ -19020,6 +19584,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "mattapoisett",
     name: "Mattapoisett",
+    zipCodes: ["02739"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.664976,
@@ -19060,6 +19625,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "new-bedford",
     name: "New Bedford",
+    zipCodes: ["02740", "02741", "02742", "02744", "02745", "02746"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.633416,
@@ -19098,6 +19664,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "acushnet",
     name: "Acushnet",
+    zipCodes: ["02743"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.711894,
@@ -19136,6 +19703,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-dartmouth",
     name: "North Dartmouth",
+    zipCodes: ["02747"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.639261,
@@ -19177,6 +19745,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "south-dartmouth",
     name: "South Dartmouth",
+    zipCodes: ["02748"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.566464,
@@ -19218,6 +19787,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-attleboro",
     name: "North Attleboro",
+    zipCodes: ["02760", "02761"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.964376,
@@ -19259,6 +19829,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "plainville",
     name: "Plainville",
+    zipCodes: ["02762"],
     county: "Norfolk County",
     region: "Massachusetts",
     lat: 42.013553,
@@ -19297,6 +19868,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "attleboro-falls",
     name: "Attleboro Falls",
+    zipCodes: ["02763"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.972584,
@@ -19338,6 +19910,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "north-dighton",
     name: "North Dighton",
+    zipCodes: ["02764"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.847791,
@@ -19378,6 +19951,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "norton",
     name: "Norton",
+    zipCodes: ["02766"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.959149,
@@ -19415,6 +19989,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "raynham",
     name: "Raynham",
+    zipCodes: ["02767"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.9367,
@@ -19453,6 +20028,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "raynham-center",
     name: "Raynham Center",
+    zipCodes: ["02768"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.756214,
@@ -19494,6 +20070,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "rehoboth",
     name: "Rehoboth",
+    zipCodes: ["02769"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.852989,
@@ -19532,6 +20109,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "rochester",
     name: "Rochester",
+    zipCodes: ["02770"],
     county: "Plymouth County",
     region: "Massachusetts",
     lat: 41.751812,
@@ -19570,6 +20148,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "seekonk",
     name: "Seekonk",
+    zipCodes: ["02771"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.840103,
@@ -19608,6 +20187,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "swansea",
     name: "Swansea",
+    zipCodes: ["02777"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.766629,
@@ -19646,6 +20226,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "berkley",
     name: "Berkley",
+    zipCodes: ["02779"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.828249,
@@ -19684,6 +20265,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "taunton",
     name: "Taunton",
+    zipCodes: ["02780", "02783"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.858851,
@@ -19722,6 +20304,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "westport",
     name: "Westport",
+    zipCodes: ["02790"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.61547,
@@ -19760,6 +20343,7 @@ export const MASSACHUSETTS_CITIES: CityData[] = [
   {
     slug: "westport-point",
     name: "Westport Point",
+    zipCodes: ["02791"],
     county: "Bristol County",
     region: "Massachusetts",
     lat: 41.519104,

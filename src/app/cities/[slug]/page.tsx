@@ -54,42 +54,52 @@ const THEMES = [
   {
     flavor: "Strawberry",
     image: "/images/cities/strawberry.png",
+    heroBgClass: "bg-[#FFF0F4]",
+    textDarkClass: "text-[#8A1A3A]",
     primaryColorClass: "text-coral",
     bgGlowClass: "bg-coral/20",
-    buttonClass: "bg-coral shadow-coral/30 hover:text-coral",
-    badgeClass: "bg-coral/20 border-coral/30 text-coral",
+    buttonClass: "bg-coral text-white shadow-coral/30 hover:bg-white hover:text-coral",
+    badgeClass: "bg-coral/10 border-coral/20 text-coral",
   },
   {
     flavor: "Mint",
     image: "/images/cities/mint.png",
+    heroBgClass: "bg-[#F0FFF4]",
+    textDarkClass: "text-[#1A5336]",
     primaryColorClass: "text-mint",
     bgGlowClass: "bg-mint/20",
-    buttonClass: "bg-mint text-navy shadow-mint/30 hover:text-mint",
-    badgeClass: "bg-mint/20 border-mint/30 text-mint",
+    buttonClass: "bg-mint text-navy shadow-mint/30 hover:bg-white hover:text-mint",
+    badgeClass: "bg-mint/10 border-mint/20 text-mint",
   },
   {
     flavor: "Vanilla",
     image: "/images/cities/vanilla.png",
+    heroBgClass: "bg-[#FFFDF0]",
+    textDarkClass: "text-[#6B5A1A]",
     primaryColorClass: "text-gold",
     bgGlowClass: "bg-gold/20",
-    buttonClass: "bg-gold text-navy shadow-gold/30 hover:text-gold",
-    badgeClass: "bg-gold/20 border-gold/30 text-gold",
+    buttonClass: "bg-gold text-navy shadow-gold/30 hover:bg-white hover:text-gold",
+    badgeClass: "bg-gold/10 border-gold/20 text-gold",
   },
   {
     flavor: "Blueberry",
     image: "/images/cities/blueberry.png",
-    primaryColorClass: "text-blue-400",
-    bgGlowClass: "bg-blue-400/20",
-    buttonClass: "bg-blue-500 shadow-blue-500/30 hover:text-blue-500",
-    badgeClass: "bg-blue-400/20 border-blue-400/30 text-blue-400",
+    heroBgClass: "bg-[#F0F4FF]",
+    textDarkClass: "text-[#1A337A]",
+    primaryColorClass: "text-blue-500",
+    bgGlowClass: "bg-blue-500/20",
+    buttonClass: "bg-blue-500 text-white shadow-blue-500/30 hover:bg-white hover:text-blue-500",
+    badgeClass: "bg-blue-500/10 border-blue-500/20 text-blue-500",
   },
   {
     flavor: "Chocolate",
     image: "/images/cities/chocolate.png",
+    heroBgClass: "bg-[#FFF5F0]",
+    textDarkClass: "text-[#5C2E16]",
     primaryColorClass: "text-amber-700",
     bgGlowClass: "bg-amber-700/20",
-    buttonClass: "bg-amber-700 shadow-amber-700/30 hover:text-amber-700",
-    badgeClass: "bg-amber-700/20 border-amber-700/30 text-amber-700",
+    buttonClass: "bg-amber-700 text-white shadow-amber-700/30 hover:bg-white hover:text-amber-700",
+    badgeClass: "bg-amber-700/10 border-amber-700/20 text-amber-700",
   },
 ];
 
@@ -176,7 +186,7 @@ export default async function CityPage({ params }: Props) {
   const faqSchema = getFAQSchema(faqs);
 
   return (
-    <div className="bg-cream min-h-screen overflow-hidden">
+    <div className="min-h-screen overflow-hidden">
       {/* Inject JSON-LD */}
       <script
         type="application/ld+json"
@@ -192,15 +202,15 @@ export default async function CityPage({ params }: Props) {
       />
 
       {/* ── HERO ──────────────────────────────────────────────────── */}
-      <section className="relative pt-24 pb-32 md:pt-32 md:pb-48 bg-navy overflow-hidden">
+      <section className={`relative pt-24 pb-32 md:pt-32 md:pb-48 ${theme.heroBgClass} overflow-hidden transition-colors duration-500`}>
         {/* Background effects */}
         <div className="absolute inset-0 pointer-events-none">
           <div className={`absolute top-0 right-0 w-[700px] h-[700px] ${theme.bgGlowClass} rounded-full blur-[150px] -translate-y-1/3 translate-x-1/4 transition-colors duration-1000`} />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/4" />
-          <svg className="absolute inset-0 w-full h-full opacity-[0.03]">
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-white/40 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/4" />
+          <svg className="absolute inset-0 w-full h-full opacity-[0.05]">
             <defs>
               <pattern id="hero-grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="white" strokeWidth="0.5" />
+                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="currentColor" strokeWidth="0.5" className={theme.textDarkClass} />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#hero-grid)" />
@@ -211,39 +221,39 @@ export default async function CityPage({ params }: Props) {
           
           <div className={`flex-1 text-center md:text-left ${layoutFlip ? 'md:order-2' : ''}`}>
             {/* Breadcrumb */}
-            <nav className="flex items-center justify-center md:justify-start gap-2 text-cream/40 text-xs font-bold uppercase tracking-widest mb-8">
-              <Link href="/" className="hover:text-white transition-colors">Home</Link>
+            <nav className={`flex items-center justify-center md:justify-start gap-2 ${theme.textDarkClass} opacity-60 text-xs font-bold uppercase tracking-widest mb-8`}>
+              <Link href="/" className="hover:opacity-100 transition-opacity">Home</Link>
               <ChevronRight size={12} />
-              <Link href="/cities" className="hover:text-white transition-colors">Service Areas</Link>
+              <Link href="/cities" className="hover:opacity-100 transition-opacity">Service Areas</Link>
               <ChevronRight size={12} />
               <span className={theme.primaryColorClass}>{city.name}</span>
             </nav>
 
-            <div className={`inline-flex items-center gap-2 px-5 py-2 rounded-full border text-xs font-bold tracking-widest uppercase mb-8 ${theme.badgeClass}`}>
+            <div className={`inline-flex items-center gap-2 px-5 py-2 rounded-full border bg-white/50 backdrop-blur-sm text-xs font-bold tracking-widest uppercase mb-8 ${theme.badgeClass}`}>
               <MapPin size={12} />
               {city.county}
             </div>
 
-            <h1 className="font-display font-light text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] text-cream mb-6 tracking-tighter">
+            <h1 className={`font-display font-light text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] ${theme.textDarkClass} mb-6 tracking-tighter`}>
               {h1Text.split(city.name)[0]}
               <span className={`italic font-serif ${theme.primaryColorClass}`}>{city.name}</span>
               {h1Text.split(city.name)[1]}
             </h1>
 
-            <p className="font-sans text-cream/70 text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto md:mx-0">
+            <p className={`font-sans ${theme.textDarkClass} opacity-80 text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto md:mx-0`}>
               {city.heroSubline}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
               <Link
                 href={`/get-a-quote?city=${encodeURIComponent(city.name)}`}
-                className={`inline-flex items-center gap-3 px-10 py-5 text-white font-bold text-base rounded-full shadow-xl hover:bg-white transition-all duration-300 hover:scale-105 ${theme.buttonClass}`}
+                className={`inline-flex items-center gap-3 px-10 py-5 font-bold text-base rounded-full transition-all duration-300 hover:scale-105 ${theme.buttonClass}`}
               >
                 Book in {city.name} <ArrowRight size={18} />
               </Link>
               <a
                 href={`tel:${BUSINESS_CONFIG.contact.phone1Formatted}`}
-                className="inline-flex items-center gap-3 px-8 py-5 border-2 border-white/20 text-cream font-bold text-base rounded-full hover:border-cream hover:bg-white/10 transition-all duration-300"
+                className={`inline-flex items-center gap-3 px-8 py-5 border-2 border-black/10 ${theme.textDarkClass} bg-white/30 backdrop-blur-sm font-bold text-base rounded-full hover:bg-white transition-all duration-300`}
               >
                 <Phone size={18} /> {BUSINESS_CONFIG.contact.phone1}
               </a>
@@ -251,15 +261,22 @@ export default async function CityPage({ params }: Props) {
           </div>
 
           {/* Dynamic 3D Ice Cream Render */}
-          <div className={`flex-1 relative w-full max-w-[400px] aspect-square mx-auto ${layoutFlip ? 'md:order-1' : ''}`}>
-            <div className="absolute inset-0 bg-gradient-to-t from-navy to-transparent z-10 pointer-events-none rounded-full" />
-            <Image
-              src={theme.image}
-              alt={`${theme.flavor} ice cream for ${city.name}`}
-              fill
-              className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-0 animate-float"
-              priority
-            />
+          <div className={`flex-1 relative w-full max-w-[450px] aspect-square mx-auto ${layoutFlip ? 'md:order-1' : ''}`}>
+            {/* The circular mask to hide the navy corners of the generated image */}
+            <div className="absolute inset-4 rounded-full border-[12px] border-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] overflow-hidden bg-navy group">
+              <Image
+                src={theme.image}
+                alt={`${theme.flavor} ice cream for ${city.name}`}
+                fill
+                className="object-cover scale-110 group-hover:scale-125 transition-transform duration-700 ease-out"
+                priority
+              />
+              <div className="absolute inset-0 rounded-full shadow-[inset_0_0_50px_rgba(0,0,0,0.3)] pointer-events-none" />
+            </div>
+            
+            {/* Floating decorative elements */}
+            <div className={`absolute top-0 right-10 w-24 h-24 rounded-full ${theme.bgGlowClass} blur-xl animate-pulse`} />
+            <div className={`absolute bottom-10 left-0 w-32 h-32 rounded-full ${theme.bgGlowClass} blur-2xl animate-pulse delay-700`} />
           </div>
 
         </div>
@@ -367,7 +384,7 @@ export default async function CityPage({ params }: Props) {
 
       {/* ── NEARBY AREAS ─────────────────────────────────────────── */}
       {nearbyAreas.length > 0 && (
-        <section className="py-20 bg-cream">
+        <section className="py-20 relative">
           <div className="container mx-auto px-6 md:px-12 max-w-6xl">
             <h2 className="font-display font-light text-[clamp(2rem,3.5vw,3rem)] text-navy tracking-tighter mb-10">
               Also Serving <span className={`italic ${theme.primaryColorClass}`}>Nearby Areas</span>

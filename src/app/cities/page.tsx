@@ -85,8 +85,8 @@ export default function CitiesIndexPage() {
         </div>
       </section>
 
-      {/* Alphabet Quick Nav */}
-      <section className="sticky top-[88px] z-30 bg-cream/95 backdrop-blur-xl border-b border-navy/10 py-4 shadow-sm">
+      {/* ── ALPHABET JUMP MENU (STICKY) ────────────────────────── */}
+      <section className="sticky top-[88px] z-30 bg-white/50 backdrop-blur-xl border-b border-navy/10 py-4 shadow-sm">
         <div className="container mx-auto px-4 md:px-8">
           <div className="flex flex-wrap gap-1.5 justify-center">
             {alphabet.map((letter) => (
@@ -102,8 +102,8 @@ export default function CitiesIndexPage() {
         </div>
       </section>
 
-      {/* Cities Directory */}
-      <section className="py-20 md:py-28 bg-cream">
+      {/* ── DIRECTORY LISTING ──────────────────────────────────── */}
+      <section className="py-20 md:py-28 relative">
         <div className="container mx-auto px-6 md:px-12 lg:px-24">
           <div className="space-y-20">
             {alphabet.map((letter) => (
