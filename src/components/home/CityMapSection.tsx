@@ -2,27 +2,32 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { getTopCities } from "@/lib/cities-data";
+import { getTopCities, MASSACHUSETTS_CITIES } from "@/lib/cities-data";
 import { MapPin, Navigation } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Approximate coordinates for MA cities on a 1000x600 grid
-const cityCoordinates: Record<string, { x: number; y: number }> = {
-  boston: { x: 750, y: 250 },
-  cambridge: { x: 730, y: 230 },
-  worcester: { x: 500, y: 300 },
-  springfield: { x: 200, y: 350 },
-  somerville: { x: 740, y: 220 },
-  framingham: { x: 650, y: 280 },
-  newton: { x: 710, y: 260 },
-  lowell: { x: 680, y: 150 },
-  quincy: { x: 770, y: 290 },
-  lynn: { x: 780, y: 210 },
+// Bounding box for Massachusetts
+const MA_BOUNDS = {
+  minLng: -73.5,
+  maxLng: -69.9,
+  minLat: 41.2,
+  maxLat: 42.9,
 };
+
+function getMapCoords(lat: number, lng: number) {
+  const x = ((lng - MA_BOUNDS.minLng) / (MA_BOUNDS.maxLng - MA_BOUNDS.minLng)) * 100;
+  const y = 100 - ((lat - MA_BOUNDS.minLat) / (MA_BOUNDS.maxLat - MA_BOUNDS.minLat)) * 100;
+  return { x, y };
+}
 
 export default function CityMapSection() {
   const [hoveredCity, setHoveredCity] = useState<string | null>(null);
-  const topCities = getTopCities().filter(city => cityCoordinates[city.slug]);
+  
+  // All cities for the dots
+  const allCities = MASSACHUSETTS_CITIES;
+  // Top cities for the network lines
+  const topCities = getTopCities();
+  const boston = allCities.find(c => c.slug === "boston");
 
   return (
     <section className="py-24 md:py-40 bg-navy text-cream relative overflow-hidden">
@@ -64,30 +69,30 @@ export default function CityMapSection() {
             </div>
           </div>
 
-          {/* Abstract SVG Map Background */}
-          <div className="absolute inset-0 pointer-events-none opacity-30 group-hover:opacity-50 transition-opacity duration-1000">
-            <svg viewBox="0 0 1000 600" className="w-full h-full">
+          {/* Connection Lines (Network) */}
+          <div className="absolute inset-0 pointer-events-none opacity-40 group-hover:opacity-70 transition-opacity duration-1000">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
               {/* Grid Lines */}
               <defs>
-                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" strokeOpacity="0.1" />
+                <pattern id="grid" width="4" height="4" patternUnits="userSpaceOnUse">
+                  <path d="M 4 0 L 0 0 0 4" fill="none" stroke="white" strokeWidth="0.05" strokeOpacity="0.1" />
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#grid)" />
               
-              {/* Connection Lines (Network) */}
-              {topCities.map((city, i) => {
-                if (i === 0) return null; // Connect everything to Boston (index 0)
-                const boston = cityCoordinates.boston;
-                const current = cityCoordinates[city.slug];
-                if (!boston || !current) return null;
+              {/* Lines from Boston to top cities */}
+              {boston && topCities.map((city) => {
+                if (city.slug === "boston") return null;
+                const bCoords = getMapCoords(boston.lat, boston.lng);
+                const cCoords = getMapCoords(city.lat, city.lng);
+                
                 return (
                   <path
                     key={`line-${city.slug}`}
-                    d={`M ${boston.x} ${boston.y} Q ${(boston.x + current.x)/2} ${(boston.y + current.y)/2 - 50} ${current.x} ${current.y}`}
+                    d={`M ${bCoords.x} ${bCoords.y} Q ${(bCoords.x + cCoords.x)/2} ${(bCoords.y + cCoords.y)/2 - 5} ${cCoords.x} ${cCoords.y}`}
                     fill="none"
                     stroke="white"
-                    strokeWidth="1"
+                    strokeWidth="0.1"
                     strokeOpacity={hoveredCity === city.slug || hoveredCity === 'boston' ? 0.8 : 0.2}
                     className="transition-all duration-500"
                   />
@@ -98,42 +103,50 @@ export default function CityMapSection() {
 
           {/* Interactive City Pins */}
           <div className="absolute inset-0 z-10">
-            {topCities.map((city) => {
-              const coords = cityCoordinates[city.slug];
-              if (!coords) return null;
-              
+            {allCities.map((city) => {
+              const coords = getMapCoords(city.lat, city.lng);
               const isHovered = hoveredCity === city.slug;
+              const isBoston = city.slug === "boston";
+              const isTop = city.isTopCity;
               
               return (
                 <div 
                   key={city.slug}
                   className="absolute"
                   style={{
-                    left: `${(coords.x / 1000) * 100}%`,
-                    top: `${(coords.y / 600) * 100}%`,
-                    transform: 'translate(-50%, -50%)'
+                    left: `${coords.x}%`,
+                    top: `${coords.y}%`,
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: isHovered ? 50 : isBoston ? 40 : isTop ? 30 : 10
                   }}
                   onMouseEnter={() => setHoveredCity(city.slug)}
                   onMouseLeave={() => setHoveredCity(null)}
                 >
                   <Link href={`/cities/${city.slug}`} className="relative group/pin block">
-                    {/* Pulsing ring for major cities */}
-                    {city.slug === 'boston' && (
-                      <div className="absolute inset-0 w-16 h-16 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-full bg-coral/40 animate-ping" />
+                    {/* HQ Marker for Boston */}
+                    {isBoston && (
+                      <div className="absolute inset-0 w-12 h-12 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 rounded-full bg-coral/40 animate-ping" />
                     )}
                     
-                    {/* The Pin - INCREASED VISIBILITY */}
+                    {/* The Pin */}
                     <div className={cn(
-                      "w-4 h-4 rounded-full border-[2px] shadow-[0_0_20px_rgba(255,255,255,1)] transition-all duration-500 relative z-20",
-                      isHovered ? "bg-coral scale-[2.5] border-white" : "bg-white border-coral"
+                      "rounded-full transition-all duration-500 relative z-20",
+                      isBoston 
+                        ? "w-4 h-4 bg-coral border-2 border-white shadow-[0_0_20px_rgba(255,255,255,1)] scale-[1.5]" 
+                        : isHovered
+                          ? "w-4 h-4 bg-coral scale-[2] border-2 border-white shadow-[0_0_15px_rgba(255,255,255,0.8)]"
+                          : isTop
+                            ? "w-2.5 h-2.5 bg-white border border-coral/50"
+                            : "w-1 h-1 bg-white/30" // Tiny dots for the remaining hundreds of cities
                     )} />
                     
                     {/* Tooltip Label */}
                     <div className={cn(
-                      "absolute top-full left-1/2 -translate-x-1/2 mt-4 px-4 py-2 rounded-lg bg-white text-navy text-[0.75rem] uppercase tracking-widest font-bold whitespace-nowrap shadow-xl transition-all duration-300 pointer-events-none z-30",
-                      isHovered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
+                      "absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1.5 rounded-md bg-white text-navy text-[0.65rem] uppercase tracking-widest font-bold whitespace-nowrap shadow-xl transition-all duration-200 pointer-events-none z-30",
+                      isHovered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2",
+                      isBoston && !hoveredCity && "opacity-100 translate-y-0 bg-transparent text-white shadow-none text-[0.5rem] -mt-1" // Always show "BOSTON HQ" faintly
                     )}>
-                      {city.name}
+                      {isBoston && !hoveredCity ? "Boston HQ" : city.name}
                     </div>
                   </Link>
                 </div>

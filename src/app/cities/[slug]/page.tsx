@@ -5,14 +5,93 @@ import { BUSINESS_CONFIG } from "@/lib/config";
 import { getCityBySlug, MASSACHUSETTS_CITIES, getNearbyAreas } from "@/lib/cities-data";
 import { getLocalBusinessSchema, getCityPageSchema, getFAQSchema } from "@/lib/schema";
 import { constructMetadata } from "@/lib/seo";
-import { MapPin, Star, Calendar, IceCream, Truck, Phone, ArrowRight, ChevronRight } from "lucide-react";
+import { MapPin, Star, Calendar, IceCream, Truck, Phone, ArrowRight, ChevronRight, Info } from "lucide-react";
 import PackagesPreview from "@/components/home/PackagesPreview";
 import FinalCTA from "@/components/home/FinalCTA";
 import FAQSection from "@/components/shared/FAQSection";
+import Image from "next/image";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+// --- DETERMINISTIC HASH FUNCTION FOR SPINNING ---
+function hashSlug(slug: string): number {
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = slug.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash);
+}
+
+// --- PROGRAMMATIC SEO TEXT SPINNERS ---
+const H1_TEMPLATES = [
+  (city: string) => `Ice Cream Truck Rental in ${city}, MA`,
+  (city: string) => `Premium Ice Cream Truck Catering in ${city}`,
+  (city: string) => `Book an Ice Cream Truck in ${city}, Massachusetts`,
+  (city: string) => `The Best Ice Cream Truck in ${city}, MA`,
+  (city: string) => `${city}'s Favorite Ice Cream Truck Rental`,
+];
+
+const H2_TEMPLATES = [
+  (city: string) => `Bringing Joy to ${city} Events`,
+  (city: string) => `Making ${city} Celebrations Unforgettable`,
+  (city: string) => `Five-Star Ice Cream Catering in ${city}`,
+  (city: string) => `Why ${city} Loves Our Ice Cream Trucks`,
+  (city: string) => `Elevate Your Event in ${city}, MA`,
+];
+
+const INTRO_TEMPLATES = [
+  (city: string) => `Whether you're hosting a massive corporate gathering or an intimate backyard birthday party in ${city}, ${BUSINESS_CONFIG.name} is the premier choice for frozen treats.`,
+  (city: string) => `From school events to weddings, our ice cream trucks deliver smiles across ${city}. ${BUSINESS_CONFIG.name} brings nostalgic joy straight to your venue.`,
+  (city: string) => `Planning a celebration in ${city}? Let ${BUSINESS_CONFIG.name} handle the dessert. We provide top-tier ice cream truck rentals for all types of events.`,
+  (city: string) => `Make your next ${city} event a hit with ${BUSINESS_CONFIG.name}. We specialize in bringing premium ice cream and classic treats to any location in the area.`,
+  (city: string) => `${city} residents know that no party is complete without ${BUSINESS_CONFIG.name}. We offer reliable, clean, and fully-stocked ice cream trucks for your special day.`,
+];
+
+// --- THEME DEFINITIONS ---
+const THEMES = [
+  {
+    flavor: "Strawberry",
+    image: "/images/cities/strawberry.png",
+    primaryColorClass: "text-coral",
+    bgGlowClass: "bg-coral/20",
+    buttonClass: "bg-coral shadow-coral/30 hover:text-coral",
+    badgeClass: "bg-coral/20 border-coral/30 text-coral",
+  },
+  {
+    flavor: "Mint",
+    image: "/images/cities/mint.png",
+    primaryColorClass: "text-mint",
+    bgGlowClass: "bg-mint/20",
+    buttonClass: "bg-mint text-navy shadow-mint/30 hover:text-mint",
+    badgeClass: "bg-mint/20 border-mint/30 text-mint",
+  },
+  {
+    flavor: "Vanilla",
+    image: "/images/cities/vanilla.png",
+    primaryColorClass: "text-gold",
+    bgGlowClass: "bg-gold/20",
+    buttonClass: "bg-gold text-navy shadow-gold/30 hover:text-gold",
+    badgeClass: "bg-gold/20 border-gold/30 text-gold",
+  },
+  {
+    flavor: "Blueberry",
+    image: "/images/cities/blueberry.png",
+    primaryColorClass: "text-blue-400",
+    bgGlowClass: "bg-blue-400/20",
+    buttonClass: "bg-blue-500 shadow-blue-500/30 hover:text-blue-500",
+    badgeClass: "bg-blue-400/20 border-blue-400/30 text-blue-400",
+  },
+  {
+    flavor: "Chocolate",
+    image: "/images/cities/chocolate.png",
+    primaryColorClass: "text-amber-700",
+    bgGlowClass: "bg-amber-700/20",
+    buttonClass: "bg-amber-700 shadow-amber-700/30 hover:text-amber-700",
+    badgeClass: "bg-amber-700/20 border-amber-700/30 text-amber-700",
+  },
+];
 
 // Generate static params for all cities at build time
 export async function generateStaticParams() {
@@ -61,6 +140,14 @@ export default async function CityPage({ params }: Props) {
 
   const nearbyAreas = getNearbyAreas(city.slug);
 
+  // Deterministic variations
+  const seed = hashSlug(city.slug);
+  const theme = THEMES[seed % THEMES.length];
+  const h1Text = H1_TEMPLATES[seed % H1_TEMPLATES.length](city.name);
+  const h2Text = H2_TEMPLATES[(seed + 1) % H2_TEMPLATES.length](city.name);
+  const introText = INTRO_TEMPLATES[(seed + 2) % INTRO_TEMPLATES.length](city.name);
+  const layoutFlip = seed % 2 === 0;
+
   // Inject Schemas for this specific city
   const localBusinessSchema = getLocalBusinessSchema();
   const serviceSchema = getCityPageSchema(city);
@@ -108,8 +195,8 @@ export default async function CityPage({ params }: Props) {
       <section className="relative pt-24 pb-32 md:pt-32 md:pb-48 bg-navy overflow-hidden">
         {/* Background effects */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-coral/20 rounded-full blur-[150px] -translate-y-1/3 translate-x-1/4" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gold/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/4" />
+          <div className={`absolute top-0 right-0 w-[700px] h-[700px] ${theme.bgGlowClass} rounded-full blur-[150px] -translate-y-1/3 translate-x-1/4 transition-colors duration-1000`} />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/4" />
           <svg className="absolute inset-0 w-full h-full opacity-[0.03]">
             <defs>
               <pattern id="hero-grid" width="50" height="50" patternUnits="userSpaceOnUse">
@@ -120,69 +207,90 @@ export default async function CityPage({ params }: Props) {
           </svg>
         </div>
 
-        <div className="container mx-auto px-6 md:px-12 relative z-10 text-center max-w-5xl">
-          {/* Breadcrumb */}
-          <nav className="flex items-center justify-center gap-2 text-cream/40 text-xs font-bold uppercase tracking-widest mb-8">
-            <Link href="/" className="hover:text-coral transition-colors">Home</Link>
-            <ChevronRight size={12} />
-            <Link href="/cities" className="hover:text-coral transition-colors">Service Areas</Link>
-            <ChevronRight size={12} />
-            <span className="text-coral">{city.name}</span>
-          </nav>
+        <div className="container mx-auto px-6 md:px-12 relative z-10 flex flex-col md:flex-row items-center gap-12">
+          
+          <div className={`flex-1 text-center md:text-left ${layoutFlip ? 'md:order-2' : ''}`}>
+            {/* Breadcrumb */}
+            <nav className="flex items-center justify-center md:justify-start gap-2 text-cream/40 text-xs font-bold uppercase tracking-widest mb-8">
+              <Link href="/" className="hover:text-white transition-colors">Home</Link>
+              <ChevronRight size={12} />
+              <Link href="/cities" className="hover:text-white transition-colors">Service Areas</Link>
+              <ChevronRight size={12} />
+              <span className={theme.primaryColorClass}>{city.name}</span>
+            </nav>
 
-          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-coral/20 border border-coral/30 text-coral text-xs font-bold tracking-widest uppercase mb-8">
-            <MapPin size={12} />
-            {city.county}
+            <div className={`inline-flex items-center gap-2 px-5 py-2 rounded-full border text-xs font-bold tracking-widest uppercase mb-8 ${theme.badgeClass}`}>
+              <MapPin size={12} />
+              {city.county}
+            </div>
+
+            <h1 className="font-display font-light text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] text-cream mb-6 tracking-tighter">
+              {h1Text.split(city.name)[0]}
+              <span className={`italic font-serif ${theme.primaryColorClass}`}>{city.name}</span>
+              {h1Text.split(city.name)[1]}
+            </h1>
+
+            <p className="font-sans text-cream/70 text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto md:mx-0">
+              {city.heroSubline}
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+              <Link
+                href={`/get-a-quote?city=${encodeURIComponent(city.name)}`}
+                className={`inline-flex items-center gap-3 px-10 py-5 text-white font-bold text-base rounded-full shadow-xl hover:bg-white transition-all duration-300 hover:scale-105 ${theme.buttonClass}`}
+              >
+                Book in {city.name} <ArrowRight size={18} />
+              </Link>
+              <a
+                href={`tel:${BUSINESS_CONFIG.contact.phone1Formatted}`}
+                className="inline-flex items-center gap-3 px-8 py-5 border-2 border-white/20 text-cream font-bold text-base rounded-full hover:border-cream hover:bg-white/10 transition-all duration-300"
+              >
+                <Phone size={18} /> {BUSINESS_CONFIG.contact.phone1}
+              </a>
+            </div>
           </div>
 
-          <h1 className="font-display font-light text-[clamp(2.5rem,5.5vw,5.5rem)] leading-[1.05] text-cream mb-6 tracking-tighter">
-            Ice Cream Truck Rental<br />
-            in <span className="italic text-coral">{city.name}</span>, MA
-          </h1>
-
-          <p className="font-sans text-cream/70 text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto">
-            {city.heroSubline}
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href={`/get-a-quote?city=${encodeURIComponent(city.name)}`}
-              className="inline-flex items-center gap-3 px-10 py-5 bg-coral text-white font-bold text-base rounded-full shadow-xl shadow-coral/30 hover:bg-white hover:text-navy transition-all duration-300 hover:scale-105"
-            >
-              Get a Free Quote for {city.name} <ArrowRight size={18} />
-            </Link>
-            <a
-              href={`tel:${BUSINESS_CONFIG.contact.phone1Formatted}`}
-              className="inline-flex items-center gap-3 px-8 py-5 border-2 border-white/20 text-cream font-bold text-base rounded-full hover:border-cream hover:bg-white/10 transition-all duration-300"
-            >
-              <Phone size={18} /> {BUSINESS_CONFIG.contact.phone1}
-            </a>
+          {/* Dynamic 3D Ice Cream Render */}
+          <div className={`flex-1 relative w-full max-w-[400px] aspect-square mx-auto ${layoutFlip ? 'md:order-1' : ''}`}>
+            <div className="absolute inset-0 bg-gradient-to-t from-navy to-transparent z-10 pointer-events-none rounded-full" />
+            <Image
+              src={theme.image}
+              alt={`${theme.flavor} ice cream for ${city.name}`}
+              fill
+              className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-0 animate-float"
+              priority
+            />
           </div>
+
         </div>
       </section>
 
       {/* ── LOCAL INTRO ──────────────────────────────────────────── */}
-      <section className="py-24 md:py-32 relative -mt-16 z-10">
+      <section className="py-24 md:py-32 relative -mt-16 z-20">
         <div className="container mx-auto px-6 md:px-12 max-w-6xl">
           <div className="bg-white rounded-[3rem] shadow-2xl border border-navy/5 p-8 md:p-16">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
               {/* Text */}
-              <div>
+              <div className={layoutFlip ? 'lg:order-2' : ''}>
                 <h2 className="font-display font-light text-[clamp(2rem,4vw,3.5rem)] text-navy tracking-tighter mb-6 leading-tight">
-                  Bringing Joy to<br />
-                  <span className="text-coral italic">{city.name}</span> Events
+                  {h2Text.split(city.name)[0]}
+                  <span className={`italic ${theme.primaryColorClass}`}>{city.name}</span>
+                  {h2Text.split(city.name)[1]}
                 </h2>
+                <p className="font-sans text-navy/70 text-lg leading-relaxed mb-4">
+                  {introText}
+                </p>
                 <p className="font-sans text-navy/70 text-lg leading-relaxed mb-8">
                   {city.localIntro}
                 </p>
                 <div className="flex flex-col gap-3">
                   {[
                     { icon: <Star size={18} />, text: `Top-Rated in ${city.county}`, color: "text-gold bg-gold/10" },
-                    { icon: <Calendar size={18} />, text: "Flexible Scheduling — Weekdays & Weekends", color: "text-coral bg-coral/10" },
+                    { icon: <Calendar size={18} />, text: "Flexible Scheduling — Weekdays & Weekends", color: `${theme.primaryColorClass} ${theme.bgGlowClass}` },
                     { icon: <Truck size={18} />, text: "Professional Setup & On-Time Arrival", color: "text-navy bg-navy/10" },
                     { icon: <IceCream size={18} />, text: "Premium Ice Cream Selection for All Ages", color: "text-mint bg-mint/10" },
                   ].map((item) => (
-                    <div key={item.text} className="flex items-center gap-4 p-4 rounded-2xl bg-cream">
+                    <div key={item.text} className="flex items-center gap-4 p-4 rounded-2xl bg-cream border border-navy/5">
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${item.color}`}>
                         {item.icon}
                       </div>
@@ -193,15 +301,16 @@ export default async function CityPage({ params }: Props) {
               </div>
 
               {/* Event Types Grid */}
-              <div>
-                <h3 className="font-display text-2xl text-navy font-bold mb-6">
+              <div className={layoutFlip ? 'lg:order-1' : ''}>
+                <h3 className="font-display text-2xl text-navy font-bold mb-6 flex items-center gap-3">
+                  <Info className={theme.primaryColorClass} />
                   Events We Serve in {city.name}
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
                   {EVENT_TYPES.map((event) => (
                     <div
                       key={event.label}
-                      className="flex items-center gap-3 p-4 rounded-2xl bg-cream hover:bg-navy hover:text-cream transition-all duration-300 group cursor-default"
+                      className="flex items-center gap-3 p-4 rounded-2xl bg-cream hover:bg-navy hover:text-cream transition-all duration-300 group cursor-default border border-navy/5"
                     >
                       <span className="text-2xl">{event.icon}</span>
                       <span className="font-sans font-bold text-navy/80 text-sm group-hover:text-cream transition-colors">
@@ -213,15 +322,15 @@ export default async function CityPage({ params }: Props) {
 
                 {/* Neighborhoods */}
                 {city.neighborhoods && city.neighborhoods.length > 0 && (
-                  <div className="mt-8 p-6 bg-navy rounded-3xl">
-                    <h4 className="font-display text-cream font-bold text-lg mb-4">
+                  <div className={`mt-8 p-6 rounded-3xl ${theme.bgGlowClass}`}>
+                    <h4 className={`font-display font-bold text-lg mb-4 ${theme.primaryColorClass}`}>
                       Neighborhoods We Serve
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {city.neighborhoods.map((n) => (
                         <span
                           key={n}
-                          className="px-3 py-1.5 rounded-full bg-white/10 text-cream/80 text-xs font-bold"
+                          className="px-3 py-1.5 rounded-full bg-white/50 text-navy text-xs font-bold shadow-sm"
                         >
                           {n}
                         </span>
@@ -235,24 +344,43 @@ export default async function CityPage({ params }: Props) {
         </div>
       </section>
 
-      {/* ── PACKAGES ─────────────────────────────────────────────── */}
-      <PackagesPreview />
+      {/* ── PACKAGES & FAQ ─────────────────────────────────────────────── */}
+      {layoutFlip ? (
+        <>
+          <FAQSection
+            title={`FAQ — ${city.name}, MA`}
+            subtitle={`Common questions about our ice cream truck service in ${city.name}.`}
+            items={faqs}
+          />
+          <PackagesPreview />
+        </>
+      ) : (
+        <>
+          <PackagesPreview />
+          <FAQSection
+            title={`FAQ — ${city.name}, MA`}
+            subtitle={`Common questions about our ice cream truck service in ${city.name}.`}
+            items={faqs}
+          />
+        </>
+      )}
 
       {/* ── NEARBY AREAS ─────────────────────────────────────────── */}
       {nearbyAreas.length > 0 && (
         <section className="py-20 bg-cream">
           <div className="container mx-auto px-6 md:px-12 max-w-6xl">
             <h2 className="font-display font-light text-[clamp(2rem,3.5vw,3rem)] text-navy tracking-tighter mb-10">
-              Also Serving <span className="italic text-coral">Nearby Areas</span>
+              Also Serving <span className={`italic ${theme.primaryColorClass}`}>Nearby Areas</span>
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
               {nearbyAreas.map((nearby) => (
                 <Link
                   key={nearby.slug}
                   href={`/cities/${nearby.slug}`}
-                  className="group flex items-center gap-2 p-4 bg-white rounded-2xl border border-navy/5 hover:border-coral hover:shadow-md transition-all duration-200"
+                  className={`group flex items-center gap-2 p-4 bg-white rounded-2xl border border-navy/5 hover:shadow-md transition-all duration-200 hover:border-[var(--hover-color)]`}
+                  style={{ '--hover-color': 'currentColor' } as any}
                 >
-                  <MapPin size={14} className="text-coral shrink-0" />
+                  <MapPin size={14} className={`${theme.primaryColorClass} shrink-0`} />
                   <span className="font-sans font-bold text-sm text-navy/80 group-hover:text-navy">
                     {nearby.name}
                   </span>
@@ -262,13 +390,6 @@ export default async function CityPage({ params }: Props) {
           </div>
         </section>
       )}
-
-      {/* ── FAQ ──────────────────────────────────────────────────── */}
-      <FAQSection
-        title={`FAQ — ${city.name}, MA`}
-        subtitle={`Common questions about our ice cream truck service in ${city.name}.`}
-        items={faqs}
-      />
 
       {/* ── FINAL CTA ────────────────────────────────────────────── */}
       <FinalCTA />
