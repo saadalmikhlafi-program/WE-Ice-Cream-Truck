@@ -30,7 +30,7 @@ export default function CityMapSection() {
   const boston = allCities.find(c => c.slug === "boston");
 
   return (
-    <section className="py-24 md:py-40 bg-navy text-cream relative overflow-hidden">
+    <section className="py-24 md:py-40 bg-navy/80 backdrop-blur-2xl text-cream relative overflow-hidden">
       {/* Background glow effects */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-coral/5 rounded-full blur-[100px] pointer-events-none" />
       

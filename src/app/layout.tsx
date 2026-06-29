@@ -10,6 +10,7 @@ import FloatingQuoteButton from "@/components/layout/FloatingQuoteButton";
 import { Providers } from "./providers";
 import SplashScreen from "@/components/shared/SplashScreen";
 import FlavorBlobs from "@/components/shared/FlavorBlobs";
+import ScrollToTop from "@/components/shared/ScrollToTop";
 
 // ─── FONTS ──────────────────────────────────────────────────────────
 
@@ -55,7 +56,8 @@ export default function RootLayout({
         <SplashScreen />
         <SiteHeader />
         
-        <main className="flex-1 flex flex-col w-full pt-[88px] z-10">
+        <main className="flex-1 flex flex-col w-full z-10">
+          <ScrollToTop />
           <Providers>{children}</Providers>
         </main>
 

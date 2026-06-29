@@ -12,7 +12,7 @@ const services = [
 
 export default function ServicesMarquee() {
   return (
-    <section className="bg-navy text-cream py-24 md:py-40">
+    <section className="bg-navy/80 backdrop-blur-2xl text-cream py-24 md:py-40">
       <div className="container mx-auto px-6 md:px-12 lg:px-24">
         
         {/* Section Header */}

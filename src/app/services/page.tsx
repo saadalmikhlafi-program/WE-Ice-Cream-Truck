@@ -13,7 +13,7 @@ export const metadata: Metadata = constructMetadata({
 export default function ServicesHubPage() {
   return (
     <div className="bg-sand min-h-screen pt-[88px]">
-      <section className="py-20 bg-navy text-cream text-center px-4">
+      <section className="py-20 bg-navy/80 backdrop-blur-2xl text-cream text-center px-4">
         <AnimatedSection className="max-w-3xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
             Services for <span className="text-coral italic font-light">Every</span> Occasion.

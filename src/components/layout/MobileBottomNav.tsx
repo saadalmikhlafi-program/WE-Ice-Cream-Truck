@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Calendar, Menu, MessageCircle } from "lucide-react";
+import { Home, Info, List, Star, Gift, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function MobileBottomNav() {
@@ -10,9 +10,10 @@ export default function MobileBottomNav() {
 
   const navItems = [
     { label: "Home", href: "/", icon: Home },
-    { label: "Packages", href: "/packages", icon: Search },
-    { label: "Book", href: "/get-a-quote", icon: Calendar },
-    { label: "Cities", href: "/cities", icon: Menu },
+    { label: "About", href: "/about", icon: Info },
+    { label: "Menu", href: "/menu", icon: List },
+    { label: "Occasions", href: "/services", icon: Star },
+    { label: "Packages", href: "/packages", icon: Gift },
     { label: "Contact", href: "/contact", icon: MessageCircle },
   ];
 

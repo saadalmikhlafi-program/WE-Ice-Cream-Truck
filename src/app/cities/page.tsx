@@ -33,7 +33,7 @@ export default function CitiesIndexPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative pt-20 pb-24 md:pt-28 md:pb-40 bg-navy overflow-hidden">
+      <section className="relative pt-28 pb-24 md:pt-40 md:pb-40 bg-navy/80 backdrop-blur-2xl overflow-hidden">
         {/* Background effects */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-coral/15 rounded-full blur-[120px] -translate-y-1/3 translate-x-1/4" />
@@ -149,7 +149,7 @@ export default function CitiesIndexPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="py-24 bg-navy relative overflow-hidden">
+      <section className="py-24 bg-navy/80 backdrop-blur-2xl relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-coral/10 rounded-full blur-[100px]" />
         </div>

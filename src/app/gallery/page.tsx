@@ -22,7 +22,7 @@ export default function GalleryPage() {
   return (
     <div className="bg-sand min-h-screen pt-[88px]">
       {/* Header */}
-      <section className="py-20 bg-navy text-cream text-center px-4">
+      <section className="py-20 bg-navy/80 backdrop-blur-2xl text-cream text-center px-4">
         <AnimatedSection className="max-w-3xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
             Real Events. <span className="text-coral italic font-light">Real Smiles.</span>
