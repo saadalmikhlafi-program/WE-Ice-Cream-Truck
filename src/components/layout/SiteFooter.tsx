@@ -61,16 +61,16 @@ export default function SiteFooter() {
             <h3 className="font-display text-xl font-bold mb-6">Events</h3>
             <ul className="space-y-4 text-cream/70">
               <li>
-                <Link href="/services/birthday-parties" className="hover:text-coral transition-colors">Birthday Parties</Link>
+                <Link href="/occasions/birthday-parties" className="hover:text-coral transition-colors">Birthday Parties</Link>
               </li>
               <li>
-                <Link href="/services/corporate-events" className="hover:text-coral transition-colors">Corporate Events</Link>
+                <Link href="/occasions/corporate-events" className="hover:text-coral transition-colors">Corporate Events</Link>
               </li>
               <li>
-                <Link href="/services/weddings" className="hover:text-coral transition-colors">Weddings</Link>
+                <Link href="/occasions/wedding-receptions" className="hover:text-coral transition-colors">Weddings</Link>
               </li>
               <li>
-                <Link href="/services/school-events" className="hover:text-coral transition-colors">School Events</Link>
+                <Link href="/occasions/school-occasions" className="hover:text-coral transition-colors">School Events</Link>
               </li>
             </ul>
           </div>

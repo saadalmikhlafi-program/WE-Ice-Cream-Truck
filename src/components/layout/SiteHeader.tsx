@@ -22,11 +22,16 @@ export default function SiteHeader() {
       setIsScrolled(window.scrollY > 10);
     };
     
-    // Check initial scroll position in case of page reload or back button
-    handleScroll();
+    // Check initial scroll position after a slight delay to allow Next.js to scroll to top first
+    const timer = setTimeout(() => {
+      handleScroll();
+    }, 50);
     
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timer);
+    };
   }, [pathname]);
 
   const services = getAllServices();
@@ -84,7 +89,7 @@ export default function SiteHeader() {
             <button
               className={cn(
                 "flex items-center gap-1 px-4 py-2 text-[0.95rem] font-bold tracking-wide transition-colors rounded-full",
-                pathname.startsWith("/services") ? "text-coral bg-coral/5" : "text-navy/80 hover:text-navy hover:bg-navy/5"
+                pathname.startsWith("/occasions") ? "text-coral bg-coral/5" : "text-navy/80 hover:text-navy hover:bg-navy/5"
               )}
             >
               Occasions
@@ -103,7 +108,7 @@ export default function SiteHeader() {
                   {topServices.map((service) => (
                     <Link
                       key={service.slug}
-                      href={`/services/${service.slug}`}
+                      href={`/occasions/${service.slug}`}
                       className="block px-6 py-3 text-[0.9rem] font-semibold text-navy/70 hover:text-coral hover:bg-cream transition-colors"
                       onClick={() => setActiveDropdown(null)}
                     >
@@ -112,7 +117,7 @@ export default function SiteHeader() {
                   ))}
                   <div className="border-t border-navy/5 mt-2 pt-2 px-4 pb-2">
                     <Link
-                      href="/services"
+                      href="/occasions"
                       className="block w-full text-center py-2 bg-coral/10 text-coral font-bold rounded-xl text-sm hover:bg-coral hover:text-white transition-colors"
                       onClick={() => setActiveDropdown(null)}
                     >

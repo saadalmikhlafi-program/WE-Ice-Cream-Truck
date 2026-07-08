@@ -65,7 +65,7 @@ async function handleCreate(req: NextRequest) {
       },
     });
 
-    const inviterName = auth.user?.role === "OWNER" ? "the Boston Legend Owner" : (auth.user as any)?.name || "Admin";
+    const inviterName = auth.user?.role === "OWNER" ? "the WE Ice Cream Truck Owner" : (auth.user as any)?.name || "Admin";
     await sendStaffInviteEmail(email.toLowerCase(), inviterName, token, role);
 
     await prisma.auditLog.create({
@@ -106,7 +106,7 @@ async function handleAccept(req: NextRequest) {
 
     const passwordHash = await bcrypt.hash(password, 12);
     const newUser = await prisma.user.create({
-      data: { email: invite.email, name: name.trim(), passwordHash, role: invite.role, permissions: [], active: true },
+      data: { email: invite.email, name: name.trim(), passwordHash, role: invite.role, permissions: JSON.stringify([]), active: true },
       select: { id: true, email: true, name: true, role: true },
     });
 

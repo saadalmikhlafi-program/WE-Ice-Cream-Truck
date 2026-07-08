@@ -12,7 +12,7 @@ export default function MobileBottomNav() {
     { label: "Home", href: "/", icon: Home },
     { label: "About", href: "/about", icon: Info },
     { label: "Menu", href: "/menu", icon: List },
-    { label: "Occasions", href: "/services", icon: Star },
+    { label: "Occasions", href: "/occasions", icon: Star },
     { label: "Packages", href: "/packages", icon: Gift },
     { label: "Contact", href: "/contact", icon: MessageCircle },
   ];

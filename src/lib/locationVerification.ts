@@ -60,7 +60,7 @@ export async function verifyAndCalculateRoute(
   // 2. Resolve coordinates for all stops
   const verifiedStops: VerifiedLocation[] = [];
   if (locationMode !== "SINGLE_LOCATION" && bookingStops && bookingStops.length > 0) {
-    for (let stop of bookingStops) {
+    for (const stop of bookingStops) {
       let sLat = stop.latitude;
       let sLng = stop.longitude;
       let stopCopy = { ...stop };

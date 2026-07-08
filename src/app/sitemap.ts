@@ -17,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/get-a-quote',
     '/faq',
     '/cities',
-    '/services',
+    '/occasions',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
@@ -27,7 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Dynamic Service routes
   const services = getAllServices().map((service) => ({
-    url: `${baseUrl}/services/${service.slug}`,
+    url: `${baseUrl}/occasions/${service.slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.8,

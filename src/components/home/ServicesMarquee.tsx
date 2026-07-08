@@ -2,12 +2,12 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 const services = [
-  { id: "01", name: "Corporate Events", desc: "Employee appreciation, product launches, and company picnics.", href: "/services/corporate-events" },
-  { id: "02", name: "Weddings", desc: "Elegant late-night treats for your special day.", href: "/services/weddings" },
-  { id: "03", name: "Birthday Parties", desc: "Unforgettable moments for kids and adults alike.", href: "/services/birthday-parties" },
-  { id: "04", name: "School Events", desc: "Graduations, field days, and campus celebrations.", href: "/services/school-events" },
-  { id: "05", name: "Festivals", desc: "High-volume service for public and private festivals.", href: "/services/festivals" },
-  { id: "06", name: "Marketing Activations", desc: "Custom branding and promo events.", href: "/services/marketing-events" },
+  { id: "01", name: "Corporate Events", desc: "Employee appreciation, product launches, and company picnics.", href: "/occasions/corporate-events" },
+  { id: "02", name: "Weddings", desc: "Elegant late-night treats for your special day.", href: "/occasions/wedding-receptions" },
+  { id: "03", name: "Birthday Parties", desc: "Unforgettable moments for kids and adults alike.", href: "/occasions/birthday-parties" },
+  { id: "04", name: "School Events", desc: "Graduations, field days, and campus celebrations.", href: "/occasions/school-occasions" },
+  { id: "05", name: "Fundraisers", desc: "Sweet treats that make a real difference for your cause.", href: "/occasions/fundraisers" },
+  { id: "06", name: "Marketing Activations", desc: "Custom branding and promo events.", href: "/occasions/marketing-events" },
 ];
 
 export default function ServicesMarquee() {

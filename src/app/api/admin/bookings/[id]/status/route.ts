@@ -132,7 +132,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
           booking.customer.email,
           booking.customer.firstName,
           booking.bookingNumber,
-          internalNote || "Thank you for choosing Boston Legend. We reviewed your request and it needs a quick adjustment before we can confirm it.",
+          internalNote || "Thank you for choosing WE Ice Cream Truck. We reviewed your request and it needs a quick adjustment before we can confirm it.",
           booking.id
         );
       } else if (status === "COMPLETED") {

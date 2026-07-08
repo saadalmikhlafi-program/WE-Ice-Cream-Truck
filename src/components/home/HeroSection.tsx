@@ -95,6 +95,7 @@ export default function HeroSection() {
               src="/images/fundraise.jpg" 
               alt="Happy kids with ice cream" 
               fill
+              sizes="(max-width: 768px) 100vw, 33vw"
               className="object-cover"
               priority
             />
@@ -106,6 +107,7 @@ export default function HeroSection() {
               src="/images/marketing-events.jpg" 
               alt="Ice cream truck event" 
               fill
+              sizes="(max-width: 768px) 100vw, 33vw"
               className="object-cover"
             />
           </div>
@@ -116,6 +118,7 @@ export default function HeroSection() {
               src="/images/launch-parties.jpg" 
               alt="Delicious ice cream" 
               fill
+              sizes="(max-width: 768px) 100vw, 33vw"
               className="object-cover"
             />
           </div>

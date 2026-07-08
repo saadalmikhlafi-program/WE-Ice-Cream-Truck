@@ -10,9 +10,9 @@ export const metadata: Metadata = constructMetadata({
   url: "/services",
 });
 
-export default function ServicesHubPage() {
+export default function ServicesPage() {
   return (
-    <div className="bg-sand min-h-screen pt-[88px]">
+    <div className="min-h-screen">
       <section className="py-20 bg-navy text-cream text-center px-4">
         <AnimatedSection className="max-w-3xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">

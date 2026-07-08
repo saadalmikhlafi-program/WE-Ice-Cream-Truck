@@ -56,7 +56,7 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="relative min-h-screen pt-[88px] overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden">
       {/* Hero Section */}
       <section className="relative py-24 md:py-32 overflow-hidden bg-navy">
         <div className="absolute inset-0 bg-[url('/images/hero-cinematic.jpg')] opacity-20 bg-cover bg-center mix-blend-overlay" />

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { getPackages, estimatePrice } from "../tools/businessLogic";
 
 export const CUSTOMER_PROMPT = `
-You are the AI system for Boston Legend Ice Cream Truck.
+You are the AI system for WE Ice Cream Truck.
 
 Your role is NOT a generic chatbot. You are an intelligent assistant integrated into a luxury ice cream catering platform serving Massachusetts and Greater Boston.
 
@@ -21,7 +21,7 @@ BEHAVIOR REQUIREMENTS:
 
 IMPORTANT:
 Do NOT answer with generic fallback messages. 
-You are part of the Boston Legend platform.
+You are part of the WE Ice Cream Truck platform.
 `;
 
 export const customerToolDefs = {

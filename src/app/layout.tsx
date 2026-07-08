@@ -3,14 +3,8 @@ import { Playfair_Display, Outfit } from "next/font/google";
 import "./globals.css";
 import { BUSINESS_CONFIG } from "@/lib/config";
 import { constructMetadata } from "@/lib/seo";
-import SiteHeader from "@/components/layout/SiteHeader";
-import SiteFooter from "@/components/layout/SiteFooter";
-import MobileBottomNav from "@/components/layout/MobileBottomNav";
-import FloatingQuoteButton from "@/components/layout/FloatingQuoteButton";
 import { Providers } from "./providers";
-import SplashScreen from "@/components/shared/SplashScreen";
-import FlavorBlobs from "@/components/shared/FlavorBlobs";
-import ScrollToTop from "@/components/shared/ScrollToTop";
+import PublicLayout from "@/components/layout/PublicLayout";
 
 // ─── FONTS ──────────────────────────────────────────────────────────
 
@@ -34,7 +28,7 @@ const outfit = Outfit({
 export const metadata: Metadata = constructMetadata();
 
 export const viewport: Viewport = {
-  themeColor: "#FFFBF5", // color-cream
+  themeColor: "#FFFBF5",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -48,22 +42,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en">
       <body
         className={`${playfair.variable} ${outfit.variable} font-sans bg-cream text-charcoal antialiased min-h-screen flex flex-col relative`}
       >
-        <FlavorBlobs />
-        <SplashScreen />
-        <SiteHeader />
-        
-        <main className="flex-1 flex flex-col w-full z-10">
-          <ScrollToTop />
-          <Providers>{children}</Providers>
-        </main>
-
-        <SiteFooter />
-        <MobileBottomNav />
-        <FloatingQuoteButton />
+        <Providers>
+          <PublicLayout>{children}</PublicLayout>
+        </Providers>
       </body>
     </html>
   );

@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 function escapeCSV(val: any) {
   if (val === null || val === undefined) return '';
-  let str = String(val);
+  const str = String(val);
   if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
     return `"${str.replace(/"/g, '""')}"`;
   }

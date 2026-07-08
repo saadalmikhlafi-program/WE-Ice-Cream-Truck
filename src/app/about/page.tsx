@@ -3,6 +3,7 @@ import { constructMetadata } from "@/lib/seo";
 import { BUSINESS_CONFIG } from "@/lib/config";
 import Image from "next/image";
 import FAQSection from "@/components/shared/FAQSection";
+import BrandCarousel from "@/components/shared/BrandCarousel";
 
 export const metadata: Metadata = constructMetadata({
   title: "About Us | WE Ice Cream Truck",
@@ -31,7 +32,7 @@ const faqs = [
 
 export default function AboutPage() {
   return (
-    <div className="relative min-h-screen pt-[88px] overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden">
       {/* Hero Section */}
       <section className="relative py-24 md:py-32 overflow-hidden">
         <div className="absolute inset-0 bg-navy">
@@ -99,6 +100,8 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      <BrandCarousel />
 
       {/* The Promise Section */}
       <section className="py-24 md:py-32 bg-navy relative overflow-hidden">

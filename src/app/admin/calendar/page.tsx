@@ -1,139 +1,139 @@
 "use client";
-
-import { useEffect, useState, useCallback } from "react";
-import { Calendar as CalendarIcon, MapPin, Phone, Mail, User, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { ChevronLeft, ChevronRight, Loader2, Plus, X } from "lucide-react";
 import Link from "next/link";
 
-interface CalEvent {
-  id: string;
-  title: string;
-  start: string;
-  end?: string;
-  backgroundColor?: string;
-  extendedProps?: {
-    status?: string;
-    address?: string;
-    customerName?: string;
-    phone?: string;
-    email?: string;
-  };
-}
+type CalEvent = {
+  id: string; bookingNumber: string; startTime: string;
+  eventDate: string; status: string;
+  customer: { firstName: string; lastName: string };
+  package: { name: string } | null;
+  city: string;
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  CONFIRMED:       "#059669",
+  PENDING_REVIEW:  "#D97706",
+  PENDING_PAYMENT: "#2563EB",
+  COMPLETED:       "#64748B",
+  CANCELLED:       "#DC2626",
+};
+
+const STATUS_BG: Record<string, string> = {
+  CONFIRMED:       "#ECFDF5",
+  PENDING_REVIEW:  "#FFFBEB",
+  PENDING_PAYMENT: "#EFF6FF",
+  COMPLETED:       "#F8FAFC",
+  CANCELLED:       "#FEF2F2",
+};
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-export default function AdminCalendarPage() {
-  const [today] = useState(new Date());
-  const [current, setCurrent] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  const [events, setEvents] = useState<CalEvent[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<CalEvent | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function CalendarPage() {
+  const [events, setEvents]       = useState<CalEvent[]>([]);
+  const [loading, setLoading]     = useState(true);
+  const [viewDate, setViewDate]   = useState(new Date());
+  const [selected, setSelected]   = useState<CalEvent | null>(null);
+  const [dayEvents, setDayEvents] = useState<{ date: Date; events: CalEvent[] } | null>(null);
 
-  const fetchEvents = useCallback(async () => {
-    setLoading(true);
-    try {
-      const start = new Date(current.getFullYear(), current.getMonth(), 1).toISOString();
-      const end = new Date(current.getFullYear(), current.getMonth() + 1, 0).toISOString();
-      const res = await fetch(`/api/admin/calendar?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&t=${Date.now()}`, { cache: "no-store" });
-      const json = await res.json();
-      if (res.ok && json.success) setEvents(json.data || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [current]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const res  = await fetch("/api/admin/bookings");
+        const json = await res.json();
+        setEvents(json.data || []);
+      } catch {} finally { setLoading(false); }
+    })();
+  }, []);
 
-  useEffect(() => { fetchEvents(); }, [fetchEvents]);
+  const year  = viewDate.getFullYear();
+  const month = viewDate.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  const prevMonth = () => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1));
-  const nextMonth = () => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1));
+  const eventsForDay = (d: number) => events.filter(e => {
+    const ev = new Date(e.eventDate + "T12:00:00");
+    return ev.getFullYear() === year && ev.getMonth() === month && ev.getDate() === d;
+  });
 
-  const daysInMonth = new Date(current.getFullYear(), current.getMonth() + 1, 0).getDate();
-  const firstDayOfWeek = new Date(current.getFullYear(), current.getMonth(), 1).getDay();
+  const cells = [];
+  for (let i = 0; i < firstDay; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
 
-  const getEventsForDay = (day: number) => {
-    return events.filter(ev => {
-      const evDate = new Date(ev.start);
-      return evDate.getFullYear() === current.getFullYear() &&
-             evDate.getMonth() === current.getMonth() &&
-             evDate.getDate() === day;
-    });
-  };
+  const today = new Date();
+  const isToday = (d: number) =>
+    d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
 
   return (
-    <div className="p-4 sm:p-8 space-y-8 bg-slate-50 min-h-screen">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-            <CalendarIcon className="w-8 h-8 text-coral" />
-            Business Calendar
-          </h1>
-          <p className="text-slate-500 mt-2 font-medium">View all confirmed and pending events.</p>
+          <h1 className="text-2xl font-black text-navy tracking-tight">Calendar</h1>
+          <p className="text-sm font-medium text-gray-400 mt-0.5">{events.length} total bookings</p>
         </div>
+        <Link href="/booking" target="_blank"
+          className="flex items-center gap-2 px-4 py-2 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors shadow-sm">
+          <Plus className="w-4 h-4" /> New Booking
+        </Link>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        {/* Calendar Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <button onClick={prevMonth} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-            <ChevronLeft className="w-5 h-5 text-slate-600" />
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        {/* Month Nav */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <button onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
+            className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:border-coral hover:text-coral transition-all">
+            <ChevronLeft className="w-4 h-4" />
           </button>
-          <h2 className="text-xl font-black text-slate-900">
-            {MONTHS[current.getMonth()]} {current.getFullYear()}
-          </h2>
-          <button onClick={nextMonth} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-            <ChevronRight className="w-5 h-5 text-slate-600" />
+          <div className="text-center">
+            <h2 className="text-lg font-black text-navy">{MONTHS[month]} {year}</h2>
+            <button onClick={() => setViewDate(new Date())} className="text-xs font-bold text-coral hover:underline">
+              Today
+            </button>
+          </div>
+          <button onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))}
+            className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:border-coral hover:text-coral transition-all">
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
         {/* Day Headers */}
-        <div className="grid grid-cols-7 border-b border-slate-100">
+        <div className="grid grid-cols-7 border-b border-gray-100">
           {DAYS.map(d => (
-            <div key={d} className="py-3 text-center text-xs font-black text-slate-400 uppercase tracking-wider">
+            <div key={d} className="py-3 text-center text-[11px] font-black text-gray-400 uppercase tracking-wider">
               {d}
             </div>
           ))}
         </div>
 
-        {/* Calendar Grid */}
+        {/* Grid */}
         {loading ? (
-          <div className="py-20 flex items-center justify-center">
-            <div className="w-8 h-8 border-4 border-coral border-t-transparent rounded-full animate-spin" />
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-7 h-7 animate-spin text-coral" />
           </div>
         ) : (
           <div className="grid grid-cols-7">
-            {/* Empty cells before first day */}
-            {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-              <div key={`empty-${i}`} className="min-h-[80px] border-b border-r border-slate-100 bg-slate-50/50" />
-            ))}
-
-            {/* Day cells */}
-            {Array.from({ length: daysInMonth }).map((_, i) => {
-              const day = i + 1;
-              const dayEvents = getEventsForDay(day);
-              const isToday = today.getFullYear() === current.getFullYear() &&
-                              today.getMonth() === current.getMonth() &&
-                              today.getDate() === day;
-
+            {cells.map((d, idx) => {
+              if (!d) return <div key={`empty-${idx}`} className="border-b border-r border-gray-50 min-h-[100px]" />;
+              const dayEvs = eventsForDay(d);
               return (
-                <div key={day} className={`min-h-[80px] border-b border-r border-slate-100 p-1.5 ${isToday ? "bg-coral/5" : ""}`}>
-                  <div className={`w-7 h-7 flex items-center justify-center rounded-full text-sm font-bold mb-1 ${isToday ? "bg-coral text-white" : "text-slate-700"}`}>
-                    {day}
-                  </div>
+                <div key={d}
+                  onClick={() => dayEvs.length > 0 && setDayEvents({ date: new Date(year, month, d), events: dayEvs })}
+                  className={`border-b border-r border-gray-50 min-h-[100px] p-2 transition-colors ${dayEvs.length > 0 ? "cursor-pointer hover:bg-gray-50" : ""}`}>
+                  <div className={`w-7 h-7 flex items-center justify-center rounded-full text-sm font-bold mb-1 ${
+                    isToday(d) ? "bg-coral text-white" : "text-navy"
+                  }`}>{d}</div>
                   <div className="space-y-0.5">
-                    {dayEvents.slice(0, 2).map(ev => (
-                      <button
-                        key={ev.id}
-                        onClick={() => setSelectedEvent(ev)}
-                        className="w-full text-left px-1.5 py-0.5 rounded text-[10px] font-bold truncate text-white"
-                        style={{ backgroundColor: ev.backgroundColor || "#FF6B6B" }}
-                      >
-                        {ev.title}
-                      </button>
+                    {dayEvs.slice(0, 3).map(ev => (
+                      <div key={ev.id}
+                        onClick={e => { e.stopPropagation(); setSelected(ev); }}
+                        className="text-[10px] font-bold px-1.5 py-0.5 rounded truncate cursor-pointer"
+                        style={{ background: STATUS_BG[ev.status] ?? "#F8FAFC", color: STATUS_COLORS[ev.status] ?? "#475569" }}>
+                        {ev.startTime} {ev.customer.firstName}
+                      </div>
                     ))}
-                    {dayEvents.length > 2 && (
-                      <p className="text-[10px] text-slate-500 font-bold pl-1">+{dayEvents.length - 2} more</p>
+                    {dayEvs.length > 3 && (
+                      <div className="text-[10px] font-bold text-gray-400 px-1.5">+{dayEvs.length - 3} more</div>
                     )}
                   </div>
                 </div>
@@ -143,46 +143,64 @@ export default function AdminCalendarPage() {
         )}
       </div>
 
-      {/* Event Details Modal */}
-      {selectedEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
-            <div className="p-6 border-b border-slate-100 flex justify-between items-start">
-              <div>
-                <h3 className="text-xl font-black text-slate-900 leading-tight">{selectedEvent.title}</h3>
-                <span className="inline-block mt-2 px-2.5 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-md">
-                  {selectedEvent.extendedProps?.status}
-                </span>
-              </div>
-              <button onClick={() => setSelectedEvent(null)} className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-1.5 rounded-full transition-colors">
-                <X className="w-5 h-5" />
+      {/* Legend */}
+      <div className="flex items-center gap-4 flex-wrap">
+        {Object.entries(STATUS_COLORS).map(([k, c]) => (
+          <div key={k} className="flex items-center gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />
+            <span className="text-xs font-semibold text-gray-500">{k.replace(/_/g, " ")}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Day Modal */}
+      {dayEvents && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setDayEvents(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden border border-gray-100" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <h3 className="font-black text-navy">
+                {dayEvents.date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+              </h3>
+              <button onClick={() => setDayEvents(null)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-4 h-4" />
               </button>
             </div>
-
-            <div className="p-6 space-y-4">
-              {[
-                { icon: CalendarIcon, label: "Event Time", value: new Date(selectedEvent.start).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) },
-                { icon: MapPin, label: "Location", value: selectedEvent.extendedProps?.address },
-                { icon: User, label: "Customer", value: selectedEvent.extendedProps?.customerName },
-                { icon: Phone, label: "Phone", value: selectedEvent.extendedProps?.phone },
-                { icon: Mail, label: "Email", value: selectedEvent.extendedProps?.email },
-              ].map(({ icon: Icon, label, value }) => value && (
-                <div key={label} className="flex items-start gap-3">
-                  <Icon className="w-5 h-5 text-coral shrink-0 mt-0.5" />
+            <div className="divide-y divide-gray-50 max-h-80 overflow-y-auto">
+              {dayEvents.events.map(ev => (
+                <Link key={ev.id} href={`/admin/bookings/${ev.id}`} onClick={() => setDayEvents(null)}
+                  className="flex items-start gap-3 p-4 hover:bg-gray-50 transition-colors">
+                  <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" style={{ background: STATUS_COLORS[ev.status] ?? "#475569" }} />
                   <div>
-                    <p className="text-sm font-bold text-slate-900">{label}</p>
-                    <p className="text-sm text-slate-600">{value}</p>
+                    <div className="font-bold text-sm text-navy">#{ev.bookingNumber} · {ev.customer.firstName} {ev.customer.lastName}</div>
+                    <div className="text-xs text-gray-400 font-medium mt-0.5">{ev.startTime} · {ev.city} · {ev.package?.name}</div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
+          </div>
+        </div>
+      )}
 
-            <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-              <button onClick={() => setSelectedEvent(null)} className="px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-200 bg-slate-100 rounded-xl transition-colors">
-                Close
+      {/* Event Detail Modal */}
+      {selected && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={() => setSelected(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm border border-gray-100" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <h3 className="font-black text-navy">#{selected.bookingNumber}</h3>
+              <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600">
+                <X className="w-4 h-4" />
               </button>
-              <Link href={`/admin/bookings/${selectedEvent.id}`} className="px-4 py-2.5 text-sm font-bold text-white bg-coral hover:bg-coral/90 rounded-xl transition-colors shadow-sm">
-                View Full Booking
+            </div>
+            <div className="p-5 space-y-3">
+              <div className="text-sm font-bold text-navy">{selected.customer.firstName} {selected.customer.lastName}</div>
+              <div className="text-sm text-gray-500">{new Date(selected.eventDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })} at {selected.startTime}</div>
+              <div className="text-sm text-gray-500">{selected.city} · {selected.package?.name}</div>
+              <span className="inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ background: STATUS_BG[selected.status], color: STATUS_COLORS[selected.status] }}>
+                {selected.status.replace(/_/g, " ")}
+              </span>
+              <Link href={`/admin/bookings/${selected.id}`}
+                className="block w-full text-center mt-3 py-2.5 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors">
+                View Full Details
               </Link>
             </div>
           </div>

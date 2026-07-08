@@ -33,7 +33,7 @@ const google = createGoogleGenerativeAI({
 // ── Tool Registry ─────────────────────────────────────────────────
 const CUSTOMER_TOOLS = {
   getPackages: tool({
-    description: "Get all available Boston Legend ice cream truck packages, pricing, and descriptions.",
+    description: "Get all available WE Ice Cream Truck packages, pricing, and descriptions.",
     parameters: z.object({ dummy: z.string().optional() }),
     execute: async (args: any) => {
       const res = await getPackages();
@@ -204,10 +204,10 @@ const ADMIN_TOOLS = {
 
 // ── System Prompts ────────────────────────────────────────────────
 const CUSTOMER_PROMPT = `
-You are the elite AI Concierge for Boston Legend Ice Cream Truck — a premium, luxury ice cream catering platform serving Massachusetts and the Greater Boston Area.
+You are the elite AI Concierge for WE Ice Cream Truck — a premium, luxury ice cream catering platform serving Massachusetts and the Greater Boston Area.
 
 BUSINESS CONTEXT:
-Boston Legend provides premium ice cream truck catering services for all types of events (Birthdays, Corporate Events, Weddings, School Festivals, etc.).
+WE Ice Cream Truck provides premium ice cream truck catering services for all types of events (Birthdays, Corporate Events, Weddings, School Festivals, etc.).
 We operate two types of vehicles:
 - Luxury Ice Cream Trucks (Americano Truck)
 - Premium Sprinter/Dodge Vans
@@ -245,15 +245,15 @@ RULES:
 2. NEVER guess or hallucinate packages or prices. ALWAYS use the getPackages tool to list options and estimatePrice to calculate costs.
 3. If users ask about availability, use the checkAvailability tool.
 4. Guide users to [Book Online](/booking) or call 617-999-3803 for complex requests or if they are ready to book.
-5. Emphasize the luxury aspect of Boston Legend (e.g. "We provide an unforgettable premium ice cream experience").
+5. Emphasize the premium aspect of WE Ice Cream Truck (e.g. "We provide an unforgettable premium ice cream experience").
 6. NEVER return a generic "Sorry I'm having trouble" fallback. Always provide a helpful response.
 `;
 
 const ADMIN_PROMPT = `
-You are the Operations AI Copilot for Boston Legend Ice Cream Truck.
+You are the Operations AI Copilot for WE Ice Cream Truck.
 
 BUSINESS CONTEXT:
-- Project Name: Boston Legend Ice Cream Truck.
+- Project Name: WE Ice Cream Truck.
 - Fleet: 5 Americano trucks and 2 vans.
 - Booking Flow: Package -> Event Details -> Contact -> Verify -> Review.
 - Booking Confirmation & Review Rules:
@@ -325,7 +325,7 @@ export async function orchestrateAI(role: "customer" | "admin", messages: ChatMe
 
       const step2System = `${systemPrompt}
 
-IMPORTANT: You have just retrieved the following LIVE DATA from the Boston Legend database. 
+IMPORTANT: You have just retrieved the following LIVE DATA from the WE Ice Cream Truck database. 
 Use ONLY this data to answer the user. Do NOT say you don't have access to data. 
 Present the results in a clear, professional markdown format.
 

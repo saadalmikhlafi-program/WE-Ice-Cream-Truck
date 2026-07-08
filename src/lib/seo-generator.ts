@@ -23,18 +23,18 @@ function sfc32(a: number, b: number, c: number, d: number) {
 // ─── CONTENT POOLS ───────────────────────────────────────────────
 
 const INTROS = (city: string) => [
-    `Looking for the perfect sweet treat in ${city}? Boston Legend brings Greater Boston's most celebrated ice cream truck experience directly to your neighborhood, park, or venue.`,
-    `Make your next event in ${city} truly unforgettable with a Boston Legend ice cream truck. We serve artisan ice cream, premium soft-serve, and novelty treats at every event type.`,
-    `From corporate campuses to backyard birthday parties, Boston Legend Ice Cream Truck has been delighting guests across ${city} and surrounding communities for years.`,
+    `Looking for the perfect sweet treat in ${city}? WE Ice Cream Truck brings Greater Boston's most celebrated ice cream truck experience directly to your neighborhood, park, or venue.`,
+    `Make your next event in ${city} truly unforgettable with a WE Ice Cream Truck. We serve artisan ice cream, premium soft-serve, and novelty treats at every event type.`,
+    `From corporate campuses to backyard birthday parties, WE Ice Cream Truck has been delighting guests across ${city} and surrounding communities for years.`,
     `Sweetening up ${city} one scoop at a time. Our fleet of gleaming ice cream trucks serves birthday parties, school events, corporate gatherings, and community celebrations throughout the area.`,
-    `${city}'s favorite choice for ice cream truck rentals. Whether you need us for 50 guests or 500, Boston Legend delivers a premium experience that guests rave about long after the last cone.`,
+    `${city}'s favorite choice for ice cream truck rentals. Whether you need us for 50 guests or 500, WE Ice Cream Truck delivers a premium experience that guests rave about long after the last cone.`,
     `Planning an event in ${city}? Our professional ice cream truck service brings the fun — we handle logistics, travel, and service so you can enjoy your event stress-free.`,
-    `Boston Legend has served hundreds of events across ${city} and Greater Boston. Our trucks arrive spotless, on time, and fully stocked with flavors your guests will love.`,
-    `Nothing brings people together quite like an ice cream truck. Boston Legend's professional service in ${city} has been the highlight of countless birthdays, weddings, and community events.`,
-    `${city} residents know that when it's time for something sweet, Boston Legend delivers. We offer flexible packages designed to fit your budget, your headcount, and your vision.`,
-    `Elevate your ${city} event with a touch of nostalgia and a lot of flavor. Boston Legend's ice cream trucks are fully mobile, professionally staffed, and stocked with premium treats.`,
-    `When your ${city} event calls for something extraordinary, Boston Legend answers. Our ice cream trucks have served schools, corporations, municipalities, and families across the region.`,
-    `From ${city}'s summer block parties to winter holiday celebrations, Boston Legend keeps the fun rolling year-round with our premium ice cream truck service.`,
+    `WE Ice Cream Truck has served hundreds of events across ${city} and Greater Boston. Our trucks arrive spotless, on time, and fully stocked with flavors your guests will love.`,
+    `Nothing brings people together quite like an ice cream truck. WE Ice Cream Truck's professional service in ${city} has been the highlight of countless birthdays, weddings, and community events.`,
+    `${city} residents know that when it's time for something sweet, WE Ice Cream Truck delivers. We offer flexible packages designed to fit your budget, your headcount, and your vision.`,
+    `Elevate your ${city} event with a touch of nostalgia and a lot of flavor. WE Ice Cream Truck's ice cream trucks are fully mobile, professionally staffed, and stocked with premium treats.`,
+    `When your ${city} event calls for something extraordinary, WE Ice Cream Truck answers. Our ice cream trucks have served schools, corporations, municipalities, and families across the region.`,
+    `From ${city}'s summer block parties to winter holiday celebrations, WE Ice Cream Truck keeps the fun rolling year-round with our premium ice cream truck service.`,
 ];
 
 const NEIGHBORHOODS = (city: string) => [
@@ -61,16 +61,16 @@ const EVENTS = (city: string) => [
 ];
 
 const TESTIMONIALS_POOL = (city: string) => [
-    { name: `Sarah M., ${city}`, text: `We hired Boston Legend for our neighborhood block party in ${city} and it was a massive hit. The truck arrived spotless and early, the crew was incredibly friendly, and the selection was outstanding. Every single guest — from 2-year-olds to grandparents — loved it.` },
+    { name: `Sarah M., ${city}`, text: `We hired WE Ice Cream Truck for our neighborhood block party in ${city} and it was a massive hit. The truck arrived spotless and early, the crew was incredibly friendly, and the selection was outstanding. Every single guest — from 2-year-olds to grandparents — loved it.` },
     { name: `David L., ${city}`, text: `Best ice cream truck experience we've ever had in ${city}. They arrived ahead of schedule, had a huge variety of flavors, and the kids absolutely went wild. The booking process was seamless from start to finish.` },
-    { name: `Emily R., ${city}`, text: `We booked Boston Legend for our corporate summer event in ${city}. Highly professional, the setup was perfect, and employees are still talking about it weeks later. Highly recommend for any company event.` },
-    { name: `Michael T., ${city}`, text: `If you are in ${city} and need an ice cream truck, stop searching. Boston Legend is hands-down the best. Fantastic pricing, amazing communication, and the ice cream quality is top tier.` },
-    { name: `Jessica K., ${city}`, text: `We had Boston Legend at my daughter's birthday party in ${city}. She was absolutely thrilled. The truck driver was so kind and patient with all the kids. Will absolutely book again next year!` },
-    { name: `Robert H., ${city}`, text: `Our school in ${city} hired Boston Legend for our end-of-year celebration. The kids were over the moon. The pricing was fair, the service was impeccable, and the truck was spotlessly clean.` },
-    { name: `Amanda S., ${city}`, text: `Boston Legend served our wedding farewell brunch in ${city} with an ice cream sundae bar setup. It was unique, fun, and our guests absolutely adored it. We got so many compliments on the creative idea.` },
+    { name: `Emily R., ${city}`, text: `We booked WE Ice Cream Truck for our corporate summer event in ${city}. Highly professional, the setup was perfect, and employees are still talking about it weeks later. Highly recommend for any company event.` },
+    { name: `Michael T., ${city}`, text: `If you are in ${city} and need an ice cream truck, stop searching. WE Ice Cream Truck is hands-down the best. Fantastic pricing, amazing communication, and the ice cream quality is top tier.` },
+    { name: `Jessica K., ${city}`, text: `We had WE Ice Cream Truck at my daughter's birthday party in ${city}. She was absolutely thrilled. The truck driver was so kind and patient with all the kids. Will absolutely book again next year!` },
+    { name: `Robert H., ${city}`, text: `Our school in ${city} hired WE Ice Cream Truck for our end-of-year celebration. The kids were over the moon. The pricing was fair, the service was impeccable, and the truck was spotlessly clean.` },
+    { name: `Amanda S., ${city}`, text: `WE Ice Cream Truck served our wedding farewell brunch in ${city} with an ice cream sundae bar setup. It was unique, fun, and our guests absolutely adored it. We got so many compliments on the creative idea.` },
     { name: `Thomas W., ${city}`, text: `Hired them for our company's quarterly all-hands event in ${city}. The entire process from quote to service was effortless. The truck was gorgeous and the staff were true professionals.` },
-    { name: `Maria G., ${city}`, text: `I've seen ice cream trucks before, but Boston Legend is in a completely different league. Their ${city} service was impeccable, the flavors were incredible, and they stayed right on schedule.` },
-    { name: `Chris P., ${city}`, text: `Organized a neighborhood charity event in ${city} and used Boston Legend as our sweet treat partner. They donated a percentage back to our cause AND served everyone with a huge smile. Five stars, no question.` },
+    { name: `Maria G., ${city}`, text: `I've seen ice cream trucks before, but WE Ice Cream Truck is in a completely different league. Their ${city} service was impeccable, the flavors were incredible, and they stayed right on schedule.` },
+    { name: `Chris P., ${city}`, text: `Organized a neighborhood charity event in ${city} and used WE Ice Cream Truck as our sweet treat partner. They donated a percentage back to our cause AND served everyone with a huge smile. Five stars, no question.` },
 ];
 
 const FAQS = (city: string) => [
@@ -157,7 +157,7 @@ export function generateCitySEOData(slug: string) {
         name: s.split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
     }));
 
-    const description = `Boston Legend Ice Cream Truck in ${cityName}, MA — Premium ice cream truck rentals for birthday parties, corporate events, school celebrations, and community festivals. Serving ${cityName} and all of Greater Boston. Book online instantly.`;
+    const description = `WE Ice Cream Truck in ${cityName}, MA — Premium ice cream truck rentals for birthday parties, corporate events, school celebrations, and community festivals. Serving ${cityName} and all of Greater Boston. Book online instantly.`;
 
     // Schema.org JSON-LD data
     const schemaFaqs = selectedFaqs.map(f => ({
@@ -171,7 +171,7 @@ export function generateCitySEOData(slug: string) {
         "@graph": [
             {
                 "@type": "LocalBusiness",
-                "name": "Boston Legend Ice Cream Truck",
+                "name": "WE Ice Cream Truck",
                 "description": `Professional ice cream truck rental service serving ${cityName}, MA and Greater Boston.`,
                 "url": `https://www.bostonlegendicecreamtruck.com/cities/${slug}`,
                 "telephone": "+16179993803",

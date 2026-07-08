@@ -1,406 +1,259 @@
 "use client";
-import { useEffect, useState, use } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, User, MapPin, CalendarClock, DollarSign, Truck, CheckCircle2, XCircle, AlertCircle, Loader2 } from "lucide-react";
+import {
+  ArrowLeft, CheckCircle2, XCircle, MapPin, Users,
+  Phone, Mail, DollarSign, Calendar, Loader2, ChevronRight, AlertCircle, MessageSquare
+} from "lucide-react";
 
-type DetailBooking = any;
+const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string; border: string }> = {
+  PENDING_REVIEW:  { label: "Pending Review",  bg: "#FFF7ED", text: "#C2410C", border: "#FED7AA" },
+  PENDING_PAYMENT: { label: "Pending Payment", bg: "#EFF6FF", text: "#1D4ED8", border: "#BFDBFE" },
+  CONFIRMED:       { label: "Confirmed",       bg: "#ECFDF5", text: "#059669", border: "#A7F3D0" },
+  COMPLETED:       { label: "Completed",       bg: "#F8FAFC", text: "#475569", border: "#CBD5E1" },
+  CANCELLED:       { label: "Cancelled",       bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
+  REJECTED:        { label: "Rejected",        bg: "#FFF1F2", text: "#BE123C", border: "#FECDD3" },
+};
 
-export default function AdminBookingDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
-  const [booking, setBooking] = useState<DetailBooking | null>(null);
+function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex items-start justify-between py-3 border-b border-gray-50 last:border-0">
+      <span className="text-xs font-bold text-gray-400 uppercase tracking-wider w-36 flex-shrink-0">{label}</span>
+      <span className="text-sm font-semibold text-navy text-right flex-1">{value || "—"}</span>
+    </div>
+  );
+}
+
+export default function BookingDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const [booking, setBooking] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState("");
+  const [actionLoading, setActionLoading] = useState(false);
   const [internalNote, setInternalNote] = useState("");
-  const [customPrice, setCustomPrice] = useState("");
-  const [customerNotes, setCustomerNotes] = useState("");
+  const [showNoteBox, setShowNoteBox] = useState(false);
+  const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
-  const [vehicles, setVehicles] = useState<any[]>([]);
-  const [drivers, setDrivers] = useState<any[]>([]);
-  const [selectedVehicleId, setSelectedVehicleId] = useState("");
-  const [selectedDriverId, setSelectedDriverId] = useState("");
-  const [assigning, setAssigning] = useState(false);
+  const showToast = (msg: string, type: "success" | "error" = "success") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   const loadBooking = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/bookings/${id}`);
-      if (res.ok) {
-        const json = await res.json();
-        setBooking(json.data);
-        setInternalNote(json.data.internalNote || "");
-        setCustomPrice(json.data.totalAmount > 0 ? String(json.data.totalAmount) : "");
-        setCustomerNotes(json.data.notes || "");
-        if (json.data.assignment) {
-          setSelectedVehicleId(json.data.assignment.vehicleId || "");
-          setSelectedDriverId(json.data.assignment.driverId || "");
-        } else if (json.data.vehicleId) {
-          setSelectedVehicleId(json.data.vehicleId);
-        }
-      }
-    } catch (e) { }
-    setLoading(false);
+      const res  = await fetch(`/api/admin/bookings/${id}`);
+      const json = await res.json();
+      setBooking(json.data || json);
+    } catch { showToast("Failed to load booking", "error"); }
+    finally { setLoading(false); }
   };
 
-  useEffect(() => {
-    loadBooking();
-    const fetchDropdowns = async () => {
-      try {
-        const [resV, resD] = await Promise.all([
-          fetch("/api/admin/vehicles"),
-          fetch("/api/admin/drivers")
-        ]);
-        if (resV.ok) setVehicles(await resV.json());
-        if (resD.ok) {
-          // Flatten drivers if nested inside user structure
-          const driversData = await resD.json();
-          setDrivers(driversData);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    fetchDropdowns();
-  }, [id]);
-
-  const saveAssignment = async () => {
-    setAssigning(true);
-    try {
-      const res = await fetch(`/api/admin/bookings/${id}/assign`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          vehicleId: selectedVehicleId,
-          driverId: selectedDriverId || null
-        })
-      });
-      if (res.ok) {
-        alert("Assignment saved successfully!");
-        await loadBooking();
-      } else {
-        const json = await res.json();
-        alert(json.error || "Failed to save assignment.");
-      }
-    } catch (e) {
-      alert("Network error saving assignment.");
-    } finally {
-      setAssigning(false);
-    }
-  };
+  useEffect(() => { loadBooking(); }, [id]);
 
   const updateStatus = async (status: string) => {
-    setUpdating(status);
+    setActionLoading(true);
     try {
-      await fetch(`/api/admin/bookings/${id}/status`, {
+      const res = await fetch(`/api/admin/bookings/${id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status, internalNote, customPrice, customerNotes })
+        body: JSON.stringify({ status, internalNote }),
       });
-      await loadBooking();
-    } catch (e) { }
-    setUpdating("");
+      if (res.ok) { showToast(`Status updated to ${status}`); setShowNoteBox(false); await loadBooking(); }
+      else { showToast("Failed to update status", "error"); }
+    } catch { showToast("Network error", "error"); }
+    finally { setActionLoading(false); }
   };
 
-  if (loading) return <div className="flex items-center justify-center p-24"><Loader2 className="w-8 h-8 animate-spin text-[#FFA000]"/></div>;
-  if (!booking) return <div className="p-24 text-center">Booking not found</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <Loader2 className="w-8 h-8 animate-spin text-coral" />
+    </div>
+  );
+  if (!booking) return (
+    <div className="text-center py-20">
+      <AlertCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+      <p className="font-bold text-gray-500">Booking not found</p>
+    </div>
+  );
 
-  let breakdown: any = {};
-  try {
-    if (booking.quote?.snapshotJson) {
-      breakdown = JSON.parse(booking.quote.snapshotJson);
-    }
-  } catch (e) { }
-
-  const packageName = breakdown.packageName ?? (booking.package?.name || "Custom Package");
-  const packagePrice = breakdown.packagePrice ?? (booking.quote?.basePrice ?? 250);
-  const includedGuests = breakdown.includedGuests ?? (booking.package?.servings ?? 50);
-  const includedServiceMins = breakdown.includedServiceMins ?? ((booking.package as any)?.durationMins ?? booking.package?.includedMinutes ?? booking.durationMins);
-  const extraGuestsFee = breakdown.additionalGuestsFee ?? (booking.quote?.extraPieceFee ?? 0);
-  const extraServiceFee = breakdown.additionalServiceFee ?? (booking.extraServiceFee ?? 0);
-  const travelFee = breakdown.travelFee ?? (booking.quote?.travelFee ?? 0);
-  const additionalStopsFee = breakdown.additionalStopsFee ?? (booking.additionalStopsFee ?? 0);
-  const estimatedTotal = breakdown.estimatedTotal ?? booking.totalAmount;
-  const vehiclesRequired = breakdown.vehiclesRequired ?? 1;
-  const locationMode = breakdown.locationMode ?? "SINGLE_LOCATION";
-  const additionalVehicleSetupFee = breakdown.additionalVehicleSetupFee ?? 0;
-  const additionalLocationServiceFee = breakdown.additionalLocationServiceFee ?? additionalStopsFee;
-  const weekendFee = breakdown.weekendFee ?? 0;
+  const sc = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.CONFIRMED;
+  const dateStr = booking.eventDate
+    ? new Date(booking.eventDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
+    : "—";
 
   return (
-    <div className="max-w-4xl mx-auto pb-12 animate-in fade-in zoom-in duration-300">
-      <Link href="/admin/bookings" className="inline-flex items-center gap-2 text-sm text-[#000223]/70 hover:text-[#000223] mb-6 font-bold bg-white border border-slate-100 shadow-sm px-4 py-2 rounded-xl transition-all hover:-translate-y-0.5">
-        <ChevronLeft className="w-4 h-4" /> Back to Bookings
-      </Link>
-
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <div>
-          <h2 className="text-3xl font-black text-[#000223] flex items-center gap-3">
-            #{booking.bookingNumber}
-            <span className={`px-3 py-1 text-[11px] rounded-full font-black uppercase tracking-widest ${
-              booking.status.includes("PENDING") ? "bg-amber-100 text-amber-700" :
-              booking.status === "CONFIRMED" ? "bg-emerald-100 text-emerald-700" :
-              booking.status === "REJECTED" || booking.status === "CANCELLED" ? "bg-red-100 text-red-700" :
-              "bg-slate-100 text-slate-700"
-            }`}>
-              {booking.status.replace("_", " ")}
-            </span>
-          </h2>
-          <p className="text-sm font-semibold text-slate-500 mt-1">Placed on {new Date(booking.createdAt).toLocaleString()}</p>
-        </div>
-
-        {booking.status === "PENDING_REVIEW" && (() => {
-          const isCustomPackage = booking.package?.slug === "custom-event-package" || booking.package?.serviceType === "CUSTOM";
-          const reviewReason = isCustomPackage 
-            ? "Custom package request for 200+ guests requires manual quote pricing."
-            : (booking.quote?.snapshotJson ? (() => {
-                try {
-                  const snap = JSON.parse(booking.quote.snapshotJson);
-                  if (snap.aiFlags?.includes("LONG_DISTANCE_LOW_PACKAGE_VALUE")) {
-                    return "Long distance + package below $500";
-                  }
-                  if (snap.aiFlags?.includes("NO_VEHICLE_AVAILABLE")) {
-                    return "Vehicle availability needs manual review";
-                  }
-                } catch(e){}
-                return "Long distance + package below $500";
-              })() : "Long distance + package below $500");
-
-          return (
-            <div className="flex flex-col gap-4 p-5 bg-amber-50 rounded-2xl border border-amber-200 w-full md:w-auto shadow-sm">
-              <div>
-                <div className="text-xs font-black text-amber-800 uppercase tracking-wider mb-1">
-                  Review Reason
-                </div>
-                <div className="text-sm font-semibold text-slate-700">
-                  {reviewReason}
-                </div>
-              </div>
-
-              {isCustomPackage && (
-                <div className="space-y-4 border-t border-amber-200 pt-4">
-                  <div>
-                    <label className="block text-xs font-black text-amber-900 uppercase tracking-wider mb-1">Final Custom Price ($)</label>
-                    <input
-                      type="number"
-                      value={customPrice}
-                      onChange={(e) => setCustomPrice(e.target.value)}
-                      className="w-full max-w-md p-2.5 rounded-xl border border-slate-200 font-bold text-sm bg-white text-[#000223] outline-none focus:border-[#FFA000] focus:ring-2 focus:ring-[#FFA000]/15"
-                      placeholder="E.g. 1500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-black text-amber-900 uppercase tracking-wider mb-1">Customer-facing Notes / Pricing Notes</label>
-                    <textarea
-                      value={customerNotes}
-                      onChange={(e) => setCustomerNotes(e.target.value)}
-                      className="w-full p-2.5 rounded-xl border border-slate-200 font-bold text-sm bg-white text-[#000223] outline-none focus:border-[#FFA000] focus:ring-2 focus:ring-[#FFA000]/15"
-                      rows={3}
-                      placeholder="E.g. Approved custom quote including Sprinter Van setup, 200 portions, and 2 stops."
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className="flex gap-3 pt-2">
-                <button disabled={!!updating} onClick={() => updateStatus("REJECTED")} className="btn-secondary py-2.5 px-6 text-sm text-red-650 border-red-200 hover:bg-red-50 disabled:opacity-50 flex items-center gap-2"><XCircle className="w-4 h-4"/> Reject</button>
-                <button 
-                  disabled={!!updating || (isCustomPackage && !customPrice)} 
-                  onClick={() => updateStatus("CONFIRMED")} 
-                  className="btn-primary py-2.5 px-6 text-sm bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 flex items-center gap-2"
-                >
-                  {updating === "CONFIRMED" ? <Loader2 className="w-4 h-4 animate-spin"/> : <CheckCircle2 className="w-4 h-4"/>}
-                  Approve Booking
-                </button>
-              </div>
-            </div>
-          );
-        })()}
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Customer Info */}
-        <div className="card-premium p-6">
-          <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-[#000223]"><User className="w-5 h-5 text-[#FFA000]" /> Customer Details</h3>
-          <div className="space-y-4 text-sm font-semibold">
-            <div className="flex justify-between items-center"><span className="text-slate-400">Name:</span> <span className="text-slate-800">{booking.customer.firstName} {booking.customer.lastName}</span></div>
-            <div className="flex justify-between items-center"><span className="text-slate-400">Email:</span> <a href={`mailto:${booking.customer.email}`} className="text-blue-600 hover:underline">{booking.customer.email}</a></div>
-            <div className="flex justify-between items-center"><span className="text-slate-400">Phone:</span> <a href={`tel:${booking.customer.phone}`} className="text-blue-600 hover:underline">{booking.customer.phone}</a></div>
-          </div>
-        </div>
-
-        {/* Event Info */}
-        <div className="card-premium p-6">
-          <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-[#000223]"><CalendarClock className="w-5 h-5 text-blue-500" /> Event Details</h3>
-          <div className="space-y-4 text-sm font-semibold">
-            <div className="flex justify-between items-center"><span className="text-slate-400">Date:</span> <span className="text-slate-800">{new Date(booking.eventDate).toLocaleDateString()}</span></div>
-            <div className="flex justify-between items-center"><span className="text-slate-400">Start Time:</span> <span className="text-slate-800">{booking.startTime}</span></div>
-            <div className="flex justify-between items-center"><span className="text-slate-400">Service Time:</span> <span className="text-slate-800">{includedServiceMins} mins {breakdown.additionalServiceMins ? `(+${breakdown.additionalServiceMins} mins)` : ''}</span></div>
-            <div className="flex justify-between items-center"><span className="text-slate-400">Guests:</span> <span className="text-slate-800">{booking.guests}</span></div>
-            <div className="flex justify-between items-center"><span className="text-slate-400">Type:</span> <span className="text-slate-800">{booking.eventType}</span></div>
-          </div>
-        </div>
-
-        {/* Location Info & Route Stops */}
-        <div className="card-premium p-6 md:col-span-2">
-          <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-[#000223]"><MapPin className="w-5 h-5 text-rose-500" /> Route & Stops</h3>
-          
-          <div className="space-y-4">
-            <div className="flex flex-col border-l-2 border-slate-200 pl-4 py-1 relative">
-              <div className="absolute w-3 h-3 bg-emerald-500 rounded-full -left-[7px] top-2 border-2 border-white"></div>
-              <span className="text-xs font-black uppercase text-emerald-600 mb-1">Primary Location</span>
-              <span className="font-bold text-[#000223] text-sm">{booking.address}</span>
-              <span className="font-semibold text-slate-500 text-xs">{booking.city}, {booking.zip}</span>
-            </div>
-            
-            {booking.stops?.map((stop: any, idx: number) => (
-              <div key={stop.id} className="flex flex-col border-l-2 border-slate-200 pl-4 py-1 relative">
-                <div className="absolute w-3 h-3 bg-blue-500 rounded-full -left-[7px] top-2 border-2 border-white"></div>
-                <span className="text-xs font-black uppercase text-blue-600 mb-1">Additional Stop {idx + 1}</span>
-                <span className="font-bold text-[#000223] text-sm">{stop.street}</span>
-                <span className="font-semibold text-slate-500 text-xs">{stop.city}, {stop.state} {stop.zipCode}</span>
-                {stop.notes && (
-                  <span className="font-semibold text-slate-400 text-xs mt-1.5 italic">📝 {stop.notes}</span>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Pricing Info */}
-        <div className="card-premium p-6">
-          <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-[#000223]"><DollarSign className="w-5 h-5 text-emerald-500" /> Pricing Breakdown</h3>
-          
-          {/* Custom Pricing Status */}
-          {(() => {
-            const isCustomPackage = booking.package?.slug === "custom-event-package" || booking.package?.serviceType === "CUSTOM";
-            return (
-              <div className="mb-4 p-3 bg-slate-50 border border-slate-100 rounded-xl flex justify-between items-center font-bold text-xs">
-                <span className="text-slate-500 uppercase tracking-wider">Pricing System</span>
-                <span className={`px-2.5 py-0.5 rounded-full uppercase tracking-wider text-[10px] ${
-                  isCustomPackage ? "bg-blue-100 text-blue-800" : "bg-slate-100 text-slate-700"
-                }`}>
-                  {isCustomPackage ? "Custom Quote" : "Standard Fixed"}
-                </span>
-              </div>
-            );
-          })()}
-
-          {(() => {
-            const isCustomPackage = booking.package?.slug === "custom-event-package" || booking.package?.serviceType === "CUSTOM";
-            if (isCustomPackage && booking.status === "PENDING_REVIEW") {
-              return (
-                <div className="py-4 border-b border-slate-100 mb-4 text-sm font-semibold text-slate-500 space-y-2">
-                  <p className="text-xs text-amber-700 bg-amber-50 border border-amber-250 p-2.5 rounded-lg leading-relaxed">
-                    ⚠️ <strong>Pending Quote Review:</strong> This booking has no fixed price yet. Please review details, compute travel and weekend fees, and enter a final custom price.
-                  </p>
-                </div>
-              );
-            }
-            return (
-              <div className="space-y-3 text-sm font-semibold pb-4 border-b border-slate-100 mb-4 text-slate-800">
-                <div className="flex justify-between items-center"><span className="text-slate-400">Location Mode:</span> <span>{locationMode}</span></div>
-                <div className="flex justify-between items-center"><span className="text-slate-400">Vehicles Required:</span> <span>{vehiclesRequired}</span></div>
-                <div className="h-px bg-slate-100 my-2" />
-                <div className="flex justify-between items-center"><span className="text-slate-400">Package ({packageName}):</span> <span>${packagePrice.toFixed(2)}</span></div>
-                {extraGuestsFee > 0 && (
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Extra Guests Fee:</span> <span>${extraGuestsFee.toFixed(2)}</span></div>
-                )}
-                {extraServiceFee > 0 && (
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Additional Service Time:</span> <span>${extraServiceFee.toFixed(2)}</span></div>
-                )}
-                {additionalLocationServiceFee > 0 && (
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Additional Location Service Fee:</span> <span>${additionalLocationServiceFee.toFixed(2)}</span></div>
-                )}
-                {additionalVehicleSetupFee > 0 && (
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Additional Vehicle Setup Fee:</span> <span>${additionalVehicleSetupFee.toFixed(2)}</span></div>
-                )}
-                {weekendFee > 0 && (
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Weekend Event Fee:</span> <span>${weekendFee.toFixed(2)}</span></div>
-                )}
-                {travelFee > 0 && (
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Travel Fee:</span> <span>${travelFee.toFixed(2)}</span></div>
-                )}
-              </div>
-            );
-          })()}
-
-          <div className="flex justify-between items-center text-xl font-black mb-4">
-            <span className="text-[#000223]">Total Amount:</span>
-            <span className="text-emerald-600">${estimatedTotal.toFixed(2)}</span>
-          </div>
-
-          {/* Weekend notice in Admin Details */}
-          {(() => {
-            if (!booking.eventDate) return null;
-            const day = new Date(booking.eventDate.toString().split('T')[0] + "T12:00:00").getDay();
-            const isWeekendDay = day === 0 || day === 6;
-            if (isWeekendDay) {
-              return (
-                <div className="mt-4 p-3 rounded-xl text-xs font-bold text-blue-900 bg-blue-50 border border-blue-200 leading-relaxed">
-                  📅 <strong>Weekend Event:</strong> Saturday/Sunday bookings include a $25 weekend event fee. Please verify this is factored into the custom total.
-                </div>
-              );
-            }
-            return null;
-          })()}
-        </div>
-
-        {/* Dispatch Actions */}
-        <div className="card-premium p-6 flex flex-col justify-between">
-          <div>
-            <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-[#000223]"><Truck className="w-5 h-5 text-[#FFA000]" /> Dispatch Assignment</h3>
-            <div className="space-y-4 font-semibold text-sm">
-              <div>
-                <label className="label-premium">Vehicle</label>
-                <select
-                  value={selectedVehicleId}
-                  onChange={e => setSelectedVehicleId(e.target.value)}
-                  className="w-full py-3.5 px-4.5 rounded-2xl border-2 font-semibold text-base outline-none transition-all bg-white text-[#000223] border-slate-100 focus:border-[#FFA000] focus:ring-4 focus:ring-[#FFA000]/15"
-                >
-                  <option value="">Unassigned</option>
-                  {vehicles.map(v => (
-                    <option key={v.id} value={v.id}>{v.code} - {v.name} ({v.type})</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="label-premium">Driver</label>
-                <select
-                  value={selectedDriverId}
-                  onChange={e => setSelectedDriverId(e.target.value)}
-                  className="w-full py-3.5 px-4.5 rounded-2xl border-2 font-semibold text-base outline-none transition-all bg-white text-[#000223] border-slate-100 focus:border-[#FFA000] focus:ring-4 focus:ring-[#FFA000]/15"
-                >
-                  <option value="">Unassigned</option>
-                  {drivers.map(d => (
-                    <option key={d.id} value={d.id}>{d.name}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-          
-          <button
-            onClick={saveAssignment}
-            disabled={assigning || !selectedVehicleId}
-            className="w-full py-4 rounded-2xl font-black text-base text-[#000223] bg-[#FFA000] hover:bg-[#FFB020] hover:shadow-lg disabled:opacity-50 transition-all flex items-center justify-center gap-2 mt-6"
-            style={{ boxShadow: "0 8px 24px rgba(255,160,0,0.15)" }}
-          >
-            {assigning ? <Loader2 className="w-5 h-5 animate-spin"/> : <CheckCircle2 className="w-5 h-5"/>}
-            Save Assignment
-          </button>
-        </div>
-      </div>
-      
-      {booking.status === "PENDING_REVIEW" && (
-        <div className="mt-6 card-premium p-8 border-amber-200 bg-amber-50/20">
-          <label className="block text-sm font-black text-amber-900 mb-2 uppercase tracking-wider">Add Internal Note (visible to staff only)</label>
-          <textarea 
-            value={internalNote} onChange={e=>setInternalNote(e.target.value)}
-            className="w-full p-4 rounded-2xl border-2 border-amber-200/60 text-base font-semibold outline-none focus:border-[#FFA000] focus:ring-4 focus:ring-[#FFA000]/15 bg-white text-[#000223]" 
-            rows={4} placeholder="E.g. Travel fee adjusted due to traffic conditions..." 
-          />
+    <div className="space-y-6">
+      {toast && (
+        <div className={`fixed top-6 right-6 z-[200] px-5 py-3 rounded-2xl shadow-xl text-white text-sm font-bold flex items-center gap-2 transition-all ${toast.type === "success" ? "bg-emerald-500" : "bg-red-500"}`}>
+          {toast.type === "success" ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+          {toast.msg}
         </div>
       )}
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Link href="/admin/bookings" className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:border-coral hover:text-coral transition-all">
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+          <div>
+            <h1 className="text-xl font-black text-navy">#{booking.bookingNumber}</h1>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold border"
+                style={{ background: sc.bg, color: sc.text, borderColor: sc.border }}>
+                {sc.label}
+              </span>
+              <span className="text-xs text-gray-400 font-medium">{dateStr}</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          {booking.status === "PENDING_REVIEW" && (
+            <>
+              <button onClick={() => updateStatus("CONFIRMED")} disabled={actionLoading}
+                className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-xl text-sm font-bold hover:bg-emerald-600 disabled:opacity-60 transition-all shadow-sm">
+                {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                Confirm Booking
+              </button>
+              <button onClick={() => updateStatus("REJECTED")} disabled={actionLoading}
+                className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm font-bold hover:bg-red-100 transition-all">
+                <XCircle className="w-4 h-4" /> Reject
+              </button>
+            </>
+          )}
+          {booking.status === "CONFIRMED" && (
+            <button onClick={() => updateStatus("COMPLETED")} disabled={actionLoading}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-xl text-sm font-bold hover:bg-blue-600 disabled:opacity-60 transition-all shadow-sm">
+              {actionLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+              Mark Completed
+            </button>
+          )}
+          {!["CANCELLED","REJECTED","COMPLETED"].includes(booking.status) && (
+            <button onClick={() => updateStatus("CANCELLED")} disabled={actionLoading}
+              className="px-4 py-2 bg-white border border-gray-200 text-gray-500 rounded-xl text-sm font-bold hover:border-red-300 hover:text-red-500 transition-all">
+              Cancel
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-5">
+          {/* Event Details */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <h2 className="text-xs font-black text-navy uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Calendar className="w-3.5 h-3.5 text-coral" /> Event Details
+            </h2>
+            <InfoRow label="Event Type"   value={booking.eventType} />
+            <InfoRow label="Date"         value={dateStr} />
+            <InfoRow label="Start Time"   value={booking.startTime} />
+            <InfoRow label="Duration"     value={booking.durationMins ? `${booking.durationMins} min` : null} />
+            <InfoRow label="Guests"       value={booking.guests} />
+            <InfoRow label="Address"      value={`${booking.address || ""}, ${booking.city || ""} ${booking.zip || ""}`} />
+            <InfoRow label="Package"      value={booking.package?.name} />
+            <InfoRow label="Vehicle"      value={booking.vehicle?.code} />
+            {booking.notes && <InfoRow label="Notes" value={booking.notes} />}
+          </div>
+
+          {/* Pricing */}
+          {booking.quote && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+              <h2 className="text-xs font-black text-navy uppercase tracking-wider mb-4 flex items-center gap-2">
+                <DollarSign className="w-3.5 h-3.5 text-coral" /> Pricing
+              </h2>
+              <InfoRow label="Base Price"  value={`$${booking.quote.basePrice?.toFixed(2)}`} />
+              {booking.quote.travelFee > 0 && <InfoRow label="Travel Fee" value={`$${booking.quote.travelFee?.toFixed(2)}`} />}
+              {booking.quote.additionalServiceFee > 0 && <InfoRow label="Additional Service" value={`$${booking.quote.additionalServiceFee?.toFixed(2)}`} />}
+              <div className="pt-3 mt-2 border-t border-gray-100 flex items-center justify-between">
+                <span className="text-xs font-black text-gray-400 uppercase tracking-wider">Total</span>
+                <span className="text-2xl font-black text-navy">${booking.quote.totalAmount?.toFixed(2)}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Internal Notes */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xs font-black text-navy uppercase tracking-wider flex items-center gap-2">
+                <MessageSquare className="w-3.5 h-3.5 text-coral" /> Internal Notes
+              </h2>
+              <button onClick={() => setShowNoteBox(v => !v)} className="text-xs font-bold text-coral">
+                {showNoteBox ? "Cancel" : "+ Add Note"}
+              </button>
+            </div>
+            {showNoteBox && (
+              <div className="mb-4">
+                <textarea value={internalNote} onChange={e => setInternalNote(e.target.value)}
+                  placeholder="Add an internal note (not visible to customers)…" rows={3}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral resize-none transition-colors" />
+                <button onClick={() => updateStatus(booking.status)}
+                  className="mt-2 px-4 py-2 bg-coral text-white rounded-xl text-xs font-bold hover:bg-coral-dark transition-colors">
+                  Save Note
+                </button>
+              </div>
+            )}
+            {booking.internalNote
+              ? <div className="bg-amber-50 border border-amber-100 rounded-xl p-4 text-sm text-gray-700">{booking.internalNote}</div>
+              : <p className="text-sm text-gray-400">No internal notes yet.</p>
+            }
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-5">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <h2 className="text-xs font-black text-navy uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Users className="w-3.5 h-3.5 text-coral" /> Customer
+            </h2>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-11 h-11 rounded-full bg-coral/10 border border-coral/20 flex items-center justify-center font-black text-coral text-sm">
+                {booking.customer?.firstName?.[0]}{booking.customer?.lastName?.[0]}
+              </div>
+              <div>
+                <div className="font-black text-sm text-navy">{booking.customer?.firstName} {booking.customer?.lastName}</div>
+                {booking.customer?.id && (
+                  <Link href={`/admin/customers/${booking.customer.id}`} className="text-xs font-bold text-coral hover:underline">View Profile →</Link>
+                )}
+              </div>
+            </div>
+            <div className="space-y-2.5">
+              <a href={`mailto:${booking.customer?.email}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-coral transition-colors">
+                <Mail className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <span className="truncate">{booking.customer?.email}</span>
+              </a>
+              <a href={`tel:${booking.customer?.phone}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-coral transition-colors">
+                <Phone className="w-4 h-4 text-gray-400 flex-shrink-0" /> {booking.customer?.phone}
+              </a>
+              {booking.city && (
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <MapPin className="w-4 h-4 text-gray-400 flex-shrink-0" /> {booking.city}, MA
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <h2 className="text-xs font-black text-navy uppercase tracking-wider mb-3">Activity</h2>
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <div className="w-2 h-2 rounded-full bg-coral mt-1.5 flex-shrink-0" />
+                <div>
+                  <div className="text-xs font-bold text-navy">Booking Created</div>
+                  <div className="text-[11px] text-gray-400">{booking.createdAt ? new Date(booking.createdAt).toLocaleString() : "—"}</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${booking.status !== "PENDING_REVIEW" ? "bg-emerald-500" : "bg-gray-200"}`} />
+                <div>
+                  <div className="text-xs font-bold text-navy">Status</div>
+                  <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold border" style={{ background: sc.bg, color: sc.text, borderColor: sc.border }}>{sc.label}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

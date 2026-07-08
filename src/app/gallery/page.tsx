@@ -20,7 +20,7 @@ const galleryImages = [
 
 export default function GalleryPage() {
   return (
-    <div className="bg-sand min-h-screen pt-[88px]">
+    <div className="min-h-screen">
       {/* Header */}
       <section className="py-20 bg-navy text-cream text-center px-4">
         <AnimatedSection className="max-w-3xl mx-auto">

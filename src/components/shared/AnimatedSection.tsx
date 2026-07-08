@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, ReactNode } from "react";
-import { motion, useInView, Variants } from "framer-motion";
-import { fadeUp, scrollViewport } from "@/lib/animations";
+import { ReactNode } from "react";
+import { motion, Variants } from "framer-motion";
+import { fadeUp } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 
 interface AnimatedSectionProps {
@@ -20,15 +20,12 @@ export default function AnimatedSection({
   variants = fadeUp,
   id,
 }: AnimatedSectionProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, scrollViewport);
-
   return (
     <motion.section
       id={id}
-      ref={ref}
       initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
+      whileInView="visible"
+      viewport={{ once: true, margin: "-60px" }}
       variants={variants}
       transition={{ delay }}
       className={cn("w-full", className)}
