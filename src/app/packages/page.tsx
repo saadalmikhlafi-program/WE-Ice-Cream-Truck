@@ -183,7 +183,7 @@ export default function PackagesPage() {
       </section>
 
       {/* ── FAQ / CTA Strip ───────────────────────────────────────────── */}
-      <section className="bg-white py-20 px-4 md:px-8">
+      <section className="py-20 px-4 md:px-8">
         <div className="max-w-3xl mx-auto text-center">
           <h3 className="font-display font-black text-3xl md:text-4xl text-navy mb-4">
             Not sure which package is right?

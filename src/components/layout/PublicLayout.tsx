@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
-import FloatingQuoteButton from "@/components/layout/FloatingQuoteButton";
+import AIChatWidget from "@/components/layout/AIChatWidget";
 import SplashScreen from "@/components/shared/SplashScreen";
 import FlavorBlobs from "@/components/shared/FlavorBlobs";
 import ScrollToTop from "@/components/shared/ScrollToTop";
@@ -32,7 +32,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       </main>
       <SiteFooter />
       <MobileBottomNav />
-      <FloatingQuoteButton />
+      <AIChatWidget />
     </>
   );
 }
+

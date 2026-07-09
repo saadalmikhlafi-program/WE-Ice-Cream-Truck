@@ -71,7 +71,7 @@ export default function PackagesPreview() {
           </motion.div>
         </div>
 
-        {/* High-End Playful Cards */}
+        {/* High-End Clean Cards (No fake images) */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
@@ -84,43 +84,44 @@ export default function PackagesPreview() {
               key={pkg.id}
               variants={itemVariants}
               whileHover={{ y: -10 }}
-              className={`group flex flex-col bg-white rounded-[2.5rem] overflow-hidden border-4 transition-all duration-300 shadow-xl ${
-                pkg.isPopular ? "border-coral shadow-coral/20 relative" : "border-white"
+              className={`group flex flex-col bg-white rounded-[2.5rem] overflow-hidden border transition-all duration-300 shadow-xl ${
+                pkg.isPopular ? "border-coral shadow-coral/20 relative" : "border-gray-100 shadow-gray-100/80"
               }`}
             >
-              {/* Image Header */}
-              <div className="relative h-64 w-full bg-navy/5 overflow-hidden">
-                <Image 
-                  src={pkg.vehicleType === "TRUCK" ? "/images/classic-truck.jpg" : "/images/van-premium.jpg"}
-                  alt={pkg.name}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                {pkg.isPopular && (
-                  <div className="absolute top-4 right-4 bg-coral text-white font-bold px-4 py-2 rounded-full text-xs uppercase tracking-widest shadow-lg z-10 animate-bounce">
-                    Most Popular
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent z-0" />
-                <h3 className="absolute bottom-6 left-8 font-display font-black text-3xl text-white z-10">{pkg.name}</h3>
+              {pkg.isPopular && (
+                <div className="absolute top-0 right-8 bg-coral text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-b-xl shadow-lg z-10">
+                  Most Popular
+                </div>
+              )}
+
+              {/* Card Header (No Image) */}
+              <div className={`p-8 md:p-10 border-b ${pkg.isPopular ? "bg-navy border-navy/5" : "bg-white border-gray-50"}`}>
+                <div className={`text-xs font-black uppercase tracking-widest mb-3 ${pkg.isPopular ? "text-coral" : "text-gray-400"}`}>
+                  {pkg.durationLabel} · {pkg.servings} Servings
+                </div>
+                <h3 className={`font-display font-black text-3xl md:text-4xl mb-2 ${pkg.isPopular ? "text-white" : "text-navy"}`}>
+                  {pkg.name}
+                </h3>
+                <p className={`text-sm md:text-base font-medium mb-8 min-h-[48px] ${pkg.isPopular ? "text-white/60" : "text-gray-500"}`}>
+                  {pkg.tagline}
+                </p>
+                <div className="flex items-baseline gap-2">
+                  <span className={`text-6xl font-black tracking-tighter ${pkg.isPopular ? "text-white" : "text-coral"}`}>
+                    ${pkg.price}
+                  </span>
+                  <span className={`font-bold text-sm ${pkg.isPopular ? "text-white/40" : "text-gray-400"}`}>
+                    base price
+                  </span>
+                </div>
               </div>
 
-              <div className="p-8 md:p-10 flex flex-col flex-1">
-                <p className="font-sans text-navy/70 text-lg font-medium mb-6 min-h-[56px]">{pkg.tagline}</p>
-
-                <div className="mb-8 pb-8 border-b-2 border-navy/5 flex-1 flex items-end gap-3">
-                  <span className="font-sans font-black text-[3.5rem] leading-none tracking-tighter text-coral">{formatPrice(pkg.price)}</span>
-                  <div className="flex flex-col text-navy/50 font-bold text-xs uppercase tracking-widest mb-1.5">
-                    <span>{pkg.servings} Guests</span>
-                    <span>{pkg.durationMins / 60} Hours</span>
-                  </div>
-                </div>
-
-                <ul className="flex flex-col gap-4 mb-10">
+              {/* Card Body */}
+              <div className="p-8 md:p-10 flex flex-col flex-1 bg-white">
+                <ul className="flex flex-col gap-4 mb-10 flex-1">
                   {pkg.features.slice(0, 4).map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-4">
-                      <div className="bg-coral/10 p-1 rounded-full shrink-0 mt-0.5">
-                        <Check className="w-4 h-4 text-coral" />
+                      <div className="bg-coral/10 p-1.5 rounded-full shrink-0 mt-0.5">
+                        <Check className="w-4 h-4 text-coral" strokeWidth={3} />
                       </div>
                       <span className="font-sans text-navy/80 font-bold text-[0.95rem]">{feature}</span>
                     </li>
@@ -132,7 +133,7 @@ export default function PackagesPreview() {
                   className={`w-full py-5 rounded-full text-center font-sans font-black text-[0.9rem] tracking-widest uppercase transition-all duration-300 transform active:scale-95 ${
                     pkg.isPopular
                       ? "bg-coral text-white shadow-lg shadow-coral/30 hover:bg-navy"
-                      : "bg-navy/5 text-navy hover:bg-navy hover:text-white"
+                      : "bg-navy text-white hover:bg-[#1a2a4a] shadow-navy/20"
                   }`}
                 >
                   Book This Experience

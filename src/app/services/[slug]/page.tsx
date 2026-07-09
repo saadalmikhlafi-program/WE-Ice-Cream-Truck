@@ -45,7 +45,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
   }
 
   return (
-    <div className="min-h-screen pt-12 pb-24">
+    <div className="min-h-screen pt-28 md:pt-32 pb-24">
       <div className="container mx-auto px-4">
         {/* Breadcrumb */}
         <nav className="mb-8 text-sm text-charcoal/60">

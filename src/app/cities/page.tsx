@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { MASSACHUSETTS_CITIES, CityData } from "@/lib/cities-data";
 import { MapPin, ChevronRight, Search } from "lucide-react";
-import BrandCarousel from "@/components/shared/BrandCarousel";
 
 export const metadata: Metadata = {
   title: "Service Areas — All Massachusetts Cities | WE Ice Cream Truck",
@@ -148,8 +147,6 @@ export default function CitiesIndexPage() {
           </div>
         </div>
       </section>
-
-      <BrandCarousel />
 
       {/* Bottom CTA */}
       <section className="py-24 bg-navy relative overflow-hidden">

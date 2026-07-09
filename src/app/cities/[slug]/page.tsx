@@ -9,6 +9,8 @@ import { MapPin, Star, Calendar, IceCream, Truck, Phone, ArrowRight, ChevronRigh
 import PackagesPreview from "@/components/home/PackagesPreview";
 import FinalCTA from "@/components/home/FinalCTA";
 import FAQSection from "@/components/shared/FAQSection";
+import BrandCarousel from "@/components/shared/BrandCarousel";
+import TestimonialsCarousel from "@/components/home/TestimonialsCarousel";
 import Image from "next/image";
 
 type Props = {
@@ -186,7 +188,7 @@ export default async function CityPage({ params }: Props) {
   const faqSchema = getFAQSchema(faqs);
 
   return (
-    <div className="min-h-screen overflow-hidden">
+    <div className={`min-h-screen overflow-hidden ${theme.heroBgClass}`}>
       {/* Inject JSON-LD */}
       <script
         type="application/ld+json"
@@ -202,7 +204,7 @@ export default async function CityPage({ params }: Props) {
       />
 
       {/* ── HERO ──────────────────────────────────────────────────── */}
-      <section className={`relative pt-24 pb-32 md:pt-32 md:pb-48 ${theme.heroBgClass} overflow-hidden transition-colors duration-500`}>
+      <section className="relative pt-24 pb-32 md:pt-32 md:pb-48 overflow-hidden transition-colors duration-500">
         {/* Background effects */}
         <div className="absolute inset-0 pointer-events-none">
           <div className={`absolute top-0 right-0 w-[700px] h-[700px] ${theme.bgGlowClass} rounded-full blur-[150px] -translate-y-1/3 translate-x-1/4 transition-colors duration-1000`} />
@@ -361,26 +363,11 @@ export default async function CityPage({ params }: Props) {
         </div>
       </section>
 
-      {/* ── PACKAGES & FAQ ─────────────────────────────────────────────── */}
-      {layoutFlip ? (
-        <>
-          <FAQSection
-            title={`FAQ — ${city.name}, MA`}
-            subtitle={`Common questions about our ice cream truck service in ${city.name}.`}
-            items={faqs}
-          />
-          <PackagesPreview />
-        </>
-      ) : (
-        <>
-          <PackagesPreview />
-          <FAQSection
-            title={`FAQ — ${city.name}, MA`}
-            subtitle={`Common questions about our ice cream truck service in ${city.name}.`}
-            items={faqs}
-          />
-        </>
-      )}
+      {/* ── BRAND CAROUSEL ─────────────────────────────────────────── */}
+      <BrandCarousel />
+
+      {/* ── PACKAGES ─────────────────────────────────────────────── */}
+      <PackagesPreview />
 
       {/* ── NEARBY AREAS ─────────────────────────────────────────── */}
       {nearbyAreas.length > 0 && (
@@ -407,6 +394,16 @@ export default async function CityPage({ params }: Props) {
           </div>
         </section>
       )}
+
+      {/* ── TESTIMONIALS ─────────────────────────────────────────── */}
+      <TestimonialsCarousel />
+
+      {/* ── FAQ ──────────────────────────────────────────────────── */}
+      <FAQSection
+        title={`FAQ — ${city.name}, MA`}
+        subtitle={`Common questions about our ice cream truck service in ${city.name}.`}
+        items={faqs}
+      />
 
       {/* ── FINAL CTA ────────────────────────────────────────────── */}
       <FinalCTA />

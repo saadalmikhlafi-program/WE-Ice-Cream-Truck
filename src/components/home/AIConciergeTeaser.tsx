@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { Sparkles } from "lucide-react";
-import AIConciergeModal from "@/components/shared/AIConciergeModal";
 
 export default function AIConciergeTeaser() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleLaunch = () => {
+    window.dispatchEvent(new Event("open-ai-chat"));
+  };
 
   return (
-    <section className="py-24 md:py-40 bg-sand relative overflow-hidden">
+    <section className="py-24 md:py-40 relative overflow-hidden">
       <div className="container mx-auto px-6 md:px-12 lg:px-24">
         
         <div className="max-w-6xl mx-auto bg-navy text-cream rounded-[3rem] p-10 md:p-16 lg:p-24 flex flex-col md:flex-row items-start md:items-center justify-between gap-12 lg:gap-24 relative overflow-hidden group">
@@ -36,7 +36,7 @@ export default function AIConciergeTeaser() {
             
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <button 
-                onClick={() => setIsModalOpen(true)}
+                onClick={handleLaunch}
                 className="w-full sm:w-auto px-10 py-5 bg-coral text-white font-sans font-bold text-[0.85rem] tracking-widest uppercase rounded-full hover:bg-white hover:text-navy transition-colors duration-300 shadow-coral"
               >
                 Launch Concierge
@@ -46,8 +46,7 @@ export default function AIConciergeTeaser() {
 
         </div>
       </div>
-
-      <AIConciergeModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   );
 }
+
