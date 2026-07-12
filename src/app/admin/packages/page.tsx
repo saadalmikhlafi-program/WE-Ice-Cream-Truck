@@ -11,7 +11,7 @@ export default function PackagesPage() {
       try {
         const res = await fetch("/api/packages");
         const json = await res.json();
-        setPackages(json.data || json || []);
+        setPackages(Array.isArray(json.data) ? json.data : Array.isArray(json) ? json : []);
       } catch {} finally { setLoading(false); }
     })();
   }, []);
@@ -48,11 +48,11 @@ export default function PackagesPage() {
               <div className="space-y-3 mb-6 bg-gray-50 rounded-xl p-4 border border-gray-100">
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-1.5 text-gray-500"><DollarSign className="w-4 h-4"/> Base Price</span>
-                  <span className="font-black text-navy">${p.basePrice}</span>
+                  <span className="font-black text-navy">${p.price}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-1.5 text-gray-500"><Users className="w-4 h-4"/> Base Guests</span>
-                  <span className="font-bold text-navy">{p.baseGuests}</span>
+                  <span className="font-bold text-navy">{p.servings}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="flex items-center gap-1.5 text-gray-500"><Clock className="w-4 h-4"/> Duration</span>

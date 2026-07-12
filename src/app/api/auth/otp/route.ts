@@ -13,7 +13,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid input data", details: result.error.format() }, { status: 400 });
     }
 
-    const { email } = result.data;
+    const { email, purpose = "BOOKING_VERIFICATION" } = result.data as any;
 
     // Generate a 6-digit OTP
     const otp = crypto.randomInt(100000, 999999).toString();
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
     // Delete old OTPs for this email/purpose to prevent spam/confusion
     await prisma.otpCode.deleteMany({
-      where: { email: email.toLowerCase(), purpose: "PORTAL" }
+      where: { email: email.toLowerCase(), purpose }
     });
 
     // Save to DB
@@ -32,14 +32,18 @@ export async function POST(req: Request) {
         email: email.toLowerCase(),
         code: otp,
         expiresAt,
-        purpose: "PORTAL",
+        purpose,
       },
     });
 
-    const emailSent = await sendOtpEmail(email, otp, "Valued Customer", "PORTAL");
+    // We pass purpose to sendOtpEmail to customize the template text
+    const emailSent = await sendOtpEmail(email, otp, "Valued Customer", purpose);
 
     if (!emailSent) {
-      return NextResponse.json({ error: "Failed to send OTP email" }, { status: 500 });
+      // In dev/testing, we might still want to proceed if Resend is blocked,
+      // but in prod we should return an error. Let's return error but log the OTP.
+      console.warn(`[OTP Fallback] Email failed. Code for ${email} is ${otp}`);
+      return NextResponse.json({ error: "Failed to send email. Check Resend domain verification." }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, message: "OTP Sent" });

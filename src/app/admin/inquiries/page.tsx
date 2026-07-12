@@ -13,7 +13,7 @@ export default function InquiriesPage() {
     try {
       const res = await fetch("/api/admin/inquiries");
       const json = await res.json();
-      setInquiries(json.data || json || []);
+      setInquiries(Array.isArray(json.data) ? json.data : Array.isArray(json) ? json : []);
     } catch {} finally { setLoading(false); }
   }, []);
 
