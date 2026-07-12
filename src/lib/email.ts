@@ -5,7 +5,7 @@ const BRAND_NAVY = "#0A1128";
 const BRAND_GOLD = "#FF6B6B";
 const LOGO = "/images/we-icecream.jpg";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "re_dummy_key_to_prevent_build_crash");
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ─── BASE TEMPLATE ───────────────────────────────────────────────
 function baseTemplate(content: string, title: string) {
@@ -61,8 +61,9 @@ function baseTemplate(content: string, title: string) {
   `;
 }
 
+// ─── CORE SEND WITH RETRY ──────────────────────────────────────
 export async function sendEmail({ to, subject, html, title }: { to: string; subject: string; html: string; title?: string }) {
-  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === "re_dummy_key_to_prevent_build_crash") {
+  if (!process.env.RESEND_API_KEY) {
     console.warn("[Email] RESEND_API_KEY not configured — skipping send for:", subject, "→", to);
     return false;
   }
