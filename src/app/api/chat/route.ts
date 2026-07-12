@@ -1,11 +1,11 @@
 import { NextRequest } from "next/server";
 import { createOpenAI } from "@ai-sdk/openai";
+import { createGroq } from "@ai-sdk/groq";
 import { streamText } from "ai";
 import { BUSINESS_CONFIG } from "@/lib/config";
 
 // Initialize providers
-const groq = createOpenAI({
-  baseURL: "https://api.groq.com/openai/v1",
+const groq = createGroq({
   apiKey: process.env.GROQ_API_KEY || "",
 });
 
@@ -58,10 +58,6 @@ export async function POST(req: NextRequest) {
     const { messages } = await req.json();
 
     // Provider Fallback Logic
-    // 1. Try Groq (Fastest)
-    // 2. Fallback to OpenRouter (Flexible)
-    // 3. Fallback to OpenAI (Most reliable)
-
     let model;
     if (process.env.GROQ_API_KEY) {
       model = groq("llama-3.1-70b-versatile");
@@ -80,8 +76,8 @@ export async function POST(req: NextRequest) {
     });
 
     return result.toTextStreamResponse();
-  } catch (error) {
+  } catch (error: any) {
     console.error("Chat API Error:", error);
-    return new Response("An error occurred processing your request.", { status: 500 });
+    return new Response(error.message || "An error occurred processing your request.", { status: 500 });
   }
 }
