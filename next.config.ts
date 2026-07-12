@@ -25,6 +25,12 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
+
+  // Limit build workers to prevent database connection limits
+  experimental: {
+    cpus: 2,
+    workerThreads: false,
+  },
 };
 
 export default nextConfig;

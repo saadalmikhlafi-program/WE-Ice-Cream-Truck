@@ -1,5 +1,6 @@
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import { BUSINESS_CONFIG } from "@/lib/config";
 import { getCityBySlug, MASSACHUSETTS_CITIES, getNearbyAreas } from "@/lib/cities-data";
@@ -12,6 +13,7 @@ import FAQSection from "@/components/shared/FAQSection";
 import BrandCarousel from "@/components/shared/BrandCarousel";
 import TestimonialsCarousel from "@/components/home/TestimonialsCarousel";
 import Image from "next/image";
+import { prisma } from "@/lib/prisma";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -117,17 +119,17 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const resolvedParams = await params;
-  const city = getCityBySlug(resolvedParams.slug);
+  const { slug } = await params;
+  const cityObj = getCityBySlug(slug);
 
-  if (!city) {
+  if (!cityObj) {
     return { title: "City Not Found" };
   }
 
   return constructMetadata({
-    title: city.metaTitle,
-    description: city.metaDescription,
-    url: `/cities/${city.slug}`,
+    title: `Ice Cream Truck Rental in ${cityObj.name}, MA`,
+    description: `Book the best ice cream truck in ${cityObj.name}, Massachusetts. Perfect for birthdays, weddings, corporate events, and parties in ${cityObj.name}.`,
+    url: `/cities/${slug}`,
   });
 }
 
@@ -158,6 +160,59 @@ export default async function CityPage({ params }: Props) {
   const h1Text = H1_TEMPLATES[seed % H1_TEMPLATES.length](city.name);
   const h2Text = H2_TEMPLATES[(seed + 1) % H2_TEMPLATES.length](city.name);
   const introText = INTRO_TEMPLATES[(seed + 2) % INTRO_TEMPLATES.length](city.name);
+  
+  // Cache packages fetch to prevent connection exhaustion during static generation of 500+ cities
+  const getPackages = unstable_cache(
+    async () => {
+      return prisma.package.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' }
+      });
+    },
+    ['active-packages'],
+    { revalidate: 3600, tags: ['packages'] }
+  );
+
+  const dbPackages = await getPackages();
+
+  const formattedPackages = dbPackages.map((pkg) => {
+    let featuresList: string[] = [];
+    try {
+      featuresList = pkg.features ? JSON.parse(pkg.features) : [];
+    } catch {}
+
+    const durationHrs = Math.floor(pkg.durationMins / 60);
+    const durationMinsRem = pkg.durationMins % 60;
+    const durationLabel = pkg.durationMins === 0 
+      ? "Custom Duration" 
+      : (durationHrs > 0 ? `${durationHrs}h ` : "") + (durationMinsRem > 0 ? `${durationMinsRem}m` : "") + " Service";
+
+    return {
+      id: pkg.id,
+      slug: pkg.slug,
+      name: pkg.name,
+      tagline: pkg.description || "The perfect ice cream experience",
+      description: pkg.description || "",
+      vehicleType: pkg.serviceType,
+      vehicleLabel: pkg.serviceType === "TRUCK" ? "Ice Cream Truck" : pkg.serviceType === "VAN" ? "Premium Van" : "Custom",
+      servings: pkg.servings,
+      price: pkg.price,
+      extraGuestPrice: pkg.extraGuestPrice ?? 5,
+      durationMins: pkg.durationMins,
+      durationLabel: durationLabel.trim(),
+      badge: pkg.badge,
+      badgeVariant: pkg.badge === "Most Popular" || pkg.badge?.includes("Value") ? "coral" : (pkg.badge === "Corporate Choice" || pkg.badge?.includes("Luxury") ? "gold" : "mint"),
+      features: featuresList,
+      isPopular: pkg.badge === "Most Popular",
+      isCustom: pkg.serviceType === "CUSTOM",
+      sortOrder: pkg.sortOrder,
+    };
+  });
+
+  const firstTruck = formattedPackages.find(p => p.vehicleType === "TRUCK");
+  const firstVan = formattedPackages.find(p => p.vehicleType === "VAN");
+  const featuredPackages = [firstTruck, firstVan].filter(Boolean);
+  
   const layoutFlip = seed % 2 === 0;
 
   // Inject Schemas for this specific city
@@ -367,7 +422,7 @@ export default async function CityPage({ params }: Props) {
       <BrandCarousel />
 
       {/* ── PACKAGES ─────────────────────────────────────────────── */}
-      <PackagesPreview />
+      <PackagesPreview featuredPackages={featuredPackages} />
 
       {/* ── NEARBY AREAS ─────────────────────────────────────────── */}
       {nearbyAreas.length > 0 && (

@@ -20,8 +20,16 @@ export default function CustomersPage() {
     try {
       const res  = await fetch("/api/admin/customers");
       const json = await res.json();
+      if (!res.ok || json.success === false) {
+        console.error("Failed to load customers:", json.error || res.statusText);
+        setCustomers([]);
+        return;
+      }
       setCustomers(json.data || json || []);
-    } catch {} finally { setLoading(false); }
+    } catch (err) {
+      console.error("Error fetching customers:", err);
+      setCustomers([]);
+    } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { load(); }, [load]);

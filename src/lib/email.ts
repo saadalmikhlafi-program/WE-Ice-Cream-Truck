@@ -1,30 +1,11 @@
-import nodemailer from "nodemailer";
+import { Resend } from 'resend';
 import { prisma } from "./prisma";
 
 const BRAND_NAVY = "#0A1128";
 const BRAND_GOLD = "#FF6B6B";
 const LOGO = "/images/we-icecream.jpg";
 
-// ─── SINGLETON TRANSPORTER ──────────────────────────────────────
-// One transporter instance per process lifecycle. Prevents connection
-// exhaustion and eliminates duplicate transport creation in otp.ts.
-let _transporter: nodemailer.Transporter | null = null;
-
-function getTransporter(): nodemailer.Transporter {
-  if (_transporter) return _transporter;
-  _transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-    tls: { rejectUnauthorized: false },
-    pool: true,
-    maxConnections: 3,
-    maxMessages: 100,
-  });
-  return _transporter;
-}
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ─── BASE TEMPLATE ───────────────────────────────────────────────
 function baseTemplate(content: string, title: string) {
@@ -82,9 +63,8 @@ function baseTemplate(content: string, title: string) {
 
 // ─── CORE SEND WITH RETRY ──────────────────────────────────────
 export async function sendEmail({ to, subject, html, title }: { to: string; subject: string; html: string; title?: string }) {
-  const smtpConfigured = !!(process.env.SMTP_USER && process.env.SMTP_PASS);
-  if (!smtpConfigured) {
-    console.warn("[Email] SMTP not configured — skipping send for:", subject, "→", to);
+  if (!process.env.RESEND_API_KEY) {
+    console.warn("[Email] RESEND_API_KEY not configured — skipping send for:", subject, "→", to);
     return false;
   }
 
@@ -93,21 +73,23 @@ export async function sendEmail({ to, subject, html, title }: { to: string; subj
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      const transporter = getTransporter();
-      await transporter.sendMail({
-        from: `"WE Ice Cream Truck" <${process.env.SMTP_USER}>`,
-        to,
-        subject,
+      const { data, error } = await resend.emails.send({
+        from: 'WE Ice Cream Truck <bookings@weicecreamtruck.com>',
+        to: [to],
+        subject: subject,
         html: baseTemplate(html, title || subject),
       });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
       console.log(`[Email] ✅ Sent "${subject}" → ${to} (attempt ${attempt})`);
       return true;
     } catch (err) {
       console.error(`[Email] ❌ Attempt ${attempt}/${MAX_RETRIES} failed for "${subject}" → ${to}:`, err);
       if (attempt < MAX_RETRIES) {
         await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
-        // Reset singleton on failure so it gets recreated
-        _transporter = null;
       }
     }
   }

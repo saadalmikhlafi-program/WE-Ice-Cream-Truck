@@ -114,6 +114,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [status, router]);
+
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && searchQuery.trim()) {
       router.push(`/admin/bookings?search=${encodeURIComponent(searchQuery.trim())}`);
@@ -132,6 +138,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </div>
     );
+  }
+
+  if (status === "unauthenticated") {
+    // Next.js redirect doesn't work directly in render like this without throwing, 
+    // but we can use useEffect or just let a quick client-side replace happen.
+    // However, it's safer to use router.replace in a useEffect.
+    // Since we can't easily add a hook here conditionally, we can return null
+    // because we will add a useEffect above.
+    return null;
   }
 
   const sidebarW = sidebarCollapsed ? "w-[72px]" : "w-[260px]";

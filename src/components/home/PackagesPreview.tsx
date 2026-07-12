@@ -2,16 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { TRUCK_PACKAGES, VAN_PACKAGES } from "@/lib/packages-data";
 import { formatPrice } from "@/lib/utils";
 import { ArrowRight, Check } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 
-export default function PackagesPreview() {
-  const featuredPackages = [
-    TRUCK_PACKAGES[0],
-    VAN_PACKAGES[0],
-  ].filter(Boolean);
+export default function PackagesPreview({ featuredPackages }: { featuredPackages: any[] }) {
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },

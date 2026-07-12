@@ -7,6 +7,6 @@ config({ path: ".env.local" }); // Load local env as well to be safe
 export default defineConfig({
   schema: "prisma/schema.prisma",
   datasource: {
-    url: process.env.DATABASE_URL
+    url: process.env.DIRECT_URL,
   }
 });

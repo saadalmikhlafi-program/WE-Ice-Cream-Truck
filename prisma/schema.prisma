@@ -245,16 +245,26 @@ model Task {
 }
 
 model AuditLog {
-  id           String   @id @default(cuid())
-  entityType   String
-  entityId     String
-  action       String
-  actorId      String?
-  metadataJson String
-  createdAt    DateTime @default(now())
-  bookingId    String?
-  user         User?    @relation(fields: [actorId], references: [id])
-  booking      Booking? @relation(fields: [bookingId], references: [id])
+  id            String   @id @default(cuid())
+  entityType    String
+  entityId      String
+  action        String
+  actorId       String?
+  userRole      String?  // The role of the user (e.g. CUSTOMER, ADMIN)
+  aiType        String?  // e.g. CUSTOMER_AI, ADMIN_AI
+  aiProvider    String?  // e.g. openai, openrouter
+  aiModel       String?  // e.g. gpt-4o
+  previousValue String?  // JSON string
+  newValue      String?  // JSON string
+  result        String?  // e.g. SUCCESS, FAILED
+  errors        String?  // JSON string of errors
+  requestId     String?
+  sessionId     String?
+  metadataJson  String?  // Additional arbitrary data
+  createdAt     DateTime @default(now())
+  bookingId     String?
+  user          User?    @relation(fields: [actorId], references: [id])
+  booking       Booking? @relation(fields: [bookingId], references: [id])
 }
 
 model Setting {
