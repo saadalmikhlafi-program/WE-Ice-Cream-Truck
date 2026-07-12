@@ -1,10 +1,14 @@
 const { PrismaClient } = require('@prisma/client');
-const { PrismaBetterSqlite3 } = require('@prisma/adapter-better-sqlite3');
+const { PrismaPg } = require('@prisma/adapter-pg');
+const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
-// Use DATABASE_URL from env; adapter accepts { url } config object
-const dbUrl = process.env.DATABASE_URL || 'file:./dev.db';
-const adapter = new PrismaBetterSqlite3({ url: dbUrl });
+require('dotenv').config({ path: '.env.local' });
+require('dotenv').config({ path: '.env' });
+
+const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 // Inline package data (mirrors src/lib/packages-data.ts — keep in sync)
@@ -38,7 +42,7 @@ async function main() {
       passwordHash: hashedPassword,
       role: 'OWNER',
       name: 'Saad Moad',
-      permissions: JSON.stringify(['*']), // SQLite: JSON string (revert to ['*'] for Supabase)
+      permissions: '["*"]',
       active: true,
     },
     create: {
@@ -46,7 +50,7 @@ async function main() {
       passwordHash: hashedPassword,
       role: 'OWNER',
       name: 'Saad Moad',
-      permissions: JSON.stringify(['*']), // SQLite: JSON string (revert to ['*'] for Supabase)
+      permissions: '["*"]',
       active: true,
     },
   });

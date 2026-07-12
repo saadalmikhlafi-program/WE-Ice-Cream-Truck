@@ -76,13 +76,16 @@ export default function AIChatWidget() {
         body: JSON.stringify({ messages: history }),
       });
 
-      if (!res.ok) throw new Error("API error");
+      if (!res.ok) {
+        const errText = await res.text().catch(() => "");
+        throw new Error(errText || `API error ${res.status}`);
+      }
 
       // Handle streaming response
       const reader = res.body?.getReader();
       const decoder = new TextDecoder();
       const aiMsgId = `a-${Date.now()}`;
-      setMessages((prev) => [...prev, { id: aiMsgId, role: "assistant", content: "" }]);
+      let firstChunk = true;
 
       if (reader) {
         while (true) {
@@ -90,12 +93,22 @@ export default function AIChatWidget() {
           if (done) break;
           const chunk = decoder.decode(value, { stream: true });
           if (chunk) {
-            setMessages((prev) =>
-              prev.map((m) =>
-                m.id === aiMsgId ? { ...m, content: m.content + chunk } : m
-              )
-            );
+            if (firstChunk) {
+              // Only add the assistant message bubble once we have real content
+              setMessages((prev) => [...prev, { id: aiMsgId, role: "assistant", content: chunk }]);
+              firstChunk = false;
+            } else {
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === aiMsgId ? { ...m, content: m.content + chunk } : m
+                )
+              );
+            }
           }
+        }
+        // If stream completed but nothing was received
+        if (firstChunk) {
+          throw new Error("Empty response from AI");
         }
       }
     } catch (err) {
@@ -104,7 +117,7 @@ export default function AIChatWidget() {
         {
           id: `err-${Date.now()}`,
           role: "assistant",
-          content: "Sorry, I'm having trouble connecting. Please try again! 🍦",
+          content: "Sorry, I'm having trouble connecting right now. Please call us at 617-999-3803 or try again in a moment! 🍦",
         },
       ]);
     } finally {

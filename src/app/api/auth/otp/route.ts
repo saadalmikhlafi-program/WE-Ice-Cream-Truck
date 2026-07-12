@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendOtpEmail } from "@/lib/email";
 import crypto from "crypto";
 import { OtpSchema } from "@/lib/validations";
 
@@ -20,21 +21,26 @@ export async function POST(req: Request) {
     // Expire in 10 minutes
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
+    // Delete old OTPs for this email/purpose to prevent spam/confusion
+    await prisma.otpCode.deleteMany({
+      where: { email: email.toLowerCase(), purpose: "PORTAL" }
+    });
+
     // Save to DB
     await prisma.otpCode.create({
       data: {
         email: email.toLowerCase(),
         code: otp,
         expiresAt,
-        purpose: "BOOKING_VERIFICATION",
+        purpose: "PORTAL",
       },
     });
 
-    // In a real app, send this via Resend, SendGrid, NodeMailer etc.
-    // For now, we log it so we can see it in the server console during dev
-    console.log(`\n\n================================`);
-    console.log(`🔐 OTP CODE FOR ${email}: ${otp}`);
-    console.log(`================================\n\n`);
+    const emailSent = await sendOtpEmail(email, otp, "Valued Customer", "PORTAL");
+
+    if (!emailSent) {
+      return NextResponse.json({ error: "Failed to send OTP email" }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true, message: "OTP Sent" });
   } catch (error) {
