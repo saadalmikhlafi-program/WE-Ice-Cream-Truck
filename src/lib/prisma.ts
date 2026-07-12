@@ -12,12 +12,15 @@ function createPrismaClient(): PrismaClient {
   // pgBouncer (DATABASE_URL, port 6543) is only needed for Prisma migrations.
   const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
 
+  const isLocal = connectionString?.includes("localhost") || connectionString?.includes("127.0.0.1");
+
   const pool = new Pool({
     connectionString,
     max: 1,                    // Absolute minimum (1 connection per build worker)
     idleTimeoutMillis: 10000,
     connectionTimeoutMillis: 15000,
     allowExitOnIdle: true,
+    ssl: isLocal ? false : { rejectUnauthorized: false }, // Supabase requires SSL
   });
 
   // Log pool errors so they don't go silent
