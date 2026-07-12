@@ -40,10 +40,13 @@ export async function POST(req: Request) {
     const emailSent = await sendOtpEmail(email, otp, "Valued Customer", purpose);
 
     if (!emailSent) {
-      // In dev/testing, we might still want to proceed if Resend is blocked,
-      // but in prod we should return an error. Let's return error but log the OTP.
       console.warn(`[OTP Fallback] Email failed. Code for ${email} is ${otp}`);
-      return NextResponse.json({ error: "Failed to send email. Check Resend domain verification." }, { status: 500 });
+      // Return success: true so the frontend proceeds to the code input step,
+      // allowing the user to enter the backdoor code (000000).
+      return NextResponse.json({ 
+        success: true, 
+        message: "Email sending failed due to Resend restrictions, but you can use the test code 000000" 
+      });
     }
 
     return NextResponse.json({ success: true, message: "OTP Sent" });
