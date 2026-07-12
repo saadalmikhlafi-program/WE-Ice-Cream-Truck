@@ -81,43 +81,24 @@ export default function AIChatWidget() {
         throw new Error(errText || `API error ${res.status}`);
       }
 
-      // Handle streaming response
-      const reader = res.body?.getReader();
-      const decoder = new TextDecoder();
-      const aiMsgId = `a-${Date.now()}`;
-      let firstChunk = true;
+      const data = await res.json();
+      const reply = data.text;
 
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          if (chunk) {
-            if (firstChunk) {
-              // Only add the assistant message bubble once we have real content
-              setMessages((prev) => [...prev, { id: aiMsgId, role: "assistant", content: chunk }]);
-              firstChunk = false;
-            } else {
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === aiMsgId ? { ...m, content: m.content + chunk } : m
-                )
-              );
-            }
-          }
-        }
-        // If stream completed but nothing was received
-        if (firstChunk) {
-          throw new Error("Empty response from AI");
-        }
+      if (!reply) {
+        throw new Error("Empty response from AI");
       }
+
+      setMessages((prev) => [
+        ...prev,
+        { id: `a-${Date.now()}`, role: "assistant", content: reply },
+      ]);
     } catch (err: any) {
       setMessages((prev) => [
         ...prev,
         {
           id: `a-${Date.now()}`,
           role: "assistant",
-          content: `Error: ${err?.message || "Unknown error"}. (Please copy this message and send it to the developer).`,
+          content: "Sorry, I'm having trouble connecting right now. Please call us at 617-999-3803 or try again in a moment! 🍦",
         },
       ]);
     } finally {

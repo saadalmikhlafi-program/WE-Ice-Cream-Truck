@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createGroq } from "@ai-sdk/groq";
-import { streamText } from "ai";
+import { generateText } from "ai";
 import { BUSINESS_CONFIG } from "@/lib/config";
 
 // Initialize providers
@@ -69,13 +69,13 @@ export async function POST(req: NextRequest) {
       return new Response("No AI provider configured", { status: 503 });
     }
 
-    const result = await streamText({
+    const result = await generateText({
       model,
       system: SYSTEM_PROMPT,
       messages,
     });
 
-    return result.toTextStreamResponse();
+    return Response.json({ text: result.text });
   } catch (error: any) {
     console.error("Chat API Error:", error);
     return new Response(error.message || "An error occurred processing your request.", { status: 500 });
