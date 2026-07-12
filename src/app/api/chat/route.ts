@@ -59,12 +59,12 @@ export async function POST(req: NextRequest) {
 
     // Provider Fallback Logic
     let model;
-    if (process.env.GROQ_API_KEY) {
-      model = groq("llama-3.1-70b-versatile");
+    if (process.env.OPENAI_API_KEY) {
+      model = openai("gpt-4o-mini");
     } else if (process.env.OPENROUTER_API_KEY) {
       model = openRouter("meta-llama/llama-3.1-70b-instruct");
-    } else if (process.env.OPENAI_API_KEY) {
-      model = openai("gpt-4o-mini");
+    } else if (process.env.GROQ_API_KEY) {
+      model = groq("llama-3.1-70b-versatile");
     } else {
       return new Response("No AI provider configured", { status: 503 });
     }

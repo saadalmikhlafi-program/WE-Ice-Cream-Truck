@@ -82,38 +82,51 @@ export async function POST(req: NextRequest) {
     // Build system prompt with injected DB context
     const systemWithContext = SYSTEM_PROMPT + dbContext;
 
-    // Use Groq (free) as AI provider for admin chat
-    const groqKey = process.env.GROQ_API_KEY;
-    if (!groqKey) {
-      return Response.json({ reply: "GROQ_API_KEY not set. Cannot run Admin AI." });
+    // Determine which API to use based on available keys (Prioritize OpenAI)
+    let apiUrl = "";
+    let apiKey = "";
+    let apiModel = "";
+
+    if (process.env.OPENAI_API_KEY) {
+      apiUrl = "https://api.openai.com/v1/chat/completions";
+      apiKey = process.env.OPENAI_API_KEY;
+      apiModel = "gpt-4o-mini";
+    } else if (process.env.OPENROUTER_API_KEY) {
+      apiUrl = "https://openrouter.ai/api/v1/chat/completions";
+      apiKey = process.env.OPENROUTER_API_KEY;
+      apiModel = "meta-llama/llama-3.1-70b-instruct";
+    } else if (process.env.GROQ_API_KEY) {
+      apiUrl = "https://api.groq.com/openai/v1/chat/completions";
+      apiKey = process.env.GROQ_API_KEY;
+      apiModel = "llama-3.1-70b-versatile";
+    } else {
+      return Response.json({ reply: "No AI service configured. Please add OPENAI_API_KEY to environment variables." });
     }
 
-    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const aiRes = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${groqKey}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "llama-3.1-70b-versatile",
+        model: apiModel,
         messages: [
           { role: "system", content: systemWithContext },
-          ...messages.slice(-6), // last 6 messages for context
+          ...messages,
         ],
-        max_tokens: 1024,
         temperature: 0.2,
-        stream: false,
       }),
     });
 
-    if (!groqRes.ok) {
-      const errText = await groqRes.text();
-      console.error("Groq API error:", errText);
-      throw new Error(`Groq API error: ${groqRes.status}`);
+    if (!aiRes.ok) {
+      const errText = await aiRes.text();
+      console.error("Admin AI Error:", errText);
+      return Response.json({ reply: `AI API Error: ${aiRes.status}` });
     }
 
-    const groqData = await groqRes.json();
-    const reply = groqData.choices?.[0]?.message?.content ?? "No response from AI.";
+    const data = await aiRes.json();
+    const reply = data.choices?.[0]?.message?.content ?? "No response.";
 
     return Response.json({ reply });
   } catch (error) {
