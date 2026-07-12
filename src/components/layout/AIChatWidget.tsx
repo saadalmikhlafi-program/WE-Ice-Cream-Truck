@@ -111,13 +111,13 @@ export default function AIChatWidget() {
           throw new Error("Empty response from AI");
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       setMessages((prev) => [
         ...prev,
         {
-          id: `err-${Date.now()}`,
+          id: `a-${Date.now()}`,
           role: "assistant",
-          content: "Sorry, I'm having trouble connecting right now. Please call us at 617-999-3803 or try again in a moment! 🍦",
+          content: `Error: ${err?.message || "Unknown error"}. (Please copy this message and send it to the developer).`,
         },
       ]);
     } finally {
