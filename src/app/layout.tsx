@@ -5,6 +5,7 @@ import { BUSINESS_CONFIG } from "@/lib/config";
 import { constructMetadata } from "@/lib/seo";
 import { Providers } from "./providers";
 import PublicLayout from "@/components/layout/PublicLayout";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // ─── FONTS ──────────────────────────────────────────────────────────
 
@@ -49,6 +50,7 @@ export default function RootLayout({
         <Providers>
           <PublicLayout>{children}</PublicLayout>
         </Providers>
+        <SpeedInsights />
       </body>
     </html>
   );
