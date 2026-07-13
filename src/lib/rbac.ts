@@ -96,7 +96,6 @@ export function hasPermission(role: string, permission: string, userPermissions?
   }
   if (permission === "manage_users") {
     return perms.includes("users.view") || perms.includes("users.create");
-  }
   if (permission === "manage_fleet") {
     return perms.includes("drivers.view") || perms.includes("settings.view");
   }
@@ -104,7 +103,7 @@ export function hasPermission(role: string, permission: string, userPermissions?
   return false;
 }
 
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function getSessionUser(req: NextRequest | Request) {
