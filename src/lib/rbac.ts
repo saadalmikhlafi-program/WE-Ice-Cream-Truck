@@ -104,14 +104,20 @@ export function hasPermission(role: string, permission: string, userPermissions?
   return false;
 }
 
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 export async function getSessionUser(req: NextRequest | Request) {
-  const token = await getToken({ req: req as any, secret: process.env.NEXTAUTH_SECRET });
-  if (!token) return null;
+  // Using getServerSession is more robust than getToken in App Router API routes
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user) return null;
+  
   return {
-    id: token.id as string,
-    email: token.email as string,
-    role: token.role as string,
-    permissions: (token.permissions as string[]) || []
+    id: (session.user as any).id as string,
+    email: session.user.email as string,
+    role: (session.user as any).role as string,
+    permissions: ((session.user as any).permissions as string[]) || []
   };
 }
 
