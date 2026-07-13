@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
+
 export type Permission =
   | "dashboard.view"
   | "dashboard.view.limited"
@@ -97,6 +97,7 @@ export function hasPermission(role: string, permission: string, userPermissions?
   }
   if (permission === "manage_users") {
     return perms.includes("users.view") || perms.includes("users.create");
+  }
   if (permission === "manage_fleet") {
     return perms.includes("drivers.view") || perms.includes("settings.view");
   }

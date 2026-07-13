@@ -11,8 +11,16 @@ export default function VehiclesPage() {
       try {
         const res = await fetch("/api/admin/vehicles");
         const json = await res.json();
-        setVehicles(json.data || json || []);
-      } catch {} finally { setLoading(false); }
+        if (json.success === false) {
+          console.error("API Error:", json.error);
+          setVehicles([]);
+        } else {
+          setVehicles(json.data || json || []);
+        }
+      } catch (err) {
+        console.error(err);
+        setVehicles([]);
+      } finally { setLoading(false); }
     })();
   }, []);
 
