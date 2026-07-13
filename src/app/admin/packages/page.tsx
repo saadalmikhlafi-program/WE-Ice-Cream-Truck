@@ -9,7 +9,7 @@ export default function PackagesPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/packages");
+        const res = await fetch("/api/admin/packages");
         const json = await res.json();
         setPackages(Array.isArray(json.data) ? json.data : Array.isArray(json) ? json : []);
       } catch {} finally { setLoading(false); }

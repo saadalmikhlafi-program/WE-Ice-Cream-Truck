@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const SYSTEM_PROMPT = `You are the WE Ice Cream Truck Admin AI — a powerful, precise assistant for business operations.
@@ -12,8 +13,8 @@ SECURITY RULES:
 
 export async function POST(req: NextRequest) {
   try {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-    if (!token || !token.id) {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
       return new Response("Unauthorized", { status: 401 });
     }
 
