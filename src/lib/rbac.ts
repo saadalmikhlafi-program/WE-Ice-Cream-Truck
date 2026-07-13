@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
-
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 export type Permission =
   | "dashboard.view"
   | "dashboard.view.limited"
@@ -102,9 +103,6 @@ export function hasPermission(role: string, permission: string, userPermissions?
 
   return false;
 }
-
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function getSessionUser(req: NextRequest | Request) {
   // Using getServerSession is more robust than getToken in App Router API routes
