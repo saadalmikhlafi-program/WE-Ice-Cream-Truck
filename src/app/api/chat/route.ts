@@ -1,22 +1,5 @@
 import { NextRequest } from "next/server";
-import { createOpenAI } from "@ai-sdk/openai";
-import { createGroq } from "@ai-sdk/groq";
-import { generateText } from "ai";
 import { BUSINESS_CONFIG } from "@/lib/config";
-
-// Initialize providers
-const groq = createGroq({
-  apiKey: process.env.GROQ_API_KEY || "",
-});
-
-const openRouter = createOpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY || "",
-});
-
-const openai = createOpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "",
-});
 
 const SYSTEM_PROMPT = `You are the WE Ice Cream Truck AI Concierge — a helpful, warm, and professional assistant for ${BUSINESS_CONFIG.name}.
 
@@ -57,27 +40,51 @@ export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
 
-    // Provider Fallback Logic
-    let model;
+    let apiUrl = "";
+    let apiKey = "";
+    let apiModel = "";
+
     if (process.env.OPENAI_API_KEY) {
-      model = openai("gpt-4o-mini");
+      apiUrl = "https://api.openai.com/v1/chat/completions";
+      apiKey = process.env.OPENAI_API_KEY;
+      apiModel = "gpt-4o-mini";
     } else if (process.env.OPENROUTER_API_KEY) {
-      model = openRouter("meta-llama/llama-3.1-70b-instruct");
+      apiUrl = "https://openrouter.ai/api/v1/chat/completions";
+      apiKey = process.env.OPENROUTER_API_KEY;
+      apiModel = "meta-llama/llama-3.1-70b-instruct";
     } else if (process.env.GROQ_API_KEY) {
-      model = groq("llama-3.1-70b-versatile");
+      apiUrl = "https://api.groq.com/openai/v1/chat/completions";
+      apiKey = process.env.GROQ_API_KEY;
+      apiModel = "llama-3.1-70b-versatile";
     } else {
       return new Response("No AI provider configured", { status: 503 });
     }
 
-    const result = await generateText({
-      model,
-      system: SYSTEM_PROMPT,
-      messages,
+    const aiRes = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: apiModel,
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, ...messages],
+        temperature: 0.5,
+      }),
     });
 
-    return Response.json({ text: result.text });
+    if (!aiRes.ok) {
+      const errText = await aiRes.text();
+      console.error("Chat API Error from Provider:", errText);
+      return new Response("An error occurred communicating with the AI service.", { status: 500 });
+    }
+
+    const data = await aiRes.json();
+    const reply = data.choices?.[0]?.message?.content ?? "Sorry, I am having trouble responding right now.";
+
+    return Response.json({ text: reply });
   } catch (error: any) {
-    console.error("Chat API Error:", error);
+    console.error("Chat API Internal Error:", error);
     return new Response(error.message || "An error occurred processing your request.", { status: 500 });
   }
 }

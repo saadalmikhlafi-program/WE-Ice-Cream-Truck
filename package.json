@@ -27,6 +27,7 @@
     "@types/pg": "^8.20.0",
     "@types/three": "^0.185.0",
     "@vercel/blob": "^2.5.0",
+    "@vercel/speed-insights": "^2.0.0",
     "ai": "^7.0.22",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.11.1",
