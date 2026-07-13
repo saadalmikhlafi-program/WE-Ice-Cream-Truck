@@ -93,12 +93,13 @@ export default function AIChatWidget() {
         { id: `a-${Date.now()}`, role: "assistant", content: reply },
       ]);
     } catch (err: any) {
+      console.error("AI Chat Error:", err);
       setMessages((prev) => [
         ...prev,
         {
           id: `a-${Date.now()}`,
           role: "assistant",
-          content: "Sorry, I'm having trouble connecting right now. Please call us at 617-999-3803 or try again in a moment! 🍦",
+          content: `Error: ${err?.message || "Unknown error"}. (Please copy this message and send it to the developer).`,
         },
       ]);
     } finally {
