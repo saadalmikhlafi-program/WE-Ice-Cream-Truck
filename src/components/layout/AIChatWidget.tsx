@@ -183,17 +183,17 @@ export default function AIChatWidget() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        className="fixed bottom-20 sm:bottom-8 right-4 sm:right-6 md:bottom-10 md:right-10 z-40 group flex items-center gap-3 bg-[#0A1128] p-2.5 pr-5 rounded-full shadow-[0_10px_40px_-10px_rgba(10,17,40,0.5)] border border-[#D4AF37]/20"
+        className="fixed bottom-20 sm:bottom-8 right-4 sm:right-6 md:bottom-10 md:right-10 z-40 group flex items-center gap-3 bg-white/80 backdrop-blur-md p-2.5 pr-5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-navy/10 hover:border-coral/50"
         aria-label="Open AI Chat"
       >
-        <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border-2 border-[#D4AF37]/40 shadow-inner">
+        <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-gray-200 shadow-sm">
           <Image src="/images/we-icecream.jpg" alt="WE Assistant" fill className="object-cover" sizes="44px" />
         </div>
         <div className="flex flex-col items-start">
-          <span className="text-white font-bold text-xs sm:text-sm tracking-tight leading-none">WE Assistant</span>
+          <span className="text-navy font-bold text-xs sm:text-sm tracking-tight leading-none">WE Assistant</span>
           <span className="flex items-center gap-1 mt-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[#D4AF37] font-semibold text-[10px] uppercase tracking-widest">Online</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-coral font-bold text-[10px] uppercase tracking-widest">Online</span>
           </span>
         </div>
       </motion.button>
@@ -211,20 +211,20 @@ export default function AIChatWidget() {
               "inset-0 sm:inset-auto",
               "sm:bottom-8 sm:right-6 md:right-10",
               "sm:w-[380px] md:w-[420px] sm:h-[600px] md:h-[650px] sm:max-h-[85vh]",
-              "sm:rounded-2xl sm:shadow-[0_20px_60px_-15px_rgba(10,17,40,0.5)] sm:border sm:border-white/10",
-              "bg-[#FAFAF8]"
+              "sm:rounded-[2rem] sm:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] sm:border sm:border-white/40",
+              "bg-white/85 backdrop-blur-xl"
             )}
           >
             {/* ── Header ── */}
-            <div className="relative px-4 sm:px-5 py-4 flex items-center gap-3 shrink-0 bg-[#0A1128]">
-              <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-[#D4AF37]/40 shrink-0">
+            <div className="relative px-4 sm:px-5 py-4 flex items-center gap-3 shrink-0 bg-navy/95 backdrop-blur-md border-b border-navy/10 rounded-t-[2rem]">
+              <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-coral/50 shrink-0 bg-white">
                 <Image src="/images/we-icecream.jpg" alt="WE Assistant" fill className="object-cover" sizes="40px" />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold text-white text-sm sm:text-base leading-tight">WE Assistant</h3>
                 <p className="flex items-center gap-1.5 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[#D4AF37]/80 text-[10px] font-semibold uppercase tracking-widest">AI Concierge</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                  <span className="text-coral-light text-[10px] font-bold uppercase tracking-widest text-coral">AI Concierge</span>
                 </p>
               </div>
               <button
@@ -243,21 +243,21 @@ export default function AIChatWidget() {
                   <div
                     className={cn("flex gap-2.5 max-w-[90%]", msg.role === "user" ? "ml-auto flex-row-reverse" : "")}
                   >
-                    {msg.role === "assistant" && (
-                      <div className="relative w-7 h-7 rounded-full overflow-hidden border border-[#0A1128]/10 shrink-0 mt-auto">
+                      {msg.role === "assistant" && (
+                      <div className="relative w-7 h-7 rounded-full overflow-hidden border border-gray-200 shrink-0 mt-auto bg-white">
                         <Image src="/images/we-icecream.jpg" alt="WE" fill className="object-cover" sizes="28px" />
                       </div>
                     )}
                     <div
                       className={cn(
-                        "px-4 py-3 text-[0.875rem] leading-relaxed font-medium whitespace-pre-wrap",
+                        "px-4 py-3 text-[0.875rem] leading-relaxed font-medium whitespace-pre-wrap shadow-sm",
                         msg.role === "user"
-                          ? "bg-[#0A1128] text-white rounded-2xl rounded-br-md"
-                          : "bg-white text-[#1a1a2e] rounded-2xl rounded-bl-md shadow-sm border border-black/[0.04]"
+                          ? "bg-coral text-white rounded-[1.25rem] rounded-br-sm"
+                          : "bg-white/90 backdrop-blur-sm text-navy rounded-[1.25rem] rounded-bl-sm border border-white/50"
                       )}
                     >
                       {msg.role === "assistant" ? (
-                        <div className="prose prose-sm prose-p:leading-relaxed prose-pre:p-0 prose-ul:my-1 prose-ol:my-1 max-w-none prose-li:marker:text-[#0A1128]/50 text-[#1a1a2e]">
+                        <div className="prose prose-sm prose-p:leading-relaxed prose-pre:p-0 prose-ul:my-1 prose-ol:my-1 max-w-none prose-li:marker:text-navy/50 text-navy">
                           <ReactMarkdown remarkPlugins={[remarkGfm]}>
                             {msg.content || "…"}
                           </ReactMarkdown>
@@ -273,41 +273,41 @@ export default function AIChatWidget() {
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="ml-9 mt-3 bg-white rounded-xl border border-[#D4AF37]/30 shadow-sm overflow-hidden"
+                      className="ml-9 mt-3 bg-white/95 backdrop-blur-md rounded-[1.25rem] border border-coral/20 shadow-lg overflow-hidden"
                     >
-                      <div className="bg-[#0A1128] px-4 py-2.5">
-                        <p className="text-[#D4AF37] text-xs font-bold uppercase tracking-wider">📋 Booking Summary</p>
+                      <div className="bg-coral/10 px-4 py-3 border-b border-coral/10">
+                        <p className="text-coral text-xs font-black uppercase tracking-wider flex items-center gap-1.5"><CheckCircle2 size={14}/> Booking Summary</p>
                       </div>
-                      <div className="p-4 space-y-2 text-xs">
+                      <div className="p-4 space-y-2.5 text-xs">
                         <div className="flex justify-between">
                           <span className="text-gray-500 font-medium">Name</span>
-                          <span className="text-[#0A1128] font-bold">{msg.bookingRequest.name}</span>
+                          <span className="text-navy font-bold">{msg.bookingRequest.name}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-500 font-medium">Date</span>
-                          <span className="text-[#0A1128] font-bold">{msg.bookingRequest.eventDate}</span>
+                          <span className="text-navy font-bold">{msg.bookingRequest.eventDate}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-500 font-medium">Time</span>
-                          <span className="text-[#0A1128] font-bold">{msg.bookingRequest.startTime}</span>
+                          <span className="text-navy font-bold">{msg.bookingRequest.startTime}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-500 font-medium">Event</span>
-                          <span className="text-[#0A1128] font-bold">{msg.bookingRequest.eventType}</span>
+                          <span className="text-navy font-bold">{msg.bookingRequest.eventType}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-500 font-medium">Guests</span>
-                          <span className="text-[#0A1128] font-bold">{msg.bookingRequest.guests}</span>
+                          <span className="text-navy font-bold">{msg.bookingRequest.guests}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-500 font-medium">Location</span>
-                          <span className="text-[#0A1128] font-bold text-right max-w-[60%]">{msg.bookingRequest.city}, {msg.bookingRequest.zip}</span>
+                          <span className="text-navy font-bold text-right max-w-[60%]">{msg.bookingRequest.city}, {msg.bookingRequest.zip}</span>
                         </div>
-                        <div className="pt-3 border-t border-gray-100">
+                        <div className="pt-3 mt-1 border-t border-gray-100">
                           <button
                             onClick={() => handleConfirmBooking(msg.bookingRequest!)}
                             disabled={bookingConfirming}
-                            className="w-full py-2.5 rounded-lg font-bold text-sm bg-[#0A1128] text-[#D4AF37] hover:bg-[#0A1128]/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                            className="w-full py-2.5 rounded-xl font-bold text-sm bg-coral text-white hover:bg-coral/90 shadow-md transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                           >
                             {bookingConfirming ? (
                               <>
@@ -335,7 +335,7 @@ export default function AIChatWidget() {
                     <button
                       key={q}
                       onClick={() => handleSend(undefined, q)}
-                      className="px-3 py-1.5 text-xs font-semibold rounded-full bg-white border border-[#0A1128]/10 text-[#0A1128] hover:bg-[#0A1128] hover:text-white transition-all shadow-sm"
+                      className="px-3 py-1.5 text-xs font-bold rounded-full bg-white/70 backdrop-blur-sm border border-coral/20 text-navy hover:bg-coral hover:text-white transition-all shadow-sm"
                     >
                       {q}
                     </button>
@@ -346,13 +346,13 @@ export default function AIChatWidget() {
               {/* Typing indicator */}
               {isLoading && messages[messages.length - 1]?.role === "user" && (
                 <div className="flex gap-2.5 max-w-[90%]">
-                  <div className="relative w-7 h-7 rounded-full overflow-hidden border border-[#0A1128]/10 shrink-0 mt-auto">
+                  <div className="relative w-7 h-7 rounded-full overflow-hidden border border-gray-200 shrink-0 mt-auto bg-white">
                     <Image src="/images/we-icecream.jpg" alt="WE" fill className="object-cover" sizes="28px" />
                   </div>
-                  <div className="bg-white rounded-2xl rounded-bl-md px-4 py-3 shadow-sm border border-black/[0.04] flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0A1128]/20 animate-pulse" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0A1128]/20 animate-pulse" style={{ animationDelay: "150ms" }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#0A1128]/20 animate-pulse" style={{ animationDelay: "300ms" }} />
+                  <div className="bg-white/90 backdrop-blur-sm rounded-[1.25rem] rounded-bl-sm px-4 py-4 shadow-sm border border-white/50 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-coral/50 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-coral/50 animate-pulse" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-coral/50 animate-pulse" style={{ animationDelay: "300ms" }} />
                   </div>
                 </div>
               )}
@@ -360,7 +360,7 @@ export default function AIChatWidget() {
             </div>
 
             {/* ── Input ── */}
-            <div className="shrink-0 px-4 py-3 bg-white border-t border-black/[0.04]">
+            <div className="shrink-0 px-4 py-3 bg-white/80 backdrop-blur-lg border-t border-white/40">
               <form onSubmit={handleSend} className="relative flex items-center gap-2">
                 <TextareaAutosize
                   ref={inputRef as any}
@@ -376,7 +376,7 @@ export default function AIChatWidget() {
                   }}
                   placeholder="Type your message..."
                   disabled={isLoading}
-                  className="flex-1 px-4 py-3 bg-[#F5F4F0] rounded-xl text-sm text-[#0A1128] font-medium placeholder:text-[#0A1128]/35 outline-none focus:ring-2 focus:ring-[#0A1128]/10 transition-shadow disabled:opacity-50 resize-none"
+                  className="flex-1 px-4 py-3 bg-white rounded-xl text-sm text-navy font-medium placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-coral/20 border border-gray-200 transition-all disabled:opacity-50 resize-none shadow-sm"
                 />
                 <button
                   type="submit"
@@ -384,15 +384,15 @@ export default function AIChatWidget() {
                   className={cn(
                     "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200 shrink-0",
                     inputValue.trim() && !isLoading
-                      ? "bg-[#0A1128] text-[#D4AF37] hover:scale-105 shadow-sm"
-                      : "bg-[#F5F4F0] text-[#0A1128]/25 cursor-not-allowed"
+                      ? "bg-coral text-white hover:scale-105 shadow-md hover:shadow-lg"
+                      : "bg-gray-100 text-gray-400 cursor-not-allowed"
                   )}
                   aria-label="Send message"
                 >
                   <Send className="w-4 h-4" />
                 </button>
               </form>
-              <p className="text-center mt-2 text-[10px] text-gray-400 font-medium">
+              <p className="text-center mt-2 text-[10px] text-gray-400 font-bold tracking-wide uppercase">
                 Powered by WE Ice Cream Truck AI
               </p>
             </div>
