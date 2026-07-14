@@ -1,11 +1,19 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { prisma } from "./prisma";
 
 const BRAND_NAVY = "#0A1128";
 const BRAND_GOLD = "#FF6B6B";
 const LOGO = "/images/we-icecream.jpg";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT || '465'),
+  secure: true,
+  auth: {
+    user: process.env.SMTP_USER || 'saadalmikhlafi53@gmail.com',
+    pass: process.env.SMTP_PASS || 'qsnr rswv pgyz oxsj',
+  },
+});
 
 // ─── BASE TEMPLATE ───────────────────────────────────────────────
 function baseTemplate(content: string, title: string) {
@@ -63,31 +71,22 @@ function baseTemplate(content: string, title: string) {
 
 // ─── CORE SEND WITH RETRY ──────────────────────────────────────
 export async function sendEmail({ to, subject, html, title }: { to: string; subject: string; html: string; title?: string }) {
-  if (!process.env.RESEND_API_KEY) {
-    console.warn("[Email] RESEND_API_KEY not configured — skipping send for:", subject, "→", to);
-    return false;
-  }
-
   const MAX_RETRIES = 2;
   const RETRY_DELAY_MS = 2000;
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      const { data, error } = await resend.emails.send({
-        from: 'WE Ice Cream Truck <bookings@weicecreamtruck.com>',
-        to: [to],
+      await transporter.sendMail({
+        from: '"WE Ice Cream Truck" <' + (process.env.SMTP_USER || 'saadalmikhlafi53@gmail.com') + '>',
+        to: to,
         subject: subject,
         html: baseTemplate(html, title || subject),
       });
 
-      if (error) {
-        throw new Error(error.message);
-      }
-
       console.log(`[Email] ✅ Sent "${subject}" → ${to} (attempt ${attempt})`);
       return true;
-    } catch (err) {
-      console.error(`[Email] ❌ Attempt ${attempt}/${MAX_RETRIES} failed for "${subject}" → ${to}:`, err);
+    } catch (err: any) {
+      console.error(`[Email] ❌ Attempt ${attempt}/${MAX_RETRIES} failed for "${subject}" → ${to}:`, err.message);
       if (attempt < MAX_RETRIES) {
         await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
       }
