@@ -5,15 +5,17 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mail, Lock, Loader2, ArrowRight } from "lucide-react";
 import Logo from "@/components/shared/Logo";
+import Link from "next/link";
 
 function LoginForm() {
-  const [email, setEmail] = useState("saadmoad2004@gmail.com");
-  const [password, setPassword] = useState("Kals123456##");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/admin";
+  // Default callback to /portal for customers, but if admin, nextauth or middleware usually redirects them to /admin.
+  const callbackUrl = searchParams.get("callbackUrl") || "/portal";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,14 +27,21 @@ function LoginForm() {
         redirect: false,
         email,
         password,
-        callbackUrl,
       });
 
       if (res?.error) {
         setError("Invalid email or password");
         setLoading(false);
-      } else if (res?.url) {
-        router.push(res.url);
+      } else {
+        // We need to fetch the session to know where to redirect
+        const sessionRes = await fetch("/api/auth/session");
+        const sessionData = await sessionRes.json();
+        
+        if (sessionData?.user?.role === "CUSTOMER") {
+          router.push(callbackUrl);
+        } else {
+          router.push(searchParams.get("callbackUrl") || "/admin");
+        }
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
@@ -57,14 +66,19 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-coral/20 focus:border-coral transition-all text-navy font-medium"
-            placeholder="admin@example.com"
+            placeholder="you@example.com"
             required
           />
         </div>
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-bold text-navy ml-1">Password</label>
+        <div className="flex justify-between items-center ml-1">
+          <label className="text-sm font-bold text-navy">Password</label>
+          <Link href="/forgot-password" className="text-sm text-coral font-bold hover:underline">
+            Forgot Password?
+          </Link>
+        </div>
         <div className="relative">
           <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
           <input
@@ -92,13 +106,20 @@ function LoginForm() {
           </>
         )}
       </button>
+      
+      <p className="text-center text-gray-500 font-medium text-sm mt-4">
+        Don't have an account?{" "}
+        <Link href="/register" className="text-navy font-bold hover:text-coral transition-colors">
+          Create an Account
+        </Link>
+      </p>
     </form>
   );
 }
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cream relative overflow-hidden font-sans">
+    <div className="min-h-screen flex items-center justify-center bg-cream relative overflow-hidden font-sans pt-20 pb-12">
       {/* Background Decor */}
       <div className="absolute top-[-10%] left-[-5%] w-[40vw] h-[40vw] bg-coral/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-[-10%] right-[-5%] w-[40vw] h-[40vw] bg-navy/10 rounded-full blur-[100px] pointer-events-none" />
@@ -106,21 +127,17 @@ export default function LoginPage() {
       <div className="w-full max-w-md p-8 relative z-10">
         <div className="text-center mb-10">
           <div className="flex justify-center mb-6">
-            <Logo variant="dark" />
+            <Link href="/">
+              <Logo variant="dark" />
+            </Link>
           </div>
-          <h1 className="font-display font-black text-3xl text-navy mb-2">Admin Portal</h1>
-          <p className="text-gray-500 font-medium">Sign in to manage WE Ice Cream Truck</p>
+          <h1 className="font-display font-black text-3xl text-navy mb-2">Welcome Back</h1>
+          <p className="text-gray-500 font-medium">Sign in to book and manage your events</p>
         </div>
 
         <Suspense fallback={<div className="flex justify-center p-8"><Loader2 className="animate-spin text-coral" size={32} /></div>}>
           <LoginForm />
         </Suspense>
-
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-400 font-medium">
-            &copy; {new Date().getFullYear()} WE Ice Cream Truck
-          </p>
-        </div>
       </div>
     </div>
   );

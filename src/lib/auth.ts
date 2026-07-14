@@ -17,41 +17,61 @@ export const authOptions: NextAuthOptions = {
 
         try {
           const { prisma } = await import("@/lib/prisma");
+          
+          // 1. Check Admin/Driver User table
           const user = await prisma.user.findUnique({
             where: { email: credentials.email.toLowerCase() },
           });
 
-          if (!user || !user.active) {
-            return null;
+          if (user && user.active) {
+            const isPasswordValid = await bcrypt.compare(
+              credentials.password,
+              user.passwordHash
+            );
+
+            if (isPasswordValid) {
+              let parsedPermissions: string[] = [];
+              try {
+                parsedPermissions = typeof user.permissions === "string"
+                  ? JSON.parse(user.permissions)
+                  : (user.permissions as unknown as string[]);
+              } catch {
+                parsedPermissions = [];
+              }
+
+              return {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                role: user.role,
+                permissions: parsedPermissions,
+              } as any;
+            }
           }
 
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password,
-            user.passwordHash
-          );
+          // 2. If no admin found or password invalid, check Customer table
+          const customer = await prisma.customer.findUnique({
+            where: { email: credentials.email.toLowerCase() },
+          });
 
-          if (!isPasswordValid) {
-            return null;
+          if (customer && customer.passwordHash) {
+            const isCustomerPasswordValid = await bcrypt.compare(
+              credentials.password,
+              customer.passwordHash
+            );
+
+            if (isCustomerPasswordValid) {
+              return {
+                id: customer.id,
+                email: customer.email,
+                name: `${customer.firstName} ${customer.lastName}`,
+                role: "CUSTOMER",
+                permissions: [],
+              } as any;
+            }
           }
 
-          // SQLite stores permissions as JSON string; Supabase stores as String[]
-          // This parse handles both formats transparently
-          let parsedPermissions: string[] = [];
-          try {
-            parsedPermissions = typeof user.permissions === "string"
-              ? JSON.parse(user.permissions)
-              : (user.permissions as unknown as string[]);
-          } catch {
-            parsedPermissions = [];
-          }
-
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            role: user.role,
-            permissions: parsedPermissions,
-          } as any;
+          return null;
         } catch (err) {
           console.warn("DB auth failed:", err);
           return null;

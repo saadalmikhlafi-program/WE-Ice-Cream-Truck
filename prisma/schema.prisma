@@ -64,18 +64,19 @@ model Package {
 }
 
 model Customer {
-  id        String    @id @default(cuid())
-  firstName String
-  lastName  String
-  email     String
-  phone     String
-  address   String?
-  city      String?
-  zip       String?
-  createdAt DateTime  @default(now())
-  bookings  Booking[]
-  inquiries Inquiry[]
-  tasks     Task[]
+  id           String    @id @default(cuid())
+  firstName    String
+  lastName     String
+  email        String    @unique
+  passwordHash String?
+  phone        String
+  address      String?
+  city         String?
+  zip          String?
+  createdAt    DateTime  @default(now())
+  bookings     Booking[]
+  inquiries    Inquiry[]
+  tasks        Task[]
 }
 
 model Booking {
