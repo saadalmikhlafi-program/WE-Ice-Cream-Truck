@@ -4,8 +4,8 @@ import { prisma } from "./prisma";
 const BRAND_NAVY = "#0A1128";
 const BRAND_GOLD = "#D4AF37";
 const BRAND_CORAL = "#FF6B6B";
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ice-cream-truck-jet.vercel.app";
-const LOGO_URL = `${SITE_URL}/images/we-icecream.jpg`;
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ice-cream-truck-git-main-saad-al-mikhlafi.vercel.app";
+const LOGO_URL = "https://ice-cream-truck-git-main-saad-al-mikhlafi.vercel.app/images/we-icecream.jpg";
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -49,7 +49,7 @@ function baseTemplate(content: string, title: string) {
 
         <!-- Header -->
         <tr>
-          <td class="email-header" style="background:${BRAND_NAVY};padding:40px 32px;text-align:center;">
+          <td class="email-header" style="background:${BRAND_CORAL};padding:40px 32px;text-align:center;">
             <img src="${LOGO_URL}" alt="WE Ice Cream Truck" width="80" height="80" style="height:80px;width:80px;object-fit:cover;display:block;margin:0 auto 16px;border-radius:50%;border:3px solid ${BRAND_GOLD};"/>
             <p style="margin:0 0 4px;font-size:22px;font-weight:800;color:#ffffff;letter-spacing:0.5px;">WE<span style="color:${BRAND_GOLD}">.</span> Ice Cream Truck</p>
             <div style="height:2px;width:40px;background:${BRAND_GOLD};margin:8px auto 0;border-radius:2px;"></div>

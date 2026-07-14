@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, FormEvent } from "react";
+import { useState, useEffect, useRef, FormEvent, KeyboardEvent } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { X, Send, CheckCircle2, Loader2, MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import TextareaAutosize from "react-textarea-autosize";
 
 interface Message {
   id: string;
@@ -253,7 +256,15 @@ export default function AIChatWidget() {
                           : "bg-white text-[#1a1a2e] rounded-2xl rounded-bl-md shadow-sm border border-black/[0.04]"
                       )}
                     >
-                      {msg.content || <span className="opacity-40">…</span>}
+                      {msg.role === "assistant" ? (
+                        <div className="prose prose-sm prose-p:leading-relaxed prose-pre:p-0 prose-ul:my-1 prose-ol:my-1 max-w-none prose-li:marker:text-[#0A1128]/50 text-[#1a1a2e]">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {msg.content || "…"}
+                          </ReactMarkdown>
+                        </div>
+                      ) : (
+                        msg.content || <span className="opacity-40">…</span>
+                      )}
                     </div>
                   </div>
 
@@ -351,14 +362,21 @@ export default function AIChatWidget() {
             {/* ── Input ── */}
             <div className="shrink-0 px-4 py-3 bg-white border-t border-black/[0.04]">
               <form onSubmit={handleSend} className="relative flex items-center gap-2">
-                <input
-                  ref={inputRef}
-                  type="text"
+                <TextareaAutosize
+                  ref={inputRef as any}
+                  minRows={1}
+                  maxRows={4}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSend(e as any);
+                    }
+                  }}
                   placeholder="Type your message..."
                   disabled={isLoading}
-                  className="flex-1 px-4 py-3 bg-[#F5F4F0] rounded-xl text-sm text-[#0A1128] font-medium placeholder:text-[#0A1128]/35 outline-none focus:ring-2 focus:ring-[#0A1128]/10 transition-shadow disabled:opacity-50"
+                  className="flex-1 px-4 py-3 bg-[#F5F4F0] rounded-xl text-sm text-[#0A1128] font-medium placeholder:text-[#0A1128]/35 outline-none focus:ring-2 focus:ring-[#0A1128]/10 transition-shadow disabled:opacity-50 resize-none"
                 />
                 <button
                   type="submit"

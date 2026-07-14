@@ -71,14 +71,17 @@ const BOOKING_TOOL = {
   },
 };
 
-async function handleBookingTool(args: any): Promise<{ success: boolean; bookingNumber?: string; error?: string }> {
+async function handleBookingTool(args: any, sessionEmail: string): Promise<{ success: boolean; bookingNumber?: string; error?: string }> {
   try {
     const [firstName, ...lastNames] = args.name.split(" ");
     const lastName = lastNames.join(" ") || "Unknown";
 
+    // Enforce matching email with session or at least valid formatting. Actually we just use sessionEmail to ensure security.
+    const emailToUse = sessionEmail || args.email.toLowerCase();
+
     // Find or create customer
     let customer = await prisma.customer.findFirst({
-      where: { email: args.email.toLowerCase() },
+      where: { email: emailToUse },
     });
 
     if (!customer) {
@@ -86,11 +89,11 @@ async function handleBookingTool(args: any): Promise<{ success: boolean; booking
         data: {
           firstName,
           lastName,
-          email: args.email.toLowerCase(),
-          phone: args.phone,
-          address: args.address,
-          city: args.city,
-          zip: args.zip,
+          email: emailToUse,
+          phone: args.phone || "",
+          address: args.address || "",
+          city: args.city || "",
+          zip: args.zip || "",
         },
       });
     }
@@ -106,20 +109,33 @@ async function handleBookingTool(args: any): Promise<{ success: boolean; booking
       if (pkg) resolvedPackageId = pkg.id;
     }
 
+    // Safely parse date and guests
+    const dateStr = args.eventDate.includes('T') ? args.eventDate : `${args.eventDate}T00:00:00.000Z`;
+    let parsedDate = new Date(dateStr);
+    if (isNaN(parsedDate.getTime())) {
+      // Fallback: If AI provided something unparseable, just use tomorrow
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      parsedDate = tomorrow;
+    }
+
+    let parsedGuests = parseInt(args.guests);
+    if (isNaN(parsedGuests)) parsedGuests = 50;
+
     const booking = await prisma.booking.create({
       data: {
         bookingNumber,
         customerId: customer.id,
         packageId: resolvedPackageId,
         status: "PENDING",
-        eventDate: new Date(`${args.eventDate}T00:00:00.000Z`),
-        startTime: args.startTime,
+        eventDate: parsedDate,
+        startTime: args.startTime || "12:00 PM",
         durationMins: 60,
-        address: args.address,
-        city: args.city,
-        zip: args.zip,
-        guests: args.guests,
-        eventType: args.eventType,
+        address: args.address || "",
+        city: args.city || "",
+        zip: args.zip || "",
+        guests: parsedGuests,
+        eventType: args.eventType || "Event",
         notes: "Booked via AI Chat Assistant",
         totalAmount: 0, // Will be set by admin review
       },
@@ -311,13 +327,18 @@ ${userState}
 // Endpoint for confirming a booking from the chat
 export async function PUT(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user || !session.user.email) {
+      return Response.json({ error: "You must be logged in to confirm a booking." }, { status: 401 });
+    }
+
     const { bookingData } = await req.json();
     
     if (!bookingData || !bookingData.name || !bookingData.email) {
       return Response.json({ error: "Missing booking data" }, { status: 400 });
     }
 
-    const result = await handleBookingTool(bookingData);
+    const result = await handleBookingTool(bookingData, session.user.email);
     
     if (result.success) {
       return Response.json({ 
