@@ -586,7 +586,7 @@ function formatEventDate(dateObj: Date | string | null | undefined) {
 }
 
 export async function sendOwnerNewBookingEmail(booking: any) {
-  const to = "info@bostonlegendicecreamtruck.com";
+  const to = BUSINESS_CONFIG.contact.email;
   const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const dateStr = formatEventDate(booking.eventDate);
   const subject = `New Booking Received – ${booking.customer?.firstName} ${booking.customer?.lastName} – ${dateStr}`;
@@ -613,7 +613,7 @@ export async function sendOwnerNewBookingEmail(booking: any) {
 }
 
 export async function sendOwnerRequiresApprovalEmail(booking: any) {
-  const to = "info@bostonlegendicecreamtruck.com";
+  const to = BUSINESS_CONFIG.contact.email;
   const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const html = `
     <h2 style="color:${BRAND_NAVY};margin-top:0;">Booking Awaiting Approval</h2>
@@ -630,7 +630,7 @@ export async function sendOwnerRequiresApprovalEmail(booking: any) {
 }
 
 export async function sendOwnerLateBookingAlert(booking: any) {
-  const to = "info@bostonlegendicecreamtruck.com";
+  const to = BUSINESS_CONFIG.contact.email;
   const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const html = `
     <h2 style="color:#DC2626;margin-top:0;">⚠️ URGENT – Last Minute Booking</h2>
