@@ -193,7 +193,7 @@ export default function SiteHeader() {
                       <p className="text-xs text-gray-500 truncate">{session.user?.email}</p>
                     </div>
 
-                    {session.user?.role === "CUSTOMER" ? (
+                    {(session.user as any)?.role === "CUSTOMER" ? (
                       <Link
                         href="/portal"
                         className="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-navy hover:bg-cream hover:text-coral transition-colors"
