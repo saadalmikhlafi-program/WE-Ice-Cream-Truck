@@ -4,6 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import zipcodes from "zipcodes";
+import {
+  sendBookingApprovedEmail,
+  sendBookingPendingEmail,
+  sendBookingPendingReviewEmail,
+  sendOwnerNewBookingEmail,
+  sendOwnerRequiresApprovalEmail,
+} from "@/lib/email";
 
 async function calculateDistance(zip: string): Promise<number> {
   const ORIGIN_ZIP = "02151";
@@ -58,7 +65,7 @@ const BOOKING_TOOL = {
         email: { type: "string", description: "Customer's email address" },
         phone: { type: "string", description: "Customer's phone number" },
         eventDate: { type: "string", description: "Event date in YYYY-MM-DD format" },
-        startTime: { type: "string", description: "Event start time, e.g. '2:00 PM'" },
+        startTime: { type: "string", description: "Event start time in 24-hour format, e.g. '14:00'" },
         eventType: { type: "string", description: "Type of event" },
         packageId: { type: "string", description: "Package ID from the list" },
         address: { type: "string", description: "Event street address" },
@@ -102,11 +109,15 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
 
     // Check if packageId exists in DB
     let resolvedPackageId: string | null = null;
+    let resolvedPackage: any = null;
     if (args.packageId && args.packageId !== "custom-event-package") {
       const pkg = await prisma.package.findFirst({
         where: { OR: [{ id: args.packageId }, { slug: args.packageId }] },
       });
-      if (pkg) resolvedPackageId = pkg.id;
+      if (pkg) {
+        resolvedPackageId = pkg.id;
+        resolvedPackage = pkg;
+      }
     }
 
     // Safely parse date and guests
@@ -122,24 +133,135 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
     let parsedGuests = parseInt(args.guests);
     if (isNaN(parsedGuests)) parsedGuests = 50;
 
+    // ─── Calculate distance and pricing ───
+    let distanceMiles = 0;
+    let travelFee = 0;
+    const FREE_MILES = 10;
+    const PER_MILE_RATE = 2.5;
+
+    if (args.zip) {
+      try {
+        distanceMiles = await calculateDistance(args.zip);
+        const billableMiles = Math.max(0, distanceMiles - FREE_MILES);
+        travelFee = Math.round(billableMiles * PER_MILE_RATE * 100) / 100;
+      } catch (e) {
+        console.warn("Distance calculation failed for AI booking:", e);
+      }
+    }
+
+    // Calculate base price from package
+    const basePrice = resolvedPackage?.price || 0;
+    const pkgServings = resolvedPackage?.servings || 50;
+    const extraGuestPrice = resolvedPackage?.extraGuestPrice || resolvedPackage?.extraPiecePrice || 5;
+    const extraGuests = Math.max(0, parsedGuests - pkgServings);
+    const extraGuestsFee = extraGuests * extraGuestPrice;
+
+    // Weekend surcharge
+    const dayOfWeek = parsedDate.getDay();
+    const weekendFee = (dayOfWeek === 0 || dayOfWeek === 6) ? 25 : 0;
+
+    // Additional stops
+    const additionalStopsCount = 0;
+    const additionalStopsFee = 0;
+
+    const totalAmount = basePrice + travelFee + extraGuestsFee + weekendFee + additionalStopsFee;
+
+    // ─── AI Auto-Approval Logic ───
+    // APPROVE unless totalAmount < $500 AND distance > 30 miles → then PENDING for human review
+    let bookingStatus = "APPROVED";
+    let pendingReason = "";
+    if (totalAmount < 500 && distanceMiles > 30) {
+      bookingStatus = "PENDING";
+      pendingReason = `Low value booking ($${totalAmount.toFixed(2)}) with long distance (${distanceMiles.toFixed(1)} miles). Requires manual review.`;
+    }
+
     const booking = await prisma.booking.create({
       data: {
         bookingNumber,
         customerId: customer.id,
         packageId: resolvedPackageId,
-        status: "PENDING",
+        status: bookingStatus,
         eventDate: parsedDate,
-        startTime: args.startTime || "12:00 PM",
-        durationMins: 60,
+        startTime: args.startTime || "12:00",
+        durationMins: resolvedPackage?.durationMins || 60,
         address: args.address || "",
         city: args.city || "",
         zip: args.zip || "",
         guests: parsedGuests,
         eventType: args.eventType || "Event",
         notes: "Booked via AI Chat Assistant",
-        totalAmount: 0, // Will be set by admin review
+        totalAmount,
+        additionalStops: additionalStopsCount,
+        additionalStopsFee,
       },
     });
+
+    // Create quote record for pricing snapshot
+    if (totalAmount > 0) {
+      try {
+        await prisma.quote.create({
+          data: {
+            bookingId: booking.id,
+            basePrice,
+            distanceMiles,
+            travelFee,
+            overtimeFee: 0,
+            totalAmount,
+            snapshotJson: JSON.stringify({
+              packagePrice: basePrice,
+              distanceMiles,
+              billableMiles: Math.max(0, distanceMiles - FREE_MILES),
+              travelFee,
+              includedGuests: pkgServings,
+              additionalGuests: extraGuests,
+              extraGuestPrice,
+              additionalGuestsFee: extraGuestsFee,
+              weekendFee,
+              additionalStopsCount,
+              additionalStopsFee,
+              estimatedTotal: totalAmount,
+            }),
+          },
+        });
+      } catch (e) {
+        console.warn("Failed to create quote record:", e);
+      }
+    }
+
+    // ─── Send Emails ───
+    const fullBooking = await prisma.booking.findUnique({
+      where: { id: booking.id },
+      include: { customer: true, package: true, quote: true, stops: { orderBy: { stopOrder: "asc" } } },
+    });
+
+    // Send to Customer
+    if (bookingStatus === "APPROVED") {
+      sendBookingApprovedEmail(
+        emailToUse,
+        firstName,
+        bookingNumber,
+        "", // paymentUrl not applicable
+        totalAmount.toFixed(2),
+        booking.id
+      ).catch(e => console.error("Failed to send approved email:", e));
+    } else {
+      sendBookingPendingReviewEmail(
+        emailToUse,
+        firstName,
+        bookingNumber,
+        pendingReason,
+        booking.id
+      ).catch(e => console.error("Failed to send pending review email:", e));
+    }
+
+    // Send to Owner
+    if (fullBooking) {
+      if (bookingStatus === "PENDING") {
+        sendOwnerRequiresApprovalEmail(fullBooking).catch(e => console.error("Failed to send owner approval email:", e));
+      } else {
+        sendOwnerNewBookingEmail(fullBooking).catch(e => console.error("Failed to send owner notification:", e));
+      }
+    }
 
     return { success: true, bookingNumber };
   } catch (error: any) {
@@ -199,7 +321,7 @@ ${userState}
 2. If the User Status is LOGGED IN: You can proceed to gather booking details. Ask for any missing info:
    - Phone number
    - Event date (YYYY-MM-DD format)
-   - Start time (e.g., 2:00 PM)
+   - Start time (in 24-hour format, e.g., 14:00)
    - Event type
    - Which package they want
    - Event address, city, and ZIP code

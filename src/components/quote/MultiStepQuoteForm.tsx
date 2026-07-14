@@ -279,8 +279,16 @@ export default function MultiStepQuoteForm() {
                   <label className="text-sm font-bold text-navy ml-1">Time (24h format)</label>
                   <div className="relative">
                     <Clock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                    <input type="time" value={time} onChange={e => setTime(e.target.value)}
-                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 outline-none transition-all font-medium" />
+                    <select value={time} onChange={e => setTime(e.target.value)}
+                      className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 outline-none transition-all font-medium appearance-none">
+                      <option value="" disabled>Select Time</option>
+                      {Array.from({ length: 24 }).map((_, hour) => 
+                        ["00", "30"].map(min => {
+                          const timeString = `${hour.toString().padStart(2, '0')}:${min}`;
+                          return <option key={timeString} value={timeString}>{timeString}</option>
+                        })
+                      )}
+                    </select>
                   </div>
                 </div>
 
