@@ -14,8 +14,6 @@ const galleryImages = [
   { id: 2, src: "/images/classic-truck.jpg", alt: "Classic ice cream truck in neighborhood", category: "Birthday" },
   { id: 3, src: "/images/van-premium.jpg", alt: "Sleek Sprinter van at corporate campus", category: "Corporate" },
   { id: 4, src: "/images/gallery-8.jpg", alt: "Happy children getting ice cream", category: "Festival" },
-  { id: 5, src: "/images/hero-cinematic.jpg", alt: "Evening lighting on ice cream truck", category: "Wedding" },
-  { id: 6, src: "/images/classic-truck.jpg", alt: "Serving premium ice cream treats", category: "Corporate" },
 ];
 
 export default function GalleryPage() {

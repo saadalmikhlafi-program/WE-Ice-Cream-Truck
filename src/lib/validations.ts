@@ -10,7 +10,7 @@ export const BookingSchema = z.object({
   eventType: z.string().min(1, "Event type is required"),
   address: z.string().min(5, "Address is required"),
   city: z.string().min(2, "City is required"),
-  zip: z.string().length(5, "Valid 5-digit ZIP is required"),
+  zip: z.string().min(3, "Valid ZIP is required"),
   distance: z.number().min(0),
   distanceFee: z.number().min(0),
   packageId: z.string().optional(),
@@ -21,6 +21,16 @@ export const BookingSchema = z.object({
   extraGuestFee: z.number().min(0),
   routingFee: z.number().min(0),
   totalAmount: z.number().min(0),
+  // Multi-stop fields (optional)
+  address2: z.string().optional(),
+  city2: z.string().optional(),
+  zip2: z.string().optional(),
+  distance2: z.number().optional(),
+  distanceFee2: z.number().optional(),
+  lat: z.number().optional(),
+  lng: z.number().optional(),
+  lat2: z.number().optional(),
+  lng2: z.number().optional(),
 });
 
 export const OtpSchema = z.object({

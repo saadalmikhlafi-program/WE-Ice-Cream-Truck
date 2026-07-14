@@ -2,8 +2,10 @@ import nodemailer from 'nodemailer';
 import { prisma } from "./prisma";
 
 const BRAND_NAVY = "#0A1128";
-const BRAND_GOLD = "#FF6B6B";
-const LOGO = "/images/we-icecream.jpg";
+const BRAND_GOLD = "#D4AF37";
+const BRAND_CORAL = "#FF6B6B";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ice-cream-truck-jet.vercel.app";
+const LOGO_URL = `${SITE_URL}/images/we-icecream.jpg`;
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -17,56 +19,65 @@ const transporter = nodemailer.createTransport({
 
 // ─── BASE TEMPLATE ───────────────────────────────────────────────
 function baseTemplate(content: string, title: string) {
-  return `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="utf-8"/>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <title>${title}</title>
-      <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap');
-      </style>
-    </head>
-    <body style="margin:0;padding:0;background-color:#F4F4F5;font-family:'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-      <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;background:#F4F4F5;padding:20px 10px;">
-        <tr><td align="center">
-          <table role="presentation" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.05);margin:0 auto;">
-            
-            <!-- Header -->
-            <tr>
-              <td style="background:linear-gradient(135deg,${BRAND_NAVY} 0%,#001a4c 100%);padding:48px 40px;text-align:center;">
-                <img src="${LOGO}" alt="WE Ice Cream Truck" width="120" height="120" style="height:120px;width:120px;object-fit:cover;display:block;margin:0 auto 12px;border-radius:50%;"/>
-                <div style="height:2px;width:40px;background:${BRAND_GOLD};margin:0 auto;border-radius:2px;"></div>
-              </td>
-            </tr>
+  return `<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title>${title}</title>
+  <!--[if mso]>
+  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+  <![endif]-->
+  <style>
+    body, table, td { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+    @media only screen and (max-width: 620px) {
+      .email-container { width: 100% !important; max-width: 100% !important; }
+      .email-padding { padding: 24px 16px !important; }
+      .email-header { padding: 32px 20px !important; }
+      .mobile-stack { display: block !important; width: 100% !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#F0EDE8;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color:#F0EDE8;">
+    <tr><td align="center" style="padding:24px 12px;">
 
-            <!-- Content -->
-            <tr>
-              <td style="padding:32px 20px;">
-                ${content}
-              </td>
-            </tr>
+      <!-- Email Container -->
+      <table role="presentation" cellpadding="0" cellspacing="0" width="600" class="email-container" style="max-width:600px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(10,17,40,0.08);">
 
-            <!-- Footer -->
-            <tr>
-              <td style="background:#F8F9FC;padding:24px 20px;text-align:center;border-top:1px solid #EEEEEE;">
-                <p style="margin:0 0 8px;color:#9CA3AF;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;">WE Ice Cream Truck</p>
-                <p style="margin:0 0 16px;color:#6B7280;font-size:13px;font-weight:600;">Greater Boston, MA · 617-999-3803</p>
-                <div style="margin-bottom:20px;">
-                  <a href="https://www.facebook.com/bostonlegendicecream" style="display:inline-block;margin:0 8px;"><img src="https://cdn.prod.website-files.com/67dc601bc29781a5af1632a2/681bd97f9407e01489f8f216_boston-legend-ice-cream-truck-facebook.png" width="20" height="20" alt="FB"/></a>
-                  <a href="https://www.instagram.com/bostonlegendicecream" style="display:inline-block;margin:0 8px;"><img src="https://cdn.prod.website-files.com/67dc601bc29781a5af1632a2/681bd97f63235d7e7fa1c200_boston-legend-ice-cream-truck-truck-instagram.png" width="20" height="20" alt="IG"/></a>
-                </div>
-                <p style="margin:0;color:#D1D5DB;font-size:11px;font-weight:600;">© ${new Date().getFullYear()} WE Ice Cream Truck. All rights reserved.</p>
-              </td>
-            </tr>
+        <!-- Header -->
+        <tr>
+          <td class="email-header" style="background:${BRAND_NAVY};padding:40px 32px;text-align:center;">
+            <img src="${LOGO_URL}" alt="WE Ice Cream Truck" width="80" height="80" style="height:80px;width:80px;object-fit:cover;display:block;margin:0 auto 16px;border-radius:50%;border:3px solid ${BRAND_GOLD};"/>
+            <p style="margin:0 0 4px;font-size:22px;font-weight:800;color:#ffffff;letter-spacing:0.5px;">WE<span style="color:${BRAND_GOLD}">.</span> Ice Cream Truck</p>
+            <div style="height:2px;width:40px;background:${BRAND_GOLD};margin:8px auto 0;border-radius:2px;"></div>
+          </td>
+        </tr>
 
-          </table>
-        </td></tr>
+        <!-- Content -->
+        <tr>
+          <td class="email-padding" style="padding:32px 32px 24px;">
+            ${content}
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style="background:#F8F7F4;padding:24px 32px;text-align:center;border-top:1px solid #E8E5E0;">
+            <p style="margin:0 0 6px;color:${BRAND_NAVY};font-size:13px;font-weight:700;">WE Ice Cream Truck</p>
+            <p style="margin:0 0 12px;color:#6B7280;font-size:12px;">Greater Boston, MA &middot; <a href="tel:617-999-3803" style="color:${BRAND_NAVY};text-decoration:none;font-weight:600;">617-999-3803</a></p>
+            <p style="margin:0;color:#9CA3AF;font-size:11px;">&copy; ${new Date().getFullYear()} WE Ice Cream Truck LLC. All rights reserved.</p>
+          </td>
+        </tr>
+
       </table>
-    </body>
-    </html>
-  `;
+
+    </td></tr>
+  </table>
+</body>
+</html>`;
 }
 
 // ─── CORE SEND WITH RETRY ──────────────────────────────────────
