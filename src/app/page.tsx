@@ -7,7 +7,7 @@ import TrustStats from "@/components/home/TrustStats";
 import ServicesMarquee from "@/components/home/ServicesMarquee";
 import BrandCarousel from "@/components/shared/BrandCarousel";
 import HowItWorks from "@/components/home/HowItWorks";
-import GalleryStrip from "@/components/home/GalleryStrip";
+import BlogSection from "@/components/home/BlogSection";
 import PackagesPreview from "@/components/home/PackagesPreview";
 import TestimonialsCarousel from "@/components/home/TestimonialsCarousel";
 import CityMapSection from "@/components/home/CityMapSection";
@@ -88,7 +88,7 @@ export default async function HomePage() {
       <ServicesMarquee />
       <BrandCarousel />
       <HowItWorks />
-      <GalleryStrip />
+      <BlogSection />
       <PackagesPreview featuredPackages={featuredPackages} />
       <TestimonialsCarousel />
       <CityMapSection />

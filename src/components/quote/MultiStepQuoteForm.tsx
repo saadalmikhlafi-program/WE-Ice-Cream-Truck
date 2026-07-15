@@ -199,7 +199,7 @@ export default function MultiStepQuoteForm() {
         }
         window.location.href = "/";
       } else {
-        alert(data.error || "Failed to submit booking");
+        alert(data.error + (data.details ? "\n\nDetails: " + JSON.stringify(data.details, null, 2) : ""));
       }
     } catch (err) {
       console.error(err);
@@ -337,7 +337,7 @@ export default function MultiStepQuoteForm() {
                   <div>
                     <h4 className="font-bold text-navy text-sm">Travel Calculation</h4>
                     <p className="text-sm text-gray-600 font-medium mt-2 leading-relaxed">
-                      Coordinates: <span className="text-navy font-bold">{lat.toFixed(5)}, {lng.toFixed(5)}</span><br/>
+                      Destination: <span className="text-navy font-bold">{address || "Selected Location"}, {city} {zip}</span><br/>
                       Total distance from our HQ (02151): <span className="text-navy font-bold">{distance} miles</span><br/>
                       <span className="text-coral font-bold mt-1 inline-block">Note:</span> The first 10 miles are FREE. Each additional mile is $2.50.<br/>
                     </p>
@@ -435,13 +435,13 @@ export default function MultiStepQuoteForm() {
                               <p className="text-sm text-gray-600 font-medium mt-2 leading-relaxed">
                                 {routingMode === "SEQUENTIAL" ? (
                                   <>
-                                    Origin: <span className="font-bold text-navy">Location 1</span><br/>
+                                    Destination: <span className="text-navy font-bold">{address2 || "Selected Location"}, {city2} {zip2}</span><br/>
                                     Distance from Location 1: <span className="text-navy font-bold">{distance2} miles</span><br/>
                                     <span className="text-coral font-bold mt-1 inline-block">Note:</span> Free miles apply only to the first segment. Each mile for this segment is $2.50.<br/>
                                   </>
                                 ) : (
                                   <>
-                                    Origin: <span className="font-bold text-navy">HQ (02151)</span><br/>
+                                    Destination: <span className="text-navy font-bold">{address2 || "Selected Location"}, {city2} {zip2}</span><br/>
                                     Distance from HQ: <span className="text-navy font-bold">{distance2} miles</span><br/>
                                     <span className="text-coral font-bold mt-1 inline-block">Note:</span> The first 10 miles are FREE. Each additional mile is $2.50.<br/>
                                   </>

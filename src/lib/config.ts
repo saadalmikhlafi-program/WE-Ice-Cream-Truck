@@ -24,13 +24,13 @@ export const BUSINESS_CONFIG = {
 
   // Change this once to update ALL schema markup, footer, contact page
   address: {
-    street: "84 Fernwood Ave",
-    city: "Revere",
+    street: "38 Woodland Rd",
+    city: "Georgetown",
     state: "MA",
-    zip: "02151",
+    zip: "01833",
     country: "US",
     countryFull: "United States",
-    display: "Revere, MA 02151",
+    display: "38 Woodland Rd, Georgetown, MA 01833",
   },
 
   geo: {

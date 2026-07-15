@@ -186,20 +186,48 @@ export default function LocationPicker({
 
   // Reverse geocode a lat/lng to get the address
   const reverseGeocode = async (lat: number, lng: number) => {
-    // Because the Next.js dev server is failing to resolve the dynamically added /api/geocode proxy without a restart,
-    // we bypass it entirely and immediately pass the coordinates to calculate distance perfectly!
-    const fallbackAddress = `Selected Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
-    setQuery(fallbackAddress);
-    onAddressChange(fallbackAddress);
-    setSelectedLocation({ lat, lng, display: fallbackAddress });
-    
-    onLocationSelect({
-      address: fallbackAddress,
-      city: "Unknown City",
-      zip: "", // Distance API will use lat/lng
-      lat,
-      lng,
-    });
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`, {
+        headers: { 'Accept-Language': 'en-US,en' }
+      });
+      if (!res.ok) throw new Error("Geocoding failed");
+      
+      const data = await res.json();
+      const addr = data.address || {};
+      const streetAddress = [addr.house_number, addr.road].filter(Boolean).join(" ");
+      const cityName = addr.city || addr.town || addr.village || "";
+      const zipCode = addr.postcode || "";
+      const state = addr.state || "";
+      
+      const fullAddress = streetAddress || cityName || data.display_name.split(",")[0];
+      const displayStr = `${fullAddress}${cityName && cityName !== fullAddress ? `, ${cityName}` : ""}${state ? `, ${state}` : ""}${zipCode ? ` ${zipCode}` : ""}`;
+      
+      setQuery(displayStr);
+      onAddressChange(displayStr);
+      setSelectedLocation({ lat, lng, display: displayStr });
+      
+      onLocationSelect({
+        address: displayStr,
+        city: cityName,
+        zip: zipCode,
+        lat,
+        lng,
+      });
+    } catch (err) {
+      console.error(err);
+      const fallbackAddress = `Selected Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+      setQuery(fallbackAddress);
+      onAddressChange(fallbackAddress);
+      setSelectedLocation({ lat, lng, display: fallbackAddress });
+      
+      onLocationSelect({
+        address: fallbackAddress,
+        city: "Unknown City",
+        zip: "",
+        lat,
+        lng,
+      });
+    }
   };
 
   // Search for addresses
