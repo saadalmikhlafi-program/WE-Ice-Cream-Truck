@@ -123,7 +123,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex font-sans">
+    <div className="min-h-screen flex flex-col lg:flex-row font-sans">
       {/* ── Left Panel: Branding ── */}
       <div className="hidden lg:flex lg:w-[52%] relative flex-col items-center justify-center overflow-hidden bg-navy p-12">
         {/* Background pattern */}
@@ -168,7 +168,7 @@ export default function LoginPage() {
       </div>
 
       {/* ── Right Panel: Form ── */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 bg-slate-50 relative">
+      <div className="w-full lg:flex-1 flex flex-col items-center justify-center p-6 sm:p-10 bg-slate-50 relative flex-grow">
         {/* Mobile logo */}
         <div className="lg:hidden flex flex-col items-center mb-8">
           <div className="w-20 h-20 rounded-full overflow-hidden border-3 border-navy/10 shadow-lg mb-3">

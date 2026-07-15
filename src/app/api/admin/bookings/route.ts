@@ -51,7 +51,8 @@ export async function GET(req: NextRequest) {
           include: {
             driver: true
           }
-        }
+        },
+        quote: true
       },
       orderBy: { createdAt: "desc" },
     });

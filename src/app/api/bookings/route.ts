@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { BookingSchema } from "@/lib/validations";
 import { sendBookingPendingEmail, sendOwnerNewBookingEmail } from "@/lib/email";
 
 export async function POST(req: Request) {

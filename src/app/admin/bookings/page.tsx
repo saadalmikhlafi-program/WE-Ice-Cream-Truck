@@ -49,7 +49,7 @@ export default function BookingsPage() {
   const filtered = bookings.filter(b => {
     const q = search.toLowerCase();
     const matchSearch = !search ||
-      `${b.customer.firstName} ${b.customer.lastName} ${b.bookingNumber} ${b.city} ${b.customer.email}`
+      `${b.customer?.firstName || ""} ${b.customer?.lastName || ""} ${b.bookingNumber} ${b.city || ""} ${b.customer?.email || ""}`
         .toLowerCase().includes(q);
     const matchStatus = status === "ALL" || b.status === status;
     return matchSearch && matchStatus;
@@ -156,8 +156,8 @@ export default function BookingsPage() {
                           <div className="text-[11px] text-gray-400 font-medium mt-0.5">{b.guests} guests</div>
                         </td>
                         <td className="px-5 py-4">
-                          <div className="font-bold text-sm text-navy">{b.customer.firstName} {b.customer.lastName}</div>
-                          <div className="text-[11px] text-gray-400 font-medium mt-0.5">{b.customer.phone}</div>
+                          <div className="font-bold text-sm text-navy">{b.customer?.firstName || "Unknown"} {b.customer?.lastName || ""}</div>
+                          <div className="text-[11px] text-gray-400 font-medium mt-0.5">{b.customer?.phone || "No phone"}</div>
                         </td>
                         <td className="px-5 py-4">
                           <div className="font-bold text-sm text-navy">{dateStr}</div>

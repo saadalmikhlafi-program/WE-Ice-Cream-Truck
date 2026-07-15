@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
           include: {
             customer: { select: { firstName: true, lastName: true, email: true } },
             package: { select: { name: true } },
+            quote: { select: { totalAmount: true } },
           },
         });
         dbContext = `\n\nLIVE BOOKINGS DATA (latest 10):\n${JSON.stringify(
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
             status: b.status,
             eventDate: b.eventDate,
             guests: b.guests,
-            totalAmount: b.totalAmount,
+            totalAmount: b.quote?.totalAmount,
             createdAt: b.createdAt,
           })),
           null,
