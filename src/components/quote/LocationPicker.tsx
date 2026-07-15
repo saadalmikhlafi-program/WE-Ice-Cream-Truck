@@ -46,6 +46,9 @@ export default function LocationPicker({
     lat: number;
     lng: number;
     display: string;
+    street: string;
+    city: string;
+    zip: string;
   } | null>(null);
   const [mapReady, setMapReady] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -204,7 +207,7 @@ export default function LocationPicker({
       
       setQuery(displayStr);
       onAddressChange(displayStr);
-      setSelectedLocation({ lat, lng, display: displayStr });
+      setSelectedLocation({ lat, lng, display: displayStr, street: streetAddress || "", city: cityName, zip: zipCode });
       
       onLocationSelect({
         address: displayStr,
@@ -215,14 +218,14 @@ export default function LocationPicker({
       });
     } catch (err) {
       console.error(err);
-      const fallbackAddress = `Selected Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`;
+      const fallbackAddress = `Selected Location`;
       setQuery(fallbackAddress);
       onAddressChange(fallbackAddress);
-      setSelectedLocation({ lat, lng, display: fallbackAddress });
+      setSelectedLocation({ lat, lng, display: fallbackAddress, street: "", city: "", zip: "" });
       
       onLocationSelect({
         address: fallbackAddress,
-        city: "Unknown City",
+        city: "",
         zip: "",
         lat,
         lng,
@@ -283,7 +286,7 @@ export default function LocationPicker({
     setQuery(fullAddress);
     onAddressChange(fullAddress);
     setShowSuggestions(false);
-    setSelectedLocation({ lat, lng, display: fullAddress });
+    setSelectedLocation({ lat, lng, display: fullAddress, street: streetAddress || "", city: cityName, zip: zipCode });
 
     // Move map to the selected location
     if (mapInstanceRef.current && markerRef.current) {
@@ -504,16 +507,29 @@ export default function LocationPicker({
       {/* Selected location display */}
       {selectedLocation && (
         <div className="flex items-start gap-3 p-4 bg-mint/5 border border-mint/20 rounded-2xl">
-          <div className="w-8 h-8 rounded-full bg-mint/20 text-mint flex items-center justify-center shrink-0 mt-0.5">
+          <div className="w-9 h-9 rounded-full bg-mint/20 text-mint flex items-center justify-center shrink-0 mt-0.5">
             <Navigation className="w-4 h-4" />
           </div>
-          <div>
-            <p className="text-sm font-bold text-navy">
-              {selectedLocation.display}
-            </p>
-            <p className="text-xs text-gray-500 mt-0.5">
-              {selectedLocation.lat.toFixed(5)}, {selectedLocation.lng.toFixed(5)}
-            </p>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold text-mint uppercase tracking-wider mb-1">📍 Event Location Confirmed</p>
+            {selectedLocation.street && (
+              <p className="text-sm font-bold text-navy">{selectedLocation.street}</p>
+            )}
+            <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
+              {selectedLocation.city && (
+                <span className="text-sm text-gray-600 font-medium">
+                  🏙 <span className="font-bold text-navy">{selectedLocation.city}</span>
+                </span>
+              )}
+              {selectedLocation.zip && (
+                <span className="text-sm text-gray-600 font-medium">
+                  📮 ZIP: <span className="font-bold text-navy">{selectedLocation.zip}</span>
+                </span>
+              )}
+              {!selectedLocation.street && !selectedLocation.city && (
+                <span className="text-sm text-gray-500">{selectedLocation.display}</span>
+              )}
+            </div>
           </div>
         </div>
       )}
