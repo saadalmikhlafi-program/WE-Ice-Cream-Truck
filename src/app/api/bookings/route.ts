@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { BookingSchema } from "@/lib/validations";
+import { sendBookingPendingEmail, sendOwnerNewBookingEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     const bookingNumber = `BK-${Math.floor(100000 + Math.random() * 900000)}`;
     
     // AI Rules check:
-    const status = (totalAmount < 500 && distance >= 30) ? "REVIEW_REQUIRED" : "PENDING";
+    const status = (totalAmount < 500 && distance >= 30) ? "REVIEW_REQUIRED" : "PENDING_REVIEW";
 
     const booking = await prisma.booking.create({
       data: {
@@ -95,6 +95,11 @@ export async function POST(req: Request) {
         notes: `Routing Mode: ${routingMode}`,
         totalAmount,
         additionalStopsFee: routingFee
+      },
+      include: {
+        customer: true,
+        package: true,
+        vehicle: true
       }
     });
 
@@ -114,6 +119,15 @@ export async function POST(req: Request) {
         })
       }
     });
+
+    // 5. Send Emails
+    try {
+      await sendBookingPendingEmail(email.toLowerCase(), firstName, bookingNumber, {}, booking.id);
+      await sendOwnerNewBookingEmail(booking);
+    } catch (emailError) {
+      console.error("Failed to send booking emails:", emailError);
+      // We don't fail the booking if email fails
+    }
 
     return NextResponse.json({ success: true, bookingNumber, status });
   } catch (error) {
