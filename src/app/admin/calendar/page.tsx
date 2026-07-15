@@ -53,7 +53,7 @@ export default function CalendarPage() {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const eventsForDay = (d: number) => events.filter(e => {
-    const ev = new Date(e.eventDate + "T12:00:00");
+    const ev = new Date(e.eventDate);
     return ev.getFullYear() === year && ev.getMonth() === month && ev.getDate() === d;
   });
 
@@ -193,7 +193,7 @@ export default function CalendarPage() {
             </div>
             <div className="p-5 space-y-3">
               <div className="text-sm font-bold text-navy">{selected.customer.firstName} {selected.customer.lastName}</div>
-              <div className="text-sm text-gray-500">{new Date(selected.eventDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })} at {selected.startTime}</div>
+              <div className="text-sm text-gray-500">{new Date(selected.eventDate).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })} at {selected.startTime}</div>
               <div className="text-sm text-gray-500">{selected.city} · {selected.package?.name}</div>
               <span className="inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold" style={{ background: STATUS_BG[selected.status], color: STATUS_COLORS[selected.status] }}>
                 {selected.status.replace(/_/g, " ")}

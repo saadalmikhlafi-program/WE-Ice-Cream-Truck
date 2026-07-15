@@ -4,7 +4,7 @@ import { BUSINESS_CONFIG } from "./config";
 
 const BRAND_NAVY  = "#0A1128";
 const BRAND_CORAL = "#FF6B6B";
-const LOGO_URL    = "https://raw.githubusercontent.com/saadalmikhlafi-program/WE-Ice-Cream-Truck/main/public/images/we-icecream.jpg";
+const LOGO_URL    = "https://ice-cream-truck-jet.vercel.app/images/we-icecream.jpg";
 const SITE_URL    = BUSINESS_CONFIG.domain;
 
 const transporter = nodemailer.createTransport({

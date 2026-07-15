@@ -87,7 +87,7 @@ export default function CustomerProfilePage() {
             <div className="space-y-3">
               {customer.bookings.map((b: any) => {
                 const sc = STATUS_CONFIG[b.status] ?? STATUS_CONFIG.CONFIRMED;
-                const dateStr = b.eventDate ? new Date(b.eventDate + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—";
+                const dateStr = b.eventDate ? new Date(b.eventDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—";
                 return (
                   <Link key={b.id} href={`/admin/bookings/${b.id}`}
                     className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-center justify-between gap-4 hover:border-coral/20 hover:shadow-md transition-all group">

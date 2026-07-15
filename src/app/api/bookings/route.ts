@@ -77,7 +77,7 @@ export async function POST(req: Request) {
     const bookingNumber = `BK-${Math.floor(100000 + Math.random() * 900000)}`;
     
     // AI Rules check:
-    const status = (totalAmount < 500 && distance >= 30) ? "REVIEW_REQUIRED" : "PENDING_REVIEW";
+    const status = (totalAmount < 500 && distance > 30) ? "PENDING_REVIEW" : "CONFIRMED";
 
     const booking = await prisma.booking.create({
       data: {

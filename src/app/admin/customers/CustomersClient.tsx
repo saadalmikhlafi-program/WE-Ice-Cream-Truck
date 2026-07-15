@@ -264,7 +264,7 @@ export default function CustomersClient({ initialCustomers }: { initialCustomers
                       ) : (
                         <div className="space-y-4">
                           {selectedCustomer.bookings.map(b => {
-                            const date = new Date(b.eventDate + "T12:00:00").toLocaleDateString(undefined, {
+                            const date = new Date(b.eventDate).toLocaleDateString(undefined, {
                               year: 'numeric', month: 'short', day: 'numeric'
                             });
                             return (

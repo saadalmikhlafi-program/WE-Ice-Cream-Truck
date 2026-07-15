@@ -79,7 +79,7 @@ export default function BookingDetailPage() {
 
   const sc = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.CONFIRMED;
   const dateStr = booking.eventDate
-    ? new Date(booking.eventDate + "T12:00:00").toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
+    ? new Date(booking.eventDate).toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })
     : "—";
 
   return (

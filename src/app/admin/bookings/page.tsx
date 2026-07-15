@@ -146,7 +146,7 @@ export default function BookingsPage() {
                 <tbody className="divide-y divide-gray-50">
                   {paginated.map(b => {
                     const sc = STATUS_CONFIG[b.status] ?? STATUS_CONFIG.CONFIRMED;
-                    const dateStr = new Date(b.eventDate + "T12:00:00").toLocaleDateString("en-US", {
+                    const dateStr = new Date(b.eventDate).toLocaleDateString("en-US", {
                       month: "short", day: "numeric", year: "numeric"
                     });
                     return (

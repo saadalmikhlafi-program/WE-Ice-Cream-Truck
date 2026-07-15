@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     const customers = await prisma.customer.findMany({
       include: {
         bookings: {
-          select: { totalAmount: true } // booking's total amount
+          select: { quote: { select: { totalAmount: true } } }
         }
       },
       orderBy: { firstName: "asc" }
@@ -23,7 +23,7 @@ export async function GET(req: Request) {
     const formatted = customers.map((c: any) => ({
       ...c,
       bookingsCount: c.bookings.length,
-      totalSpent: c.bookings.reduce((sum: number, b: any) => sum + (b.totalAmount ?? 0), 0)
+      totalSpent: c.bookings.reduce((sum: number, b: any) => sum + (b.quote?.totalAmount ?? 0), 0)
     }));
 
     return NextResponse.json(formatted);

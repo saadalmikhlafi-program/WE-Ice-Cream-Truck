@@ -140,7 +140,7 @@ function DriverView() {
 
   const renderCard = (a: any) => {
     const s   = statusOpt(a.jobStatus);
-    const date = new Date(a.booking.eventDate + "T12:00:00");
+    const date = new Date(a.booking.eventDate);
     const dateStr = date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
     return (
       <div key={a.id}
