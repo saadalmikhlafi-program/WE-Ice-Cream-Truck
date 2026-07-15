@@ -7,22 +7,21 @@ import {
   DollarSign, Users, CalendarDays, AlertCircle, Truck, Inbox,
   TrendingUp, ArrowUpRight, ArrowRight, Package, Clock,
   CheckCircle2, Activity, Bot, MapPin, Star, Zap, Plus,
-  BarChart3, Loader2, Navigation, Phone, Calendar, Map
+  BarChart3, Loader2, Navigation, Phone, Calendar, Map,
+  BookCheck, XCircle, RefreshCw
 } from "lucide-react";
 
 // Recharts dynamic imports
-const AreaChart       = dynamic(() => import("recharts").then(m => m.AreaChart), { ssr: false });
-const Area            = dynamic(() => import("recharts").then(m => m.Area), { ssr: false });
-const BarChart        = dynamic(() => import("recharts").then(m => m.BarChart), { ssr: false });
-const Bar             = dynamic(() => import("recharts").then(m => m.Bar), { ssr: false });
-const XAxis           = dynamic(() => import("recharts").then(m => m.XAxis), { ssr: false });
-const YAxis           = dynamic(() => import("recharts").then(m => m.YAxis), { ssr: false });
-const CartesianGrid   = dynamic(() => import("recharts").then(m => m.CartesianGrid), { ssr: false });
-const Tooltip         = dynamic(() => import("recharts").then(m => m.Tooltip), { ssr: false });
+const AreaChart       = dynamic(() => import("recharts").then(m => m.AreaChart),       { ssr: false });
+const Area            = dynamic(() => import("recharts").then(m => m.Area),             { ssr: false });
+const XAxis           = dynamic(() => import("recharts").then(m => m.XAxis),            { ssr: false });
+const YAxis           = dynamic(() => import("recharts").then(m => m.YAxis),            { ssr: false });
+const CartesianGrid   = dynamic(() => import("recharts").then(m => m.CartesianGrid),   { ssr: false });
+const Tooltip         = dynamic(() => import("recharts").then(m => m.Tooltip),         { ssr: false });
 const ResponsiveContainer = dynamic(() => import("recharts").then(m => m.ResponsiveContainer), { ssr: false });
-const PieChart        = dynamic(() => import("recharts").then(m => m.PieChart), { ssr: false });
-const Pie             = dynamic(() => import("recharts").then(m => m.Pie), { ssr: false });
-const Cell            = dynamic(() => import("recharts").then(m => m.Cell), { ssr: false });
+const PieChart        = dynamic(() => import("recharts").then(m => m.PieChart),        { ssr: false });
+const Pie             = dynamic(() => import("recharts").then(m => m.Pie),             { ssr: false });
+const Cell            = dynamic(() => import("recharts").then(m => m.Cell),            { ssr: false });
 
 // STATUS helpers
 const STATUS_DRIVER = [
@@ -36,22 +35,24 @@ const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }
   CONFIRMED:      { bg: "#ECFDF5", text: "#059669", border: "#A7F3D0" },
   PENDING:        { bg: "#FFFBEB", text: "#D97706", border: "#FDE68A" },
   PENDING_REVIEW: { bg: "#FFF7ED", text: "#C2410C", border: "#FED7AA" },
+  APPROVED:       { bg: "#EFF6FF", text: "#2563EB", border: "#BFDBFE" },
   ASSIGNED:       { bg: "#EFF6FF", text: "#2563EB", border: "#BFDBFE" },
   IN_PROGRESS:    { bg: "#F5F3FF", text: "#7C3AED", border: "#DDD6FE" },
-  COMPLETED:      { bg: "#F8FAFC", text: "#475569", border: "#CBD5E1" },
+  COMPLETED:      { bg: "#F0FDF4", text: "#16A34A", border: "#BBF7D0" },
   CANCELLED:      { bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
 };
 
 // --- KPI Card ---
 function KpiCard({
-  label, value, sub, icon: Icon, iconBg, iconColor, trend, href
+  label, value, sub, icon: Icon, iconBg, iconColor, trend, href, highlight
 }: {
   label: string; value: string; sub?: string;
   icon: any; iconBg: string; iconColor: string;
-  trend?: { value: string; up: boolean }; href: string;
+  trend?: { value: string; up: boolean }; href: string; highlight?: boolean;
 }) {
   return (
-    <Link href={href} className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-gray-200 transition-all duration-200 p-5 flex flex-col justify-between gap-4 relative overflow-hidden">
+    <Link href={href} className={`group bg-white rounded-2xl border shadow-sm hover:shadow-md transition-all duration-200 p-5 flex flex-col justify-between gap-4 relative overflow-hidden
+      ${highlight ? "border-coral/30 bg-gradient-to-br from-white to-coral/5" : "border-gray-100 hover:border-gray-200"}`}>
       <div className="flex items-start justify-between">
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBg}`}>
           <Icon className={`w-5 h-5 ${iconColor}`} />
@@ -92,7 +93,7 @@ function SectionHeader({ title, sub, href, linkLabel }: { title: string; sub?: s
   );
 }
 
-// ─── Driver View ───────────────────────────────────────────────────────────────
+// ─── Driver View ────────────────────────────────────────────────────────────
 function DriverView() {
   const { data: session } = useSession();
   const [assignments, setAssignments] = useState<any[]>([]);
@@ -100,7 +101,6 @@ function DriverView() {
   const [updating, setUpdating]       = useState<string | null>(null);
   const [selected, setSelected]       = useState<any | null>(null);
   const [note, setNote]               = useState("");
-  const [mapMode, setMapMode]         = useState(false);
 
   const fetchJobs = useCallback(async () => {
     try {
@@ -144,181 +144,92 @@ function DriverView() {
     const dateStr = date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
     return (
       <div key={a.id}
-        onClick={() => { setSelected(a); setNote(a.driverNote || ""); setMapMode(false); }}
+        onClick={() => { setSelected(a); setNote(a.driverNote || ""); }}
         className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 cursor-pointer hover:shadow-md hover:border-coral/20 transition-all"
       >
         <div className="flex items-start justify-between mb-4">
           <div>
-            <div className="font-black text-sm text-navy">#{a.booking.bookingNumber}</div>
-            <div className="text-xs text-gray-400 mt-0.5">{a.booking.eventType}</div>
+            <div className="text-sm font-black text-navy">{a.booking.customer?.firstName} {a.booking.customer?.lastName}</div>
+            <div className="text-xs text-gray-500 mt-0.5">{dateStr} · {a.booking.startTime}</div>
           </div>
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold" style={{ background: s.bg, color: s.color }}>
+          <span className="text-[10px] font-black px-2.5 py-1 rounded-full" style={{ background: s.bg, color: s.color }}>
             {s.label}
           </span>
         </div>
-        <div className="space-y-2 text-sm font-medium text-gray-600 mb-4">
-          <div className="flex items-center gap-2"><Calendar className="w-3.5 h-3.5 text-coral" />{dateStr} · {a.booking.startTime}</div>
-          <div className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-coral" />{a.booking.address}, {a.booking.city}</div>
-          <div className="flex items-center gap-2"><Users className="w-3.5 h-3.5 text-coral" />{a.booking.guests} guests · {a.booking.durationMins} min</div>
+        <div className="text-xs text-gray-500 flex items-center gap-1 mb-4">
+          <Navigation className="w-3.5 h-3.5" />
+          {a.booking.address}, {a.booking.city}
         </div>
-        <a href={mapsUrl(a)} target="_blank" rel="noopener" onClick={e => e.stopPropagation()}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-black bg-navy text-white hover:bg-coral transition-colors">
-          <Navigation className="w-3.5 h-3.5" /> Navigate
-        </a>
+        <div className="flex gap-2">
+          <a href={mapsUrl(a)} target="_blank" rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-1 py-2 bg-navy text-white rounded-xl text-xs font-bold"
+            onClick={e => e.stopPropagation()}>
+            <Map className="w-3.5 h-3.5" /> Navigate
+          </a>
+          {STATUS_DRIVER.filter(o => o.value !== a.jobStatus).map(opt => (
+            <button key={opt.value} onClick={e => { e.stopPropagation(); updateStatus(a.id, opt.value); }}
+              disabled={updating === a.id}
+              className="flex-1 py-2 rounded-xl text-xs font-bold border border-gray-200 hover:border-coral/30 transition-colors"
+              style={{ color: opt.color }}>
+              {updating === a.id ? <Loader2 className="w-3 h-3 animate-spin mx-auto" /> : opt.label}
+            </button>
+          ))}
+        </div>
       </div>
     );
   };
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-coral to-coral-light rounded-2xl p-6 shadow-sm">
-        <div className="font-black text-2xl text-white">Hey, {firstName} 👋</div>
-        <div className="text-sm font-semibold text-white/80 mt-1">
-          {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
-        </div>
+      <div>
+        <h1 className="text-2xl font-black text-navy">Hi, {firstName} 👋</h1>
+        <p className="text-sm text-gray-500 font-medium mt-1">Here are your assignments</p>
       </div>
-
-      <div className="grid grid-cols-3 gap-4">
-        {[
-          { label: "Today's Jobs",  value: todayJobs.length,   icon: "📅" },
-          { label: "Upcoming",      value: upcoming.length,    icon: "🗓️" },
-          { label: "Total Assigned",value: assignments.length,  icon: "🍦" },
-        ].map(s => (
-          <div key={s.label} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 text-center">
-            <div className="text-2xl mb-2">{s.icon}</div>
-            <div className="text-2xl font-black text-navy">{s.value}</div>
-            <div className="text-xs text-gray-500 font-semibold mt-1">{s.label}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {todayJobs.length > 0 && (
         <div>
-          <SectionHeader title="Today's Jobs" />
-          {todayJobs.length > 0 ? <div className="space-y-4">{todayJobs.map(renderCard)}</div> :
-            <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center text-gray-400 font-semibold">No jobs assigned for today.</div>
-          }
+          <h2 className="text-sm font-black text-navy mb-3">Today's Jobs</h2>
+          <div className="space-y-3">{todayJobs.map(renderCard)}</div>
         </div>
+      )}
+      {upcoming.length > 0 && (
         <div>
-          <SectionHeader title="Upcoming Jobs" />
-          {upcoming.length > 0 ? <div className="space-y-4">{upcoming.map(renderCard)}</div> :
-            <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center text-gray-400 font-semibold">No upcoming jobs assigned.</div>
-          }
+          <h2 className="text-sm font-black text-navy mb-3">Upcoming Jobs</h2>
+          <div className="space-y-3">{upcoming.map(renderCard)}</div>
         </div>
-      </div>
-
-      {selected && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl max-h-[90vh] overflow-y-auto border border-gray-100">
-            <div className="flex border-b border-gray-100 bg-gray-50 rounded-t-3xl">
-              <button onClick={() => setMapMode(false)}
-                className={`flex-1 py-4 text-sm font-black transition-colors ${!mapMode ? "border-b-2 border-coral text-navy" : "text-gray-400"}`}>
-                Details
-              </button>
-              <button onClick={() => setMapMode(true)}
-                className={`flex-1 py-4 text-sm font-black flex items-center justify-center gap-1.5 transition-colors ${mapMode ? "border-b-2 border-coral text-navy" : "text-gray-400"}`}>
-                <Map className="w-4 h-4" /> Map
-              </button>
-            </div>
-            {mapMode ? (
-              <div className="relative">
-                <iframe title="Event Location" width="100%" height="320" style={{ border: 0 }} loading="lazy"
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(`${selected.booking.address},${selected.booking.city},MA ${selected.booking.zip}`)}&output=embed`}
-                />
-                <a href={mapsUrl(selected)} target="_blank" rel="noopener"
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-2 px-6 py-3 rounded-full font-black shadow-xl bg-coral text-white hover:bg-coral-dark transition-colors">
-                  <Navigation className="w-4 h-4" /> Open in Google Maps
-                </a>
-              </div>
-            ) : (
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-5">
-                  <div>
-                    <div className="font-black text-xl text-navy">#{selected.booking.bookingNumber}</div>
-                    <div className="text-gray-400 text-sm mt-0.5">{selected.booking.eventType}</div>
-                  </div>
-                  <button onClick={() => setSelected(null)} className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-100 transition-all text-xl">×</button>
-                </div>
-                <div className="space-y-3 rounded-2xl p-4 bg-gray-50 border border-gray-100 mb-5">
-                  <div className="flex items-center gap-3 text-sm">
-                    <Clock className="w-4 h-4 text-coral" />
-                    <span className="font-bold text-navy">{selected.booking.startTime}</span>
-                    <span className="text-gray-400">· {selected.booking.durationMins} min</span>
-                  </div>
-                  <div className="flex items-start gap-3 text-sm">
-                    <MapPin className="w-4 h-4 text-coral mt-0.5" />
-                    <div>
-                      <div className="font-bold text-navy">{selected.booking.address}</div>
-                      <div className="text-gray-400">{selected.booking.city}, MA {selected.booking.zip}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-4 h-4 text-coral" />
-                    <a href={`tel:${selected.booking.customer?.phone}`} className="text-sm font-bold text-navy hover:text-coral transition-colors">
-                      {selected.booking.customer?.phone}
-                    </a>
-                  </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <Users className="w-4 h-4 text-coral" />
-                    <span className="font-semibold text-navy">{selected.booking.guests} guests · {selected.booking.package?.name}</span>
-                  </div>
-                </div>
-                <div className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Update Status</div>
-                <div className="grid grid-cols-2 gap-2 mb-4">
-                  {STATUS_DRIVER.map(s => {
-                    const isActive = selected.jobStatus === s.value;
-                    return (
-                      <button key={s.value} disabled={updating !== null || isActive}
-                        onClick={() => updateStatus(selected.id, s.value)}
-                        className="py-3 rounded-xl text-xs font-black transition-all"
-                        style={{ background: isActive ? s.color : s.bg, color: isActive ? "white" : s.color, opacity: updating !== null && !isActive ? 0.6 : 1 }}>
-                        {s.label}
-                      </button>
-                    );
-                  })}
-                </div>
-                <textarea value={note} onChange={e => setNote(e.target.value)} rows={2}
-                  placeholder="Add a note (overtime, issues, etc.)…"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-medium outline-none resize-none mb-4 focus:border-coral transition-colors"
-                />
-                {selected.jobStatus !== "COMPLETED" && (
-                  <button onClick={() => updateStatus(selected.id, "COMPLETED")} disabled={updating !== null}
-                    className="w-full py-3 rounded-xl font-black flex items-center justify-center gap-2 bg-emerald-500 text-white hover:bg-emerald-600 transition-colors">
-                    <CheckCircle2 className="w-5 h-5" /> Mark Completed
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
+      )}
+      {assignments.length === 0 && (
+        <div className="py-20 text-center">
+          <CheckCircle2 className="w-12 h-12 text-green-400 mx-auto mb-3" />
+          <p className="font-bold text-gray-500">No assignments yet</p>
         </div>
       )}
     </div>
   );
 }
 
-// ─── Main Admin Dashboard ──────────────────────────────────────────────────────
+// ─── Main Dashboard ─────────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const { data: session } = useSession();
   const userRole = session?.user?.email === "saadmoad2004@gmail.com" ? "OWNER" : ((session?.user as any)?.role || "OWNER");
   const userName = session?.user?.name || session?.user?.email?.split("@")[0] || "Admin";
-  const [data, setData]     = useState<any>(null);
+  const [data, setData]       = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError]   = useState<string | null>(null);
+  const [error, setError]     = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadData = useCallback(async () => {
     if (userRole === "DRIVER") { setLoading(false); return; }
-    (async () => {
-      try {
-        const res  = await fetch("/api/admin/dashboard", { cache: "no-store" });
-        const text = await res.text();
-        const json = text ? JSON.parse(text) : null;
-        if (!res.ok) throw new Error(json?.error || `API error ${res.status}`);
-        setData(json?.data ?? json);
-      } catch (err: any) {
-        setError(err.message || "Failed to load dashboard");
-      } finally { setLoading(false); }
-    })();
+    try {
+      const res  = await fetch("/api/admin/dashboard", { cache: "no-store" });
+      const text = await res.text();
+      const json = text ? JSON.parse(text) : null;
+      if (!res.ok) throw new Error(json?.error || `API error ${res.status}`);
+      setData(json?.data ?? json);
+    } catch (err: any) {
+      setError(err.message || "Failed to load dashboard");
+    } finally { setLoading(false); }
   }, [userRole]);
+
+  useEffect(() => { loadData(); }, [loadData]);
 
   if (userRole === "DRIVER") return <DriverView />;
 
@@ -348,22 +259,26 @@ export default function AdminDashboard() {
       </div>
       <h2 className="text-lg font-black text-navy mb-2">Dashboard Error</h2>
       <p className="text-sm text-gray-500 font-medium">{error}</p>
-      <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors">
-        Retry
+      <button onClick={() => { setLoading(true); setError(null); loadData(); }}
+        className="mt-4 px-4 py-2 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors flex items-center gap-2">
+        <RefreshCw className="w-4 h-4" /> Retry
       </button>
     </div>
   );
 
   if (!data) return null;
 
-  const { stats, todayBookings = [], pendingBookings = [], vehicles = [], revenueChart = [] } = data;
+  const { stats, todayBookings = [], pendingBookings = [], recentBookings = [], upcomingBookings = [], vehicles = [], revenueChart = [] } = data;
 
-  const COLORS = ["#FF6B6B", "#0A1128", "#10B981", "#F59E0B", "#6366F1"];
+  const PIE_COLORS = ["#10B981", "#FF6B6B", "#F59E0B", "#6B7280"];
   const bookingsByStatus = [
-    { name: "Confirmed",  value: stats?.completedMonth ?? 0 },
-    { name: "Pending",    value: stats?.pending ?? 0 },
-    { name: "Completed",  value: stats?.todayJobs ?? 0 },
-  ];
+    { name: "Confirmed",  value: stats?.confirmed ?? 0 },
+    { name: "Cancelled",  value: stats?.cancelled ?? 0 },
+    { name: "Pending",    value: stats?.pending   ?? 0 },
+    { name: "Completed",  value: stats?.completed ?? 0 },
+  ].filter(b => b.value > 0);
+
+  const formatCurrency = (v: number) => v >= 1000 ? `$${(v/1000).toFixed(1)}k` : `$${v.toFixed(0)}`;
 
   return (
     <div className="space-y-8">
@@ -378,12 +293,18 @@ export default function AdminDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Link href="/admin/bookings?status=PENDING_REVIEW"
-            className="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl border border-gray-200 text-sm font-bold text-gray-600 hover:border-coral/40 hover:text-coral transition-all shadow-sm">
-            <AlertCircle className="w-4 h-4" />
-            Review Pending
-          </Link>
-          <Link href="/booking" target="_blank"
+          <button onClick={() => { setLoading(true); loadData(); }}
+            className="flex items-center gap-2 px-3 py-2.5 bg-white rounded-xl border border-gray-200 text-sm font-bold text-gray-500 hover:border-gray-300 transition-all shadow-sm">
+            <RefreshCw className="w-4 h-4" />
+          </button>
+          {stats?.pending > 0 && (
+            <Link href="/admin/bookings?status=PENDING_REVIEW"
+              className="flex items-center gap-2 px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-xl text-sm font-bold text-amber-700 hover:bg-amber-100 transition-all shadow-sm">
+              <AlertCircle className="w-4 h-4" />
+              {stats.pending} Pending Review
+            </Link>
+          )}
+          <Link href="/book" target="_blank"
             className="flex items-center gap-2 px-4 py-2.5 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors shadow-sm">
             <Plus className="w-4 h-4" />
             New Booking
@@ -393,48 +314,50 @@ export default function AdminDashboard() {
 
       {/* ── KPI Cards ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
-        <KpiCard label="Total Bookings" value={String((stats?.completedMonth ?? 0) + (stats?.pending ?? 0))}
+        <KpiCard label="Total Bookings" value={String(stats?.totalBookings ?? 0)}
           icon={CalendarDays} iconBg="bg-blue-50" iconColor="text-blue-500"
-          trend={{ value: "+12%", up: true }} href="/admin/bookings" />
+          href="/admin/bookings" />
         {userRole !== "SUPPORT" && (
-          <KpiCard label="Monthly Revenue" value={`$${((stats?.monthRevenue ?? 0) / 1000).toFixed(1)}k`}
+          <KpiCard label="Monthly Revenue" value={formatCurrency(stats?.monthRevenue ?? 0)}
             icon={DollarSign} iconBg="bg-green-50" iconColor="text-green-500"
-            trend={{ value: "+8%", up: true }} href="/admin/bookings" />
+            href="/admin/bookings" highlight />
         )}
-        <KpiCard label="Customers" value={String(stats?.totalCustomers ?? 0)}
-          icon={Users} iconBg="bg-purple-50" iconColor="text-purple-500"
-          href="/admin/customers" />
+        <KpiCard label="Confirmed" value={String(stats?.confirmed ?? 0)}
+          icon={CheckCircle2} iconBg="bg-emerald-50" iconColor="text-emerald-500"
+          href="/admin/bookings?status=CONFIRMED" />
         <KpiCard label="Pending Review" value={String(stats?.pending ?? 0)}
           icon={AlertCircle} iconBg="bg-amber-50" iconColor="text-amber-500"
           href="/admin/bookings?status=PENDING_REVIEW"
           sub={stats?.pending > 0 ? "Needs attention" : "All clear"} />
-        <KpiCard label="Active Fleet" value={String(vehicles.filter((v: any) => v.status === "ON_JOB").length)}
-          icon={Truck} iconBg="bg-coral/10" iconColor="text-coral"
-          href="/admin/vehicles" />
+        <KpiCard label="Customers" value={String(stats?.totalCustomers ?? 0)}
+          icon={Users} iconBg="bg-purple-50" iconColor="text-purple-500"
+          href="/admin/customers" />
         <KpiCard label="Today's Jobs" value={String(stats?.todayJobs ?? 0)}
           icon={Activity} iconBg="bg-indigo-50" iconColor="text-indigo-500"
           href="/admin/calendar"
           sub={new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })} />
       </div>
 
-      {/* ── Charts Row ── */}
+      {/* ── Revenue Chart + Pie ── */}
       <div className="grid xl:grid-cols-3 gap-6">
-
         {/* Revenue Chart */}
         <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-          <SectionHeader title="Revenue Overview" sub="Last 7 days performance" />
-          <div className="flex items-end gap-2 mb-6">
-            <span className="text-3xl font-black text-navy">${(stats?.weekRevenue ?? 0).toFixed(0)}</span>
-            <div className="flex items-center gap-1 text-xs font-bold text-green-500 bg-green-50 px-2 py-1 rounded-full mb-1">
-              <TrendingUp className="w-3 h-3" /> +4.5%
-            </div>
+          <SectionHeader title="Revenue Overview" sub="Last 7 days (confirmed & completed bookings)" />
+          <div className="flex items-end gap-3 mb-6">
+            <span className="text-3xl font-black text-navy">{formatCurrency(stats?.weekRevenue ?? 0)}</span>
+            <span className="text-xs font-bold text-gray-400 mb-1">this week</span>
+            {userRole !== "SUPPORT" && (
+              <span className="ml-auto text-xs font-semibold text-gray-500">
+                All time: <span className="font-black text-navy">{formatCurrency(stats?.allTimeRevenue ?? 0)}</span>
+              </span>
+            )}
           </div>
           <div className="h-56 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={revenueChart} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#FF6B6B" stopOpacity={0.25} />
+                    <stop offset="0%"   stopColor="#FF6B6B" stopOpacity={0.25} />
                     <stop offset="100%" stopColor="#FF6B6B" stopOpacity={0} />
                   </linearGradient>
                 </defs>
@@ -450,91 +373,95 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Pie Chart */}
+        {/* Pie + Summary */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <SectionHeader title="Bookings Breakdown" sub="By status" />
-          <div className="h-44 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={bookingsByStatus} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={3} dataKey="value">
-                  {bookingsByStatus.map((_, idx) => <Cell key={idx} fill={COLORS[idx]} />)}
-                </Pie>
-                <Tooltip contentStyle={{ borderRadius: 12, border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.10)", fontWeight: 600, fontSize: 13 }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="space-y-2 mt-2">
-            {bookingsByStatus.map((item, idx) => (
-              <div key={item.name} className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full" style={{ background: COLORS[idx] }} />
-                  <span className="font-semibold text-gray-600">{item.name}</span>
-                </div>
-                <span className="font-bold text-navy">{item.value}</span>
+          {bookingsByStatus.length > 0 ? (
+            <>
+              <div className="h-44 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={bookingsByStatus} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={3} dataKey="value">
+                      {bookingsByStatus.map((_, idx) => <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />)}
+                    </Pie>
+                    <Tooltip contentStyle={{ borderRadius: 12, border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.10)", fontWeight: 600, fontSize: 13 }} />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
-            ))}
-          </div>
+              <div className="space-y-2 mt-2">
+                {bookingsByStatus.map((item, idx) => (
+                  <div key={item.name} className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: PIE_COLORS[idx % PIE_COLORS.length] }} />
+                      <span className="font-semibold text-gray-600">{item.name}</span>
+                    </div>
+                    <span className="font-bold text-navy">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="py-12 text-center">
+              <BarChart3 className="w-10 h-10 text-gray-200 mx-auto mb-2" />
+              <p className="text-sm text-gray-400 font-medium">No bookings yet</p>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ── Bottom Row ── */}
+      {/* ── Recent Bookings + Pending Review ── */}
       <div className="grid xl:grid-cols-3 gap-6">
-
-        {/* Today's Schedule */}
+        {/* Recent Bookings */}
         <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-black text-navy">Today's Schedule</h2>
-              <p className="text-xs text-gray-400 font-medium mt-0.5">
-                {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
-              </p>
+              <h2 className="text-sm font-black text-navy">Recent Bookings</h2>
+              <p className="text-xs text-gray-400 font-medium mt-0.5">Latest booking activity</p>
             </div>
             <Link href="/admin/bookings" className="text-xs font-bold text-coral hover:text-coral-dark flex items-center gap-1 transition-colors">
               View all <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
-          {todayBookings.length === 0 ? (
+          {recentBookings.length === 0 ? (
             <div className="py-16 flex flex-col items-center text-center">
               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
                 <CalendarDays className="w-5 h-5 text-gray-300" />
               </div>
-              <p className="font-bold text-gray-500 text-sm">No bookings today</p>
-              <p className="text-xs text-gray-400 mt-1">Enjoy the calm before the storm 🍦</p>
+              <p className="font-bold text-gray-500 text-sm">No bookings yet</p>
+              <p className="text-xs text-gray-400 mt-1">Bookings will appear here once created 🍦</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px]">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/50">
-                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Time</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Ref</th>
                     <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Client</th>
-                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Vehicle</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Package</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Amount</th>
                     <th className="px-5 py-3 text-right text-[11px] font-bold text-gray-400 uppercase tracking-wider">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {todayBookings.map((b: any) => {
+                  {recentBookings.map((b: any) => {
                     const sc = STATUS_COLORS[b.status] ?? { bg: "#F8FAFC", text: "#475569", border: "#CBD5E1" };
                     return (
-                      <tr key={b.bookingNumber} className="hover:bg-gray-50/50 transition-colors">
-                        <td className="px-5 py-3.5 text-sm font-black text-navy whitespace-nowrap">{b.startTime}</td>
+                      <tr key={b.id} className="hover:bg-gray-50/50 transition-colors">
+                        <td className="px-5 py-3.5">
+                          <Link href={`/admin/bookings/${b.id}`} className="text-xs font-black text-coral hover:underline">
+                            #{b.bookingNumber}
+                          </Link>
+                        </td>
                         <td className="px-5 py-3.5">
                           <div className="font-bold text-navy text-sm">{b.customer.firstName} {b.customer.lastName}</div>
-                          <div className="text-[11px] text-gray-400 font-medium">{b.eventType} · {b.city}</div>
+                          <div className="text-[11px] text-gray-400 font-medium">{b.city} · {b.eventType}</div>
                         </td>
-                        <td className="px-5 py-3.5 whitespace-nowrap">
-                          {b.vehicle ? (
-                            <span className="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded-lg">
-                              {b.vehicle.code.startsWith("VAN") ? "🚐" : "🚌"} {b.vehicle.code}
-                            </span>
-                          ) : (
-                            <span className="text-xs font-medium text-gray-400">Unassigned</span>
-                          )}
-                        </td>
+                        <td className="px-5 py-3.5 text-sm text-gray-600 font-medium">{b.package?.name || "—"}</td>
+                        <td className="px-5 py-3.5 text-sm font-black text-navy">${(b.totalAmount || 0).toFixed(0)}</td>
                         <td className="px-5 py-3.5 text-right whitespace-nowrap">
                           <span className="inline-flex px-2.5 py-1 rounded-full text-[10.5px] font-bold border"
                             style={{ background: sc.bg, color: sc.text, borderColor: sc.border }}>
-                            {b.status.replace("_", " ")}
+                            {b.status.replace(/_/g, " ")}
                           </span>
                         </td>
                       </tr>
@@ -548,12 +475,11 @@ export default function AdminDashboard() {
 
         {/* Right Panel */}
         <div className="space-y-5">
-
-          {/* Action Required */}
+          {/* Pending Review */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-amber-500" />
-              <span className="text-sm font-black text-navy">Action Required</span>
+              <span className="text-sm font-black text-navy">Needs Approval</span>
               {pendingBookings.length > 0 && (
                 <span className="ml-auto text-[10px] font-black bg-amber-50 text-amber-600 border border-amber-200 px-2 py-0.5 rounded-full">
                   {pendingBookings.length}
@@ -568,7 +494,7 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div className="divide-y divide-gray-50 max-h-60 overflow-y-auto">
-                {pendingBookings.slice(0, 5).map((b: any) => (
+                {pendingBookings.map((b: any) => (
                   <Link key={b.id} href={`/admin/bookings/${b.id}`}
                     className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors group">
                     <div className="w-9 h-9 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center font-black text-amber-700 text-sm flex-shrink-0">
@@ -576,56 +502,95 @@ export default function AdminDashboard() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="font-bold text-navy text-sm truncate">{b.customer.firstName} {b.customer.lastName}</div>
-                      <div className="text-xs text-gray-400 font-medium mt-0.5">${b.totalAmount.toFixed(0)} · {b.eventType}</div>
+                      <div className="text-xs text-gray-400 font-medium mt-0.5">${(b.totalAmount||0).toFixed(0)} · {b.eventType}</div>
                     </div>
                     <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-coral transition-colors" />
                   </Link>
                 ))}
-                {pendingBookings.length > 5 && (
-                  <Link href="/admin/bookings?status=PENDING_REVIEW" className="block p-3 text-center text-xs font-bold text-coral hover:bg-amber-50 transition-colors">
-                    View {pendingBookings.length - 5} more →
-                  </Link>
-                )}
+              </div>
+            )}
+          </div>
+
+          {/* Upcoming Events */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-indigo-500" />
+                <span className="text-sm font-black text-navy">Upcoming Events</span>
+              </div>
+              <Link href="/admin/calendar" className="text-xs font-bold text-coral hover:text-coral-dark transition-colors">View</Link>
+            </div>
+            {upcomingBookings.length === 0 ? (
+              <div className="py-8 text-center">
+                <p className="text-sm text-gray-400 font-medium">No upcoming events</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-50">
+                {upcomingBookings.map((b: any) => {
+                  const sc = STATUS_COLORS[b.status] ?? { bg: "#F8FAFC", text: "#475569", border: "#CBD5E1" };
+                  const d = new Date(b.eventDate);
+                  return (
+                    <Link key={b.id} href={`/admin/bookings/${b.id}`}
+                      className="flex items-center gap-3 p-3.5 hover:bg-gray-50 transition-colors group">
+                      <div className="w-10 h-10 bg-indigo-50 rounded-xl flex flex-col items-center justify-center flex-shrink-0">
+                        <span className="text-[10px] font-bold text-indigo-500 uppercase leading-none">
+                          {d.toLocaleDateString("en-US", { month: "short" })}
+                        </span>
+                        <span className="text-sm font-black text-indigo-700 leading-none">{d.getDate()}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-bold text-navy text-xs truncate">{b.customer.firstName} {b.customer.lastName}</div>
+                        <div className="text-[11px] text-gray-400 font-medium">{b.startTime} · {b.city}</div>
+                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0"
+                        style={{ background: sc.bg, color: sc.text }}>
+                        {b.status.replace(/_/g, " ")}
+                      </span>
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>
 
           {/* Fleet Status */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-gray-400" />
-                <span className="text-sm font-black text-navy">Fleet Status</span>
+          {vehicles.length > 0 && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Truck className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm font-black text-navy">Fleet Status</span>
+                </div>
+                <Link href="/admin/vehicles" className="text-xs font-bold text-coral hover:text-coral-dark transition-colors">Manage</Link>
               </div>
-              <Link href="/admin/vehicles" className="text-xs font-bold text-coral hover:text-coral-dark transition-colors">Manage</Link>
-            </div>
-            <div className="p-2">
-              {vehicles.slice(0, 6).map((v: any) => {
-                const statusColors: Record<string, { bg: string; text: string }> = {
-                  AVAILABLE:   { bg: "#ECFDF5", text: "#059669" },
-                  ON_JOB:      { bg: "#EFF6FF", text: "#2563EB" },
-                  MAINTENANCE: { bg: "#FEF2F2", text: "#DC2626" },
-                };
-                const c = statusColors[v.status] ?? { bg: "#F8FAFC", text: "#475569" };
-                return (
-                  <div key={v.code} className="flex items-center justify-between p-2.5 hover:bg-gray-50 rounded-xl transition-colors">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-sm">
-                        {v.code.startsWith("VAN") ? "🚐" : "🚌"}
+              <div className="p-2">
+                {vehicles.slice(0, 5).map((v: any) => {
+                  const statusColors: Record<string, { bg: string; text: string }> = {
+                    AVAILABLE:   { bg: "#ECFDF5", text: "#059669" },
+                    ON_JOB:      { bg: "#EFF6FF", text: "#2563EB" },
+                    MAINTENANCE: { bg: "#FEF2F2", text: "#DC2626" },
+                  };
+                  const c = statusColors[v.status] ?? { bg: "#F8FAFC", text: "#475569" };
+                  return (
+                    <div key={v.code} className="flex items-center justify-between p-2.5 hover:bg-gray-50 rounded-xl transition-colors">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-sm">
+                          {v.code.startsWith("VAN") ? "🚐" : "🚌"}
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-navy">{v.code}</div>
+                          <div className="text-[10px] text-gray-400 font-medium">{v.type}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="text-xs font-bold text-navy">{v.code}</div>
-                        <div className="text-[10px] text-gray-400 font-medium">{v.type}</div>
-                      </div>
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full" style={{ background: c.bg, color: c.text }}>
+                        {v.status.replace("_", " ")}
+                      </span>
                     </div>
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full" style={{ background: c.bg, color: c.text }}>
-                      {v.status.replace("_", " ")}
-                    </span>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -634,10 +599,10 @@ export default function AdminDashboard() {
         <SectionHeader title="Quick Actions" sub="Common admin tasks" />
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { href: "/booking", label: "New Booking", icon: Plus, color: "bg-coral/10 text-coral", external: true },
+            { href: "/book", label: "New Booking", icon: Plus, color: "bg-coral/10 text-coral", external: true },
             { href: "/admin/inquiries", label: "View Inquiries", icon: Inbox, color: "bg-blue-50 text-blue-500" },
-            { href: "/admin/customers", label: "Add Customer", icon: Users, color: "bg-purple-50 text-purple-500" },
-            { href: "/admin/packages", label: "Manage Packages", icon: Package, color: "bg-amber-50 text-amber-500" },
+            { href: "/admin/customers", label: "Customers", icon: Users, color: "bg-purple-50 text-purple-500" },
+            { href: "/admin/packages", label: "Packages", icon: Package, color: "bg-amber-50 text-amber-500" },
           ].map(({ href, label, icon: Icon, color, external }) => (
             <Link key={href} href={href} target={external ? "_blank" : undefined}
               className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-4 hover:border-gray-200 hover:shadow-sm transition-all font-semibold text-sm text-gray-700 group">
