@@ -2,11 +2,10 @@ import nodemailer from 'nodemailer';
 import { prisma } from "./prisma";
 import { BUSINESS_CONFIG } from "./config";
 
-const BRAND_NAVY = "#0A1128";
-const BRAND_GOLD = "#D4AF37";
+const BRAND_NAVY  = "#0A1128";
 const BRAND_CORAL = "#FF6B6B";
-const SITE_URL = BUSINESS_CONFIG.domain;
-const LOGO_URL = `${BUSINESS_CONFIG.domain}/images/we-icecream.jpg`;
+const LOGO_URL    = "https://raw.githubusercontent.com/saadalmikhlafi-program/WE-Ice-Cream-Truck/main/public/images/we-icecream.jpg";
+const SITE_URL    = BUSINESS_CONFIG.domain;
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -21,53 +20,59 @@ const transporter = nodemailer.createTransport({
 // ─── BASE TEMPLATE ───────────────────────────────────────────────
 function baseTemplate(content: string, title: string) {
   return `<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <title>${title}</title>
-  <!--[if mso]>
-  <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
-  <![endif]-->
   <style>
-    body, table, td { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-    img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
-    @media only screen and (max-width: 620px) {
-      .email-container { width: 100% !important; max-width: 100% !important; }
-      .email-padding { padding: 24px 16px !important; }
-      .email-header { padding: 32px 20px !important; }
-      .mobile-stack { display: block !important; width: 100% !important; }
+    * { box-sizing: border-box; }
+    body, table, td, p, a { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    img { border:0; display:block; line-height:100%; outline:none; text-decoration:none; }
+    a { color: inherit; }
+    @media only screen and (max-width: 600px) {
+      .wrapper  { padding: 12px 8px !important; }
+      .card     { border-radius: 16px !important; }
+      .hdr      { padding: 24px 16px !important; }
+      .body     { padding: 20px 16px !important; }
+      .ftr      { padding: 16px !important; }
+      h2.title  { font-size: 20px !important; }
+      .otp-code { font-size: 28px !important; letter-spacing: 6px !important; }
+      .btn      { padding: 14px 20px !important; font-size: 14px !important; }
+      .data-table td { font-size: 13px !important; padding: 8px 6px !important; }
+      .total-row td  { font-size: 16px !important; }
     }
   </style>
 </head>
-<body style="margin:0;padding:0;background-color:#F0EDE8;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
-  <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color:#F0EDE8;">
-    <tr><td align="center" style="padding:24px 12px;">
+<body style="margin:0;padding:0;background:#F4F2EE;">
+  <table role="presentation" cellpadding="0" cellspacing="0" width="100%" class="wrapper" style="padding:24px 12px;background:#F4F2EE;">
+    <tr><td align="center">
 
-      <!-- Email Container -->
-      <table role="presentation" cellpadding="0" cellspacing="0" width="600" class="email-container" style="max-width:600px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(10,17,40,0.08);">
+      <!-- Card -->
+      <table role="presentation" cellpadding="0" cellspacing="0" width="100%" class="card" style="max-width:580px;width:100%;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 2px 16px rgba(10,17,40,0.08);">
 
         <!-- Header -->
         <tr>
-          <td class="email-header" style="background:#ffffff;padding:40px 32px;text-align:center;border-bottom:3px solid ${BRAND_CORAL};">
-            <img src="${LOGO_URL}" alt="WE Ice Cream Truck" width="120" style="width:120px;height:auto;object-fit:contain;display:block;margin:0 auto;"/>
+          <td class="hdr" style="background:#ffffff;padding:32px 24px 24px;text-align:center;border-bottom:3px solid ${BRAND_CORAL};">
+            <img src="${LOGO_URL}" alt="WE Ice Cream Truck" width="80" height="80" style="width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 12px;border:3px solid #F4F2EE;"/>
+            <p style="margin:0;font-size:13px;font-weight:700;color:#9CA3AF;letter-spacing:2px;text-transform:uppercase;">WE Ice Cream Truck</p>
           </td>
         </tr>
 
-        <!-- Content -->
+        <!-- Body -->
         <tr>
-          <td class="email-padding" style="padding:32px 32px 24px;">
+          <td class="body" style="padding:28px 28px 20px;">
             ${content}
           </td>
         </tr>
 
         <!-- Footer -->
         <tr>
-          <td style="background:#F8F7F4;padding:24px 32px;text-align:center;border-top:1px solid #E8E5E0;">
-            <p style="margin:0 0 6px;color:${BRAND_NAVY};font-size:13px;font-weight:700;">WE Ice Cream Truck</p>
-            <p style="margin:0 0 12px;color:#6B7280;font-size:12px;">Greater Boston, MA &middot; <a href="tel:617-999-3803" style="color:${BRAND_NAVY};text-decoration:none;font-weight:600;">617-999-3803</a></p>
-            <p style="margin:0;color:#9CA3AF;font-size:11px;">&copy; ${new Date().getFullYear()} WE Ice Cream Truck LLC. All rights reserved.</p>
+          <td class="ftr" style="background:#F8F7F5;padding:20px 28px;text-align:center;border-top:1px solid #EDE9E4;">
+            <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:${BRAND_NAVY};">WE Ice Cream Truck</p>
+            <p style="margin:0 0 4px;font-size:12px;color:#9CA3AF;">Greater Boston, MA &middot; <a href="tel:617-999-3803" style="color:${BRAND_CORAL};font-weight:600;text-decoration:none;">617-999-3803</a></p>
+            <p style="margin:0;font-size:11px;color:#C4BFB8;">&copy; ${new Date().getFullYear()} WE Ice Cream Truck LLC. All rights reserved.</p>
           </td>
         </tr>
 
@@ -133,9 +138,9 @@ export async function sendOtpEmail(
       Use the code below to complete your <strong>${label}</strong>.
     </p>
 
-    <div style="background:linear-gradient(135deg,#FFF8E1 0%,#FFFDE7 100%);border:2px solid ${BRAND_GOLD};border-radius:20px;padding:40px;text-align:center;margin-bottom:32px;">
+    <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:20px;padding:24px;text-align:center;margin-bottom:32px;">
       <p style="margin:0 0 8px;color:#9CA3AF;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;">${label} Code</p>
-      <p style="margin:0 0 8px;font-size:48px;font-weight:900;letter-spacing:12px;color:${BRAND_NAVY};font-family:monospace;">${otp}</p>
+      <p style="margin:0 0 8px;font-size:32px;font-weight:900;letter-spacing:12px;color:${BRAND_NAVY};font-family:monospace;">${otp}</p>
       <p style="margin:0;color:#9CA3AF;font-size:12px;font-weight:700;">⏱ Expires in ${TTL} minutes</p>
     </div>
 
@@ -156,33 +161,25 @@ export async function sendOtpEmail(
 
 // ─── WELCOME EMAIL ────────────────────────────────────────────
 export async function sendWelcomeEmail(to: string, firstName: string) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.bostonlegendicecreamtruck.com";
   const html = `
-    <div style="text-align:center;padding:24px 0 20px;">
-      <div style="font-size:56px;line-height:1;margin-bottom:16px;">🍦🎉</div>
-      <h2 style="margin:0 0 8px;color:${BRAND_NAVY};font-size:28px;font-weight:900;">Welcome to WE Ice Cream Truck, ${firstName}!</h2>
-      <p style="margin:0;color:#6B7280;font-size:15px;font-weight:600;">Greater Boston's premium ice cream truck service.</p>
+    <h2 class="title" style="margin:0 0 8px;color:${BRAND_NAVY};font-size:24px;font-weight:900;">Welcome, ${firstName}! 🍦</h2>
+    <p style="margin:0 0 20px;color:#6B7280;font-size:15px;line-height:1.6;">Greater Boston's premium ice cream truck service.</p>
+
+    <div style="background:#F9FAFB;border-radius:12px;padding:16px 20px;margin:0 0 20px;">
+      <p style="margin:0;color:${BRAND_NAVY};font-size:14px;font-weight:700;">✅ Your email is verified. Your account is now active.</p>
     </div>
 
-    <div style="background:#ECFDF5;border:2px solid #10B981;border-radius:16px;padding:24px;margin:24px 0;text-align:center;">
-      <p style="margin:0;color:#065F46;font-size:15px;font-weight:700;">✅ Your email has been verified. Your account is now active.</p>
-    </div>
-
-    <p style="color:#4B5563;font-size:15px;font-weight:600;line-height:1.7;">
-      Thank you for choosing WE Ice Cream Truck! We're excited to bring the ice cream truck experience to your next event. 
-      Browse our packages and book your sweet experience today.
+    <p style="color:#6B7280;font-size:14px;line-height:1.7;margin:0 0 24px;">
+      Thank you for joining WE Ice Cream Truck! Browse our packages and book your sweet event today.
     </p>
 
-    <div style="text-align:center;margin:28px 0;">
-      <a href="${siteUrl}/packages" style="display:inline-block;background:${BRAND_GOLD};color:${BRAND_NAVY};padding:16px 40px;border-radius:50px;text-decoration:none;font-weight:900;font-size:16px;box-shadow:0 8px 20px rgba(255,160,0,0.3);">
-        Browse Our Packages →
-      </a>
-    </div>
+    <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:20px;">
+      <tr><td align="center">
+        <a href="${SITE_URL}/packages" class="btn" style="display:inline-block;background:${BRAND_CORAL};color:#ffffff;padding:16px 36px;border-radius:50px;text-decoration:none;font-weight:800;font-size:15px;">Browse Our Packages →</a>
+      </td></tr>
+    </table>
 
-    <div style="margin-top:24px;padding:16px;background:#F9FAFB;border-radius:12px;text-align:center;">
-      <p style="font-size:13px;color:#6B7280;font-weight:600;margin:0 0 4px;">Questions? We're here to help.</p>
-      <a href="tel:617-999-3803" style="color:${BRAND_GOLD};font-weight:800;font-size:14px;">Call us: 617-999-3803</a>
-    </div>
+    <p style="text-align:center;font-size:13px;color:#9CA3AF;margin:0;">Questions? <a href="tel:617-999-3803" style="color:${BRAND_CORAL};font-weight:700;text-decoration:none;">617-999-3803</a></p>
   `;
   return sendEmail({ to, subject: "Welcome to WE Ice Cream Truck! 🍦", html, title: "Welcome to WE Ice Cream Truck" });
 }
@@ -192,19 +189,19 @@ export async function sendForgotPasswordEmail(to: string, otp: string, firstName
   const TTL = 10;
   const html = `
     <div style="text-align:center;padding:24px 0 20px;">
-      <div style="font-size:48px;line-height:1;margin-bottom:16px;">🔐</div>
+      <div style="font-size:32px;line-height:1;margin-bottom:16px;">🔐</div>
       <h2 style="margin:0 0 8px;color:${BRAND_NAVY};font-size:26px;font-weight:900;">Password Reset Request</h2>
       <p style="margin:0;color:#6B7280;font-size:15px;font-weight:600;">Hi ${firstName ?? "there"} — we received a request to reset your password.</p>
     </div>
 
-    <div style="background:linear-gradient(135deg,#FFF8E1 0%,#FFFDE7 100%);border:2px solid ${BRAND_GOLD};border-radius:20px;padding:40px;text-align:center;margin:24px 0;">
+    <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:20px;padding:24px;text-align:center;margin:24px 0;">
       <p style="margin:0 0 8px;color:#9CA3AF;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;">Reset Code</p>
-      <p style="margin:0 0 8px;font-size:48px;font-weight:900;letter-spacing:12px;color:${BRAND_NAVY};font-family:monospace;">${otp}</p>
+      <p style="margin:0 0 8px;font-size:32px;font-weight:900;letter-spacing:12px;color:${BRAND_NAVY};font-family:monospace;">${otp}</p>
       <p style="margin:0;color:#9CA3AF;font-size:12px;font-weight:700;">⏱ Expires in ${TTL} minutes</p>
     </div>
 
-    <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:12px;padding:16px 20px;margin-bottom:24px;">
-      <p style="margin:0;color:#991B1B;font-size:13px;font-weight:700;">
+    <div style="background:#FFF5F5;border:1px solid #FFBABA;border-radius:12px;padding:16px 20px;margin-bottom:24px;">
+      <p style="margin:0;color:${BRAND_CORAL};font-size:13px;font-weight:700;">
         🔒 If you did NOT request a password reset, ignore this email. Your password will not change.
       </p>
     </div>
@@ -218,45 +215,10 @@ export async function sendForgotPasswordEmail(to: string, otp: string, firstName
 
 // ─── STAFF INVITE EMAIL ──────────────────────────────────────
 export async function sendStaffInviteEmail(to: string, inviterName: string, inviteToken: string, role: string) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.bostonlegendicecreamtruck.com";
-  const acceptUrl = `${siteUrl}/admin/accept-invite?token=${inviteToken}`;
+  const acceptUrl = `${SITE_URL}/admin/accept-invite?token=${inviteToken}`;
   const EXPIRES_HOURS = 48;
 
   const html = `
-    <div style="text-align:center;padding:24px 0 20px;">
-      <div style="font-size:48px;line-height:1;margin-bottom:16px;">🤝</div>
-      <h2 style="margin:0 0 8px;color:${BRAND_NAVY};font-size:26px;font-weight:900;">You've Been Invited!</h2>
-      <p style="margin:0;color:#6B7280;font-size:15px;font-weight:600;">${inviterName} has invited you to join the WE Ice Cream Truck team.</p>
-    </div>
-
-    <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:16px;padding:20px 24px;margin:24px 0;">
-      <table width="100%" cellpadding="8" cellspacing="0">
-        <tr>
-          <td style="font-weight:800;color:${BRAND_NAVY};font-size:14px;">Your Role</td>
-          <td style="font-weight:700;color:#1E40AF;font-size:14px;">${role}</td>
-        </tr>
-        <tr>
-          <td style="font-weight:800;color:${BRAND_NAVY};font-size:14px;">Invited By</td>
-          <td style="font-weight:700;color:#1E40AF;font-size:14px;">${inviterName}</td>
-        </tr>
-        <tr>
-          <td style="font-weight:800;color:${BRAND_NAVY};font-size:14px;">Expires</td>
-          <td style="font-weight:700;color:#1E40AF;font-size:14px;">In ${EXPIRES_HOURS} hours</td>
-        </tr>
-      </table>
-    </div>
-
-    <p style="color:#4B5563;font-size:15px;font-weight:600;line-height:1.7;margin-bottom:24px;">
-      Click the button below to accept your invitation and set up your password. This link expires in ${EXPIRES_HOURS} hours.
-    </p>
-
-    <div style="text-align:center;margin:28px 0;">
-      <a href="${acceptUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_GOLD};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">
-        Accept Invitation & Set Password
-      </a>
-    </div>
-
-    <div style="background:#F9FAFB;border-radius:12px;padding:16px;margin-top:16px;">
       <p style="margin:0;color:#9CA3AF;font-size:12px;font-weight:600;">
         If the button doesn't work, copy and paste this link: <br/>
         <span style="color:${BRAND_NAVY};word-break:break-all;">${acceptUrl}</span>
@@ -271,24 +233,24 @@ export async function sendSensitiveActionOtpEmail(to: string, otp: string, actio
   const TTL = 5;
   const html = `
     <div style="text-align:center;padding:24px 0 20px;">
-      <div style="font-size:48px;line-height:1;margin-bottom:16px;">🛡️</div>
+      <div style="font-size:32px;line-height:1;margin-bottom:16px;">🛡️</div>
       <h2 style="margin:0 0 8px;color:${BRAND_NAVY};font-size:26px;font-weight:900;">Security Verification Required</h2>
       <p style="margin:0;color:#6B7280;font-size:15px;font-weight:600;">Hi ${userName ?? "Admin"} — a sensitive action requires your verification.</p>
     </div>
 
-    <div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:16px;padding:16px 20px;margin:20px 0;">
-      <p style="margin:0 0 4px;font-size:12px;font-weight:900;text-transform:uppercase;color:#D97706;">Action Requested</p>
-      <p style="margin:0;color:#92400E;font-size:15px;font-weight:700;">${action}</p>
+    <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:16px;padding:16px 20px;margin:20px 0;">
+      <p style="margin:0 0 4px;font-size:12px;font-weight:900;text-transform:uppercase;color:#6B7280;">Action Requested</p>
+      <p style="margin:0;color:\${BRAND_NAVY};font-size:15px;font-weight:700;">${action}</p>
     </div>
 
-    <div style="background:linear-gradient(135deg,#FFF8E1 0%,#FFFDE7 100%);border:2px solid ${BRAND_GOLD};border-radius:20px;padding:40px;text-align:center;margin:24px 0;">
+    <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:20px;padding:24px;text-align:center;margin:24px 0;">
       <p style="margin:0 0 8px;color:#9CA3AF;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;">Verification Code</p>
-      <p style="margin:0 0 8px;font-size:48px;font-weight:900;letter-spacing:12px;color:${BRAND_NAVY};font-family:monospace;">${otp}</p>
+      <p style="margin:0 0 8px;font-size:32px;font-weight:900;letter-spacing:12px;color:${BRAND_NAVY};font-family:monospace;">${otp}</p>
       <p style="margin:0;color:#9CA3AF;font-size:12px;font-weight:700;">⏱ Expires in ${TTL} minutes — single use only</p>
     </div>
 
-    <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:12px;padding:16px 20px;">
-      <p style="margin:0;color:#991B1B;font-size:13px;font-weight:700;">
+    <div style="background:#FFF5F5;border:1px solid #FFBABA;border-radius:12px;padding:16px 20px;">
+      <p style="margin:0;color:\${BRAND_CORAL};font-size:13px;font-weight:700;">
         🚨 If you did NOT initiate this action, your account may be compromised. Contact support immediately.
       </p>
     </div>
@@ -353,7 +315,7 @@ function formatBookingDetailsHtml(booking: any) {
         <td style="border-bottom:1px solid #F3F4F6;font-weight:600;">
           ${booking.address}, ${booking.city} ${booking.zip}
           ${booking.stops && booking.stops.length > 0 ? `<br/><br/>
-            <strong style="color:${BRAND_GOLD}">Additional Stops:</strong><br/>
+            <strong style="color:${BRAND_CORAL}">Additional Stops:</strong><br/>
             ${booking.stops.map((s: any, i: number) => `Stop ${i+1}: ${s.street}, ${s.city} ${s.state} ${s.zipCode}`).join('<br/>')}
           ` : ''}
         </td>
@@ -367,7 +329,7 @@ function formatBookingDetailsHtml(booking: any) {
     <!-- Pricing Breakdown -->
     <h3 style="margin:0 0 12px;color:${BRAND_NAVY};font-size:20px;font-weight:900;border-bottom:2px solid #F3F4F6;padding-bottom:8px;">Pricing &amp; Travel Fee</h3>
     ${(booking.package?.slug === "custom-event-package" || booking.packageId === "custom-event-package" || booking.package?.name === "Custom Event Package") ? `
-    <div style="background:#FFF9F0;border:1px dashed #FFA000;border-radius:12px;padding:16px 20px;margin-bottom:24px;font-size:16px;color:#92400E;font-weight:700;">
+    <div style="background:#FFF9F0;border:1px dashed #FFA000;border-radius:12px;padding:16px 20px;margin-bottom:24px;font-size:16px;color:\${BRAND_NAVY};font-weight:700;">
       Custom Quote Pending — our team will review your guest count, vehicle needs, route, timing, and event details before preparing your final quote.
     </div>
     ` : `
@@ -381,18 +343,18 @@ function formatBookingDetailsHtml(booking: any) {
       ${travelFee > 0 ? `<tr><td style="font-weight:600;">Travel Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${travelFee.toFixed(2)}</td></tr>` : ''}
       ${additionalVehicleSetupFee > 0 ? `<tr><td style="font-weight:600;">Additional Vehicle Setup Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${additionalVehicleSetupFee.toFixed(2)}</td></tr>` : ''}
       ${weekendFee > 0 ? `<tr><td style="font-weight:600;">Weekend Event Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${weekendFee.toFixed(2)}</td></tr>` : ''}
-      <tr><td style="font-weight:900;color:${BRAND_NAVY};border-top:2px solid #E5E7EB;padding-top:16px;">Total Estimated Price</td><td align="right" style="font-weight:900;color:${BRAND_GOLD};font-size:22px;border-top:2px solid #E5E7EB;padding-top:16px;">$${estimatedTotal.toFixed(2)}</td></tr>
+      <tr><td style="font-weight:900;color:${BRAND_NAVY};border-top:2px solid #E5E7EB;padding-top:16px;">Total Estimated Price</td><td align="right" style="font-weight:900;color:${BRAND_CORAL};font-size:22px;border-top:2px solid #E5E7EB;padding-top:16px;">$${estimatedTotal.toFixed(2)}</td></tr>
     </table>
     `}
 
     ${additionalVehicleSetupFee > 0 ? `
-    <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#1E40AF;font-weight:600;">
+    <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:\${BRAND_NAVY};font-weight:600;">
       🚚 Additional Vehicle Setup Fee: If your event requires another truck/van for the same package at the same time, each additional vehicle includes a $200 setup and dispatch fee.
     </div>
     ` : ''}
 
     ${weekendFee > 0 ? `
-    <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:#1E40AF;font-weight:600;">
+    <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:\${BRAND_NAVY};font-weight:600;">
       📅 Weekend Event Fee: Saturday and Sunday bookings include an additional $25 weekend event fee.
     </div>
     ` : ''}
@@ -424,15 +386,15 @@ export async function sendBookingApprovedEmail(to: string, firstName: string, bo
   const html = `
     <h2 style="margin:0 0 16px;color:${BRAND_NAVY};font-size:28px;font-weight:900;">${headerText}</h2>
     <p style="margin:0 0 24px;color:#4B5563;font-size:16px;line-height:1.6;font-weight:600;">${bodyText}</p>
-    <div style="background:#ECFDF5;border:2px solid #10B981;border-radius:16px;padding:24px;margin-bottom:32px;text-align:center;">
-      <p style="margin:0 0 4px;color:#065F46;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Approved Price Total</p>
+    <div style="background:#F9FAFB;border:2px solid #E5E7EB;border-radius:16px;padding:24px;margin-bottom:32px;text-align:center;">
+      <p style="margin:0 0 4px;color:\${BRAND_NAVY};font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Approved Price Total</p>
       <p style="margin:0 0 10px;color:${BRAND_NAVY};font-size:36px;font-weight:900;">$${amount}</p>
       <p style="margin:0;color:#047857;font-size:14px;font-weight:700;">Payment is collected after the service. We accept multiple payment methods.</p>
     </div>
     ${bookingDetailsHtml}
     <div style="text-align:center;margin-top:24px;padding:24px 16px;background:#F8F9FC;border-radius:16px;">
       <p style="margin:0 0 16px;font-size:16px;font-weight:800;color:${BRAND_NAVY};">Need to check details or manage your booking?</p>
-      <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_GOLD};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">Access Booking Portal</a>
+      <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">Access Booking Portal</a>
     </div>
   `;
   return sendEmail({ to, subject, html });
@@ -453,12 +415,12 @@ export async function sendBookingPendingEmail(to: string, firstName: string, boo
       Hello ${firstName},<br/><br/>
       We've received your request for a WE Ice Cream Truck. Our concierge team is currently reviewing the details to ensure a flawless experience.
     </p>
-    <div style="background:#FFFBEB;border:1px solid ${BRAND_GOLD};border-radius:12px;padding:16px;margin-bottom:24px;text-align:center;">
-      <p style="margin:0 0 4px;color:#92400E;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Booking Reference</p>
+    <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:16px;margin-bottom:24px;text-align:center;">
+      <p style="margin:0 0 4px;color:\${BRAND_NAVY};font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Booking Reference</p>
       <p style="margin:0;color:${BRAND_NAVY};font-size:24px;font-weight:900;">#${bookingNumber}</p>
     </div>
     ${bookingDetailsHtml}
-    <div style="background:#FFFBEB;border:1px solid ${BRAND_GOLD};border-radius:12px;padding:20px;margin-bottom:24px;font-size:13px;line-height:1.6;color:#92400E;text-align:left;">
+    <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:20px;margin-bottom:24px;font-size:13px;line-height:1.6;color:\${BRAND_NAVY};text-align:left;">
       <p style="margin:0 0 8px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:${BRAND_NAVY};">📍 Travel &amp; Distance Policy</p>
       <p style="margin:0 0 12px;font-weight:600;">The first 10 miles are free. Any additional miles will be calculated based on the travel distance from our garage at Boston Revere, 84 Fernwood Ave to your event location.</p>
       <p style="margin:0 0 8px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:${BRAND_NAVY};">👥 Extra Guests Policy</p>
@@ -487,7 +449,7 @@ export async function sendBookingRejectedEmail(to: string, firstName: string, bo
   } catch (e) { console.error("Error formatting booking details for rejected email:", e); }
 
   const html = `
-    <div style="text-align:center;padding:32px 0 24px;">
+    <div style="text-align:center;padding:24px 0 24px;">
       <h2 style="margin:0 0 8px;color:${BRAND_NAVY};font-size:26px;font-weight:900;">Update Needed for Your Request</h2>
       <p style="margin:0;color:#6B7280;font-size:15px;font-weight:600;">Hi ${firstName}, your request needs a quick adjustment before we can confirm it.</p>
     </div>
@@ -495,13 +457,13 @@ export async function sendBookingRejectedEmail(to: string, firstName: string, bo
       <p style="margin:0 0 6px;font-size:12px;font-weight:900;text-transform:uppercase;color:#9CA3AF;">Booking Reference</p>
       <p style="margin:0;font-family:monospace;font-size:20px;font-weight:900;color:${BRAND_NAVY};">#${bookingNumber}</p>
     </div>
-    <div style="background:#FFF7ED;border-radius:16px;padding:20px 24px;margin-bottom:24px;">
-      <p style="margin:0 0 8px;font-size:13px;font-weight:900;text-transform:uppercase;color:#D97706;">Details / Reason</p>
-      <p style="margin:0;color:#92400E;font-size:15px;font-weight:600;">${reason}</p>
+    <div style="background:#F9FAFB;border-radius:16px;padding:20px 24px;margin-bottom:24px;">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:900;text-transform:uppercase;color:#6B7280;">Details / Reason</p>
+      <p style="margin:0;color:\${BRAND_NAVY};font-size:15px;font-weight:600;">${reason}</p>
     </div>
     ${bookingDetailsHtml}
     <div style="text-align:center;margin-bottom:32px;">
-      <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_GOLD};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">Update My Booking Request</a>
+      <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">Update My Booking Request</a>
     </div>
   `;
   return sendEmail({ to, subject: `Update Needed: Your WE Ice Cream Truck Booking Request #${bookingNumber}`, html });
@@ -517,7 +479,7 @@ export async function sendBookingPendingReviewEmail(to: string, firstName: strin
   } catch (e) { console.error("Error formatting booking details for pending review email:", e); }
 
   const html = `
-    <div style="text-align:center;padding:32px 0 24px;">
+    <div style="text-align:center;padding:24px 0 24px;">
       <h2 style="margin:0 0 8px;color:${BRAND_NAVY};font-size:26px;font-weight:900;">Booking Under Review</h2>
       <p style="margin:0;color:#6B7280;font-size:15px;font-weight:600;">Hi ${firstName}, your booking request is currently under review by our team.</p>
     </div>
@@ -525,13 +487,13 @@ export async function sendBookingPendingReviewEmail(to: string, firstName: strin
       <p style="margin:0 0 6px;font-size:12px;font-weight:900;text-transform:uppercase;color:#9CA3AF;">Booking Reference</p>
       <p style="margin:0;font-family:monospace;font-size:20px;font-weight:900;color:${BRAND_NAVY};">#${bookingNumber}</p>
     </div>
-    <div style="background:#FFF7ED;border-radius:16px;padding:20px 24px;margin-bottom:24px;">
-      <p style="margin:0 0 8px;font-size:13px;font-weight:900;text-transform:uppercase;color:#D97706;">Review Reason</p>
-      <p style="margin:0;color:#92400E;font-size:15px;font-weight:600;">${reason}</p>
+    <div style="background:#F9FAFB;border-radius:16px;padding:20px 24px;margin-bottom:24px;">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:900;text-transform:uppercase;color:#6B7280;">Review Reason</p>
+      <p style="margin:0;color:\${BRAND_NAVY};font-size:15px;font-weight:600;">${reason}</p>
     </div>
     ${bookingDetailsHtml}
     <div style="text-align:center;margin-bottom:32px;">
-      <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_GOLD};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">View or Manage Your Booking</a>
+      <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">View or Manage Your Booking</a>
     </div>
   `;
   return sendEmail({ to, subject: `Booking Under Review: Your WE Ice Cream Truck Request #${bookingNumber}`, html });
@@ -556,7 +518,7 @@ export async function sendCustomQuoteEmail(to: string, firstName: string, bookin
   };
 
   const html = `
-    <div style="text-align:center;padding:32px 0 24px;">
+    <div style="text-align:center;padding:24px 0 24px;">
       <h2 style="margin:0 0 8px;color:${BRAND_NAVY};font-size:26px;font-weight:900;">Custom Quote Request Received</h2>
       <p style="margin:8px 0 0;color:#4B5563;font-size:16px;font-weight:600;line-height:1.5;">Hi ${firstName}, thank you for requesting a custom WE Ice Cream Truck event package. Because your event is for more than 200 guests, our team will personally review your request before preparing your final quote.</p>
     </div>
@@ -564,15 +526,15 @@ export async function sendCustomQuoteEmail(to: string, firstName: string, bookin
       <p style="margin:0 0 6px;font-size:12px;font-weight:900;text-transform:uppercase;color:#9CA3AF;">Booking Reference</p>
       <p style="margin:0;font-family:monospace;font-size:20px;font-weight:900;color:${BRAND_NAVY};">#${bookingNumber}</p>
     </div>
-    <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:16px;padding:20px 24px;margin-bottom:24px;">
-      <p style="margin:0 0 8px;font-size:13px;font-weight:900;text-transform:uppercase;color:#2563EB;">WhatsApp Contact</p>
-      <p style="margin:0 0 16px;color:#1E3A8A;font-size:15px;font-weight:600;line-height:1.4;">We will contact you through WhatsApp: 📞 617-999-3803 · 📞 617-866-2727</p>
+    <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:16px;padding:20px 24px;margin-bottom:24px;">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:900;text-transform:uppercase;color:\${BRAND_NAVY};">WhatsApp Contact</p>
+      <p style="margin:0 0 16px;color:\${BRAND_NAVY};font-size:15px;font-weight:600;line-height:1.4;">We will contact you through WhatsApp: 📞 617-999-3803 · 📞 617-866-2727</p>
       <a href="${getWaLink('16179993803')}" style="display:block;background:#25D366;color:#ffffff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:950;font-size:15px;margin-bottom:10px;text-align:center;">WhatsApp 617-999-3803</a>
       <a href="${getWaLink('16178662727')}" style="display:block;background:#25D366;color:#ffffff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:950;font-size:15px;text-align:center;">WhatsApp 617-866-2727</a>
     </div>
     ${bookingDetailsHtml}
     <div style="text-align:center;margin:32px 0 24px;">
-      <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_GOLD};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:950;font-size:16px;text-transform:uppercase;">View or Manage Your Request</a>
+      <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:950;font-size:16px;text-transform:uppercase;">View or Manage Your Request</a>
     </div>
   `;
   return sendEmail({ to, subject: `Custom Quote Request Received — WE Ice Cream Truck`, html });
@@ -605,7 +567,7 @@ export async function sendOwnerNewBookingEmail(booking: any) {
     </table>
     <br/>
     <div style="text-align:center;">
-      <a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_GOLD};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">View Booking</a>
+      <a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">View Booking</a>
     </div>
   `;
   return sendEmail({ to, subject, html });
@@ -623,7 +585,7 @@ export async function sendOwnerRequiresApprovalEmail(booking: any) {
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || 'Custom Package'}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Booking ID</td><td style="border-bottom:1px solid #E5E7EB;">${booking.bookingNumber}</td></tr>
     </table>
-    <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_GOLD};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Approve Booking</a></div>
+    <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Approve Booking</a></div>
   `;
   return sendEmail({ to, subject: `Booking Awaiting Approval`, html });
 }
@@ -632,7 +594,7 @@ export async function sendOwnerLateBookingAlert(booking: any) {
   const to = BUSINESS_CONFIG.contact.email;
   const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const html = `
-    <h2 style="color:#DC2626;margin-top:0;">⚠️ URGENT – Last Minute Booking</h2>
+    <h2 style="color:\${BRAND_CORAL};margin-top:0;">⚠️ URGENT – Last Minute Booking</h2>
     <p>A booking was just created for an event starting in less than 24 hours.</p>
     <table width="100%" cellpadding="10" cellspacing="0" style="border-collapse:collapse;font-size:15px;color:#374151;">
       <tr><td width="35%" style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Customer Name</td><td style="border-bottom:1px solid #E5E7EB;">${booking.customer?.firstName} ${booking.customer?.lastName}</td></tr>
@@ -641,13 +603,13 @@ export async function sendOwnerLateBookingAlert(booking: any) {
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Location</td><td style="border-bottom:1px solid #E5E7EB;">${booking.address}, ${booking.city} ${booking.zip}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || 'Custom Package'}</td></tr>
     </table>
-    <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:#DC2626;color:#FFFFFF;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">View Urgent Booking</a></div>
+    <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:\${BRAND_CORAL};color:#FFFFFF;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">View Urgent Booking</a></div>
   `;
   return sendEmail({ to, subject: `URGENT – Last Minute Booking`, html });
 }
 
 export async function sendOwnerEventReminderEmail(booking: any) {
-  const to = "info@bostonlegendicecreamtruck.com";
+  const to = BUSINESS_CONFIG.contact.email;
   const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const html = `
     <h2 style="color:${BRAND_NAVY};margin-top:0;">Upcoming Event Tomorrow</h2>
@@ -659,14 +621,14 @@ export async function sendOwnerEventReminderEmail(booking: any) {
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Address</td><td style="border-bottom:1px solid #E5E7EB;">${booking.address}, ${booking.city} ${booking.zip}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || 'Custom Package'}</td></tr>
     </table>
-    <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_GOLD};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Review Booking Details</a></div>
+    <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Review Booking Details</a></div>
   `;
   return sendEmail({ to, subject: `Upcoming Event Tomorrow`, html });
 }
 
 // ─── INQUIRY REPLY / ESCALATION ──────────────────────────────
 export async function sendChatEscalationOwnerEmail(inquiry: { id: string; name: string; email: string; phone?: string | null; notes?: string | null; pageUrl?: string | null; createdAt?: Date | string; }) {
-  const OWNER_EMAIL = "info@bostonlegendicecreamtruck.com";
+  const OWNER_EMAIL = BUSINESS_CONFIG.contact.email;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com';
   const inquiryUrl = `${siteUrl}/admin/inquiries`;
   const timestamp = inquiry.createdAt ? new Date(inquiry.createdAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
@@ -682,9 +644,9 @@ export async function sendChatEscalationOwnerEmail(inquiry: { id: string; name: 
       <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #E5E7EB;">Phone</td><td style="border-bottom:1px solid #E5E7EB;font-weight:600;">${inquiry.phone || 'Not provided'}</td></tr>
       <tr><td style="font-weight:800;color:${BRAND_NAVY};">Timestamp</td><td style="font-weight:600;">${timestamp}</td></tr>
     </table>
-    ${inquiry.notes ? `<div style="background:#FFFBEB;border:1px solid ${BRAND_GOLD};border-radius:12px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 8px;font-size:12px;font-weight:900;text-transform:uppercase;color:#92400E;">Chat Context</p><p style="margin:0;color:#374151;font-size:14px;font-weight:600;white-space:pre-wrap;">${inquiry.notes}</p></div>` : ''}
+    ${inquiry.notes ? `<div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 8px;font-size:12px;font-weight:900;text-transform:uppercase;color:\${BRAND_NAVY};">Chat Context</p><p style="margin:0;color:#374151;font-size:14px;font-weight:600;white-space:pre-wrap;">${inquiry.notes}</p></div>` : ''}
     <div style="text-align:center;margin-top:16px;">
-      <a href="${inquiryUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_GOLD};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">View Conversation in Admin Inbox</a>
+      <a href="${inquiryUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">View Conversation in Admin Inbox</a>
     </div>
   `;
   return sendEmail({ to: OWNER_EMAIL, subject: `🚨 Human Support Requested — ${inquiry.name}`, html, title: "Human Support Requested" });
@@ -700,24 +662,24 @@ export async function sendGoogleReviewRequestEmail(booking: { id: string; bookin
 
   const html = `
     <div style="text-align:center;margin-bottom:24px;">
-      <div style="font-size:56px;line-height:1;margin-bottom:16px;">🍦⭐</div>
+      <div style="font-size:40px;line-height:1;margin-bottom:16px;">🍦⭐</div>
       <h1 style="font-size:26px;font-weight:900;color:${BRAND_NAVY};margin:0 0 8px;">Thank You, ${customerName}!</h1>
       <p style="font-size:15px;color:#6B7280;font-weight:600;margin:0;">We hope your event was absolutely delicious.</p>
     </div>
-    <div style="background:#FFFBEB;border:2px solid #FEF3C7;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center;">
-      <p style="font-size:15px;color:#92400E;font-weight:700;margin:0 0 4px;">Your recent event</p>
+    <div style="background:#F9FAFB;border:2px solid #FEF3C7;border-radius:16px;padding:24px;margin-bottom:24px;text-align:center;">
+      <p style="font-size:15px;color:\${BRAND_NAVY};font-weight:700;margin:0 0 4px;">Your recent event</p>
       <p style="font-size:20px;font-weight:900;color:${BRAND_NAVY};margin:0;">${packageName} — ${eventDate}</p>
     </div>
     <p style="font-size:16px;color:#374151;font-weight:600;line-height:1.7;margin-bottom:20px;">
       It was a pleasure serving your event! If you enjoyed your WE Ice Cream Truck experience, we'd be incredibly grateful if you could take 30 seconds to leave us a review on Google. It really helps other families and businesses discover us!
     </p>
     <div style="text-align:center;margin:28px 0;">
-      <a href="${GOOGLE_REVIEW_URL}" style="display:inline-block;background:${BRAND_GOLD};color:${BRAND_NAVY};padding:18px 40px;border-radius:50px;text-decoration:none;font-weight:900;font-size:17px;box-shadow:0 8px 20px rgba(255,160,0,0.35);">⭐ Leave a Google Review</a>
+      <a href="${GOOGLE_REVIEW_URL}" style="display:inline-block;background:${BRAND_CORAL};color:${BRAND_NAVY};padding:18px 40px;border-radius:50px;text-decoration:none;font-weight:900;font-size:17px;box-shadow:0 8px 20px rgba(255,160,0,0.35);">⭐ Leave a Google Review</a>
     </div>
     <p style="font-size:13px;color:#9CA3AF;font-weight:600;text-align:center;margin-top:20px;">Takes less than 30 seconds — and it means the world to our small business! 🙏</p>
     <div style="margin-top:24px;padding:16px;background:#F9FAFB;border-radius:12px;text-align:center;">
       <p style="font-size:13px;color:#6B7280;font-weight:600;margin:0 0 4px;">Need anything else?</p>
-      <a href="https://www.bostonlegendicecreamtruck.com/packages" style="color:${BRAND_GOLD};font-weight:800;font-size:14px;">Book your next event →</a>
+      <a href="https://www.bostonlegendicecreamtruck.com/packages" style="color:${BRAND_CORAL};font-weight:800;font-size:14px;">Book your next event →</a>
     </div>
   `;
   return sendEmail({ to: booking.customer.email, subject: `${customerName}, thank you for choosing WE Ice Cream Truck! ⭐`, html, title: "Thank You — WE Ice Cream Truck" });

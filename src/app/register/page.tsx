@@ -72,7 +72,7 @@ export default function RegisterPage() {
       
       setSuccess(true);
       setTimeout(() => {
-        router.push("/login?callbackUrl=/portal");
+        router.push("/login");
       }, 2000);
     } catch (err: any) {
       setError(err.message);
