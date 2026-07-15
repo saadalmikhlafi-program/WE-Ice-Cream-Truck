@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BUSINESS_CONFIG } from "@/lib/config";
-import { MapPin, Phone, Mail, Instagram, Facebook } from "lucide-react";
+import { MapPin, Phone, Mail } from "lucide-react";
 import Logo from "@/components/shared/Logo";
 
 export default function SiteFooter() {
@@ -22,10 +22,10 @@ export default function SiteFooter() {
             </p>
             <div className="flex gap-4">
               <a href={BUSINESS_CONFIG.social.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-cream/5 flex items-center justify-center text-cream hover:bg-coral hover:text-white transition-all shadow-sm" aria-label="Instagram">
-                <Instagram size={20} />
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
               </a>
               <a href={BUSINESS_CONFIG.social.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-cream/5 flex items-center justify-center text-cream hover:bg-coral hover:text-white transition-all shadow-sm" aria-label="Facebook">
-                <Facebook size={20} />
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               </a>
               {BUSINESS_CONFIG.social.tiktok && (
                 <a href={BUSINESS_CONFIG.social.tiktok} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-cream/5 flex items-center justify-center text-cream hover:bg-coral hover:text-white transition-all shadow-sm" aria-label="TikTok">
