@@ -325,53 +325,54 @@ export default function LocationPicker({
     );
   };
 
-  if (manualMode) {
-    return (
-      <div className="space-y-4 bg-white p-6 rounded-2xl border-2 border-gray-200 shadow-lg">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-black font-display text-navy">Manual Location Entry</h3>
-          <button 
-            onClick={() => setManualMode(false)}
-            className="px-4 py-2 bg-navy text-white text-sm font-bold rounded-xl shadow-md hover:bg-navy-light transition-all flex items-center gap-2"
-          >
-            <MapIcon className="w-4 h-4" /> Use Map Instead
-          </button>
-        </div>
-        
-        <div>
-          <label className="text-sm font-bold text-navy ml-1">Street Address</label>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              onAddressChange(e.target.value);
-              onLocationSelect({ address: e.target.value, city: "", zip: manualZip, lat: 0, lng: 0 });
-            }}
-            placeholder="123 Main St, Boston"
-            className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-coral/20 outline-none"
-          />
-        </div>
-        <div>
-          <label className="text-sm font-bold text-navy ml-1">ZIP Code (For Distance Calculation)</label>
-          <input
-            type="text"
-            value={manualZip}
-            onChange={(e) => {
-              const val = e.target.value.replace(/[^0-9]/g, "").slice(0, 5);
-              setManualZip(val);
-              onLocationSelect({ address: query, city: "", zip: val, lat: 0, lng: 0 });
-            }}
-            placeholder="e.g. 02151"
-            className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-coral/20 outline-none"
-          />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-5">
+      {/* Manual Mode UI */}
+      {manualMode && (
+        <div className="space-y-4 bg-white p-6 rounded-2xl border-2 border-gray-200 shadow-lg mb-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-black font-display text-navy">Manual Location Entry</h3>
+            <button 
+              onClick={() => setManualMode(false)}
+              className="px-4 py-2 bg-navy text-white text-sm font-bold rounded-xl shadow-md hover:bg-navy-light transition-all flex items-center gap-2"
+            >
+              <MapIcon className="w-4 h-4" /> Use Map Instead
+            </button>
+          </div>
+          
+          <div>
+            <label className="text-sm font-bold text-navy ml-1">Street Address</label>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                onAddressChange(e.target.value);
+                onLocationSelect({ address: e.target.value, city: "", zip: manualZip, lat: 0, lng: 0 });
+              }}
+              placeholder="123 Main St, Boston"
+              className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-coral/20 outline-none"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-bold text-navy ml-1">ZIP Code (For Distance Calculation)</label>
+            <input
+              type="text"
+              value={manualZip}
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^0-9]/g, "").slice(0, 5);
+                setManualZip(val);
+                onLocationSelect({ address: query, city: "", zip: val, lat: 0, lng: 0 });
+              }}
+              placeholder="e.g. 02151"
+              className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-coral/20 outline-none"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Map Mode UI */}
+      <div className={manualMode ? "hidden" : "block"}>
       {/* Top Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3">
         <button
@@ -516,6 +517,7 @@ export default function LocationPicker({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

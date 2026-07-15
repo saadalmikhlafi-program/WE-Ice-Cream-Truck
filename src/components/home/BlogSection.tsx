@@ -37,7 +37,7 @@ const BLOG_POSTS = [
 
 export default function BlogSection() {
   return (
-    <section className="relative py-24 bg-white overflow-hidden" id="blog">
+    <section className="relative py-24 bg-transparent overflow-hidden" id="blog">
       {/* Decorative Elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-coral/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-mint/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
@@ -93,7 +93,7 @@ export default function BlogSection() {
                 <p className="text-gray-500 text-sm mb-6 flex-grow line-clamp-3">
                   {post.excerpt}
                 </p>
-                <Link href="#" className="inline-flex items-center gap-2 text-sm font-bold text-navy group-hover:text-coral transition-colors mt-auto">
+                <Link href="/gallery" className="inline-flex items-center gap-2 text-sm font-bold text-navy group-hover:text-coral transition-colors mt-auto">
                   Read Full Story <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>

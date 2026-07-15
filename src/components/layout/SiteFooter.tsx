@@ -71,7 +71,7 @@ export default function SiteFooter() {
                 <Link href="/occasions/wedding-receptions" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Weddings</Link>
               </li>
               <li>
-                <Link href="/occasions/school-events" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">School Events</Link>
+                <Link href="/occasions/school-occasions" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">School Events</Link>
               </li>
             </ul>
           </div>
