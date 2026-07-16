@@ -47,16 +47,21 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
       return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
     }
 
-    // Check if package is used in bookings
-    const bookingsCount = await prisma.booking.count({ where: { packageId: (await params).id } });
-    if (bookingsCount > 0) {
-      return NextResponse.json({ 
-        success: false, 
-        error: "Cannot delete package because it is attached to existing bookings. Please deactivate it instead." 
-      }, { status: 400 });
-    }
+    const { id } = await params;
 
-    await prisma.package.delete({ where: { id: (await params).id } });
+    await prisma.package.update({
+      where: { id },
+      data: { deletedAt: new Date(), isActive: false }
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        entityType: "PACKAGE",
+        entityId: id,
+        action: "PACKAGE_SOFT_DELETED",
+        actorId: auth.user!.id
+      }
+    });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

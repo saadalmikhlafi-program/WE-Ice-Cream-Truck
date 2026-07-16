@@ -7,7 +7,11 @@ const nextConfig: NextConfig = {
   // ── Image optimization ─────────────────────────────────────────────────
   images: {
     formats: ["image/avif", "image/webp"],
-    remotePatterns: [],
+    remotePatterns: [
+      { protocol: "https", hostname: "**.public.blob.vercel-storage.com" },
+      { protocol: "https", hostname: "pcdacfowlhkuvttwdanb.supabase.co" },
+      { protocol: "https", hostname: "uploads-ssl.webflow.com" },
+    ],
   },
 
   // ── Turbopack (Next.js 16 default) ────────────────────────────────────

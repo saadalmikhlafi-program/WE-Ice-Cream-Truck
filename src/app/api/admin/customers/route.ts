@@ -12,17 +12,25 @@ export async function GET(req: Request) {
     }
 
     const customers = await prisma.customer.findMany({
+      where: { deletedAt: null },
       include: {
+        _count: { select: { bookings: true } },
         bookings: {
           select: { quote: { select: { totalAmount: true } } }
         }
       },
-      orderBy: { firstName: "asc" }
+      orderBy: { createdAt: "desc" }
     });
 
     const formatted = customers.map((c: any) => ({
-      ...c,
-      bookingsCount: c.bookings.length,
+      id: c.id,
+      firstName: c.firstName,
+      lastName: c.lastName,
+      email: c.email,
+      phone: c.phone,
+      company: c.company,
+      createdAt: c.createdAt,
+      bookingsCount: c._count.bookings,
       totalSpent: c.bookings.reduce((sum: number, b: any) => sum + (b.quote?.totalAmount ?? 0), 0)
     }));
 

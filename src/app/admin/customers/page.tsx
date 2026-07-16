@@ -6,8 +6,8 @@ import { Search, RefreshCw, ChevronRight, Mail, Phone, Calendar, Loader2, Users 
 type Customer = {
   id: string; firstName: string; lastName: string;
   email: string; phone: string; createdAt: string;
-  _count?: { bookings: number };
-  bookings?: { totalAmount?: number }[];
+  bookingsCount?: number;
+  bookings?: { quote?: { totalAmount: number } }[];
 };
 
 export default function CustomersPage() {
@@ -100,7 +100,7 @@ export default function CustomersPage() {
                       </div>
                     </td>
                     <td className="px-5 py-4">
-                      <span className="text-sm font-black text-navy">{c._count?.bookings ?? 0}</span>
+                      <span className="text-sm font-black text-navy">{c.bookingsCount ?? 0}</span>
                       <span className="text-xs text-gray-400 ml-1 font-medium">bookings</span>
                     </td>
                     <td className="px-5 py-4">

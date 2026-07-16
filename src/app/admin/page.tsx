@@ -591,6 +591,33 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
+
+          {/* Activity Feed */}
+          {data?.activityFeed && data.activityFeed.length > 0 && (
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-emerald-500" />
+                  <span className="text-sm font-black text-navy">Live Activity</span>
+                </div>
+              </div>
+              <div className="divide-y divide-gray-50 max-h-80 overflow-y-auto">
+                {data.activityFeed.map((log: any) => (
+                  <div key={log.id} className="p-3.5 hover:bg-gray-50 transition-colors flex gap-3 items-start">
+                    <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-[10px] font-bold text-emerald-600 flex-shrink-0">
+                      {log.actorName?.charAt(0)?.toUpperCase() ?? "S"}
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-navy">{log.action.replace(/_/g, " ")}</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">
+                        {log.actorName} · {new Date(log.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

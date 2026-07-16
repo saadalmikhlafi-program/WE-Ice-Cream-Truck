@@ -12,6 +12,7 @@ export async function GET(req: Request) {
     }
 
     const packages = await prisma.package.findMany({
+      where: { deletedAt: null },
       orderBy: { sortOrder: "asc" }
     });
 

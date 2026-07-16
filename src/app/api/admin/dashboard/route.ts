@@ -111,6 +111,13 @@ export async function GET(req: Request) {
       take: 5,
     });
 
+    // ── 8. ACTIVITY FEED ────────────────────────────────────────────────────
+    const activityFeed = await prisma.auditLog.findMany({
+      take: 15,
+      orderBy: { createdAt: "desc" },
+      include: { user: { select: { name: true, email: true } } }
+    });
+
     const finalStats = {
       totalBookings,
       todayJobs:      todayBookings.length,
@@ -175,6 +182,15 @@ export async function GET(req: Request) {
         })),
         vehicles:    vehicles.map(v => ({ code: v.code, type: v.type, status: v.status })),
         revenueChart: canViewFull ? revenueChart : [],
+        activityFeed: activityFeed.map(a => ({
+          id: a.id,
+          action: a.action,
+          entityType: a.entityType,
+          entityId: a.entityId,
+          createdAt: a.createdAt,
+          actorName: a.user?.name || a.user?.email || "System",
+          metadata: a.metadataJson ? JSON.parse(a.metadataJson) : null
+        }))
       },
     });
   } catch (error: any) {

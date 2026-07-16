@@ -191,13 +191,8 @@ export default function MultiStepQuoteForm() {
 
       const data = await res.json();
       
-      if (res.ok) {
-        if (data.status === "REVIEW_REQUIRED") {
-          alert(`Booking Submitted (Ref: ${data.bookingNumber}). It is pending staff review due to distance/minimums.`);
-        } else {
-          alert(`Booking Confirmed! (Ref: ${data.bookingNumber}) You will receive an email shortly.`);
-        }
-        window.location.href = "/";
+      if (res.ok && data.success) {
+        window.location.href = "/book/success";
       } else {
         alert(data.error + (data.details ? "\n\nDetails: " + JSON.stringify(data.details, null, 2) : ""));
       }

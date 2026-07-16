@@ -2,12 +2,9 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { BookingSchema } from "@/lib/validations";
 import { sendBookingPendingEmail, sendOwnerNewBookingEmail } from "@/lib/email";
-import { PACKAGES } from "@/lib/packages-data";
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    console.log("[BOOKING] Incoming payload:", JSON.stringify(body, null, 2));
 
     const result = BookingSchema.safeParse(body);
 
@@ -53,13 +50,19 @@ export async function POST(req: Request) {
       });
     }
 
-    // ─── 2. Get package info from static data (NO DB lookup needed) ──
-    const staticPkg = packageId
-      ? PACKAGES.find((p) => p.id === packageId || p.slug === packageId)
-      : null;
-    const durationMins = staticPkg?.durationMins ?? 60;
-    const totalGuests = (staticPkg?.servings ?? 0) + (extraGuests ?? 0);
-    const pkgName = staticPkg?.name ?? "Custom Package";
+    // ─── 2. Get package info from database (Strict Server-Side Pricing) ──
+    const dbPackage = packageId ? await prisma.package.findUnique({ where: { id: packageId } }) : null;
+    
+    const durationMins = dbPackage?.durationMins ?? 60;
+    const totalGuests = (dbPackage?.servings ?? 0) + (extraGuests ?? 0);
+    const pkgName = dbPackage?.name ?? "Custom Package";
+
+    const serverBasePrice = dbPackage?.price ?? basePrice;
+    const eventDateObj = new Date(`${date}T12:00:00.000Z`);
+    const dayOfWeek = eventDateObj.getDay();
+    const serverWeekendFee = (dayOfWeek === 0 || dayOfWeek === 6) ? 50 : 0;
+    const serverExtraGuestFee = (extraGuests ?? 0) * (dbPackage?.extraGuestPrice ?? 0);
+    const serverTotalAmount = serverBasePrice + serverWeekendFee + serverExtraGuestFee + (distanceFee ?? 0) + (routingFee ?? 0);
 
     // ─── 3. Create or find Customer ───────────────────────────────
     const [firstName, ...lastNames] = name.trim().split(" ");
@@ -85,15 +88,15 @@ export async function POST(req: Request) {
 
     // ─── 4. Create Booking ────────────────────────────────────────
     const bookingNumber = `BK-${Math.floor(100000 + Math.random() * 900000)}`;
-    const status = (totalAmount < 500 && distance > 30) ? "PENDING_REVIEW" : "CONFIRMED";
+    const status = (serverTotalAmount < 500 && distance > 30) ? "PENDING_REVIEW" : "CONFIRMED";
 
     const booking = await prisma.booking.create({
       data: {
         bookingNumber,
         customerId: customer.id,
-        packageId: null, // No FK needed — package info stored in notes
+        packageId: dbPackage?.id || null,
         status,
-        eventDate: new Date(`${date}T12:00:00.000Z`),
+        eventDate: eventDateObj,
         startTime: time,
         durationMins,
         address,
@@ -102,7 +105,7 @@ export async function POST(req: Request) {
         guests: totalGuests,
         eventType,
         notes: `Package: ${pkgName} | Routing: ${routingMode ?? "SINGLE"}`,
-        totalAmount,
+        totalAmount: serverTotalAmount,
         additionalStopsFee: routingFee ?? 0
       },
       include: {
@@ -116,17 +119,18 @@ export async function POST(req: Request) {
     await prisma.quote.create({
       data: {
         bookingId: booking.id,
-        basePrice,
+        basePrice: serverBasePrice,
         distanceMiles: distance,
         travelFee: distanceFee,
-        totalAmount,
+        totalAmount: serverTotalAmount,
         snapshotJson: JSON.stringify({
           packageId,
           packageName: pkgName,
-          weekendFee,
-          extraGuestFee,
+          weekendFee: serverWeekendFee,
+          extraGuestFee: serverExtraGuestFee,
           routingFee: routingFee ?? 0,
-          routingMode: routingMode ?? "SINGLE"
+          routingMode: routingMode ?? "SINGLE",
+          clientQuotedAmount: totalAmount // Record what client saw vs what we charged
         })
       }
     });

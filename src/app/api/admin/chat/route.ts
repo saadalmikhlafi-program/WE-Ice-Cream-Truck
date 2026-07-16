@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { requirePermission } from "@/lib/rbac";
 
 const SYSTEM_PROMPT = `You are the WE Ice Cream Truck Admin AI — a powerful, precise assistant for business operations.
 You have access to live business data. Answer concisely and accurately.
@@ -13,15 +14,16 @@ SECURITY RULES:
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-      return new Response("Unauthorized", { status: 401 });
+    const auth = await requirePermission(req, "dashboard.view");
+    if (!auth.success) {
+      return Response.json({ reply: "Unauthorized access: You lack the required permissions to use AI." }, { status: 403 });
     }
+    const session = await getServerSession(authOptions);
 
-    const { messages } = await req.json();
+    const { messages, conversationId } = await req.json();
     const lastMessage = messages?.[messages.length - 1]?.content ?? "";
 
-    if (!process.env.OPENAI_API_KEY && !process.env.GROQ_API_KEY) {
+    if (!process.env.OPENAI_API_KEY && !process.env.GROQ_API_KEY && !process.env.OPENROUTER_API_KEY) {
       return Response.json({
         reply: "AI service is not configured. Please add OPENAI_API_KEY or GROQ_API_KEY to your environment variables.",
       });
@@ -76,15 +78,19 @@ export async function POST(req: NextRequest) {
         });
         dbContext += `\n\nLIVE PACKAGES DATA:\n${JSON.stringify(packages, null, 2)}`;
       }
+
+      if (lower.includes("setting") || lower.includes("config") || lower.includes("business hours") || lower.includes("seo")) {
+        const settings = await prisma.setting.findMany();
+        const settingsDict = settings.reduce((acc: any, s) => { acc[s.key] = s.value; return acc; }, {});
+        dbContext += `\n\nLIVE APP SETTINGS:\n${JSON.stringify(settingsDict, null, 2)}`;
+      }
     } catch (dbErr) {
       console.warn("DB context fetch error:", dbErr);
       dbContext = "\n\n[Note: Could not fetch live DB data at this time]";
     }
 
-    // Build system prompt with injected DB context
     const systemWithContext = SYSTEM_PROMPT + dbContext;
 
-    // Determine which API to use based on available keys (Prioritize OpenAI)
     let apiUrl = "";
     let apiKey = "";
     let apiModel = "";
@@ -102,7 +108,7 @@ export async function POST(req: NextRequest) {
       apiKey = process.env.GROQ_API_KEY;
       apiModel = "llama-3.1-70b-versatile";
     } else {
-      return Response.json({ reply: "No AI service configured. Please add OPENAI_API_KEY to environment variables." });
+      return Response.json({ reply: "No AI service configured." });
     }
 
     const aiRes = await fetch(apiUrl, {
@@ -129,6 +135,25 @@ export async function POST(req: NextRequest) {
 
     const data = await aiRes.json();
     const reply = data.choices?.[0]?.message?.content ?? "No response.";
+
+    // Persist messages to DB if conversationId provided
+    if (conversationId) {
+      try {
+        const userMsg = messages[messages.length - 1];
+        await prisma.message.createMany({
+          data: [
+            { conversationId, role: "user", content: userMsg.content },
+            { conversationId, role: "assistant", content: reply },
+          ],
+        });
+        await prisma.conversation.update({
+          where: { id: conversationId },
+          data: { updatedAt: new Date() },
+        });
+      } catch (dbErr) {
+        console.warn("Failed to persist messages:", dbErr);
+      }
+    }
 
     return Response.json({ reply });
   } catch (error) {
