@@ -187,22 +187,22 @@ export default function LocationPicker({
     };
   }, []);
 
-  // Reverse geocode a lat/lng to get the address
+  // Reverse geocode a lat/lng to get the address — via server proxy to avoid browser blocking
   const reverseGeocode = async (lat: number, lng: number) => {
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`, {
-        headers: { 'Accept-Language': 'en-US,en' }
-      });
+      const res = await fetch(`/api/geocode?action=reverse&lat=${lat}&lon=${lng}`);
       if (!res.ok) throw new Error("Geocoding failed");
       
       const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
       const addr = data.address || {};
       const streetAddress = [addr.house_number, addr.road].filter(Boolean).join(" ");
-      const cityName = addr.city || addr.town || addr.village || "";
+      const cityName = addr.city || addr.town || addr.village || addr.hamlet || addr.county || "";
       const zipCode = addr.postcode || "";
       const state = addr.state || "";
       
-      const fullAddress = streetAddress || cityName || data.display_name.split(",")[0];
+      const fullAddress = streetAddress || cityName || (data.display_name?.split(",")[0] ?? "");
       const displayStr = `${fullAddress}${cityName && cityName !== fullAddress ? `, ${cityName}` : ""}${state ? `, ${state}` : ""}${zipCode ? ` ${zipCode}` : ""}`;
       
       setQuery(displayStr);
@@ -217,7 +217,8 @@ export default function LocationPicker({
         lng,
       });
     } catch (err) {
-      console.error(err);
+      console.error("[reverseGeocode] Error:", err);
+      // Show coordinates as fallback only if geocoding completely fails
       const fallbackAddress = `Selected Location`;
       setQuery(fallbackAddress);
       onAddressChange(fallbackAddress);
