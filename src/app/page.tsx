@@ -67,6 +67,13 @@ export default async function HomePage() {
   const firstVan = formattedPackages.find(p => p.vehicleType === "VAN");
   const featuredPackages = [firstTruck, firstVan].filter(Boolean);
 
+  const recentPosts = await prisma.post.findMany({
+    where: { status: "PUBLISHED", deletedAt: null },
+    orderBy: { publishedAt: "desc" },
+    take: 3,
+    include: { category: true }
+  });
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* 
@@ -88,7 +95,7 @@ export default async function HomePage() {
       <ServicesMarquee />
       <BrandCarousel />
       <HowItWorks />
-      <BlogSection />
+      <BlogSection posts={recentPosts} />
       <PackagesPreview featuredPackages={featuredPackages} />
       <TestimonialsCarousel />
       <CityMapSection />

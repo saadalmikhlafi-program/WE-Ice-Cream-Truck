@@ -376,18 +376,39 @@ async function main() {
   }
 
   console.log(`✍️  Creating ${EVENTS.length} blog posts...`);
-  for (const ev of EVENTS) {
+
+  const images = [
+    "/images/blog/celebration-pack.jpg",
+    "/images/blog/family-event.jpg",
+    "/images/blog/gold-event.jpg",
+    "/images/blog/photo_2026-05-31_21-55-12.jpg",
+    "/images/blog/signature-event.jpg",
+    "/images/blog/silver-event.jpg",
+    "/images/blog/starter-event.jpg",
+    "/images/blog/van-big-smile-package .jpg",
+    "/images/blog/van-celebration-pack.jpg",
+    "/images/blog/van-family-event.jpg",
+    "/images/blog/van-school-festival-special.jpg",
+    "/images/blog/van-silver-special.jpg"
+  ];
+
+  for (let i = 0; i < EVENTS.length; i++) {
+    const ev = EVENTS[i];
     const slug = ev.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)+/g, "");
+    
+    // Pick image somewhat sequentially so we don't have all the same
+    const imgUrl = images[i % images.length];
+
     await prisma.post.create({
       data: {
         title: ev.title,
         slug,
         content: ev.content,
         excerpt: ev.excerpt,
-        featuredImage: "https://ice-cream-truck-jet.vercel.app/images/we-icecream.jpg",
+        featuredImage: imgUrl,
         seoTitle: `${ev.title} | WE Ice Cream Truck Boston`,
         seoDesc: ev.excerpt,
         status: "PUBLISHED",
