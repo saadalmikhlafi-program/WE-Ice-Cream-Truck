@@ -7,10 +7,14 @@ const BRAND_CORAL = "#FF6B6B";
 const LOGO_URL    = "https://ice-cream-truck-jet.vercel.app/images/we-icecream.jpg";
 const SITE_URL    = BUSINESS_CONFIG.domain;
 
+const smtpPort = parseInt(process.env.SMTP_PORT || '465');
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '465'),
-  secure: true,
+  port: smtpPort,
+  secure: smtpPort === 465,
+  tls: {
+    rejectUnauthorized: false
+  },
   auth: {
     user: process.env.SMTP_USER || 'saadalmikhlafi53@gmail.com',
     pass: process.env.SMTP_PASS || 'qsnr rswv pgyz oxsj',

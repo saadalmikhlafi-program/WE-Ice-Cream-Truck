@@ -42,8 +42,6 @@ const NAV_GROUPS: NavGroup[] = [
   {
     title: "Content & Resources",
     items: [
-      { href: "/admin/library",        label: "Media Library",  icon: Box },
-      { href: "/admin/blog",           label: "Blog System",    icon: Box },
       { href: "/admin/vehicles",       label: "Fleet",          icon: Truck },
       { href: "/admin/packages",       label: "Packages",       icon: Package },
       { href: "/admin/service-areas",  label: "Service Areas",  icon: MapPin },
