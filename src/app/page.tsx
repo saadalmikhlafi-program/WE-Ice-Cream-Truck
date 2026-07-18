@@ -47,6 +47,7 @@ export default async function HomePage() {
       name: pkg.name,
       tagline: pkg.description || "The perfect ice cream experience",
       description: pkg.description || "",
+      imageUrl: pkg.imageUrl,
       vehicleType: pkg.serviceType,
       vehicleLabel: pkg.serviceType === "TRUCK" ? "Ice Cream Truck" : pkg.serviceType === "VAN" ? "Premium Van" : "Custom",
       servings: pkg.servings,

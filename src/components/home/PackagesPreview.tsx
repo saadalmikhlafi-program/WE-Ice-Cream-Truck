@@ -89,7 +89,20 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
                 </div>
               )}
 
-              {/* Card Header (No Image) */}
+              {/* Card Image */}
+              {pkg.imageUrl && (
+                <div className="relative w-full h-48 sm:h-56 shrink-0">
+                  <Image 
+                    src={pkg.imageUrl} 
+                    alt={pkg.name} 
+                    fill 
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                </div>
+              )}
+
+              {/* Card Header */}
               <div className={`p-8 md:p-10 border-b ${pkg.isPopular ? "bg-navy border-navy/5" : "bg-white border-gray-50"}`}>
                 <div className={`text-xs font-black uppercase tracking-widest mb-3 ${pkg.isPopular ? "text-coral" : "text-gray-400"}`}>
                   {pkg.durationLabel} · {pkg.servings} Servings

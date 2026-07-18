@@ -259,6 +259,19 @@ function PackageGrid({ packages, accentColor }: { packages: any[]; accentColor: 
               </div>
             )}
 
+            {/* Card Image */}
+            {pkg.imageUrl && (
+              <div className="relative w-full h-48 sm:h-56">
+                <Image 
+                  src={pkg.imageUrl} 
+                  alt={pkg.name} 
+                  fill 
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+            )}
+
             {/* Card Header */}
             <div className={`p-8 border-b ${isHighlight ? "bg-navy border-navy/5" : "bg-white border-gray-50"}`}>
               <div className={`text-xs font-black uppercase tracking-widest mb-3 ${isHighlight ? "text-coral" : "text-gray-400"}`}>
