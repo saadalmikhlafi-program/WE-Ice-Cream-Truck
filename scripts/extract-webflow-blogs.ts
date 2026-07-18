@@ -7,7 +7,7 @@ import { prisma } from '../src/lib/prisma';
 const WEBFLOW_DIR = "C:\\Users\\Sharoobi\\Desktop\\boston_legend.webflow.io\\public";
 const IMAGES_DIR = path.join(process.cwd(), "public", "images", "blog");
 
-async function downloadImage(url, filename) {
+async function downloadImage(url: string, filename: string): Promise<string | null> {
   return new Promise((resolve, reject) => {
     https.get(url, (res) => {
       if (res.statusCode !== 200) {
@@ -106,7 +106,7 @@ async function run() {
     let localImagePath = "/images/blog/starter-event.jpg"; // Fallback
     
     if (post.imageUrl) {
-      const filename = path.basename(new URL(post.imageUrl).pathname);
+      const filename = decodeURIComponent(path.basename(new URL(post.imageUrl).pathname));
       console.log(`Downloading ${filename}...`);
       const downloadedPath = await downloadImage(post.imageUrl, filename);
       if (downloadedPath) localImagePath = downloadedPath;
