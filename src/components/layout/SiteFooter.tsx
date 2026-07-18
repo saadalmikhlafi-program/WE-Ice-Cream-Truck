@@ -49,7 +49,7 @@ export default function SiteFooter() {
                 <Link href="/cities" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Areas We Serve</Link>
               </li>
               <li>
-                <Link href="/get-a-quote" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Get a Quote</Link>
+                <Link href="/cities" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Cities We Serve</Link>
               </li>
               <li>
                 <Link href="/contact" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Contact Us</Link>
