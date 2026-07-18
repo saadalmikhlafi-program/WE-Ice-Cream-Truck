@@ -191,20 +191,6 @@ export default function PackagesClient({
         </div>
       </section>
 
-      {/* ── FAQ / CTA Strip ───────────────────────────────────────────── */}
-      <section className="py-20 px-4 md:px-8">
-        <div className="max-w-3xl mx-auto text-center">
-          <h3 className="font-display font-black text-3xl md:text-4xl text-navy mb-4">
-            Not sure which package is right?
-          </h3>
-          <p className="text-gray-500 font-medium text-lg mb-8">
-            Tell us about your event and we&apos;ll recommend the perfect package — no commitment needed.
-          </p>
-          <Link href="/book" className="inline-flex items-center gap-3 px-10 py-5 rounded-full bg-coral text-white font-black text-lg hover:bg-[#e05a50] hover:scale-105 transition-all shadow-xl shadow-coral/20 group">
-            Get a Free Quote <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-      </section>
 
     </div>
   );
