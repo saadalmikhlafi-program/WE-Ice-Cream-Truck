@@ -101,12 +101,12 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   {/* Smooth gradient blending into the header */}
-                  <div className={`absolute bottom-0 left-0 w-full h-2/3 z-10 bg-gradient-to-t ${pkg.isPopular ? "from-navy" : "from-white"} via-${pkg.isPopular ? "navy/50" : "white/50"} to-transparent pointer-events-none`} />
+                  <div className={`absolute bottom-0 left-0 w-full h-1/2 z-10 bg-gradient-to-t ${pkg.isPopular ? "from-navy" : "from-white"} to-transparent pointer-events-none`} />
                 </div>
               )}
 
               {/* Card Header */}
-              <div className={`relative z-20 px-8 md:px-10 pb-8 md:pb-10 pt-4 -mt-16 border-b ${pkg.isPopular ? "bg-transparent border-navy/10" : "bg-transparent border-gray-100"}`}>
+              <div className={`relative z-20 px-8 md:px-10 pb-8 md:pb-10 pt-6 border-b ${pkg.isPopular ? "bg-navy border-navy/5" : "bg-white border-gray-100"}`}>
                 <div className={`text-xs font-black uppercase tracking-widest mb-3 ${pkg.isPopular ? "text-coral" : "text-coral"}`}>
                   {pkg.durationLabel} · {pkg.servings} Servings
                 </div>

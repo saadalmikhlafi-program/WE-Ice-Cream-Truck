@@ -271,12 +271,12 @@ function PackageGrid({ packages, accentColor }: { packages: any[]; accentColor: 
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
                 {/* Smooth gradient blending into the header */}
-                <div className={`absolute bottom-0 left-0 w-full h-2/3 z-10 bg-gradient-to-t ${isHighlight ? "from-navy" : "from-white"} via-${isHighlight ? "navy/50" : "white/50"} to-transparent pointer-events-none`} />
+                <div className={`absolute bottom-0 left-0 w-full h-1/2 z-10 bg-gradient-to-t ${isHighlight ? "from-navy" : "from-white"} to-transparent pointer-events-none`} />
               </div>
             )}
 
             {/* Card Header */}
-            <div className={`relative z-20 px-8 pb-8 pt-4 -mt-12 border-b ${isHighlight ? "bg-transparent border-navy/10" : "bg-transparent border-gray-50"}`}>
+            <div className={`relative z-20 px-8 pb-8 pt-6 border-b ${isHighlight ? "bg-navy border-navy/5" : "bg-white border-gray-50"}`}>
               <div className={`text-xs font-black uppercase tracking-widest mb-3 ${isHighlight ? "text-coral" : "text-coral"}`}>
                 {pkg.durationLabel} · {pkg.servings} Servings
               </div>
