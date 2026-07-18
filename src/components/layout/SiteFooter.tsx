@@ -43,13 +43,13 @@ export default function SiteFooter() {
                 <Link href="/packages" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Packages & Pricing</Link>
               </li>
               <li>
-                <Link href="/gallery" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Event Gallery</Link>
+                <Link href="/blog" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Blog</Link>
               </li>
               <li>
                 <Link href="/cities" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Areas We Serve</Link>
               </li>
               <li>
-                <Link href="/#faq" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">FAQs</Link>
+                <Link href="/get-a-quote" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Get a Quote</Link>
               </li>
               <li>
                 <Link href="/contact" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Contact Us</Link>
@@ -62,16 +62,22 @@ export default function SiteFooter() {
             <h3 className="font-display text-lg font-black mb-6 text-white uppercase tracking-wider">Events</h3>
             <ul className="space-y-3 text-sm font-medium text-cream/70">
               <li>
-                <Link href="/occasions/birthday-parties" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Birthday Parties</Link>
-              </li>
-              <li>
                 <Link href="/occasions/corporate-events" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Corporate Events</Link>
               </li>
               <li>
                 <Link href="/occasions/wedding-receptions" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Weddings</Link>
               </li>
               <li>
+                <Link href="/occasions/birthday-parties" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Birthday Parties</Link>
+              </li>
+              <li>
                 <Link href="/occasions/school-occasions" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">School Events</Link>
+              </li>
+              <li>
+                <Link href="/occasions/fundraisers" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Fundraisers</Link>
+              </li>
+              <li>
+                <Link href="/occasions/marketing-activations" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Marketing Activations</Link>
               </li>
             </ul>
           </div>
