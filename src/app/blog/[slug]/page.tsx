@@ -36,7 +36,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <div className="bg-white min-h-screen pt-24 pb-20">
+    <div className="bg-transparent min-h-screen pt-24 pb-20">
       {/* Hero Header */}
       <div className="max-w-4xl mx-auto px-6 mb-12 text-center pt-8">
         {post.category && (
