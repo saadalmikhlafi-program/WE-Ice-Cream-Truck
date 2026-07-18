@@ -91,30 +91,33 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
 
               {/* Card Image */}
               {pkg.imageUrl && (
-                <div className="relative w-full h-48 sm:h-56 shrink-0">
+                <div className="relative w-full aspect-[4/3] shrink-0 overflow-hidden">
+                  <div className="absolute inset-0 bg-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
                   <Image 
                     src={pkg.imageUrl} 
                     alt={pkg.name} 
                     fill 
-                    className="object-cover"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
+                  {/* Smooth gradient blending into the header */}
+                  <div className={`absolute bottom-0 left-0 w-full h-2/3 z-10 bg-gradient-to-t ${pkg.isPopular ? "from-navy" : "from-white"} via-${pkg.isPopular ? "navy/50" : "white/50"} to-transparent pointer-events-none`} />
                 </div>
               )}
 
               {/* Card Header */}
-              <div className={`p-8 md:p-10 border-b ${pkg.isPopular ? "bg-navy border-navy/5" : "bg-white border-gray-50"}`}>
-                <div className={`text-xs font-black uppercase tracking-widest mb-3 ${pkg.isPopular ? "text-coral" : "text-gray-400"}`}>
+              <div className={`relative z-20 px-8 md:px-10 pb-8 md:pb-10 pt-4 -mt-16 border-b ${pkg.isPopular ? "bg-transparent border-navy/10" : "bg-transparent border-gray-100"}`}>
+                <div className={`text-xs font-black uppercase tracking-widest mb-3 ${pkg.isPopular ? "text-coral" : "text-coral"}`}>
                   {pkg.durationLabel} · {pkg.servings} Servings
                 </div>
-                <h3 className={`font-display font-black text-3xl md:text-4xl mb-2 ${pkg.isPopular ? "text-white" : "text-navy"}`}>
+                <h3 className={`font-display font-black text-3xl md:text-4xl mb-2 ${pkg.isPopular ? "text-white drop-shadow-sm" : "text-navy"}`}>
                   {pkg.name}
                 </h3>
-                <p className={`text-sm md:text-base font-medium mb-8 min-h-[48px] ${pkg.isPopular ? "text-white/60" : "text-gray-500"}`}>
+                <p className={`text-sm md:text-base font-medium mb-8 min-h-[48px] ${pkg.isPopular ? "text-white/70" : "text-gray-500"}`}>
                   {pkg.tagline}
                 </p>
                 <div className="flex items-baseline gap-2">
-                  <span className={`text-6xl font-black tracking-tighter ${pkg.isPopular ? "text-white" : "text-coral"}`}>
+                  <span className={`text-6xl font-black tracking-tighter ${pkg.isPopular ? "text-white" : "text-navy"}`}>
                     ${pkg.price}
                   </span>
                   <span className={`font-bold text-sm ${pkg.isPopular ? "text-white/40" : "text-gray-400"}`}>

@@ -261,26 +261,29 @@ function PackageGrid({ packages, accentColor }: { packages: any[]; accentColor: 
 
             {/* Card Image */}
             {pkg.imageUrl && (
-              <div className="relative w-full h-48 sm:h-56">
+              <div className="relative w-full aspect-[4/3] shrink-0 overflow-hidden">
+                <div className="absolute inset-0 bg-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
                 <Image 
                   src={pkg.imageUrl} 
                   alt={pkg.name} 
                   fill 
-                  className="object-cover"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
+                {/* Smooth gradient blending into the header */}
+                <div className={`absolute bottom-0 left-0 w-full h-2/3 z-10 bg-gradient-to-t ${isHighlight ? "from-navy" : "from-white"} via-${isHighlight ? "navy/50" : "white/50"} to-transparent pointer-events-none`} />
               </div>
             )}
 
             {/* Card Header */}
-            <div className={`p-8 border-b ${isHighlight ? "bg-navy border-navy/5" : "bg-white border-gray-50"}`}>
-              <div className={`text-xs font-black uppercase tracking-widest mb-3 ${isHighlight ? "text-coral" : "text-gray-400"}`}>
+            <div className={`relative z-20 px-8 pb-8 pt-4 -mt-12 border-b ${isHighlight ? "bg-transparent border-navy/10" : "bg-transparent border-gray-50"}`}>
+              <div className={`text-xs font-black uppercase tracking-widest mb-3 ${isHighlight ? "text-coral" : "text-coral"}`}>
                 {pkg.durationLabel} · {pkg.servings} Servings
               </div>
-              <h3 className={`font-display font-black text-2xl mb-1 ${isHighlight ? "text-white" : "text-navy"}`}>
+              <h3 className={`font-display font-black text-2xl mb-1 ${isHighlight ? "text-white drop-shadow-sm" : "text-navy"}`}>
                 {pkg.name}
               </h3>
-              <p className={`text-sm font-medium mb-6 ${isHighlight ? "text-white/50" : "text-gray-400"}`}>
+              <p className={`text-sm font-medium mb-6 ${isHighlight ? "text-white/70" : "text-gray-500"}`}>
                 {pkg.tagline}
               </p>
               <div className="flex items-baseline gap-2">
