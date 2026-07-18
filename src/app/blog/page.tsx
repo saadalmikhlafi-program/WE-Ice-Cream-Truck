@@ -30,24 +30,24 @@ export default async function BlogPage() {
   const rest = posts.slice(1);
 
   return (
-    <div className="min-h-screen bg-[#FAF9F7]">
+    <div className="min-h-screen bg-transparent">
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-navy py-28 px-6">
+      <section className="relative overflow-hidden bg-transparent pt-32 pb-20 px-6">
         {/* Background pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-10 left-20 w-64 h-64 rounded-full bg-coral blur-3xl" />
-          <div className="absolute bottom-10 right-20 w-96 h-96 rounded-full bg-white blur-3xl" />
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+          <div className="absolute top-10 left-20 w-64 h-64 rounded-full bg-navy blur-3xl" />
+          <div className="absolute bottom-10 right-20 w-96 h-96 rounded-full bg-coral blur-3xl" />
         </div>
         <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 mb-6">
+          <div className="inline-flex items-center gap-2 bg-navy/5 backdrop-blur-sm border border-navy/10 rounded-full px-4 py-1.5 mb-6">
             <span className="w-2 h-2 rounded-full bg-coral animate-pulse" />
-            <span className="text-white/80 text-sm font-semibold tracking-wide uppercase">Real Stories</span>
+            <span className="text-navy/80 text-sm font-semibold tracking-wide uppercase">Real Stories</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-black text-white mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-black text-navy mb-6 leading-tight">
             Moments That
             <span className="text-coral"> Matter</span>
           </h1>
-          <p className="text-xl text-white/70 max-w-2xl mx-auto leading-relaxed font-medium">
+          <p className="text-xl text-navy/70 max-w-2xl mx-auto leading-relaxed font-medium">
             From backyard birthday parties to corporate summits and wedding receptions — 
             real events, real smiles, all across Greater Boston.
           </p>
