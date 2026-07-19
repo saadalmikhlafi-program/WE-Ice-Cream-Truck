@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
     } else if (process.env.GROQ_API_KEY) {
       apiUrl = "https://api.groq.com/openai/v1/chat/completions";
       apiKey = process.env.GROQ_API_KEY;
-      apiModel = "llama-3.1-70b-versatile";
+      apiModel = "llama-3.3-70b-versatile";
     } else {
       return Response.json({ reply: "No AI service configured." });
     }

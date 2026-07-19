@@ -343,7 +343,7 @@ ${packagesList}
     } else if (process.env.GROQ_API_KEY) {
       apiUrl = "https://api.groq.com/openai/v1/chat/completions";
       apiKey = process.env.GROQ_API_KEY;
-      apiModel = "llama-3.1-70b-versatile";
+      apiModel = "llama-3.3-70b-versatile";
     } else {
       return new Response("No AI provider configured", { status: 503 });
     }
@@ -367,6 +367,8 @@ ${packagesList}
     const aiRes = await fetch(apiUrl, { method: "POST", headers, body: JSON.stringify(requestBody) });
 
     if (!aiRes.ok) {
+      const errText = await aiRes.text();
+      console.error("GROQ CUSTOMER AI ERROR:", errText, "Status:", aiRes.status);
       return Response.json({ text: "Sorry, I am having trouble responding right now." });
     }
 
