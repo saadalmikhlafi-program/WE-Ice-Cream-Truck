@@ -339,14 +339,14 @@ ${packagesList}
     let apiKey = "";
     let apiModel = "";
 
-    if (process.env.OPENROUTER_API_KEY) {
-      apiUrl = "https://openrouter.ai/api/v1/chat/completions";
-      apiKey = process.env.OPENROUTER_API_KEY;
-      apiModel = "meta-llama/llama-3.3-70b-instruct";
-    } else if (process.env.GROQ_API_KEY) {
+    if (process.env.GROQ_API_KEY) {
       apiUrl = "https://api.groq.com/openai/v1/chat/completions";
       apiKey = process.env.GROQ_API_KEY;
       apiModel = "llama-3.3-70b-versatile";
+    } else if (process.env.OPENROUTER_API_KEY) {
+      apiUrl = "https://openrouter.ai/api/v1/chat/completions";
+      apiKey = process.env.OPENROUTER_API_KEY;
+      apiModel = "meta-llama/llama-3.3-70b-instruct";
     } else {
       return new Response("No AI provider configured", { status: 503 });
     }
