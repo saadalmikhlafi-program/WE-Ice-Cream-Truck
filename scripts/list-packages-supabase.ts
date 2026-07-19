@@ -4,18 +4,29 @@ dotenv.config({ path: '.env.local' });
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-async function updatePackages() {
+async function listPrices() {
   const headers = {
     'apikey': SUPABASE_KEY!,
     'Authorization': `Bearer ${SUPABASE_KEY}`,
-    'Content-Type': 'application/json',
-    'Prefer': 'return=representation'
   };
 
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/Package?select=slug,name`, { headers });
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/Package?select=name,slug,serviceType,price,servings,durationMins,extraGuestPrice,extraPiecePrice,sortOrder&order=sortOrder.asc`,
+    { headers }
+  );
   const packages = await res.json();
-  
-  console.log("All packages:", packages.map((p: any) => p.slug));
+
+  console.log("Current Package Prices in Database:\n");
+  packages.forEach((p: any) => {
+    console.log(`${p.name} (${p.serviceType})`);
+    console.log(`  slug: ${p.slug}`);
+    console.log(`  price: $${p.price}`);
+    console.log(`  servings: ${p.servings}`);
+    console.log(`  duration: ${p.durationMins} min`);
+    console.log(`  extraGuestPrice: $${p.extraGuestPrice}`);
+    console.log(`  extraPiecePrice: $${p.extraPiecePrice}`);
+    console.log('');
+  });
 }
 
-updatePackages().catch(console.error);
+listPrices().catch(console.error);

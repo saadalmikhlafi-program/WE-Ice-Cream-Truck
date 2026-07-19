@@ -315,15 +315,18 @@ ${packagesList}
 
 ## Booking via Chat - CRITICAL RULES
 1. If the User Status is LOGGED OUT: You CANNOT book for them. You must tell them: "To proceed with booking, please Sign In or Create an Account using the button at the top of the page." Do NOT call the createBookingRequest tool if they are logged out.
-2. If the User Status is LOGGED IN: You can proceed to gather booking details. Ask for any missing info:
-   - Phone number
-   - Event date (YYYY-MM-DD format)
-   - Start time (in 24-hour format, e.g., 14:00)
-   - Event type
-   - Which package they want
-   - Event address, city, and ZIP code
+2. NEVER call createBookingRequest unless the customer has EXPLICITLY provided ALL of the following in this conversation:
+   - Their real full name (NOT "John Doe" or any placeholder)
+   - Their real phone number
+   - A future event date (NOT a past date, NOT a placeholder like 2024-01-01)
+   - A specific start time
+   - Their event type
+   - Which package they want (from the list above)
+   - Their real event address, city, and ZIP code
    - Estimated number of guests
-3. Once you have ALL the details, calculate the total estimated price (including distance fee if applicable), summarize it for them, and call the createBookingRequest tool.
+3. Do NOT assume, guess, or fill in any details. If any detail is missing, ASK for it first.
+4. Do NOT call createBookingRequest in response to greetings like "hello", "hi", "هلا", "مرحبا" or any message that does not contain booking details.
+5. Only after collecting ALL details from the user: summarize them, ask for confirmation, and THEN call the tool.
 
 ## Tone & Style
 - Be warm, enthusiastic, and helpful. Keep responses concise.`;
@@ -426,6 +429,18 @@ ${packagesList}
           args = JSON.parse(finalToolCall.function.arguments);
         } catch {
           return Response.json({ text: "I had trouble processing the booking details. Could you please repeat them?" });
+        }
+
+        // ─── Server-side validation: reject hallucinated/placeholder data ───
+        const fakeName = !args.name || args.name.toLowerCase().includes("john doe") || args.name.toLowerCase() === "unknown" || args.name.length < 3;
+        const fakeDate = !args.eventDate || new Date(args.eventDate) < new Date();
+        const fakeZip = !args.zip || args.zip.length < 5;
+        const fakePhone = !args.phone || args.phone.length < 7;
+        const fakePkg = !args.packageId;
+
+        if (fakeName || fakeDate || fakeZip || fakePhone || fakePkg) {
+          console.warn("[Chat] Rejected hallucinated booking args:", args);
+          return Response.json({ text: "I need a few more details before I can create your booking. Could you please share your full name, event date, address (with ZIP code), phone number, and which package you'd like?" });
         }
 
         return Response.json({
