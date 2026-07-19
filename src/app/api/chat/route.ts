@@ -339,7 +339,11 @@ ${packagesList}
     let apiKey = "";
     let apiModel = "";
 
-    if (process.env.GOOGLE_AI_KEY) {
+    if (process.env.GROQ_API_KEY) {
+      apiUrl = "https://api.groq.com/openai/v1/chat/completions";
+      apiKey = process.env.GROQ_API_KEY;
+      apiModel = "llama-3.3-70b-versatile";
+    } else if (process.env.GOOGLE_AI_KEY) {
       apiUrl = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
       apiKey = process.env.GOOGLE_AI_KEY;
       apiModel = "gemini-2.0-flash";
@@ -351,10 +355,6 @@ ${packagesList}
       apiUrl = "https://api.openai.com/v1/chat/completions";
       apiKey = process.env.OPENAI_API_KEY;
       apiModel = "gpt-4o-mini";
-    } else if (process.env.GROQ_API_KEY) {
-      apiUrl = "https://api.groq.com/openai/v1/chat/completions";
-      apiKey = process.env.GROQ_API_KEY;
-      apiModel = "llama-3.3-70b-versatile";
     } else {
       return new Response("No AI provider configured", { status: 503 });
     }
