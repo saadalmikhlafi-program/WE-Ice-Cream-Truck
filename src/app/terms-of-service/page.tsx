@@ -1,5 +1,4 @@
 import { BUSINESS_CONFIG } from "@/lib/config";
-import PublicLayout from "@/components/layout/PublicLayout";
 
 export const metadata = {
   title: "Terms of Service | WE Ice Cream Truck",

@@ -11,7 +11,20 @@ import ScrollToTop from "@/components/shared/ScrollToTop";
 /** Routes where the public site chrome (header, footer, blobs) are hidden */
 const ADMIN_PREFIXES = ["/admin", "/login", "/book", "/get-a-quote"];
 
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+export default function PublicLayout({ 
+  children,
+  footerConfig
+}: { 
+  children: React.ReactNode,
+  footerConfig?: {
+    companyName?: string;
+    companyPhone?: string;
+    companyEmail?: string;
+    companyAddress?: string;
+    facebookUrl?: string;
+    instagramUrl?: string;
+  }
+}) {
   const pathname = usePathname();
   const isAdminRoute = ADMIN_PREFIXES.some(p => pathname.startsWith(p));
 
@@ -30,7 +43,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
         <ScrollToTop />
         {children}
       </main>
-      <SiteFooter />
+      <SiteFooter {...footerConfig} />
       <MobileBottomNav />
       <AIChatWidget />
     </>

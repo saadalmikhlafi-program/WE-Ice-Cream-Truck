@@ -1,5 +1,4 @@
 import { BUSINESS_CONFIG } from "@/lib/config";
-import PublicLayout from "@/components/layout/PublicLayout";
 
 export const metadata = {
   title: "Privacy Policy | WE Ice Cream Truck",

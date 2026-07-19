@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Outfit } from "next/font/google";
 import "./globals.css";
 import { BUSINESS_CONFIG } from "@/lib/config";
+import { getSettings } from "@/lib/settings";
 import { constructMetadata } from "@/lib/seo";
 import { Providers } from "./providers";
 import PublicLayout from "@/components/layout/PublicLayout";
@@ -37,18 +38,35 @@ export const viewport: Viewport = {
 
 // ─── LAYOUT ─────────────────────────────────────────────────────────
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch settings safely
+  let settings = {};
+  try {
+    settings = await getSettings();
+  } catch (e) {
+    console.warn("Failed to fetch layout settings", e);
+  }
+
+  const footerConfig = {
+    companyName: (settings as any).companyName,
+    companyPhone: (settings as any).companyPhone,
+    companyEmail: (settings as any).companyEmail,
+    companyAddress: (settings as any).companyAddress,
+    facebookUrl: (settings as any).facebookUrl,
+    instagramUrl: (settings as any).instagramUrl,
+  };
+
   return (
     <html lang="en">
       <body
         className={`${playfair.variable} ${outfit.variable} font-sans bg-cream text-charcoal antialiased min-h-screen flex flex-col relative`}
       >
         <Providers>
-          <PublicLayout>{children}</PublicLayout>
+          <PublicLayout footerConfig={footerConfig}>{children}</PublicLayout>
         </Providers>
         <SpeedInsights />
       </body>
