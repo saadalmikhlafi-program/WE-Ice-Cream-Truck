@@ -179,7 +179,7 @@ export default function PackagesClient({
                   </div>
                 </div>
                 <Image
-                  src="/images/custom-events-package.png"
+                  src={pkg.imageUrl || "/images/van_packages/custom_event.jpg"}
                   alt="Custom Large Event Setup"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
