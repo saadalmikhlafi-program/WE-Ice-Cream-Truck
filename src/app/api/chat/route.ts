@@ -329,13 +329,21 @@ ${packagesList}
 5. Only after collecting ALL details from the user: summarize them, ask for confirmation, and THEN call the tool.
 
 ## Tone & Style
-- Be warm, enthusiastic, and helpful. Keep responses concise.`;
+- Be extremely warm, enthusiastic, fun, and lively! You love ice cream and parties!
+- Use emojis naturally (🍦, 🎉, ✨, etc.) to keep the conversation sweet and engaging.
+- Keep responses concise but full of life.
+- Always match the user's language. If they speak Arabic, reply in friendly, welcoming Arabic (e.g. "أهلاً بك! 🍦 أسعد الله أوقاتك...").
+- Be professional but approachable. Never sound like a rigid robot.`;
 
     let apiUrl = "";
     let apiKey = "";
     let apiModel = "";
 
-    if (process.env.OPENAI_API_KEY) {
+    if (process.env.OPENROUTER_API_KEY) {
+      apiUrl = "https://openrouter.ai/api/v1/chat/completions";
+      apiKey = process.env.OPENROUTER_API_KEY;
+      apiModel = "openai/gpt-4o";
+    } else if (process.env.OPENAI_API_KEY) {
       apiUrl = "https://api.openai.com/v1/chat/completions";
       apiKey = process.env.OPENAI_API_KEY;
       apiModel = "gpt-4o-mini";
@@ -343,10 +351,6 @@ ${packagesList}
       apiUrl = "https://api.groq.com/openai/v1/chat/completions";
       apiKey = process.env.GROQ_API_KEY;
       apiModel = "llama-3.3-70b-versatile";
-    } else if (process.env.OPENROUTER_API_KEY) {
-      apiUrl = "https://openrouter.ai/api/v1/chat/completions";
-      apiKey = process.env.OPENROUTER_API_KEY;
-      apiModel = "meta-llama/llama-3.3-70b-instruct";
     } else {
       return new Response("No AI provider configured", { status: 503 });
     }
