@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, FormEvent } from "react";
+import { useState, useEffect, useRef, FormEvent, useMemo } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { X, Send, CheckCircle2, Loader2, Sparkles } from "lucide-react";
@@ -254,7 +254,7 @@ export default function AIChatWidget() {
 
             {/* ── Messages ── */}
             <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5 z-10 scrollbar-hide">
-              {messages.map((msg) => (
+              {useMemo(() => messages.map((msg) => (
                 <div key={msg.id} className="relative">
                   <div className={cn("flex gap-3 max-w-[92%]", msg.role === "user" ? "ml-auto flex-row-reverse" : "")}>
                     {msg.role === "assistant" && (
@@ -343,7 +343,7 @@ export default function AIChatWidget() {
                     </motion.div>
                   )}
                 </div>
-              ))}
+              )), [messages, bookingConfirming])}
 
               {/* Quick Replies */}
               {hasQuickRepliesShown && !isLoading && (
