@@ -2,22 +2,22 @@ import { prisma } from "./prisma";
 
 export const DEFAULT_SETTINGS = {
   companyName: "WE Ice Cream Truck",
-  companyAddress: "123 Main St, Boston, MA 02151",
-  companyPhone: "(555) 123-4567",
-  companyEmail: "hello@weicecreamtruck.com",
-  logoUrl: "/logo.png",
+  companyAddress: "38 Woodland Rd, Georgetown, MA 01833",
+  companyPhone: "617-999-3803",
+  companyEmail: "info@weicecreamtruck.com",
+  logoUrl: "/images/we-icecream.jpg",
   faviconUrl: "/favicon.ico",
-  businessHours: "Mon-Sun 10AM - 8PM",
-  serviceRadius: "30",
-  travelFeePerMile: "1.50",
-  taxRate: "6.25",
+  businessHours: "Available 24 hours by reservation, 7 days a week",
+  serviceRadius: "10",
+  travelFeePerMile: "2.50",
+  taxRate: "0",
   seoTitle: "WE Ice Cream Truck - Premium Events",
-  seoDescription: "Book the best ice cream truck in Massachusetts.",
+  seoDescription: "Massachusetts' most trusted premium ice cream truck catering service.",
   facebookUrl: "",
   instagramUrl: "",
   bookingAutoApprove: "false",
-  aiAssistantName: "Ice Cream Bot",
-  aiAssistantSystemPrompt: "You are a helpful assistant for an ice cream truck company."
+  aiAssistantName: "WE Ice Cream Truck AI Concierge",
+  aiAssistantSystemPrompt: "You are the highly professional AI Concierge for WE Ice Cream Truck. You help customers book packages and answer their questions."
 };
 
 /**

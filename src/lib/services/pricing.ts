@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { DEFAULT_SETTINGS } from "@/lib/settings";
 
 export interface CalculatePriceParams {
   packageSlug: string;
@@ -16,15 +17,26 @@ export const PricingService = {
       });
       if (!pkg) throw new Error("Package not found");
 
-      // 2. Fetch Company ZIP Code from settings
-      let companyZipSetting = await prisma.setting.findUnique({
+      // 2. Fetch pricing settings from DB (with fallbacks to DEFAULT_SETTINGS)
+      const settingRecords = await prisma.setting.findMany({
+        where: { key: { in: ["serviceRadius", "travelFeePerMile"] } },
+      });
+      const settingsMap = settingRecords.reduce((acc, r) => {
+        acc[r.key] = r.value;
+        return acc;
+      }, {} as Record<string, string>);
+
+      const FREE_MILES = parseFloat(settingsMap["serviceRadius"] ?? DEFAULT_SETTINGS.serviceRadius);
+      const COST_PER_MILE = parseFloat(settingsMap["travelFeePerMile"] ?? DEFAULT_SETTINGS.travelFeePerMile);
+
+      // 3. Fetch Company ZIP Code from settings
+      const companyZipSetting = await prisma.setting.findUnique({
         where: { key: "COMPANY_ZIP_CODE" },
       });
-      
-      // Default fallback if not configured yet
-      const originZip = companyZipSetting?.value || "02108"; // Boston fallback
+      // Default to Georgetown, MA ZIP
+      const originZip = companyZipSetting?.value || "01833";
 
-      // 3. Calculate Distance using Google Maps Distance Matrix API
+      // 4. Calculate Distance using Google Maps Distance Matrix API
       let distanceMiles = 0;
       if (process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
         try {
@@ -41,7 +53,7 @@ export const PricingService = {
         }
       }
 
-      // 4. Calculate Costs
+      // 5. Calculate Costs
       const basePrice = pkg.price;
       
       // Extra guests cost
@@ -50,9 +62,7 @@ export const PricingService = {
         extraGuestsCost = (params.guestCount - pkg.servings) * pkg.extraGuestPrice;
       }
 
-      // Distance cost: First 20 miles free, then $3/mile
-      const FREE_MILES = 20;
-      const COST_PER_MILE = 3;
+      // Distance cost: First FREE_MILES are free, then COST_PER_MILE per mile
       let travelFee = 0;
       if (distanceMiles > FREE_MILES) {
         travelFee = (distanceMiles - FREE_MILES) * COST_PER_MILE;
@@ -61,6 +71,7 @@ export const PricingService = {
       // Overtime cost: $100 per extra hour
       const overtimeFee = params.extraHours * 100;
 
+      // No tax applied (taxRate = 0)
       const subtotal = basePrice + extraGuestsCost + travelFee + overtimeFee;
       
       return {
@@ -72,6 +83,8 @@ export const PricingService = {
           overtimeFee,
           subtotal: Math.round(subtotal * 100) / 100,
           distanceMiles: Math.round(distanceMiles * 10) / 10,
+          freeMiles: FREE_MILES,
+          costPerMile: COST_PER_MILE,
         }
       };
 
