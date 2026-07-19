@@ -117,7 +117,7 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
             className="fixed bottom-0 left-0 right-0 md:left-auto md:right-4 md:bottom-4 md:w-[450px] h-[85vh] md:h-[600px] bg-white md:rounded-2xl rounded-t-3xl shadow-2xl z-50 flex flex-col overflow-hidden border border-gray-100"
           >
             {/* Header */}
-            <div className="px-6 py-4 bg-gradient-to-r from-coral to-coral-dark text-white flex justify-between items-center shadow-md">
+            <div className="shrink-0 px-6 py-4 bg-gradient-to-r from-coral to-coral-dark text-white flex justify-between items-center shadow-md z-10">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md">
                   <Sparkles size={20} className="text-white" />
@@ -183,7 +183,7 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
             </div>
 
             {/* Input Area */}
-            <div className="p-4 bg-white border-t border-gray-100">
+            <div className="shrink-0 p-4 bg-white border-t border-gray-100 z-10">
               <form onSubmit={handleSend} className="relative flex items-center">
                 <input
                   type="text"

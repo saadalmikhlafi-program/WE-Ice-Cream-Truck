@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     try {
       const lower = lastMessage.toLowerCase();
 
-      if (lower.includes("booking") || lower.includes("pending") || lower.includes("approved")) {
+      if (lower.includes("booking") || lower.includes("pending") || lower.includes("approved") || lower.includes("حجز") || lower.includes("مواعيد")) {
         const bookings = await prisma.booking.findMany({
           take: 10,
           orderBy: { createdAt: "desc" },
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
         )}`;
       }
 
-      if (lower.includes("customer")) {
+      if (lower.includes("customer") || lower.includes("عميل") || lower.includes("عملاء") || lower.includes("زبون") || lower.includes("زبائن")) {
         const customers = await prisma.customer.findMany({
           take: 10,
           orderBy: { createdAt: "desc" },
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
         dbContext += `\n\nLIVE CUSTOMERS DATA (latest 10):\n${JSON.stringify(customers, null, 2)}`;
       }
 
-      if (lower.includes("package")) {
+      if (lower.includes("package") || lower.includes("بكج") || lower.includes("باقات") || lower.includes("عرض")) {
         const packages = await prisma.package.findMany({
           where: { isActive: true },
           orderBy: { sortOrder: "asc" },
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
         dbContext += `\n\nLIVE PACKAGES DATA:\n${JSON.stringify(packages, null, 2)}`;
       }
 
-      if (lower.includes("setting") || lower.includes("config") || lower.includes("business hours") || lower.includes("seo")) {
+      if (lower.includes("setting") || lower.includes("config") || lower.includes("business hours") || lower.includes("seo") || lower.includes("اعدادات") || lower.includes("إعدادات") || lower.includes("نظام")) {
         const settings = await prisma.setting.findMany();
         const settingsDict = settings.reduce((acc: any, s) => { acc[s.key] = s.value; return acc; }, {});
         dbContext += `\n\nLIVE APP SETTINGS:\n${JSON.stringify(settingsDict, null, 2)}`;

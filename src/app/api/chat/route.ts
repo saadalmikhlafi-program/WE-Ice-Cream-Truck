@@ -168,10 +168,10 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
 
     // ─── AI Auto-Approval Logic ───
     // APPROVE unless totalAmount < $500 AND distance > 30 miles → then PENDING for human review
-    let bookingStatus = "APPROVED";
+    let bookingStatus = "CONFIRMED";
     let pendingReason = "";
     if (totalAmount < 500 && distanceMiles > 30) {
-      bookingStatus = "PENDING";
+      bookingStatus = "PENDING_REVIEW";
       pendingReason = `Low value booking ($${totalAmount.toFixed(2)}) with long distance (${distanceMiles.toFixed(1)} miles). Requires manual review.`;
     }
 
@@ -235,7 +235,7 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
     });
 
     // Send to Customer
-    if (bookingStatus === "APPROVED") {
+    if (bookingStatus === "CONFIRMED") {
       sendBookingApprovedEmail(
         emailToUse,
         firstName,
@@ -256,7 +256,7 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
 
     // Send to Owner
     if (fullBooking) {
-      if (bookingStatus === "PENDING") {
+      if (bookingStatus === "PENDING_REVIEW") {
         sendOwnerRequiresApprovalEmail(fullBooking).catch(e => console.error("Failed to send owner approval email:", e));
       } else {
         sendOwnerNewBookingEmail(fullBooking).catch(e => console.error("Failed to send owner notification:", e));
