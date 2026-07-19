@@ -168,6 +168,97 @@ export default function AIChatWidget() {
 
   const hasQuickRepliesShown = messages.length <= 1;
 
+  const memoizedMessages = useMemo(() => messages.map((msg) => (
+    <div key={msg.id} className="relative">
+      <div className={cn("flex gap-3 max-w-[92%]", msg.role === "user" ? "ml-auto flex-row-reverse" : "")}>
+        {msg.role === "assistant" && (
+          <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto shadow-sm border border-white/60">
+            <Image src="/images/we-icecream.jpg" alt="WE" fill className="object-cover" sizes="32px" />
+          </div>
+        )}
+        <div
+          className={cn(
+            "px-5 py-3.5 text-[0.9rem] leading-relaxed font-medium whitespace-pre-wrap shadow-sm",
+            msg.role === "user"
+              ? "bg-navy text-white rounded-[1.5rem] rounded-br-sm shadow-[0_4px_14px_0_rgba(10,17,40,0.2)]"
+              : "bg-white/80 backdrop-blur-md text-navy rounded-[1.5rem] rounded-bl-sm border border-white/60"
+          )}
+        >
+          {msg.role === "assistant" ? (
+            <div className="prose prose-sm prose-p:leading-relaxed prose-pre:p-0 prose-ul:my-1 prose-ol:my-1 max-w-none prose-li:marker:text-coral text-navy prose-strong:text-navy prose-strong:font-black">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content || "…"}</ReactMarkdown>
+            </div>
+          ) : (
+            msg.content || <span className="opacity-40">…</span>
+          )}
+        </div>
+      </div>
+
+      {/* Booking Confirmation Card */}
+      {msg.bookingRequest && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="ml-11 mt-3 bg-white/90 backdrop-blur-md rounded-[1.5rem] border border-white shadow-xl overflow-hidden"
+        >
+          <div className="bg-gradient-to-r from-coral/10 to-transparent px-5 py-3.5 border-b border-white/50">
+            <p className="text-coral text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+              <CheckCircle2 size={14} /> Booking Summary
+            </p>
+          </div>
+          <div className="p-5 space-y-3 text-sm">
+            <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Name</span>
+              <span className="text-navy font-black">{msg.bookingRequest.name}</span>
+            </div>
+            <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Date</span>
+              <span className="text-navy font-black">{msg.bookingRequest.eventDate}</span>
+            </div>
+            <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Time</span>
+              <span className="text-navy font-black">{msg.bookingRequest.startTime}</span>
+            </div>
+            <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Event</span>
+              <span className="text-navy font-black">{msg.bookingRequest.eventType}</span>
+            </div>
+            <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Guests</span>
+              <span className="text-navy font-black">{msg.bookingRequest.guests}</span>
+            </div>
+            <div className="flex justify-between items-start pt-1">
+              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider mt-0.5">Location</span>
+              <span className="text-navy font-black text-right max-w-[60%]">
+                {msg.bookingRequest.address}<br />
+                {msg.bookingRequest.city}, {msg.bookingRequest.zip}
+              </span>
+            </div>
+            <div className="pt-4 mt-2">
+              <button
+                onClick={() => msg.bookingRequest && handleConfirmBooking(msg.bookingRequest)}
+                disabled={bookingConfirming}
+                className="w-full py-3.5 rounded-xl font-black text-sm bg-coral text-white hover:bg-coral-dark shadow-[0_8px_20px_rgb(255,107,107,0.25)] hover:shadow-[0_8px_25px_rgb(255,107,107,0.4)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {bookingConfirming ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="w-5 h-5" />
+                    Confirm Booking Now
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </div>
+  )), [messages, bookingConfirming]);
+
   return (
     <>
       {/* ── Floating Chat Button ──────────────────────────────── */}
@@ -254,96 +345,7 @@ export default function AIChatWidget() {
 
             {/* ── Messages ── */}
             <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5 z-10 scrollbar-hide">
-              {useMemo(() => messages.map((msg) => (
-                <div key={msg.id} className="relative">
-                  <div className={cn("flex gap-3 max-w-[92%]", msg.role === "user" ? "ml-auto flex-row-reverse" : "")}>
-                    {msg.role === "assistant" && (
-                      <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto shadow-sm border border-white/60">
-                        <Image src="/images/we-icecream.jpg" alt="WE" fill className="object-cover" sizes="32px" />
-                      </div>
-                    )}
-                    <div
-                      className={cn(
-                        "px-5 py-3.5 text-[0.9rem] leading-relaxed font-medium whitespace-pre-wrap shadow-sm",
-                        msg.role === "user"
-                          ? "bg-navy text-white rounded-[1.5rem] rounded-br-sm shadow-[0_4px_14px_0_rgba(10,17,40,0.2)]"
-                          : "bg-white/80 backdrop-blur-md text-navy rounded-[1.5rem] rounded-bl-sm border border-white/60"
-                      )}
-                    >
-                      {msg.role === "assistant" ? (
-                        <div className="prose prose-sm prose-p:leading-relaxed prose-pre:p-0 prose-ul:my-1 prose-ol:my-1 max-w-none prose-li:marker:text-coral text-navy prose-strong:text-navy prose-strong:font-black">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content || "…"}</ReactMarkdown>
-                        </div>
-                      ) : (
-                        msg.content || <span className="opacity-40">…</span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Booking Confirmation Card */}
-                  {msg.bookingRequest && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="ml-11 mt-3 bg-white/90 backdrop-blur-md rounded-[1.5rem] border border-white shadow-xl overflow-hidden"
-                    >
-                      <div className="bg-gradient-to-r from-coral/10 to-transparent px-5 py-3.5 border-b border-white/50">
-                        <p className="text-coral text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
-                          <CheckCircle2 size={14} /> Booking Summary
-                        </p>
-                      </div>
-                      <div className="p-5 space-y-3 text-sm">
-                        <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                          <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Name</span>
-                          <span className="text-navy font-black">{msg.bookingRequest.name}</span>
-                        </div>
-                        <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                          <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Date</span>
-                          <span className="text-navy font-black">{msg.bookingRequest.eventDate}</span>
-                        </div>
-                        <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                          <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Time</span>
-                          <span className="text-navy font-black">{msg.bookingRequest.startTime}</span>
-                        </div>
-                        <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                          <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Event</span>
-                          <span className="text-navy font-black">{msg.bookingRequest.eventType}</span>
-                        </div>
-                        <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                          <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Guests</span>
-                          <span className="text-navy font-black">{msg.bookingRequest.guests}</span>
-                        </div>
-                        <div className="flex justify-between items-start pt-1">
-                          <span className="text-gray-400 font-bold text-xs uppercase tracking-wider mt-0.5">Location</span>
-                          <span className="text-navy font-black text-right max-w-[60%]">
-                            {msg.bookingRequest.address}<br />
-                            {msg.bookingRequest.city}, {msg.bookingRequest.zip}
-                          </span>
-                        </div>
-                        <div className="pt-4 mt-2">
-                          <button
-                            onClick={() => handleConfirmBooking(msg.bookingRequest!)}
-                            disabled={bookingConfirming}
-                            className="w-full py-3.5 rounded-xl font-black text-sm bg-coral text-white hover:bg-coral-dark shadow-[0_8px_20px_rgb(255,107,107,0.25)] hover:shadow-[0_8px_25px_rgb(255,107,107,0.4)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                          >
-                            {bookingConfirming ? (
-                              <>
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                                Processing...
-                              </>
-                            ) : (
-                              <>
-                                <CheckCircle2 className="w-5 h-5" />
-                                Confirm Booking Now
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-              )), [messages, bookingConfirming])}
+              {memoizedMessages}
 
               {/* Quick Replies */}
               {hasQuickRepliesShown && !isLoading && (
