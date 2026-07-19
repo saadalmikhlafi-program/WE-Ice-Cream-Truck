@@ -4,92 +4,187 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/rbac";
 
-const SYSTEM_PROMPT = `You are the WE Ice Cream Truck Admin AI — a powerful, precise assistant for business operations.
-You have access to live business data. Answer concisely and accurately.
+// ─── Arabic & English keyword maps ──────────────────────────────────────────
+const BOOKING_KEYS = ["booking", "reservation", "حجز", "حجوزات", "مواعيد", "موعد", "today", "اليوم", "هذا الأسبوع", "هذا الشهر", "pending", "confirmed", "completed", "approved", "week", "month", "انتظار", "تأكيد"];
+const CUSTOMER_KEYS = ["customer", "client", "عميل", "عملاء", "زبون", "زبائن", "users", "مستخدم"];
+const PACKAGE_KEYS = ["package", "plan", "pricing", "بكج", "باقة", "باقات", "عرض", "تسعير", "أسعار"];
+const SETTINGS_KEYS = ["setting", "config", "business hours", "seo", "إعدادات", "اعدادات", "نظام", "ساعات", "هاتف", "ايميل", "عنوان"];
+const INQUIRY_KEYS = ["inquiry", "inquiries", "lead", "استفسار", "استفسارات", "طلب", "طلبات"];
+const REVENUE_KEYS = ["revenue", "income", "sales", "earnings", "total", "إيرادات", "دخل", "مبيعات", "ارباح"];
+const STATS_KEYS = ["stats", "summary", "overview", "report", "dashboard", "إحصائيات", "ملخص", "تقرير", "نظرة عامة"];
 
-SECURITY RULES:
-1. You are only assisting authenticated staff/admins.
-2. Provide exact data. Do not guess or hallucinate.
-3. Format numbers clearly (e.g. $1,000.00).`;
+function matches(text: string, keys: string[]) {
+  return keys.some(k => text.includes(k));
+}
+
+// ─── System Prompt ────────────────────────────────────────────────────────────
+const BASE_SYSTEM_PROMPT = `You are the WE Ice Cream Truck Admin AI — a precise, professional business operations assistant.
+
+CRITICAL RULES:
+1. You ONLY answer based on the LIVE DATA injected below. NEVER invent, hallucinate, or guess data.
+2. If a piece of information is not in the injected data, say: "I don't have that data right now. Try rephrasing or check the admin dashboard directly."
+3. Format all currency as $X,XXX.XX.
+4. You can respond in both Arabic and English — match the user's language.
+5. Be concise and direct. Don't add unnecessary disclaimers.
+6. Today's date and time is: {{TODAY}}.`;
 
 export async function POST(req: NextRequest) {
   try {
     const auth = await requirePermission(req, "dashboard.view");
     if (!auth.success) {
-      return Response.json({ reply: "Unauthorized access: You lack the required permissions to use AI." }, { status: 403 });
+      return Response.json({ reply: "Unauthorized access." }, { status: 403 });
     }
-    const session = await getServerSession(authOptions);
+    await getServerSession(authOptions);
 
     const { messages, conversationId } = await req.json();
-    const lastMessage = messages?.[messages.length - 1]?.content ?? "";
 
-    if (!process.env.OPENAI_API_KEY && !process.env.GROQ_API_KEY && !process.env.OPENROUTER_API_KEY) {
-      return Response.json({
-        reply: "AI service is not configured. Please add OPENAI_API_KEY or GROQ_API_KEY to your environment variables.",
-      });
+    if (!process.env.OPENROUTER_API_KEY && !process.env.GROQ_API_KEY) {
+      return Response.json({ reply: "AI service is not configured." });
     }
 
-    // Fetch relevant DB data based on the query to inject as context
-    let dbContext = "";
-    try {
-      const lower = lastMessage.toLowerCase();
+    // ─── Build full conversation context for keyword detection ──────────────
+    const fullContext = messages.map((m: any) => m.content).join(" ").toLowerCase();
 
-      if (lower.includes("booking") || lower.includes("pending") || lower.includes("approved") || lower.includes("حجز") || lower.includes("مواعيد")) {
-        const bookings = await prisma.booking.findMany({
+    // ─── Fetch relevant DB data based on conversation ───────────────────────
+    const now = new Date();
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    let dbContext = "";
+
+    try {
+      // ── Bookings ───────────────────────────────────────────────────────────
+      if (matches(fullContext, BOOKING_KEYS) || matches(fullContext, REVENUE_KEYS) || matches(fullContext, STATS_KEYS)) {
+        // Today's bookings
+        const todayBookings = await prisma.booking.findMany({
+          where: { eventDate: { gte: todayStart, lt: todayEnd } },
+          include: {
+            customer: { select: { firstName: true, lastName: true, email: true, phone: true } },
+            package: { select: { name: true, price: true } },
+          },
+          orderBy: { eventDate: "asc" },
+        });
+
+        // This week's bookings count
+        const weekCount = await prisma.booking.count({ where: { eventDate: { gte: weekStart } } });
+
+        // This month's bookings + revenue
+        const monthBookings = await prisma.booking.findMany({
+          where: { createdAt: { gte: monthStart } },
+          select: { totalAmount: true, status: true },
+        });
+        const monthRevenue = monthBookings.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
+        const monthTotal = monthBookings.length;
+
+        // Latest 10 bookings (all time)
+        const latestBookings = await prisma.booking.findMany({
           take: 10,
           orderBy: { createdAt: "desc" },
           include: {
             customer: { select: { firstName: true, lastName: true, email: true } },
             package: { select: { name: true } },
-            quote: { select: { totalAmount: true } },
           },
         });
-        dbContext = `\n\nLIVE BOOKINGS DATA (latest 10):\n${JSON.stringify(
-          bookings.map((b) => ({
-            id: b.id.slice(0, 8),
-            customer: b.customer ? `${b.customer.firstName} ${b.customer.lastName}` : null,
-            email: b.customer?.email,
-            package: b.package?.name,
-            status: b.status,
-            eventDate: b.eventDate,
-            guests: b.guests,
-            totalAmount: b.quote?.totalAmount,
-            createdAt: b.createdAt,
-          })),
-          null,
-          2
-        )}`;
+
+        dbContext += `\n\n━━━ LIVE BOOKINGS DATA ━━━
+TODAY (${todayStart.toDateString()}): ${todayBookings.length} booking(s)
+${todayBookings.length > 0
+  ? JSON.stringify(todayBookings.map(b => ({
+      bookingNumber: b.bookingNumber,
+      customer: b.customer ? `${b.customer.firstName} ${b.customer.lastName}` : "N/A",
+      email: b.customer?.email,
+      phone: b.customer?.phone,
+      package: b.package?.name || "Custom",
+      status: b.status,
+      eventDate: b.eventDate,
+      startTime: b.startTime,
+      guests: b.guests,
+      address: `${b.address}, ${b.city}, ${b.zip}`,
+      totalAmount: b.totalAmount,
+    })), null, 2)
+  : "No bookings today."}
+
+THIS WEEK: ${weekCount} bookings total
+THIS MONTH: ${monthTotal} bookings | Revenue: $${monthRevenue.toFixed(2)}
+
+LATEST 10 BOOKINGS (all time):
+${JSON.stringify(latestBookings.map(b => ({
+  bookingNumber: b.bookingNumber,
+  customer: b.customer ? `${b.customer.firstName} ${b.customer.lastName}` : "N/A",
+  status: b.status,
+  eventDate: b.eventDate,
+  guests: b.guests,
+  totalAmount: b.totalAmount,
+  createdAt: b.createdAt,
+})), null, 2)}`;
       }
 
-      if (lower.includes("customer") || lower.includes("عميل") || lower.includes("عملاء") || lower.includes("زبون") || lower.includes("زبائن")) {
-        const customers = await prisma.customer.findMany({
+      // ── Customers ──────────────────────────────────────────────────────────
+      if (matches(fullContext, CUSTOMER_KEYS)) {
+        const totalCustomers = await prisma.customer.count();
+        const latestCustomers = await prisma.customer.findMany({
           take: 10,
           orderBy: { createdAt: "desc" },
-          select: { id: true, firstName: true, lastName: true, email: true, phone: true, createdAt: true },
+          select: { id: true, firstName: true, lastName: true, email: true, phone: true, city: true, createdAt: true },
         });
-        dbContext += `\n\nLIVE CUSTOMERS DATA (latest 10):\n${JSON.stringify(customers, null, 2)}`;
+        dbContext += `\n\n━━━ LIVE CUSTOMERS DATA ━━━
+TOTAL CUSTOMERS: ${totalCustomers}
+LATEST 10:
+${JSON.stringify(latestCustomers, null, 2)}`;
       }
 
-      if (lower.includes("package") || lower.includes("بكج") || lower.includes("باقات") || lower.includes("عرض")) {
+      // ── Packages ───────────────────────────────────────────────────────────
+      if (matches(fullContext, PACKAGE_KEYS)) {
         const packages = await prisma.package.findMany({
-          where: { isActive: true },
           orderBy: { sortOrder: "asc" },
-          select: { name: true, price: true, servings: true, durationMins: true, isActive: true },
+          select: { name: true, slug: true, serviceType: true, price: true, servings: true, durationMins: true, isActive: true, badge: true },
         });
-        dbContext += `\n\nLIVE PACKAGES DATA:\n${JSON.stringify(packages, null, 2)}`;
+        dbContext += `\n\n━━━ LIVE PACKAGES DATA ━━━\n${JSON.stringify(packages, null, 2)}`;
       }
 
-      if (lower.includes("setting") || lower.includes("config") || lower.includes("business hours") || lower.includes("seo") || lower.includes("اعدادات") || lower.includes("إعدادات") || lower.includes("نظام")) {
+      // ── Settings ───────────────────────────────────────────────────────────
+      if (matches(fullContext, SETTINGS_KEYS)) {
         const settings = await prisma.setting.findMany();
-        const settingsDict = settings.reduce((acc: any, s) => { acc[s.key] = s.value; return acc; }, {});
-        dbContext += `\n\nLIVE APP SETTINGS:\n${JSON.stringify(settingsDict, null, 2)}`;
+        const dict = settings.reduce((acc: any, s) => { acc[s.key] = s.value; return acc; }, {});
+        dbContext += `\n\n━━━ LIVE SETTINGS DATA ━━━\n${JSON.stringify(dict, null, 2)}`;
       }
+
+      // ── Inquiries ──────────────────────────────────────────────────────────
+      if (matches(fullContext, INQUIRY_KEYS)) {
+        const inquiries = await prisma.inquiry.findMany({
+          take: 10,
+          orderBy: { createdAt: "desc" },
+          select: { id: true, name: true, email: true, eventType: true, status: true, createdAt: true, source: true },
+        });
+        dbContext += `\n\n━━━ LIVE INQUIRIES DATA (latest 10) ━━━\n${JSON.stringify(inquiries, null, 2)}`;
+      }
+
+      // ── Dashboard Overview ────────────────────────────────────────────────
+      if (matches(fullContext, STATS_KEYS)) {
+        const [totalBookings, totalCustomers, pendingCount, confirmedCount] = await Promise.all([
+          prisma.booking.count(),
+          prisma.customer.count(),
+          prisma.booking.count({ where: { status: "PENDING" } }),
+          prisma.booking.count({ where: { status: "CONFIRMED" } }),
+        ]);
+        const allBookings = await prisma.booking.findMany({ select: { totalAmount: true } });
+        const totalRevenue = allBookings.reduce((s, b) => s + (b.totalAmount || 0), 0);
+        dbContext += `\n\n━━━ DASHBOARD OVERVIEW ━━━
+Total Bookings (all time): ${totalBookings}
+Total Customers: ${totalCustomers}
+Pending Bookings: ${pendingCount}
+Confirmed Bookings: ${confirmedCount}
+Total Revenue (all time): $${totalRevenue.toFixed(2)}`;
+      }
+
     } catch (dbErr) {
       console.warn("DB context fetch error:", dbErr);
-      dbContext = "\n\n[Note: Could not fetch live DB data at this time]";
+      dbContext = "\n\n[Note: Could not fetch live DB data at this time. Please check the database connection.]";
     }
 
-    const systemWithContext = SYSTEM_PROMPT + dbContext;
+    const systemPrompt = BASE_SYSTEM_PROMPT.replace("{{TODAY}}", now.toLocaleString("en-US", { timeZone: "America/New_York" })) + dbContext;
 
     let apiUrl = "";
     let apiKey = "";
@@ -116,10 +211,11 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model: apiModel,
         messages: [
-          { role: "system", content: systemWithContext },
+          { role: "system", content: systemPrompt },
           ...messages,
         ],
-        temperature: 0.2,
+        temperature: 0.1, // Very low — precision over creativity
+        max_tokens: 1024,
       }),
     });
 
