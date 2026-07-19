@@ -375,8 +375,8 @@ ${packagesList}
 
     if (!aiRes.ok) {
       const errText = await aiRes.text();
-      console.error("GROQ CUSTOMER AI ERROR:", errText, "Status:", aiRes.status);
-      return Response.json({ text: "Sorry, I am having trouble responding right now." });
+      console.error("AI API ERROR:", errText, "Status:", aiRes.status);
+      return Response.json({ text: `Sorry, I am having trouble responding right now. Error ${aiRes.status}: ${errText.substring(0, 200)}` });
     }
 
     const data = await aiRes.json();
