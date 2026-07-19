@@ -367,6 +367,7 @@ ${packagesList}
       model: apiModel,
       messages: chatMessages,
       temperature: 0.5,
+      max_tokens: 1000,
       tools: [BOOKING_TOOL, DISTANCE_TOOL],
       tool_choice: "auto",
     };

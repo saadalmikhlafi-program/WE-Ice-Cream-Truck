@@ -219,7 +219,7 @@ Total Revenue (all time): $${totalRevenue.toFixed(2)}`;
           ...messages,
         ],
         temperature: 0.1, // Very low — precision over creativity
-        max_tokens: 1024,
+        max_tokens: 1000,
       }),
     });
 
