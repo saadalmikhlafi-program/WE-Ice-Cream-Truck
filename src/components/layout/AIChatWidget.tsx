@@ -202,18 +202,27 @@ export default function AIChatWidget() {
       {/* ── Chat Window (Premium Glassmorphism) ────────────────── */}
       <AnimatePresence>
         {isOpen && (
+          <>
+            {/* Mobile backdrop overlay - tap to close */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/40 z-40 sm:hidden"
+              onClick={() => setIsOpen(false)}
+            />
           <motion.div
             initial={{ opacity: 0, y: 30, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 350, damping: 30 }}
             className={cn(
-              "fixed z-50 flex flex-col overflow-hidden",
+              "fixed z-50 flex flex-col",
               "inset-0 sm:inset-auto",
               "sm:bottom-8 sm:right-6 md:right-10",
               "sm:w-[400px] md:w-[440px] sm:h-[650px] md:h-[700px] sm:max-h-[85vh]",
               "sm:rounded-[2.5rem] sm:shadow-[0_30px_80px_-15px_rgba(0,0,0,0.3)] sm:border sm:border-white/50",
-              "bg-white/60 backdrop-blur-3xl"
+              "bg-white/60 backdrop-blur-3xl overflow-hidden"
             )}
           >
             {/* Glowing orbs behind the chat for a premium feel */}
@@ -221,7 +230,7 @@ export default function AIChatWidget() {
             <div className="absolute bottom-[-10%] right-[-10%] w-64 h-64 bg-blue-400/10 rounded-full blur-[80px] pointer-events-none" />
 
             {/* ── Header ── */}
-            <div className="relative px-5 sm:px-6 py-5 flex items-center gap-4 shrink-0 bg-white/40 backdrop-blur-md border-b border-white/40 z-10">
+            <div className="relative px-5 sm:px-6 py-5 flex items-center gap-4 shrink-0 bg-white/40 backdrop-blur-md border-b border-white/40 z-20 sticky top-0">
               <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-lg border-2 border-white/80">
                 <Image src="/images/we-icecream.jpg" alt="WE Assistant" fill className="object-cover" sizes="48px" />
               </div>
@@ -405,6 +414,7 @@ export default function AIChatWidget() {
               </p>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>
