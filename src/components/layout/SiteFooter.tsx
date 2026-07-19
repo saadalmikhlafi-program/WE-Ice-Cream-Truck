@@ -38,18 +38,18 @@ export default function SiteFooter() {
           {/* Quick Links */}
           <div>
             <h3 className="font-display text-lg font-black mb-6 text-white uppercase tracking-wider">Quick Links</h3>
-            <ul className="space-y-3 text-sm font-medium text-cream/70">
+            <ul className="space-y-3 text-sm font-medium text-cream/70 capitalize">
               <li>
-                <Link href="/packages" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Packages & Pricing</Link>
+                <Link href="/packages" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Packages</Link>
               </li>
               <li>
                 <Link href="/blog" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Blog</Link>
               </li>
               <li>
-                <Link href="/cities" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Areas We Serve</Link>
+                <Link href="/menu" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Menu</Link>
               </li>
               <li>
-                <Link href="/cities" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Cities We Serve</Link>
+                <Link href="/cities" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Cities</Link>
               </li>
               <li>
                 <Link href="/contact" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Contact Us</Link>
