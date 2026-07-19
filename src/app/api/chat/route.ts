@@ -280,6 +280,15 @@ export async function POST(req: NextRequest) {
       userState = `User Status: LOGGED IN. User Name: ${session.user.name}, Email: ${session.user.email}, Role: ${(session.user as any).role}.`;
     }
 
+    const activePackages = await prisma.package.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: "asc" },
+    });
+
+    const packagesList = activePackages.map((pkg, index) => 
+      `${index + 1}. **${pkg.name}** (ID: ${pkg.slug || pkg.id}) — $${pkg.price}. Up to ${pkg.servings} guests, ${pkg.durationMins} min service. ${pkg.description || ""}`
+    ).join("\n");
+
     const SYSTEM_PROMPT = `You are the WE Ice Cream Truck AI Concierge — a helpful, warm, and professional assistant for ${BUSINESS_CONFIG.name}.
 
 Your role is to help customers learn about our services, packages, and pricing, and to guide them toward booking an ice cream truck.
@@ -293,19 +302,7 @@ ${userState}
 - Contact: ${BUSINESS_CONFIG.contact.phone1}
 
 ## Our Packages (use these exact IDs when booking)
-1. **Classic Scoop Truck** (ID: classic-scoop-truck) — $190. Up to 50 guests, 60 min service.
-2. **Deluxe Scoop Truck** (ID: deluxe-scoop-truck) — $250. Up to 75 guests, 75 min service.
-3. **Premium Scoop Truck** (ID: premium-scoop-truck) — $350. Up to 100 guests, 90 min service.
-4. **Classic Van** (ID: classic-van) — $225. Up to 50 guests, 60 min service.
-5. **Deluxe Van** (ID: deluxe-van) — $300. Up to 75 guests, 75 min service.
-6. **Premium Van** (ID: premium-van) — $400. Up to 100 guests, 90 min service.
-7. **Classic Combo** (ID: classic-combo) — $375. Up to 100 guests, 60 min, Truck + Van.
-8. **Deluxe Combo** (ID: deluxe-combo) — $500. Up to 150 guests, 75 min, Truck + Van.
-9. **Premium Combo** (ID: premium-combo) — $700. Up to 200 guests, 90 min, Truck + Van.
-10. **Festival Truck** (ID: festival-truck) — $500. Up to 150 guests, 120 min.
-11. **Festival Van** (ID: festival-van) — $550. Up to 150 guests, 120 min.
-12. **Festival Combo** (ID: festival-combo) — $900. Up to 300 guests, 120 min, Truck + Van.
-13. **Custom Event Package** (ID: custom-event-package) — Custom pricing for 200+ guests.
+${packagesList}
 
 ## Complex Pricing Rules
 - **Base Price**: From the package selected above.
