@@ -268,7 +268,7 @@ export default function AIChatWidget() {
         animate={
           isVisible && !isOpen
             ? { scale: 1, opacity: 1 }
-            : { scale: 0, opacity: 0, pointerEvents: "none" as const }
+            : { scale: 0, opacity: 0, pointerEvents: "none" }
         }
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -309,10 +309,11 @@ export default function AIChatWidget() {
             transition={{ type: "spring", stiffness: 350, damping: 30 }}
             className={cn(
               "fixed z-50 flex flex-col",
-              "inset-0 sm:inset-auto",
+              "bottom-0 right-0 w-full h-[100dvh]",
+              "sm:top-auto sm:left-auto",
               "sm:bottom-8 sm:right-6 md:right-10",
               "sm:w-[400px] md:w-[440px] sm:h-[650px] md:h-[700px] sm:max-h-[85vh]",
-              "sm:rounded-[2.5rem] sm:shadow-[0_30px_80px_-15px_rgba(0,0,0,0.3)] sm:border sm:border-white/50",
+              "rounded-none sm:rounded-[2.5rem] sm:shadow-[0_30px_80px_-15px_rgba(0,0,0,0.3)] sm:border sm:border-white/50",
               "bg-white/60 backdrop-blur-3xl overflow-hidden"
             )}
           >
@@ -395,7 +396,7 @@ export default function AIChatWidget() {
                   }}
                   placeholder="Ask me anything..."
                   disabled={isLoading}
-                  className="flex-1 px-5 py-3.5 bg-white/80 backdrop-blur-md rounded-2xl text-sm text-navy font-bold placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-coral/20 focus:bg-white border border-white shadow-sm transition-all disabled:opacity-50 resize-none"
+                  className="flex-1 px-5 py-3.5 bg-white/80 backdrop-blur-md rounded-2xl text-base sm:text-sm text-navy font-bold placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-coral/20 focus:bg-white border border-white shadow-sm transition-all disabled:opacity-50 resize-none"
                 />
                 <button
                   type="submit"

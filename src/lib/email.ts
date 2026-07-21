@@ -4,8 +4,12 @@ import { BUSINESS_CONFIG } from "./config";
 
 const BRAND_NAVY  = "#0A1128";
 const BRAND_CORAL = "#FF6B6B";
-const LOGO_URL    = "https://ice-cream-truck-jet.vercel.app/images/we-icecream.jpg";
+const LOGO_URL    = "https://www.weicecreamtruck.com/images/we-icecream.jpg"; // Updated for production robustness, assuming the logo will be hosted securely or we could use the domain config
 const SITE_URL    = BUSINESS_CONFIG.domain;
+
+const SENDER_EMAIL = process.env.SMTP_USER || process.env.SENDER_EMAIL || 'saadalmikhlafi53@gmail.com';
+const ADMIN_EMAIL  = process.env.ADMIN_EMAIL || 'saadalmikhlafi53@gmail.com';
+const REPLY_TO     = process.env.REPLY_TO_EMAIL || SENDER_EMAIL;
 
 const smtpPort = parseInt(process.env.SMTP_PORT || '465');
 const transporter = nodemailer.createTransport({
@@ -96,7 +100,8 @@ export async function sendEmail({ to, subject, html, title }: { to: string; subj
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
       await transporter.sendMail({
-        from: '"WE Ice Cream Truck" <' + (process.env.SMTP_USER || 'saadalmikhlafi53@gmail.com') + '>',
+        from: `"WE Ice Cream Truck" <${SENDER_EMAIL}>`,
+        replyTo: REPLY_TO,
         to: to,
         subject: subject,
         html: baseTemplate(html, title || subject),
@@ -551,7 +556,7 @@ function formatEventDate(dateObj: Date | string | null | undefined) {
 }
 
 export async function sendOwnerNewBookingEmail(booking: any) {
-  const to = BUSINESS_CONFIG.contact.email;
+  const to = ADMIN_EMAIL;
   const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const dateStr = formatEventDate(booking.eventDate);
   const subject = `New Booking Received – ${booking.customer?.firstName} ${booking.customer?.lastName} – ${dateStr}`;
@@ -578,7 +583,7 @@ export async function sendOwnerNewBookingEmail(booking: any) {
 }
 
 export async function sendOwnerRequiresApprovalEmail(booking: any) {
-  const to = BUSINESS_CONFIG.contact.email;
+  const to = ADMIN_EMAIL;
   const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const html = `
     <h2 style="color:${BRAND_NAVY};margin-top:0;">Booking Awaiting Approval</h2>
@@ -595,7 +600,7 @@ export async function sendOwnerRequiresApprovalEmail(booking: any) {
 }
 
 export async function sendOwnerLateBookingAlert(booking: any) {
-  const to = BUSINESS_CONFIG.contact.email;
+  const to = ADMIN_EMAIL;
   const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const html = `
     <h2 style="color:\${BRAND_CORAL};margin-top:0;">⚠️ URGENT – Last Minute Booking</h2>
@@ -613,7 +618,7 @@ export async function sendOwnerLateBookingAlert(booking: any) {
 }
 
 export async function sendOwnerEventReminderEmail(booking: any) {
-  const to = BUSINESS_CONFIG.contact.email;
+  const to = ADMIN_EMAIL;
   const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const html = `
     <h2 style="color:${BRAND_NAVY};margin-top:0;">Upcoming Event Tomorrow</h2>

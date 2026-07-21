@@ -57,8 +57,15 @@ export default function MultiStepQuoteForm() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   
+  // Custom Event Fields
+  const [customGuests, setCustomGuests] = useState(201);
+  const [customTrucks, setCustomTrucks] = useState(1);
+  const [customDuration, setCustomDuration] = useState("2 Hours");
+
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
+
+  const isCustom = selectedPackage?.isCustom || false;
 
   // Derived calculations
   const isWeekend = useMemo(() => {
@@ -355,22 +362,77 @@ export default function MultiStepQuoteForm() {
               </div>
 
               <div className="space-y-8">
-                <div className="p-6 border border-gray-200 rounded-3xl bg-gray-50/50">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center text-coral">
-                      <Users className="w-5 h-5" />
+                {isCustom ? (
+                  <div className="p-6 border border-gray-200 rounded-3xl bg-gray-50/50 space-y-6">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center text-coral">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-navy">Total Expected Guests</h3>
+                        <p className="text-xs text-gray-500 font-medium">Minimum of 201 guests for custom events.</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-bold text-navy">Additional Guests</h3>
-                      <p className="text-xs text-gray-500 font-medium">Package includes {selectedPackage.servings}. Add more for ${selectedPackage.extraGuestPrice}/each.</p>
+                    <input 
+                      type="number" 
+                      min={201} 
+                      value={customGuests} 
+                      onChange={e => setCustomGuests(Math.max(201, parseInt(e.target.value) || 201))}
+                      className="w-full px-4 py-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 outline-none transition-all font-bold text-navy"
+                    />
+
+                    <div className="flex items-center gap-3 mb-2 mt-4">
+                      <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center text-navy">
+                        <Map className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-navy">Number of Vehicles</h3>
+                        <p className="text-xs text-gray-500 font-medium">How many trucks or vans do you need?</p>
+                      </div>
+                    </div>
+                    <input 
+                      type="number" 
+                      min={1} 
+                      value={customTrucks} 
+                      onChange={e => setCustomTrucks(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-full px-4 py-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 outline-none transition-all font-bold text-navy"
+                    />
+
+                    <div className="flex items-center gap-3 mb-2 mt-4">
+                      <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center text-coral">
+                        <Clock className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-navy">Event Duration</h3>
+                        <p className="text-xs text-gray-500 font-medium">Approximate time required.</p>
+                      </div>
+                    </div>
+                    <input 
+                      type="text" 
+                      value={customDuration} 
+                      onChange={e => setCustomDuration(e.target.value)}
+                      placeholder="e.g., 2 Hours"
+                      className="w-full px-4 py-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 outline-none transition-all font-bold text-navy"
+                    />
+                  </div>
+                ) : (
+                  <div className="p-6 border border-gray-200 rounded-3xl bg-gray-50/50">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center text-coral">
+                        <Users className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-navy">Additional Guests</h3>
+                        <p className="text-xs text-gray-500 font-medium">Package includes {selectedPackage.servings}. Add more for ${selectedPackage.extraGuestPrice}/each.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <button onClick={() => setExtraGuests(Math.max(0, extraGuests - 5))} className="w-12 h-12 rounded-xl border border-gray-200 bg-white font-black text-xl hover:bg-gray-50">-</button>
+                      <div className="text-2xl font-black text-navy w-16 text-center">{extraGuests}</div>
+                      <button onClick={() => setExtraGuests(extraGuests + 5)} className="w-12 h-12 rounded-xl border border-gray-200 bg-white font-black text-xl hover:bg-gray-50">+</button>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <button onClick={() => setExtraGuests(Math.max(0, extraGuests - 5))} className="w-12 h-12 rounded-xl border border-gray-200 bg-white font-black text-xl hover:bg-gray-50">-</button>
-                    <div className="text-2xl font-black text-navy w-16 text-center">{extraGuests}</div>
-                    <button onClick={() => setExtraGuests(extraGuests + 5)} className="w-12 h-12 rounded-xl border border-gray-200 bg-white font-black text-xl hover:bg-gray-50">+</button>
-                  </div>
-                </div>
+                )}
 
                 <div className="space-y-4">
                   <h3 className="font-bold text-navy flex items-center gap-2"><MapPin className="w-4 h-4 text-coral"/> Multiple Locations?</h3>
@@ -491,10 +553,17 @@ export default function MultiStepQuoteForm() {
                         className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 outline-none transition-all font-medium" />
                     </div>
                   </div>
-                  <button onClick={sendOtp} disabled={!name || !email || loading} 
-                    className="w-full py-4 bg-navy text-white rounded-2xl font-black disabled:opacity-50 hover:bg-navy-light transition-colors flex items-center justify-center">
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Verification Code"}
-                  </button>
+                  {isCustom ? (
+                    <button onClick={nextStep} disabled={!name || !email} 
+                      className="w-full py-4 bg-navy text-white rounded-2xl font-black disabled:opacity-50 hover:bg-navy-light transition-colors flex items-center justify-center">
+                      Continue to Review
+                    </button>
+                  ) : (
+                    <button onClick={sendOtp} disabled={!name || !email || loading} 
+                      className="w-full py-4 bg-navy text-white rounded-2xl font-black disabled:opacity-50 hover:bg-navy-light transition-colors flex items-center justify-center">
+                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Verification Code"}
+                    </button>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-6 animate-in fade-in zoom-in duration-300">
@@ -523,59 +592,124 @@ export default function MultiStepQuoteForm() {
                 <p className="text-gray-500 font-medium">Almost there! Review your quote details.</p>
               </div>
 
-              <div className="bg-gray-50 rounded-3xl p-6 md:p-8 border border-gray-100">
-                <div className="flex items-center gap-4 pb-6 border-b border-gray-200">
-                  <div className="w-16 h-16 rounded-2xl bg-coral flex items-center justify-center text-white flex-shrink-0">
-                    <CheckCircle2 size={32} />
+              {isCustom ? (
+                <div className="bg-gray-50 rounded-3xl p-6 md:p-8 border border-gray-100">
+                  <div className="flex items-center gap-4 pb-6 border-b border-gray-200">
+                    <div className="w-16 h-16 rounded-2xl bg-coral flex items-center justify-center text-white flex-shrink-0">
+                      <CheckCircle2 size={32} />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-xl text-navy">Custom Event Package</h3>
+                      <p className="text-gray-500 text-sm font-medium">{date} at {time} • {address}, {city}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-black text-xl text-navy">{selectedPackage.name}</h3>
-                    <p className="text-gray-500 text-sm font-medium">{date} at {time} • {address}, {city}</p>
-                  </div>
-                </div>
 
-                <div className="py-6 space-y-4 border-b border-gray-200">
-                  <div className="flex justify-between items-center font-medium">
-                    <span className="text-gray-600">Base Package</span>
-                    <span className="text-navy font-bold">${basePrice.toFixed(2)}</span>
+                  <div className="py-6 space-y-4 border-b border-gray-200">
+                    <div className="flex justify-between items-center font-medium">
+                      <span className="text-gray-600">Event Type</span>
+                      <span className="text-navy font-bold">{eventType}</span>
+                    </div>
+                    <div className="flex justify-between items-center font-medium">
+                      <span className="text-gray-600">Expected Guests</span>
+                      <span className="text-navy font-bold">{customGuests}</span>
+                    </div>
+                    <div className="flex justify-between items-center font-medium">
+                      <span className="text-gray-600">Vehicles Requested</span>
+                      <span className="text-navy font-bold">{customTrucks}</span>
+                    </div>
+                    <div className="flex justify-between items-center font-medium">
+                      <span className="text-gray-600">Duration</span>
+                      <span className="text-navy font-bold">{customDuration}</span>
+                    </div>
+                    <div className="flex justify-between items-center font-medium">
+                      <span className="text-gray-600">Travel Distance</span>
+                      <span className="text-navy font-bold">{distance} miles</span>
+                    </div>
+                    {distanceFee > 0 && (
+                      <div className="flex justify-between items-center font-medium">
+                        <span className="text-gray-600">Base Travel Fee</span>
+                        <span className="text-navy font-bold">${distanceFee.toFixed(2)}</span>
+                      </div>
+                    )}
+                    {routingMode !== "SINGLE" && (
+                      <div className="flex justify-between items-center font-medium">
+                        <span className="text-gray-600">Multi-Location Mode</span>
+                        <span className="text-navy font-bold">{routingMode}</span>
+                      </div>
+                    )}
                   </div>
-                  {weekendFee > 0 && (
-                    <div className="flex justify-between items-center font-medium">
-                      <span className="text-gray-600">Weekend Surcharge</span>
-                      <span className="text-navy font-bold">${weekendFee.toFixed(2)}</span>
+                  
+                  <div className="pt-6">
+                    <p className="text-sm text-gray-500 font-medium mb-6 text-center">To finalize your custom event, please contact our concierge team directly. They have all your details ready!</p>
+                    <div className="flex flex-col gap-4">
+                      <a href={`https://wa.me/16179993803?text=${encodeURIComponent(`Hi WE Ice Cream Truck! I'd like to book a Custom Event.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nEvent: ${eventType}\nGuests: ${customGuests}\nVehicles: ${customTrucks}\nDuration: ${customDuration}\nLocation: ${address}, ${city} ${zip}\nDistance: ${distance} miles (Base travel fee: $${distanceFee.toFixed(2)})\nRouting: ${routingMode}\n\nPlease let me know the custom quote!`)}`} 
+                        target="_blank" rel="noreferrer"
+                        className="w-full py-4 rounded-xl font-black bg-[#25D366] text-white hover:bg-[#128C7E] hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-2">
+                        WhatsApp 617-999-3803
+                      </a>
+                      <a href={`https://wa.me/16178662727?text=${encodeURIComponent(`Hi WE Ice Cream Truck! I'd like to book a Custom Event.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nEvent: ${eventType}\nGuests: ${customGuests}\nVehicles: ${customTrucks}\nDuration: ${customDuration}\nLocation: ${address}, ${city} ${zip}\nDistance: ${distance} miles (Base travel fee: $${distanceFee.toFixed(2)})\nRouting: ${routingMode}\n\nPlease let me know the custom quote!`)}`} 
+                        target="_blank" rel="noreferrer"
+                        className="w-full py-4 rounded-xl font-black bg-[#25D366] text-white hover:bg-[#128C7E] hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-2">
+                        WhatsApp 617-866-2727
+                      </a>
                     </div>
-                  )}
-                  {distanceFee > 0 && (
-                    <div className="flex justify-between items-center font-medium">
-                      <span className="text-gray-600">Travel Fee ({distance} miles)</span>
-                      <span className="text-navy font-bold">${distanceFee.toFixed(2)}</span>
-                    </div>
-                  )}
-                  {extraGuestFee > 0 && (
-                    <div className="flex justify-between items-center font-medium">
-                      <span className="text-gray-600">Extra Guests ({extraGuests})</span>
-                      <span className="text-navy font-bold">${extraGuestFee.toFixed(2)}</span>
-                    </div>
-                  )}
-                  {routingMode !== "SINGLE" && distanceFee2 > 0 && (
-                    <div className="flex justify-between items-center font-medium">
-                      <span className="text-gray-600">Second Stop Travel Fee</span>
-                      <span className="text-navy font-bold">${distanceFee2.toFixed(2)}</span>
-                    </div>
-                  )}
-                  {routingFee > 0 && (
-                    <div className="flex justify-between items-center font-medium">
-                      <span className="text-gray-600">Multi-Location ({routingMode})</span>
-                      <span className="text-navy font-bold">${routingFee.toFixed(2)}</span>
-                    </div>
-                  )}
+                  </div>
                 </div>
+              ) : (
+                <div className="bg-gray-50 rounded-3xl p-6 md:p-8 border border-gray-100">
+                  <div className="flex items-center gap-4 pb-6 border-b border-gray-200">
+                    <div className="w-16 h-16 rounded-2xl bg-coral flex items-center justify-center text-white flex-shrink-0">
+                      <CheckCircle2 size={32} />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-xl text-navy">{selectedPackage.name}</h3>
+                      <p className="text-gray-500 text-sm font-medium">{date} at {time} • {address}, {city}</p>
+                    </div>
+                  </div>
 
-                <div className="pt-6 flex justify-between items-center">
-                  <span className="font-black text-2xl text-navy">Total</span>
-                  <span className="font-black text-3xl text-coral">${total.toFixed(2)}</span>
+                  <div className="py-6 space-y-4 border-b border-gray-200">
+                    <div className="flex justify-between items-center font-medium">
+                      <span className="text-gray-600">Base Package</span>
+                      <span className="text-navy font-bold">${basePrice.toFixed(2)}</span>
+                    </div>
+                    {weekendFee > 0 && (
+                      <div className="flex justify-between items-center font-medium">
+                        <span className="text-gray-600">Weekend Surcharge</span>
+                        <span className="text-navy font-bold">${weekendFee.toFixed(2)}</span>
+                      </div>
+                    )}
+                    {distanceFee > 0 && (
+                      <div className="flex justify-between items-center font-medium">
+                        <span className="text-gray-600">Travel Fee ({distance} miles)</span>
+                        <span className="text-navy font-bold">${distanceFee.toFixed(2)}</span>
+                      </div>
+                    )}
+                    {extraGuestFee > 0 && (
+                      <div className="flex justify-between items-center font-medium">
+                        <span className="text-gray-600">Extra Guests ({extraGuests})</span>
+                        <span className="text-navy font-bold">${extraGuestFee.toFixed(2)}</span>
+                      </div>
+                    )}
+                    {routingMode !== "SINGLE" && distanceFee2 > 0 && (
+                      <div className="flex justify-between items-center font-medium">
+                        <span className="text-gray-600">Second Stop Travel Fee</span>
+                        <span className="text-navy font-bold">${distanceFee2.toFixed(2)}</span>
+                      </div>
+                    )}
+                    {routingFee > 0 && (
+                      <div className="flex justify-between items-center font-medium">
+                        <span className="text-gray-600">Multi-Location ({routingMode})</span>
+                        <span className="text-navy font-bold">${routingFee.toFixed(2)}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-6 flex justify-between items-center">
+                    <span className="font-black text-2xl text-navy">Total</span>
+                    <span className="font-black text-3xl text-coral">${total.toFixed(2)}</span>
+                  </div>
                 </div>
-              </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
@@ -592,16 +726,16 @@ export default function MultiStepQuoteForm() {
             <button onClick={nextStep} disabled={
               (step === 1 && (!date || !time)) || 
               (step === 2 && (!address || !city)) ||
-              (step === 4 && (!otpSent || otp.length < 6))
+              (step === 4 && !isCustom && (!otpSent || otp.length < 6))
             } 
             className="px-8 py-3 rounded-full font-black bg-navy text-white hover:bg-coral transition-all disabled:opacity-50 disabled:hover:bg-navy shadow-lg flex items-center gap-2">
               Continue <ArrowRight className="w-4 h-4" />
             </button>
-          ) : (
+          ) : !isCustom ? (
             <button onClick={submitFinal} disabled={loading} className="px-10 py-4 rounded-full font-black bg-coral text-white hover:bg-coral-dark hover:scale-105 transition-all shadow-xl shadow-coral/20 flex items-center gap-2">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirm Booking"}
             </button>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

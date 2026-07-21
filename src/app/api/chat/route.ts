@@ -11,31 +11,21 @@ import {
   sendOwnerNewBookingEmail,
   sendOwnerRequiresApprovalEmail,
 } from "@/lib/email";
+import { routingProvider, BASE_LOCATION } from "@/lib/maps";
 
 async function calculateDistance(zip: string): Promise<number> {
-  const ORIGIN_ZIP = "02151";
-  const ORIGIN_LAT = 42.4084;
-  const ORIGIN_LNG = -70.9996;
-  
   const lookup = zipcodes.lookup(zip);
   if (!lookup) throw new Error("Invalid ZIP code");
 
-  const googleKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  if (googleKey) {
-    try {
-      const routeRes = await fetch(
-        `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${ORIGIN_LAT},${ORIGIN_LNG}&destinations=${lookup.latitude},${lookup.longitude}&units=imperial&key=${googleKey}`
-      );
-      const routeData = await routeRes.json();
-      if (routeData.status === "OK" && routeData.rows[0].elements[0].status === "OK") {
-        const distanceMeters = routeData.rows[0].elements[0].distance.value;
-        return Math.round((distanceMeters * 0.000621371) * 10) / 10;
-      }
-    } catch (e) {
-      console.warn("Google Maps fallback", e);
-    }
+  try {
+    const distanceMiles = await routingProvider.getDrivingDistanceMiles(
+      BASE_LOCATION.lat, BASE_LOCATION.lng, lookup.latitude, lookup.longitude
+    );
+    return Math.round(distanceMiles * 10) / 10;
+  } catch (e) {
+    console.warn("Routing fallback", e);
+    return Math.round(zipcodes.distance("02151", zip) * 10) / 10;
   }
-  return Math.round(zipcodes.distance(ORIGIN_ZIP, zip) * 10) / 10;
 }
 
 const DISTANCE_TOOL = {
@@ -236,7 +226,7 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
 
     // Send to Customer
     if (bookingStatus === "CONFIRMED") {
-      sendBookingApprovedEmail(
+      await sendBookingApprovedEmail(
         emailToUse,
         firstName,
         bookingNumber,
@@ -245,7 +235,7 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
         booking.id
       ).catch(e => console.error("Failed to send approved email:", e));
     } else {
-      sendBookingPendingReviewEmail(
+      await sendBookingPendingReviewEmail(
         emailToUse,
         firstName,
         bookingNumber,
@@ -257,9 +247,9 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
     // Send to Owner
     if (fullBooking) {
       if (bookingStatus === "PENDING_REVIEW") {
-        sendOwnerRequiresApprovalEmail(fullBooking).catch(e => console.error("Failed to send owner approval email:", e));
+        await sendOwnerRequiresApprovalEmail(fullBooking).catch(e => console.error("Failed to send owner approval email:", e));
       } else {
-        sendOwnerNewBookingEmail(fullBooking).catch(e => console.error("Failed to send owner notification:", e));
+        await sendOwnerNewBookingEmail(fullBooking).catch(e => console.error("Failed to send owner notification:", e));
       }
     }
 
