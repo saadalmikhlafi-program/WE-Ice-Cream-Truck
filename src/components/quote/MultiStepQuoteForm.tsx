@@ -25,6 +25,7 @@ export default function MultiStepQuoteForm() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [distanceLoading, setDistanceLoading] = useState(false);
+  const [distanceError, setDistanceError] = useState<string | null>(null);
 
   // Form State
   const [selectedPackage, setSelectedPackage] = useState<Package | undefined>(initialPackage);
@@ -49,6 +50,7 @@ export default function MultiStepQuoteForm() {
   const [distance2, setDistance2] = useState(0);
   const [distanceFee2, setDistanceFee2] = useState(0);
   const [distanceLoading2, setDistanceLoading2] = useState(false);
+  const [distanceError2, setDistanceError2] = useState<string | null>(null);
   
   const [extraGuests, setExtraGuests] = useState(0);
   const [routingMode, setRoutingMode] = useState<RoutingMode>("SINGLE");
@@ -92,6 +94,7 @@ export default function MultiStepQuoteForm() {
     setZip(newZip);
     if (newLat && newLng || newZip.length === 5) {
       setDistanceLoading(true);
+      setDistanceError(null);
       try {
         const res = await fetch(`/api/distance?lat=${newLat}&lng=${newLng}&zip=${newZip}`);
         const data = await res.json();
@@ -100,12 +103,13 @@ export default function MultiStepQuoteForm() {
           setDistance(data.distance);
           setDistanceFee(data.fee);
         } else {
-          alert(data.error || "Could not calculate distance");
+          setDistanceError(data.error || "Could not calculate distance");
           setCity("");
           setDistanceFee(0);
         }
       } catch (err) {
         console.error(err);
+        setDistanceError("Network error calculating distance");
       } finally {
         setDistanceLoading(false);
       }
@@ -116,6 +120,7 @@ export default function MultiStepQuoteForm() {
     setZip2(newZip);
     if ((newLat && newLng) || newZip.length === 5) {
       setDistanceLoading2(true);
+      setDistanceError2(null);
       try {
         let originParams = "";
         if (currentMode === "SEQUENTIAL") {
@@ -133,12 +138,13 @@ export default function MultiStepQuoteForm() {
           setDistance2(data.distance);
           setDistanceFee2(data.fee);
         } else {
-          alert(data.error || "Could not calculate distance for second location");
+          setDistanceError2(data.error || "Could not calculate distance for second location");
           setCity2("");
           setDistanceFee2(0);
         }
       } catch (err) {
         console.error(err);
+        setDistanceError2("Network error calculating distance");
       } finally {
         setDistanceLoading2(false);
       }
@@ -333,7 +339,19 @@ export default function MultiStepQuoteForm() {
                 </div>
               )}
 
-              {distance !== 0 && !distanceLoading && (
+              {distanceError && !distanceLoading && (
+                <div className="mt-6 p-5 bg-red-50 border border-red-100 rounded-2xl flex items-start gap-4">
+                  <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-bold text-red-700 text-sm">Service Area Notice</h4>
+                    <p className="text-sm text-red-600 font-medium mt-1 leading-relaxed">
+                      {distanceError}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {distance !== 0 && !distanceLoading && !distanceError && (
                 <div className="mt-6 p-5 bg-navy/5 border border-navy/10 rounded-2xl flex items-start gap-4">
                   <Info className="w-5 h-5 text-navy mt-0.5 flex-shrink-0" />
                   <div>
@@ -472,7 +490,19 @@ export default function MultiStepQuoteForm() {
                           }}
                         />
 
-                        {distance2 !== 0 && !distanceLoading2 && (
+                        {distanceError2 && !distanceLoading2 && (
+                          <div className="mt-6 p-5 bg-red-50 border border-red-100 rounded-2xl flex items-start gap-4">
+                            <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-bold text-red-700 text-sm">Service Area Notice</h4>
+                              <p className="text-sm text-red-600 font-medium mt-1 leading-relaxed">
+                                {distanceError2}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {distance2 !== 0 && !distanceLoading2 && !distanceError2 && (
                           <div className="mt-6 p-5 bg-navy/5 border border-navy/10 rounded-2xl flex items-start gap-4">
                             <Info className="w-5 h-5 text-navy mt-0.5 flex-shrink-0" />
                             <div className="w-full">
@@ -705,7 +735,8 @@ export default function MultiStepQuoteForm() {
           {step < 5 ? (
             <button onClick={nextStep} disabled={
               (step === 1 && (!date || !time)) || 
-              (step === 2 && (!address || !city)) ||
+              (step === 2 && (!address || !city || !!distanceError)) ||
+              (step === 3 && routingMode !== "SINGLE" && (!address2 || !city2 || !!distanceError2)) ||
               (step === 3 && isCustom && customGuests < 201) ||
               (step === 4 && isCustom && (!name || !email)) ||
               (step === 4 && !isCustom && (!otpSent || otp.length < 6))

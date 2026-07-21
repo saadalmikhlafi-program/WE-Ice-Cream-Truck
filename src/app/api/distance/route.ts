@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import zipcodes from "zipcodes";
+import prisma from "@/lib/prisma";
 import { routingProvider, BASE_LOCATION } from "@/lib/maps";
 
 const FREE_MILES = 10;
@@ -31,9 +32,23 @@ export async function GET(request: Request) {
 
   if (zip) {
     const lookup = zipcodes.lookup(zip);
+    
+    // Validate against database
+    const serviceZip = await prisma.serviceZipCode.findUnique({
+      where: { zip: zip }
+    });
+
+    if (!serviceZip || !serviceZip.isActive) {
+      return NextResponse.json({ 
+        error: "Sorry, our services are not currently available in this location, but will be available soon!" 
+      }, { status: 400 });
+    }
+
     if (lookup) {
       if (lookup.state !== "MA") {
-        return NextResponse.json({ error: "We currently only serve Massachusetts (MA)." }, { status: 400 });
+        return NextResponse.json({ 
+          error: "Sorry, our services are not currently available in this location, but will be available soon!" 
+        }, { status: 400 });
       }
       if (!destLat || !destLng) {
         destLat = lookup.latitude;
