@@ -100,9 +100,9 @@ export async function verifyAndCalculateRoute(
   const ratePerMile = 2.25;
 
   if (locationMode === "SINGLE_LOCATION") {
-    totalDist = calcDistance(pLat, pLng, freeMiles, ratePerMile).drivingMiles;
+    totalDist = (await calcDistance(pLat, pLng, freeMiles, ratePerMile)).drivingMiles;
   } else if (locationMode === "SEQUENTIAL_STOPS" || locationMode === "NEEDS_REVIEW") {
-    totalDist = calcDistance(pLat, pLng, freeMiles, ratePerMile).drivingMiles;
+    totalDist = (await calcDistance(pLat, pLng, freeMiles, ratePerMile)).drivingMiles;
     let lastLat = pLat;
     let lastLng = pLng;
     for (const stop of verifiedStops) {
@@ -115,10 +115,10 @@ export async function verifyAndCalculateRoute(
       }
     }
   } else if (locationMode === "SIMULTANEOUS_MULTI_VEHICLE") {
-    totalDist = calcDistance(pLat, pLng, freeMiles, ratePerMile).drivingMiles;
+    totalDist = (await calcDistance(pLat, pLng, freeMiles, ratePerMile)).drivingMiles;
     for (const stop of verifiedStops) {
       if (stop.latitude !== null && stop.longitude !== null) {
-        totalDist += calcDistance(stop.latitude, stop.longitude, freeMiles, ratePerMile).drivingMiles;
+        totalDist += (await calcDistance(stop.latitude, stop.longitude, freeMiles, ratePerMile)).drivingMiles;
       }
     }
   }

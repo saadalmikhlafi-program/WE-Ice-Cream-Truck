@@ -99,10 +99,37 @@ export function haversineDistanceMiles(lat1: number, lng1: number, lat2: number,
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
+export interface RoutingProvider {
+  getDrivingDistanceMiles(originLat: number, originLng: number, destLat: number, destLng: number): Promise<number>;
+}
+
+export class OSRMRoutingProvider implements RoutingProvider {
+  async getDrivingDistanceMiles(originLat: number, originLng: number, destLat: number, destLng: number): Promise<number> {
+    try {
+      const url = `http://router.project-osrm.org/route/v1/driving/${originLng},${originLat};${destLng},${destLat}?overview=false`;
+      const res = await fetch(url, { headers: { "User-Agent": "BostonLegendIceCreamTruck/1.0" }});
+      if (!res.ok) throw new Error("OSRM routing failed");
+      const data = await res.json();
+      if (data.routes && data.routes.length > 0) {
+        const meters = data.routes[0].distance;
+        return meters * 0.000621371;
+      }
+      throw new Error("No route found");
+    } catch (e) {
+      console.error("OSRM Error:", e);
+      // Fallback
+      return haversineDistanceMiles(originLat, originLng, destLat, destLng) * 1.35;
+    }
+  }
+}
+
+// Current Active Provider
+export const routingProvider: RoutingProvider = new OSRMRoutingProvider();
+
 /** Calculate travel distance and fee from base to destination */
-export function calcDistance(destLat: number, destLng: number, freeMiles = 10, ratePerMile = 2.25): DistanceResult {
-  const straight = haversineDistanceMiles(BASE_LOCATION.lat, BASE_LOCATION.lng, destLat, destLng);
-  const driving  = Math.round(straight * 135) / 100; // ×1.35 driving factor
+export async function calcDistance(destLat: number, destLng: number, freeMiles = 10, ratePerMile = 2.50, originLat = BASE_LOCATION.lat, originLng = BASE_LOCATION.lng): Promise<DistanceResult> {
+  const straight = haversineDistanceMiles(originLat, originLng, destLat, destLng);
+  const driving  = await routingProvider.getDrivingDistanceMiles(originLat, originLng, destLat, destLng);
   const billable = Math.max(0, driving - freeMiles);
   return {
     straightMiles: Math.round(straight * 10) / 10,
