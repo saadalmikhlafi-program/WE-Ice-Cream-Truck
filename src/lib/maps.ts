@@ -103,21 +103,53 @@ export interface RoutingProvider {
   getDrivingDistanceMiles(originLat: number, originLng: number, destLat: number, destLng: number): Promise<number>;
 }
 
+/**
+ * Validates that coordinates are within a reasonable range for Massachusetts service area.
+ * MA bounding box roughly: lat 41.0–43.0, lng -73.5–-69.5
+ * We use a generous buffer to allow nearby states.
+ */
+function isValidMACoordinate(lat: number, lng: number): boolean {
+  if (!lat || !lng) return false;
+  if (lat === 0 && lng === 0) return false; // Null Island
+  if (Math.abs(lat) < 1 && Math.abs(lng) < 1) return false; // Near 0,0
+  // Generous Northeast US bounding box
+  if (lat < 39 || lat > 45) return false;
+  if (lng < -76 || lng > -68) return false;
+  return true;
+}
+
 export class OSRMRoutingProvider implements RoutingProvider {
   async getDrivingDistanceMiles(originLat: number, originLng: number, destLat: number, destLng: number): Promise<number> {
+    // Validate coordinates before making the request
+    if (!isValidMACoordinate(originLat, originLng) || !isValidMACoordinate(destLat, destLng)) {
+      console.error(`OSRM: Invalid coordinates — origin=(${originLat},${originLng}), dest=(${destLat},${destLng}). Rejecting.`);
+      throw new Error(`Invalid coordinates: origin=(${originLat},${originLng}), dest=(${destLat},${destLng})`);
+    }
+
     try {
-      const url = `http://router.project-osrm.org/route/v1/driving/${originLng},${originLat};${destLng},${destLat}?overview=false`;
-      const res = await fetch(url, { headers: { "User-Agent": "BostonLegendIceCreamTruck/1.0" }});
-      if (!res.ok) throw new Error("OSRM routing failed");
+      // Use HTTPS to avoid mixed-content blocking in serverless environments
+      const url = `https://router.project-osrm.org/route/v1/driving/${originLng},${originLat};${destLng},${destLat}?overview=false`;
+      const res = await fetch(url, {
+        headers: { "User-Agent": "WEIceCreamTruck/1.0" },
+        signal: AbortSignal.timeout(8000), // 8 second timeout
+      });
+      if (!res.ok) throw new Error(`OSRM HTTP ${res.status}`);
       const data = await res.json();
-      if (data.routes && data.routes.length > 0) {
+      if (data.code === "Ok" && data.routes && data.routes.length > 0) {
         const meters = data.routes[0].distance;
-        return meters * 0.000621371;
+        const miles = meters * 0.000621371;
+        // Sanity check: driving distance should never be more than 3× straight-line
+        const straight = haversineDistanceMiles(originLat, originLng, destLat, destLng);
+        if (miles > straight * 3 && miles > 100) {
+          console.warn(`OSRM returned suspicious distance: ${miles.toFixed(1)} miles (straight=${straight.toFixed(1)}). Using fallback.`);
+          return straight * 1.35;
+        }
+        return miles;
       }
-      throw new Error("No route found");
+      throw new Error("No route found in OSRM response");
     } catch (e) {
       console.error("OSRM Error:", e);
-      // Fallback
+      // Fallback: use haversine × 1.35 as a rough driving estimate
       return haversineDistanceMiles(originLat, originLng, destLat, destLng) * 1.35;
     }
   }
@@ -128,12 +160,22 @@ export const routingProvider: RoutingProvider = new OSRMRoutingProvider();
 
 /** Calculate travel distance and fee from base to destination */
 export async function calcDistance(destLat: number, destLng: number, freeMiles = 10, ratePerMile = 2.50, originLat = BASE_LOCATION.lat, originLng = BASE_LOCATION.lng): Promise<DistanceResult> {
+  // Guard: reject invalid destination coordinates
+  if (!isValidMACoordinate(destLat, destLng)) {
+    console.error(`calcDistance: Invalid destination coordinates (${destLat}, ${destLng}). Returning zero.`);
+    return { straightMiles: 0, drivingMiles: 0, billableMiles: 0, travelFee: 0 };
+  }
+
   const straight = haversineDistanceMiles(originLat, originLng, destLat, destLng);
   const driving  = await routingProvider.getDrivingDistanceMiles(originLat, originLng, destLat, destLng);
-  const billable = Math.max(0, driving - freeMiles);
+
+  // Final sanity: cap at 200 miles (furthest MA point is ~180 miles from any other MA point)
+  const safeDriving = Math.min(driving, 200);
+  const billable = Math.max(0, safeDriving - freeMiles);
+
   return {
     straightMiles: Math.round(straight * 10) / 10,
-    drivingMiles:  Math.round(driving  * 10) / 10,
+    drivingMiles:  Math.round(safeDriving * 10) / 10,
     billableMiles: Math.round(billable * 10) / 10,
     travelFee:     Math.round(billable * ratePerMile * 100) / 100,
   };
