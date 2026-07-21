@@ -375,28 +375,16 @@ export default function MultiStepQuoteForm() {
                     </div>
                     <input 
                       type="number" 
-                      min={201} 
                       value={customGuests} 
-                      onChange={e => setCustomGuests(Math.max(201, parseInt(e.target.value) || 201))}
+                      onChange={e => setCustomGuests(parseInt(e.target.value) || 0)}
+                      onBlur={() => { if (customGuests < 201) setCustomGuests(201) }}
                       className="w-full px-4 py-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 outline-none transition-all font-bold text-navy"
                     />
+                    {customGuests < 201 && (
+                      <p className="text-xs text-red-500 font-bold mt-1">Minimum of 201 guests is required.</p>
+                    )}
 
-                    <div className="flex items-center gap-3 mb-2 mt-4">
-                      <div className="w-10 h-10 rounded-full bg-navy/10 flex items-center justify-center text-navy">
-                        <Map className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-navy">Number of Vehicles</h3>
-                        <p className="text-xs text-gray-500 font-medium">How many trucks or vans do you need?</p>
-                      </div>
-                    </div>
-                    <input 
-                      type="number" 
-                      min={1} 
-                      value={customTrucks} 
-                      onChange={e => setCustomTrucks(Math.max(1, parseInt(e.target.value) || 1))}
-                      className="w-full px-4 py-4 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 outline-none transition-all font-bold text-navy"
-                    />
+
 
                     <div className="flex items-center gap-3 mb-2 mt-4">
                       <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center text-coral">
@@ -553,12 +541,7 @@ export default function MultiStepQuoteForm() {
                         className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 outline-none transition-all font-medium" />
                     </div>
                   </div>
-                  {isCustom ? (
-                    <button onClick={nextStep} disabled={!name || !email} 
-                      className="w-full py-4 bg-navy text-white rounded-2xl font-black disabled:opacity-50 hover:bg-navy-light transition-colors flex items-center justify-center">
-                      Continue to Review
-                    </button>
-                  ) : (
+                  {!isCustom && (
                     <button onClick={sendOtp} disabled={!name || !email || loading} 
                       className="w-full py-4 bg-navy text-white rounded-2xl font-black disabled:opacity-50 hover:bg-navy-light transition-colors flex items-center justify-center">
                       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Send Verification Code"}
@@ -613,10 +596,7 @@ export default function MultiStepQuoteForm() {
                       <span className="text-gray-600">Expected Guests</span>
                       <span className="text-navy font-bold">{customGuests}</span>
                     </div>
-                    <div className="flex justify-between items-center font-medium">
-                      <span className="text-gray-600">Vehicles Requested</span>
-                      <span className="text-navy font-bold">{customTrucks}</span>
-                    </div>
+
                     <div className="flex justify-between items-center font-medium">
                       <span className="text-gray-600">Duration</span>
                       <span className="text-navy font-bold">{customDuration}</span>
@@ -642,12 +622,12 @@ export default function MultiStepQuoteForm() {
                   <div className="pt-6">
                     <p className="text-sm text-gray-500 font-medium mb-6 text-center">To finalize your custom event, please contact our concierge team directly. They have all your details ready!</p>
                     <div className="flex flex-col gap-4">
-                      <a href={`https://wa.me/16179993803?text=${encodeURIComponent(`Hi WE Ice Cream Truck! I'd like to book a Custom Event.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nEvent: ${eventType}\nGuests: ${customGuests}\nVehicles: ${customTrucks}\nDuration: ${customDuration}\nLocation: ${address}, ${city} ${zip}\nDistance: ${distance} miles (Base travel fee: $${distanceFee.toFixed(2)})\nRouting: ${routingMode}\n\nPlease let me know the custom quote!`)}`} 
+                      <a href={`https://wa.me/16179993803?text=${encodeURIComponent(`Hi WE Ice Cream Truck! I'd like to book a Custom Event.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nEvent: ${eventType}\nGuests: ${customGuests}\nDuration: ${customDuration}\nLocation: ${address}, ${city} ${zip}\nDistance: ${distance} miles (Base travel fee: $${distanceFee.toFixed(2)})\nRouting: ${routingMode}\n\nPlease let me know the custom quote!`)}`} 
                         target="_blank" rel="noreferrer"
                         className="w-full py-4 rounded-xl font-black bg-[#25D366] text-white hover:bg-[#128C7E] hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-2">
                         WhatsApp 617-999-3803
                       </a>
-                      <a href={`https://wa.me/16178662727?text=${encodeURIComponent(`Hi WE Ice Cream Truck! I'd like to book a Custom Event.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nEvent: ${eventType}\nGuests: ${customGuests}\nVehicles: ${customTrucks}\nDuration: ${customDuration}\nLocation: ${address}, ${city} ${zip}\nDistance: ${distance} miles (Base travel fee: $${distanceFee.toFixed(2)})\nRouting: ${routingMode}\n\nPlease let me know the custom quote!`)}`} 
+                      <a href={`https://wa.me/16178662727?text=${encodeURIComponent(`Hi WE Ice Cream Truck! I'd like to book a Custom Event.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nEvent: ${eventType}\nGuests: ${customGuests}\nDuration: ${customDuration}\nLocation: ${address}, ${city} ${zip}\nDistance: ${distance} miles (Base travel fee: $${distanceFee.toFixed(2)})\nRouting: ${routingMode}\n\nPlease let me know the custom quote!`)}`} 
                         target="_blank" rel="noreferrer"
                         className="w-full py-4 rounded-xl font-black bg-[#25D366] text-white hover:bg-[#128C7E] hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-2">
                         WhatsApp 617-866-2727
@@ -726,6 +706,8 @@ export default function MultiStepQuoteForm() {
             <button onClick={nextStep} disabled={
               (step === 1 && (!date || !time)) || 
               (step === 2 && (!address || !city)) ||
+              (step === 3 && isCustom && customGuests < 201) ||
+              (step === 4 && isCustom && (!name || !email)) ||
               (step === 4 && !isCustom && (!otpSent || otp.length < 6))
             } 
             className="px-8 py-3 rounded-full font-black bg-navy text-white hover:bg-coral transition-all disabled:opacity-50 disabled:hover:bg-navy shadow-lg flex items-center gap-2">

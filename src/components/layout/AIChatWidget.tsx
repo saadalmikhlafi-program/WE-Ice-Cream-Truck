@@ -1,5 +1,7 @@
 "use client";
 
+import { useSession } from "next-auth/react";
+
 import { useState, useEffect, useRef, FormEvent, useMemo } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -52,6 +54,7 @@ export default function AIChatWidget() {
   const [bookingConfirming, setBookingConfirming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const { status } = useSession();
 
   useEffect(() => {
     const handleScroll = () => setIsVisible(window.scrollY > 300);
@@ -244,23 +247,32 @@ export default function AIChatWidget() {
               </span>
             </div>
             <div className="pt-4 mt-2">
-              <button
-                onClick={() => msg.bookingRequest && handleConfirmBooking(msg.bookingRequest)}
-                disabled={bookingConfirming}
-                className="w-full py-3.5 rounded-xl font-black text-sm bg-coral text-white hover:bg-coral-dark shadow-[0_8px_20px_rgb(255,107,107,0.25)] hover:shadow-[0_8px_25px_rgb(255,107,107,0.4)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {bookingConfirming ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle2 className="w-5 h-5" />
-                    Confirm Booking Now
-                  </>
-                )}
-              </button>
+              {status === "authenticated" ? (
+                <button
+                  onClick={() => msg.bookingRequest && handleConfirmBooking(msg.bookingRequest)}
+                  disabled={bookingConfirming}
+                  className="w-full py-3.5 rounded-xl font-black text-sm bg-coral text-white hover:bg-coral-dark shadow-[0_8px_20px_rgb(255,107,107,0.25)] hover:shadow-[0_8px_25px_rgb(255,107,107,0.4)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {bookingConfirming ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-5 h-5" />
+                      Confirm Booking Now
+                    </>
+                  )}
+                </button>
+              ) : (
+                <button
+                  onClick={() => window.location.href = "/login"}
+                  className="w-full py-3.5 rounded-xl font-black text-sm bg-navy text-white hover:bg-navy-light shadow-lg transition-all flex items-center justify-center gap-2"
+                >
+                  Log in or Sign up to Confirm
+                </button>
+              )}
             </div>
           </div>
         </motion.div>
