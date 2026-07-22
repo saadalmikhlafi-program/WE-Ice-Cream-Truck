@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "next build --webpack",
+    "build": "prisma db push --accept-data-loss && next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate"
@@ -62,6 +62,7 @@
     "resend": "^6.17.2",
     "tailwind-merge": "^3.6.0",
     "three": "^0.185.0",
+    "web-push": "^3.6.7",
     "yet-another-react-lightbox": "^3.32.0",
     "zipcodes": "^8.0.0",
     "zod": "^4.4.3"
@@ -72,6 +73,7 @@
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/web-push": "^3.6.4",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "playwright": "^1.61.1",

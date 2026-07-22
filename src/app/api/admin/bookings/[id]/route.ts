@@ -46,3 +46,61 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ success: false, error: "Failed to fetch booking" }, { status: 500 });
   }
 }
+
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const user = await getSessionUser(req);
+    if (!user) return unauthenticated();
+
+    if (!hasPermission(user.role, "bookings.update")) {
+      return unauthorized();
+    }
+
+    const updates = await req.json();
+    
+    // Validate only allowed fields
+    const allowedFields = [
+      "eventDate", "startTime", "guests", "address", 
+      "city", "zip", "notes", "durationMins"
+    ];
+    
+    const dataToUpdate: any = {};
+    for (const field of allowedFields) {
+      if (updates[field] !== undefined) {
+        if (field === "eventDate") {
+          dataToUpdate[field] = new Date(updates[field]);
+        } else if (field === "guests" || field === "durationMins") {
+          dataToUpdate[field] = parseInt(updates[field], 10);
+        } else {
+          dataToUpdate[field] = updates[field];
+        }
+      }
+    }
+
+    if (Object.keys(dataToUpdate).length === 0) {
+      return NextResponse.json({ success: false, error: "No valid fields to update" }, { status: 400 });
+    }
+
+    const updatedBooking = await prisma.booking.update({
+      where: { id: (await params).id },
+      data: dataToUpdate
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        entityType: "BOOKING",
+        entityId: updatedBooking.id,
+        bookingId: updatedBooking.id,
+        action: "BOOKING_DETAILS_UPDATED",
+        metadataJson: JSON.stringify(dataToUpdate),
+        actorId: user.id
+      }
+    });
+
+    return NextResponse.json({ success: true, data: updatedBooking });
+  } catch (error) {
+    console.error("Booking update error:", error);
+    return NextResponse.json({ success: false, error: "Failed to update booking details" }, { status: 500 });
+  }
+}
+

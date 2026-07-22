@@ -23,6 +23,7 @@ model User {
   posts             Post[]
   media             Media[]
   conversations     Conversation[]
+  pushSubscriptions PushSubscription[]
 }
 
 model Vehicle {
@@ -394,4 +395,14 @@ model Message {
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([conversationId])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

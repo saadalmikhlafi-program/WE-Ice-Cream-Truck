@@ -20,6 +20,7 @@ import {
   Timer,
 } from "lucide-react";
 import CancelBookingButton from "./CancelBookingButton";
+import EditBookingButton from "./EditBookingButton";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   return { title: "Booking Details | WE Ice Cream Truck" };
@@ -48,7 +49,14 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
   }
 
   const isPast = new Date(booking.eventDate) < new Date();
-  const canCancel = booking.status === "PENDING" && !isPast;
+  
+  // Allow cancellation for PENDING, PENDING_REVIEW, PENDING_PAYMENT, CONFIRMED
+  const allowedStatuses = ["PENDING", "PENDING_REVIEW", "PENDING_PAYMENT", "CONFIRMED"];
+  const now = new Date();
+  const eventTime = new Date(booking.eventDate.getTime());
+  const hoursUntilEvent = (eventTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+  const canEditOrCancel = allowedStatuses.includes(booking.status) && !isPast && hoursUntilEvent >= 48;
 
   // Parse quote snapshot for full pricing
   let breakdown: any = {};
@@ -302,10 +310,15 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
             </div>
 
             {/* Actions */}
-            {canCancel && (
+            {canEditOrCancel && (
               <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 border border-white/80 shadow-lg shadow-navy/5">
                 <h3 className="text-sm font-black text-navy mb-4">Actions</h3>
                 <div className="space-y-3">
+                  <EditBookingButton bookingId={booking.id} initialData={{
+                    eventDate: booking.eventDate ? new Date(booking.eventDate).toISOString().split('T')[0] : "",
+                    startTime: booking.startTime,
+                    notes: booking.notes
+                  }} />
                   <CancelBookingButton bookingId={booking.id} />
                 </div>
               </div>

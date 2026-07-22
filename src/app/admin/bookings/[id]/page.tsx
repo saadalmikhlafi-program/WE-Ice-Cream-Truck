@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, CheckCircle2, XCircle, MapPin, Users,
-  Phone, Mail, DollarSign, Calendar, Loader2, ChevronRight, AlertCircle, MessageSquare
+  Phone, Mail, DollarSign, Calendar, Loader2, ChevronRight, AlertCircle, MessageSquare, Truck, Edit3
 } from "lucide-react";
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string; border: string }> = {
@@ -32,6 +32,18 @@ export default function BookingDetailPage() {
   const [actionLoading, setActionLoading] = useState(false);
   const [internalNote, setInternalNote] = useState("");
   const [showNoteBox, setShowNoteBox] = useState(false);
+  
+  // Assignment state
+  const [vehicles, setVehicles] = useState<any[]>([]);
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [selectedVehicle, setSelectedVehicle] = useState("");
+  const [selectedDriver, setSelectedDriver] = useState("");
+  const [assignLoading, setAssignLoading] = useState(false);
+
+  // Edit state
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editData, setEditData] = useState<any>({});
+  const [saveEditLoading, setSaveEditLoading] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
   const showToast = (msg: string, type: "success" | "error" = "success") => {
@@ -45,11 +57,30 @@ export default function BookingDetailPage() {
       const res  = await fetch(`/api/admin/bookings/${id}`);
       const json = await res.json();
       setBooking(json.data || json);
+      if (json.data?.assignment) {
+        setSelectedVehicle(json.data.assignment.vehicleId || "");
+        setSelectedDriver(json.data.assignment.driverId || "");
+      }
     } catch { showToast("Failed to load booking", "error"); }
     finally { setLoading(false); }
   };
 
-  useEffect(() => { loadBooking(); }, [id]);
+  const loadResources = async () => {
+    try {
+      const [vRes, dRes] = await Promise.all([
+        fetch("/api/admin/vehicles"),
+        fetch("/api/admin/drivers")
+      ]);
+      const vJson = await vRes.json();
+      const dJson = await dRes.json();
+      if (Array.isArray(vJson)) setVehicles(vJson);
+      if (Array.isArray(dJson)) setDrivers(dJson);
+    } catch (e) {
+      console.error("Failed to load resources", e);
+    }
+  };
+
+  useEffect(() => { loadBooking(); loadResources(); }, [id]);
 
   const updateStatus = async (status: string) => {
     setActionLoading(true);
@@ -63,6 +94,34 @@ export default function BookingDetailPage() {
       else { showToast("Failed to update status", "error"); }
     } catch { showToast("Network error", "error"); }
     finally { setActionLoading(false); }
+  };
+
+  const saveAssignment = async () => {
+    setAssignLoading(true);
+    try {
+      const res = await fetch(`/api/admin/bookings/${id}/assign`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vehicleId: selectedVehicle, driverId: selectedDriver }),
+      });
+      if (res.ok) { showToast("Assignment saved"); await loadBooking(); }
+      else { showToast("Failed to save assignment", "error"); }
+    } catch { showToast("Network error", "error"); }
+    finally { setAssignLoading(false); }
+  };
+
+  const saveEdit = async () => {
+    setSaveEditLoading(true);
+    try {
+      const res = await fetch(`/api/admin/bookings/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editData),
+      });
+      if (res.ok) { showToast("Booking details updated"); setShowEditModal(false); await loadBooking(); }
+      else { showToast("Failed to update booking details", "error"); }
+    } catch { showToast("Network error", "error"); }
+    finally { setSaveEditLoading(false); }
   };
 
   if (loading) return (
@@ -141,7 +200,22 @@ export default function BookingDetailPage() {
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-5">
           {/* Event Details */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 relative">
+            <button onClick={() => {
+              setEditData({
+                eventDate: booking.eventDate ? new Date(booking.eventDate).toISOString().split('T')[0] : "",
+                startTime: booking.startTime,
+                durationMins: booking.durationMins,
+                guests: booking.guests,
+                address: booking.address,
+                city: booking.city,
+                zip: booking.zip,
+                notes: booking.notes || ""
+              });
+              setShowEditModal(true);
+            }} className="absolute top-6 right-6 text-gray-400 hover:text-coral transition-colors">
+              <Edit3 className="w-4 h-4" />
+            </button>
             <h2 className="text-xs font-black text-navy uppercase tracking-wider mb-4 flex items-center gap-2">
               <Calendar className="w-3.5 h-3.5 text-coral" /> Event Details
             </h2>
@@ -252,8 +326,111 @@ export default function BookingDetailPage() {
               </div>
             </div>
           </div>
+
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
+            <h2 className="text-xs font-black text-navy uppercase tracking-wider mb-3 flex items-center gap-2">
+              <Truck className="w-3.5 h-3.5 text-coral" /> Assignment
+            </h2>
+            <div className="space-y-3">
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Vehicle</label>
+                <select 
+                  value={selectedVehicle} 
+                  onChange={(e) => setSelectedVehicle(e.target.value)}
+                  className="w-full text-sm border-gray-200 rounded-lg p-2 focus:ring-coral focus:border-coral"
+                >
+                  <option value="">-- Select Vehicle --</option>
+                  {vehicles.map(v => (
+                    <option key={v.id} value={v.id}>{v.name} ({v.code})</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Driver</label>
+                <select 
+                  value={selectedDriver} 
+                  onChange={(e) => setSelectedDriver(e.target.value)}
+                  className="w-full text-sm border-gray-200 rounded-lg p-2 focus:ring-coral focus:border-coral"
+                >
+                  <option value="">-- Unassigned --</option>
+                  {drivers.map(d => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+              </div>
+              <button 
+                onClick={saveAssignment} 
+                disabled={assignLoading || !selectedVehicle}
+                className="w-full py-2 mt-2 bg-navy text-white rounded-lg text-xs font-bold hover:bg-navy-light disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+              >
+                {assignLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />}
+                Save Assignment
+              </button>
+            </div>
+          </div>
         </div>
       </div>
+
+      {showEditModal && (
+        <div className="fixed inset-0 bg-navy/20 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="font-black text-navy text-lg flex items-center gap-2">
+                <Edit3 className="w-5 h-5 text-coral" /> Edit Details
+              </h2>
+              <button onClick={() => setShowEditModal(false)} className="text-gray-400 hover:text-red-500">
+                <XCircle className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-5 overflow-y-auto space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-gray-500 block mb-1">Date</label>
+                  <input type="date" value={editData.eventDate} onChange={(e) => setEditData({...editData, eventDate: e.target.value})} className="w-full border-gray-200 rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 block mb-1">Time</label>
+                  <input type="time" value={editData.startTime} onChange={(e) => setEditData({...editData, startTime: e.target.value})} className="w-full border-gray-200 rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 block mb-1">Duration (Mins)</label>
+                  <input type="number" value={editData.durationMins} onChange={(e) => setEditData({...editData, durationMins: e.target.value})} className="w-full border-gray-200 rounded-xl text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 block mb-1">Guests</label>
+                  <input type="number" value={editData.guests} onChange={(e) => setEditData({...editData, guests: e.target.value})} className="w-full border-gray-200 rounded-xl text-sm" />
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-bold text-gray-500 block mb-1">Address</label>
+                  <input type="text" value={editData.address} onChange={(e) => setEditData({...editData, address: e.target.value})} className="w-full border-gray-200 rounded-xl text-sm" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 block mb-1">City</label>
+                    <input type="text" value={editData.city} onChange={(e) => setEditData({...editData, city: e.target.value})} className="w-full border-gray-200 rounded-xl text-sm" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 block mb-1">Zip Code</label>
+                    <input type="text" value={editData.zip} onChange={(e) => setEditData({...editData, zip: e.target.value})} className="w-full border-gray-200 rounded-xl text-sm" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 block mb-1">Customer Notes</label>
+                  <textarea rows={3} value={editData.notes} onChange={(e) => setEditData({...editData, notes: e.target.value})} className="w-full border-gray-200 rounded-xl text-sm resize-none" />
+                </div>
+              </div>
+            </div>
+            <div className="p-5 border-t border-gray-100 flex items-center justify-end gap-3 bg-gray-50">
+              <button onClick={() => setShowEditModal(false)} className="px-5 py-2.5 text-sm font-bold text-gray-500 hover:text-gray-700">Cancel</button>
+              <button onClick={saveEdit} disabled={saveEditLoading} className="px-5 py-2.5 text-sm font-bold bg-coral text-white rounded-xl hover:bg-coral-dark disabled:opacity-50 flex items-center gap-2">
+                {saveEditLoading && <Loader2 className="w-4 h-4 animate-spin" />} Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
