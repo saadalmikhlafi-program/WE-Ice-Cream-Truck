@@ -4,8 +4,8 @@ import { BUSINESS_CONFIG } from "./config";
 
 const BRAND_NAVY  = "#0A1128";
 const BRAND_CORAL = "#FF6B6B";
-const LOGO_URL    = "https://www.weicecreamtruck.com/images/we-icecream.jpg"; // Updated for production robustness, assuming the logo will be hosted securely or we could use the domain config
-const SITE_URL    = BUSINESS_CONFIG.domain;
+const SITE_URL    = process.env.NEXT_PUBLIC_SITE_URL || BUSINESS_CONFIG.domain;
+const LOGO_URL    = `${SITE_URL}/images/we-icecream.jpg`; 
 
 const SENDER_EMAIL = process.env.SMTP_USER || process.env.SENDER_EMAIL || 'saadalmikhlafi53@gmail.com';
 const ADMIN_EMAIL  = process.env.ADMIN_EMAIL || 'saadalmikhlafi53@gmail.com';
