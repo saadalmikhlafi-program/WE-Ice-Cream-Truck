@@ -116,6 +116,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           setPendingCount(d.total || 0);
         }
       } catch {}
+    }
     async function initPush() {
       if ('serviceWorker' in navigator && 'PushManager' in window && process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
         try {
