@@ -95,7 +95,7 @@ export async function sendEmail({ to, subject, html, title }: { to: string; subj
     try {
       const { data, error } = await resend.emails.send({
         from: `"WE Ice Cream Truck" <${SENDER_EMAIL}>`,
-        reply_to: REPLY_TO,
+        replyTo: REPLY_TO,
         to: [to],
         subject: subject,
         html: baseTemplate(html, title || subject),
