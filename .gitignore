@@ -43,3 +43,6 @@ next-env.d.ts
 # migration scratch
 migrate.sql
 scripts/import_bl_blog.*
+
+.vercel
+.env*

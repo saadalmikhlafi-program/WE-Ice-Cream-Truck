@@ -14,6 +14,33 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // ── SEO & Routing ──────────────────────────────────────────────────────
+  trailingSlash: false,
+  async redirects() {
+    return [
+      {
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/index.html',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/about-us',
+        destination: '/about',
+        permanent: true,
+      },
+      {
+        source: '/contact-us',
+        destination: '/contact',
+        permanent: true,
+      }
+    ];
+  },
+
   // ── Turbopack (Next.js 16 default) ────────────────────────────────────
   turbopack: {},
 

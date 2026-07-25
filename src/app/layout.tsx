@@ -60,11 +60,46 @@ export default async function RootLayout({
     instagramUrl: (settings as any).instagramUrl,
   };
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "IceCreamShop",
+    name: BUSINESS_CONFIG.name,
+    image: `${BUSINESS_CONFIG.domain}/images/og-default.jpg`,
+    "@id": BUSINESS_CONFIG.domain,
+    url: BUSINESS_CONFIG.domain,
+    telephone: BUSINESS_CONFIG.contact.phone1,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: BUSINESS_CONFIG.address.street,
+      addressLocality: BUSINESS_CONFIG.address.city,
+      addressRegion: BUSINESS_CONFIG.address.state,
+      postalCode: BUSINESS_CONFIG.address.zip,
+      addressCountry: BUSINESS_CONFIG.address.country,
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: BUSINESS_CONFIG.geo.lat,
+      longitude: BUSINESS_CONFIG.geo.lng,
+    },
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: BUSINESS_CONFIG.hours.days,
+      opens: BUSINESS_CONFIG.hours.opens,
+      closes: BUSINESS_CONFIG.hours.closes,
+    },
+    priceRange: BUSINESS_CONFIG.priceRange,
+    servesCuisine: BUSINESS_CONFIG.cuisine,
+  };
+
   return (
     <html lang="en">
       <body
         className={`${playfair.variable} ${outfit.variable} font-sans bg-cream text-charcoal antialiased min-h-screen flex flex-col relative`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Providers>
           <PublicLayout footerConfig={footerConfig}>{children}</PublicLayout>
         </Providers>

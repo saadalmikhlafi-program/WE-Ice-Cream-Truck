@@ -21,7 +21,7 @@ export const metadata: Metadata = constructMetadata({
   description: "Massachusetts' most trusted premium ice cream truck catering. Serving weddings, corporate events, and parties across all of MA. Book your unforgettable sweet moment today.",
 });
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function HomePage() {
   const dbPackages = await prisma.package.findMany({
