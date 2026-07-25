@@ -84,6 +84,19 @@ export async function POST(req: Request) {
           zip: zip || null
         }
       });
+    } else {
+      // Update existing customer with latest information from the form
+      customer = await prisma.customer.update({
+        where: { id: customer.id },
+        data: {
+          firstName,
+          lastName,
+          phone,
+          address: address || null,
+          city: city || null,
+          zip: zip || null
+        }
+      });
     }
 
     // ─── 4. Create Booking ────────────────────────────────────────

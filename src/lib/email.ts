@@ -1,29 +1,18 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import { prisma } from "./prisma";
 import { BUSINESS_CONFIG } from "./config";
 
 const BRAND_NAVY  = "#0A1128";
 const BRAND_CORAL = "#FF6B6B";
-const SITE_URL    = process.env.NEXT_PUBLIC_SITE_URL || BUSINESS_CONFIG.domain;
+// Hardcode the site URL to the domain so the logo always loads in emails
+const SITE_URL    = "https://weicecreamtruck.com";
 const LOGO_URL    = `${SITE_URL}/images/we-icecream.jpg`; 
 
-const SENDER_EMAIL = process.env.SMTP_USER || process.env.SENDER_EMAIL || 'saadalmikhlafi53@gmail.com';
+const SENDER_EMAIL = 'info@weicecreamtruck.com';
 const ADMIN_EMAIL  = process.env.ADMIN_EMAIL || 'saadalmikhlafi53@gmail.com';
-const REPLY_TO     = process.env.REPLY_TO_EMAIL || SENDER_EMAIL;
+const REPLY_TO     = 'info@weicecreamtruck.com';
 
-const smtpPort = parseInt(process.env.SMTP_PORT || '465');
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: smtpPort,
-  secure: smtpPort === 465,
-  tls: {
-    rejectUnauthorized: false
-  },
-  auth: {
-    user: process.env.SMTP_USER || 'saadalmikhlafi53@gmail.com',
-    pass: process.env.SMTP_PASS || 'qsnr rswv pgyz oxsj',
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ─── BASE TEMPLATE ───────────────────────────────────────────────
 function baseTemplate(content: string, title: string) {
@@ -97,17 +86,26 @@ export async function sendEmail({ to, subject, html, title }: { to: string; subj
   const MAX_RETRIES = 2;
   const RETRY_DELAY_MS = 2000;
 
+  if (!process.env.RESEND_API_KEY) {
+    console.warn(`[Email] ⚠️ RESEND_API_KEY is not set. Skipped sending "${subject}" to ${to}`);
+    return false;
+  }
+
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      await transporter.sendMail({
+      const { data, error } = await resend.emails.send({
         from: `"WE Ice Cream Truck" <${SENDER_EMAIL}>`,
-        replyTo: REPLY_TO,
-        to: to,
+        reply_to: REPLY_TO,
+        to: [to],
         subject: subject,
         html: baseTemplate(html, title || subject),
       });
 
-      console.log(`[Email] ✅ Sent "${subject}" → ${to} (attempt ${attempt})`);
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      console.log(`[Email] ✅ Sent "${subject}" → ${to} (ID: ${data?.id})`);
       return true;
     } catch (err: any) {
       console.error(`[Email] ❌ Attempt ${attempt}/${MAX_RETRIES} failed for "${subject}" → ${to}:`, err.message);
