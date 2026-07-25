@@ -9,7 +9,7 @@ const SITE_URL    = "https://weicecreamtruck.com";
 const LOGO_URL    = `${SITE_URL}/images/we-icecream.jpg`; 
 
 const SENDER_EMAIL = 'info@weicecreamtruck.com';
-const ADMIN_EMAIL  = process.env.ADMIN_EMAIL || 'saadalmikhlafi53@gmail.com';
+const ADMIN_EMAIL  = process.env.ADMIN_EMAIL || 'info@weicecreamtruck.com';
 const REPLY_TO     = 'info@weicecreamtruck.com';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
