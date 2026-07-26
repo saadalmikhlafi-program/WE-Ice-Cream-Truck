@@ -91,13 +91,23 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
               {/* Card Image */}
               {pkg.imageUrl && (
                 <div className="relative w-full aspect-[4/3] shrink-0 overflow-hidden">
-                  <div className="absolute inset-0 bg-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
-                  <Image
-                    src={pkg.imageUrl}
-                    alt={`${pkg.name} - Ice cream truck rental and catering package in Massachusetts`}
+                  <div className="absolute inset-0 bg-navy/10 z-20 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
+                  
+                  {/* Blurred Backdrop to fill space */}
+                  <Image 
+                    src={pkg.imageUrl} 
+                    alt="" 
+                    fill 
+                    className="object-cover scale-110 blur-xl opacity-40"
+                  />
+
+                  {/* Main Content */}
+                  <Image 
+                    src={pkg.imageUrl} 
+                    alt={`${pkg.name} - Ice cream truck rental and catering package in Massachusetts`} 
                     title={`Rent our ${pkg.name} for your event in MA`}
-                    fill
-                    className="object-contain transition-transform duration-700 group-hover:scale-105 bg-gray-50/50"
+                    fill 
+                    className="object-contain transition-transform duration-700 group-hover:scale-105 z-10 p-2 drop-shadow-2xl"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   {/* Smooth gradient blending into the header */}

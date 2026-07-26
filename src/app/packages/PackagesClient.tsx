@@ -178,13 +178,24 @@ export default function PackagesClient({
                     <div className="text-white/60 font-medium text-xs mt-0.5">Boston&apos;s Premier Event Service</div>
                   </div>
                 </div>
+                <div className="absolute inset-0 bg-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
+                
+                {/* Blurred Backdrop to fill space */}
+                <Image
+                  src={pkg.imageUrl || "/images/van_packages/custom_event.jpg"}
+                  alt=""
+                  fill
+                  className="object-cover scale-110 blur-xl opacity-40"
+                />
+                
+                {/* Main Content */}
                 <Image
                   src={pkg.imageUrl || "/images/van_packages/custom_event.jpg"}
                   alt={`${pkg.name} - Custom large ice cream truck catering event in Massachusetts`}
                   title={`Book a custom ${pkg.name} ice cream truck experience in MA`}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-contain bg-gray-50/50"
+                  className="object-contain z-10 p-2 drop-shadow-2xl"
                 />
               </motion.div>
             </div>
@@ -249,13 +260,23 @@ function PackageGrid({ packages, accentColor }: { packages: any[]; accentColor: 
             {/* Card Image */}
             {pkg.imageUrl && (
               <div className="relative w-full aspect-[4/3] shrink-0 overflow-hidden">
-                <div className="absolute inset-0 bg-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
+                <div className="absolute inset-0 bg-navy/10 z-20 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
+                
+                {/* Blurred Backdrop to fill space */}
+                <Image 
+                  src={pkg.imageUrl} 
+                  alt="" 
+                  fill 
+                  className="object-cover scale-110 blur-xl opacity-40"
+                />
+
+                {/* Main Content */}
                 <Image 
                   src={pkg.imageUrl} 
                   alt={`${pkg.name} - Premium ice cream truck catering package in Massachusetts`} 
                   title={`Reserve our ${pkg.name} for your event in MA`}
                   fill 
-                  className="object-contain transition-transform duration-700 group-hover:scale-105 bg-gray-50/50"
+                  className="object-contain transition-transform duration-700 group-hover:scale-105 z-10 p-2 drop-shadow-2xl"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
                 {/* Smooth gradient blending into the header */}
