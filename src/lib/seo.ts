@@ -12,7 +12,7 @@ type SEOProps = {
 export function constructMetadata({
   title,
   description,
-  image = "/images/og-default.jpg",
+  image = "/images/we-icecream.jpg",
   url = "",
   noIndex = false,
 }: SEOProps = {}): Metadata {
