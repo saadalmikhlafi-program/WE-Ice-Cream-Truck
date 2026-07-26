@@ -12,7 +12,7 @@ const SENDER_EMAIL = 'info@weicecreamtruck.com';
 const ADMIN_EMAIL  = process.env.ADMIN_EMAIL || 'info@weicecreamtruck.com';
 const REPLY_TO     = 'info@weicecreamtruck.com';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key_to_prevent_build_error');
 
 // ─── BASE TEMPLATE ───────────────────────────────────────────────
 function baseTemplate(content: string, title: string) {
