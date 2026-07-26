@@ -164,10 +164,10 @@ export default function PackagesClient({
                 </Link>
               </motion.div>
 
-              {/* Right: Image */}
+                {/* Right: Image */}
               <motion.div
                 initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.15 }}
-                className="relative h-[380px] lg:h-[560px] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl">
+                className="relative aspect-video lg:aspect-[3/2] rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl">
                 {/* Gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-navy/60 via-transparent to-transparent z-10" />
                 {/* Bottom label */}
@@ -251,7 +251,11 @@ function PackageGrid({ packages, accentColor }: { packages: any[]; accentColor: 
 
             {/* Card Image */}
             {pkg.imageUrl && (
-              <div className="relative w-full aspect-[3/4] shrink-0 overflow-hidden">
+              <div className={`relative w-full shrink-0 overflow-hidden ${
+                (pkg.serviceType === "VAN" || (pkg.imageUrl && pkg.imageUrl.includes("van_packages") && !pkg.imageUrl.includes("custom_event"))) 
+                  ? "aspect-[3/4]" 
+                  : "aspect-video"
+              }`}>
                 <div className="absolute inset-0 bg-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
                 
                 {/* Main Content */}
