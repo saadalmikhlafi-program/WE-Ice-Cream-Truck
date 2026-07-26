@@ -45,7 +45,8 @@ export default function BlogSection({ posts = [] }: { posts?: any[] }) {
               <div className="relative h-64 overflow-hidden">
                 <Image
                   src={post.featuredImage || "/images/blog/starter-event.jpg"}
-                  alt={post.title}
+                  alt={`${post.title} - WE Ice Cream Truck Massachusetts Blog`}
+                  title={post.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 33vw"

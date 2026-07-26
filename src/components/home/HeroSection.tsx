@@ -93,7 +93,8 @@ export default function HeroSection() {
           <div className="relative aspect-square w-full rounded-3xl overflow-hidden border-8 border-white shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500 z-20">
             <Image 
               src="/images/fundraise.jpg" 
-              alt="Happy kids with ice cream" 
+              alt="Happy children enjoying premium ice cream at a Massachusetts school fundraising event with WE Ice Cream Truck" 
+              title="WE Ice Cream Truck Fundraising Event Catering in Massachusetts"
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
               className="object-cover"
@@ -105,7 +106,8 @@ export default function HeroSection() {
           <div className="absolute -bottom-10 -left-10 w-2/3 aspect-[4/3] rounded-3xl overflow-hidden border-8 border-white shadow-xl -rotate-6 hover:-rotate-2 transition-transform duration-500 z-30 hidden md:block">
             <Image 
               src="/images/marketing-events.jpg" 
-              alt="Ice cream truck event" 
+              alt="Corporate marketing event catering with WE Ice Cream Truck in Boston Massachusetts serving frozen desserts" 
+              title="Corporate Ice Cream Truck Catering for Marketing Events in Boston MA"
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
               className="object-cover"
@@ -117,7 +119,8 @@ export default function HeroSection() {
           <div className="absolute -top-10 -right-10 w-1/2 aspect-square rounded-full overflow-hidden border-8 border-white shadow-xl rotate-12 hover:rotate-6 transition-transform duration-500 z-10 hidden md:block">
             <Image 
               src="/images/launch-parties.jpg" 
-              alt="Delicious ice cream" 
+              alt="Delicious premium ice cream novelties served at a product launch party in Massachusetts" 
+              title="Premium Ice Cream Catering for Launch Parties in Massachusetts"
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
               className="object-cover"

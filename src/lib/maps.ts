@@ -130,8 +130,9 @@ export class OSRMRoutingProvider implements RoutingProvider {
       // Use HTTPS to avoid mixed-content blocking in serverless environments
       const url = `https://router.project-osrm.org/route/v1/driving/${originLng},${originLat};${destLng},${destLat}?overview=false`;
       const res = await fetch(url, {
-        headers: { "User-Agent": "WEIceCreamTruck/1.0" },
+        headers: { "User-Agent": "WEIceCreamTruck/1.0 (info@weicecreamtruck.com)" },
         signal: AbortSignal.timeout(8000), // 8 second timeout
+        cache: "no-store"
       });
       if (!res.ok) throw new Error(`OSRM HTTP ${res.status}`);
       const data = await res.json();

@@ -14,7 +14,8 @@ export default function Logo({ className }: LogoProps) {
       <div className="relative w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden shadow-md">
         <Image
           src="/images/we-icecream.jpg"
-          alt="WE Ice Cream Truck Logo"
+          alt="WE Ice Cream Truck Official Logo - Premium Ice Cream Catering in Massachusetts"
+          title="WE Ice Cream Truck Massachusetts"
           fill
           className="object-cover"
           sizes="(max-width: 768px) 56px, 64px"

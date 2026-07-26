@@ -180,10 +180,11 @@ export default function PackagesClient({
                 </div>
                 <Image
                   src={pkg.imageUrl || "/images/van_packages/custom_event.jpg"}
-                  alt="Custom Large Event Setup"
+                  alt={`${pkg.name} - Custom large ice cream truck catering event in Massachusetts`}
+                  title={`Book a custom ${pkg.name} ice cream truck experience in MA`}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
+                  className="object-contain bg-gray-50/50"
                 />
               </motion.div>
             </div>
@@ -251,9 +252,10 @@ function PackageGrid({ packages, accentColor }: { packages: any[]; accentColor: 
                 <div className="absolute inset-0 bg-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
                 <Image 
                   src={pkg.imageUrl} 
-                  alt={pkg.name} 
+                  alt={`${pkg.name} - Premium ice cream truck catering package in Massachusetts`} 
+                  title={`Reserve our ${pkg.name} for your event in MA`}
                   fill 
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-contain transition-transform duration-700 group-hover:scale-105 bg-gray-50/50"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
                 {/* Smooth gradient blending into the header */}

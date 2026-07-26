@@ -33,16 +33,8 @@ export async function GET(request: Request) {
   if (zip) {
     const lookup = zipcodes.lookup(zip);
     
-    // Validate against database
-    const serviceZip = await prisma.serviceZipCode.findUnique({
-      where: { zip: zip }
-    });
-
-    if (!serviceZip || !serviceZip.isActive) {
-      return NextResponse.json({ 
-        error: "Sorry, our services are not currently available in this location, but will be available soon!" 
-      }, { status: 400 });
-    }
+    // Removed strict DB check per user request: all of MA is served.
+    // If needed in the future, we can still query the DB for specific active zips.
 
     if (lookup) {
       if (lookup.state !== "MA") {

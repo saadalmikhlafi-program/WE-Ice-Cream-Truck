@@ -27,13 +27,13 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
     <section className="relative py-24 md:py-32 overflow-hidden">
       {/* Playful background element */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-coral/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-      
+
       <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
-        
+
         {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 md:mb-24 text-center lg:text-left">
           <div className="max-w-2xl mx-auto lg:mx-0">
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -41,7 +41,7 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
             >
               Sweet <span className="text-coral underline decoration-wavy decoration-coral/30 underline-offset-8">Packages</span>
             </motion.h2>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -56,18 +56,18 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <Link 
+            <Link
               href="/packages"
               className="group inline-flex items-center gap-3 font-sans font-bold text-navy uppercase tracking-widest text-sm bg-white px-8 py-4 rounded-full border-2 border-navy/10 hover:border-coral hover:text-coral transition-all shadow-sm hover:shadow-md"
             >
-              See All Packages 
+              See All Packages
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Link>
           </motion.div>
         </div>
 
         {/* High-End Clean Cards (No fake images) */}
-        <motion.div 
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
@@ -75,13 +75,12 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
           className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto"
         >
           {featuredPackages.map((pkg) => (
-            <motion.div 
+            <motion.div
               key={pkg.id}
               variants={itemVariants}
               whileHover={{ y: -10 }}
-              className={`group flex flex-col bg-white rounded-[2.5rem] overflow-hidden border transition-all duration-300 shadow-xl ${
-                pkg.isPopular ? "border-coral shadow-coral/20 relative" : "border-gray-100 shadow-gray-100/80"
-              }`}
+              className={`group flex flex-col bg-white rounded-[2.5rem] overflow-hidden border transition-all duration-300 shadow-xl ${pkg.isPopular ? "border-coral shadow-coral/20 relative" : "border-gray-100 shadow-gray-100/80"
+                }`}
             >
               {pkg.isPopular && (
                 <div className="absolute top-0 right-8 bg-coral text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-b-xl shadow-lg z-10">
@@ -93,11 +92,12 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
               {pkg.imageUrl && (
                 <div className="relative w-full aspect-[4/3] shrink-0 overflow-hidden">
                   <div className="absolute inset-0 bg-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
-                  <Image 
-                    src={pkg.imageUrl} 
-                    alt={pkg.name} 
-                    fill 
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  <Image
+                    src={pkg.imageUrl}
+                    alt={`${pkg.name} - Ice cream truck rental and catering package in Massachusetts`}
+                    title={`Rent our ${pkg.name} for your event in MA`}
+                    fill
+                    className="object-contain transition-transform duration-700 group-hover:scale-105 bg-gray-50/50"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   {/* Smooth gradient blending into the header */}
@@ -141,11 +141,10 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
 
                 <Link
                   href={`/get-a-quote?package=${pkg.slug}`}
-                  className={`w-full py-5 rounded-full text-center font-sans font-black text-[0.9rem] tracking-widest uppercase transition-all duration-300 transform active:scale-95 ${
-                    pkg.isPopular
+                  className={`w-full py-5 rounded-full text-center font-sans font-black text-[0.9rem] tracking-widest uppercase transition-all duration-300 transform active:scale-95 ${pkg.isPopular
                       ? "bg-coral text-white shadow-lg shadow-coral/30 hover:bg-navy"
                       : "bg-navy text-white hover:bg-[#1a2a4a] shadow-navy/20"
-                  }`}
+                    }`}
                 >
                   Book This Experience
                 </Link>
