@@ -90,7 +90,7 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
 
               {/* Card Image */}
               {pkg.imageUrl && (
-                <div className="relative w-full aspect-video shrink-0 overflow-hidden">
+                <div className="relative w-full aspect-[3/4] shrink-0 overflow-hidden">
                   <div className="absolute inset-0 bg-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
                   
                   {/* Main Content */}
