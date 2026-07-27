@@ -81,17 +81,28 @@ export default function LocationPicker({
 
   // Initialize Leaflet map
   useEffect(() => {
-    if (!mapContainerRef.current || mapInstanceRef.current) return;
+    let destroyed = false;
 
     // Dynamic import to avoid SSR issues
     const initMap = async () => {
+      if (!mapContainerRef.current) return;
+      
       const L = (await import("leaflet")).default;
+      
+      if (destroyed) return; // Component unmounted before leaflet loaded
 
-      // Fix for strict mode "Map container is already initialized"
+      // If a map already exists on this container, remove it first
       const container = mapContainerRef.current as any;
-      if (container && container._leaflet_id) {
+      if (container._leaflet_id) {
         container._leaflet_id = null;
       }
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+        markerRef.current = null;
+      }
+
+      if (destroyed) return;
 
       // Default to Boston, MA
       const defaultCenter: [number, number] = [42.3601, -71.0589];
@@ -173,15 +184,24 @@ export default function LocationPicker({
 
       mapInstanceRef.current = map;
       markerRef.current = marker;
-      setMapReady(true);
+
+      // Force a size recalculation in case the container was not visible on init
+      setTimeout(() => {
+        if (!destroyed && mapInstanceRef.current) {
+          mapInstanceRef.current.invalidateSize();
+          setMapReady(true);
+        }
+      }, 100);
     };
 
     initMap();
 
     return () => {
+      destroyed = true;
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
+        markerRef.current = null;
       }
     };
   }, []);
