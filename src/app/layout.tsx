@@ -8,6 +8,7 @@ import { constructMetadata } from "@/lib/seo";
 import { Providers } from "./providers";
 import PublicLayout from "@/components/layout/PublicLayout";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 // ─── FONTS ──────────────────────────────────────────────────────────
 
@@ -105,6 +106,7 @@ export default async function RootLayout({
           <PublicLayout footerConfig={footerConfig}>{children}</PublicLayout>
         </Providers>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );

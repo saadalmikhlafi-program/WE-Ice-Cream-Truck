@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { sendContactMessageNotification } from '@/lib/email';
 
 export async function POST(request: Request) {
   try {
@@ -12,21 +13,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // Mocking the database save since Prisma engines failed to download
-    // const message = await prisma.contactMessage.create({
-    //   data: {
-    //     firstName: body.firstName,
-    //     lastName: body.lastName || '',
-    //     email: body.email,
-    //     message: body.message,
-    //     status: 'UNREAD',
-    //   },
-    // });
+    const messageData = {
+      name: `${body.firstName} ${body.lastName || ''}`.trim(),
+      email: body.email,
+      message: body.message
+    };
+    
+    await sendContactMessageNotification(messageData);
 
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-
-    return NextResponse.json({ success: true, messageId: 'mock-msg-123' });
+    return NextResponse.json({ success: true, messageId: 'msg-' + Date.now() });
   } catch (error) {
     console.error('Error processing contact message:', error);
     return NextResponse.json(

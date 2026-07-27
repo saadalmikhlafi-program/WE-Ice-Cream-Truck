@@ -82,7 +82,7 @@ function baseTemplate(content: string, title: string) {
 }
 
 // ─── CORE SEND WITH RETRY ──────────────────────────────────────
-export async function sendEmail({ to, subject, html, title }: { to: string; subject: string; html: string; title?: string }) {
+export async function sendEmail({ to, subject, html, title, replyTo }: { to: string; subject: string; html: string; title?: string; replyTo?: string }) {
   const MAX_RETRIES = 2;
   const RETRY_DELAY_MS = 2000;
 
@@ -95,7 +95,7 @@ export async function sendEmail({ to, subject, html, title }: { to: string; subj
     try {
       const { data, error } = await resend.emails.send({
         from: `"WE Ice Cream Truck" <${SENDER_EMAIL}>`,
-        replyTo: REPLY_TO,
+        replyTo: replyTo || REPLY_TO,
         to: [to],
         subject: subject,
         html: baseTemplate(html, title || subject),
@@ -577,7 +577,7 @@ export async function sendOwnerNewBookingEmail(booking: any) {
       <a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">View Booking</a>
     </div>
   `;
-  return sendEmail({ to, subject, html });
+  return sendEmail({ to, subject, html, replyTo: booking.customer?.email });
 }
 
 export async function sendOwnerRequiresApprovalEmail(booking: any) {
@@ -594,7 +594,7 @@ export async function sendOwnerRequiresApprovalEmail(booking: any) {
     </table>
     <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Approve Booking</a></div>
   `;
-  return sendEmail({ to, subject: `Booking Awaiting Approval`, html });
+  return sendEmail({ to, subject: `Booking Awaiting Approval`, html, replyTo: booking.customer?.email });
 }
 
 export async function sendOwnerLateBookingAlert(booking: any) {
@@ -612,7 +612,7 @@ export async function sendOwnerLateBookingAlert(booking: any) {
     </table>
     <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:\${BRAND_CORAL};color:#FFFFFF;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">View Urgent Booking</a></div>
   `;
-  return sendEmail({ to, subject: `URGENT – Last Minute Booking`, html });
+  return sendEmail({ to, subject: `URGENT – Last Minute Booking`, html, replyTo: booking.customer?.email });
 }
 
 export async function sendOwnerEventReminderEmail(booking: any) {
@@ -656,7 +656,7 @@ export async function sendChatEscalationOwnerEmail(inquiry: { id: string; name: 
       <a href="${inquiryUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">View Conversation in Admin Inbox</a>
     </div>
   `;
-  return sendEmail({ to: OWNER_EMAIL, subject: `🚨 Human Support Requested — ${inquiry.name}`, html, title: "Human Support Requested" });
+  return sendEmail({ to: OWNER_EMAIL, subject: `🚨 Human Support Requested — ${inquiry.name}`, html, title: "Human Support Requested", replyTo: inquiry.email });
 }
 
 // ─── GOOGLE REVIEW REQUEST ────────────────────────────────────
@@ -690,4 +690,37 @@ export async function sendGoogleReviewRequestEmail(booking: { id: string; bookin
     </div>
   `;
   return sendEmail({ to: booking.customer.email, subject: `${customerName}, thank you for choosing WE Ice Cream Truck! ⭐`, html, title: "Thank You — WE Ice Cream Truck" });
+}
+
+// ─── CONTACT AND QUOTE REQUEST NOTIFICATIONS ──────────────────
+export async function sendContactMessageNotification(data: { name: string, email: string, message: string }) {
+  const html = `
+    <h2 style="color:${BRAND_NAVY};margin-top:0;">New Contact Form Message</h2>
+    <table width="100%" cellpadding="10" cellspacing="0" style="border-collapse:collapse;font-size:15px;color:#374151;">
+      <tr><td width="25%" style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Name</td><td style="border-bottom:1px solid #E5E7EB;">${data.name}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Email</td><td style="border-bottom:1px solid #E5E7EB;">${data.email}</td></tr>
+    </table>
+    <div style="margin-top:20px;padding:15px;background:#F9FAFB;border-left:4px solid ${BRAND_CORAL};">
+      <p style="margin:0;font-weight:600;white-space:pre-wrap;">${data.message}</p>
+    </div>
+  `;
+  return sendEmail({ to: ADMIN_EMAIL, subject: `Contact Form Message from ${data.name}`, html, replyTo: data.email });
+}
+
+export async function sendQuoteRequestNotification(inquiry: any) {
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/inquiries`;
+  const html = `
+    <h2 style="color:${BRAND_NAVY};margin-top:0;">New Custom Quote Request</h2>
+    <table width="100%" cellpadding="10" cellspacing="0" style="border-collapse:collapse;font-size:15px;color:#374151;">
+      <tr><td width="35%" style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Customer Name</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.name}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Phone</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.phone || 'N/A'}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Email</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.email}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Event Type</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.eventType}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Event Date</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.eventDate ? new Date(inquiry.eventDate).toLocaleDateString() : 'N/A'}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Guest Count</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.guestCount || 'N/A'}</td></tr>
+    </table>
+    ${inquiry.notes ? `<div style="margin-top:20px;padding:15px;background:#F9FAFB;border-left:4px solid ${BRAND_CORAL};"><p style="margin:0;font-weight:600;white-space:pre-wrap;">${inquiry.notes}</p></div>` : ''}
+    <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">View in Admin</a></div>
+  `;
+  return sendEmail({ to: ADMIN_EMAIL, subject: `Custom Quote Request: ${inquiry.name}`, html, replyTo: inquiry.email });
 }

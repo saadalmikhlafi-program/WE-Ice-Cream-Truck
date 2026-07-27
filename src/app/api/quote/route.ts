@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { sendQuoteRequestNotification } from '@/lib/email';
 
 // Simple in-memory rate limiter (resets on server restart/cold start)
 const rateLimitMap = new Map<string, { count: number, timestamp: number }>();
@@ -54,6 +55,12 @@ export async function POST(request: Request) {
         status: 'NEW',
       },
     });
+
+    try {
+      await sendQuoteRequestNotification(inquiry);
+    } catch (e) {
+      console.error("Failed to send quote notification", e);
+    }
 
     return NextResponse.json({ success: true, quoteId: inquiry.id });
   } catch (error) {

@@ -85,16 +85,15 @@ export async function POST(req: Request) {
         }
       });
     } else {
-      // Update existing customer with latest information from the form
+      // Update existing customer ONLY for fields they are missing, to prevent 
+      // overwriting their primary account name with a one-off booking name.
       customer = await prisma.customer.update({
         where: { id: customer.id },
         data: {
-          firstName,
-          lastName,
-          phone,
-          address: address || null,
-          city: city || null,
-          zip: zip || null
+          phone: customer.phone ? customer.phone : phone,
+          address: customer.address ? customer.address : (address || null),
+          city: customer.city ? customer.city : (city || null),
+          zip: customer.zip ? customer.zip : (zip || null)
         }
       });
     }
