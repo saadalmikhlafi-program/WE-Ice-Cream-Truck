@@ -8,7 +8,7 @@ import { constructMetadata } from "@/lib/seo";
 import { Providers } from "./providers";
 import PublicLayout from "@/components/layout/PublicLayout";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 
 // ─── FONTS ──────────────────────────────────────────────────────────
 
