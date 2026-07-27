@@ -86,7 +86,6 @@ export default function LocationPicker({
     // Dynamic import to avoid SSR issues
     const initMap = async () => {
       const L = (await import("leaflet")).default;
-      await import("leaflet/dist/leaflet.css");
 
       // Fix for strict mode "Map container is already initialized"
       const container = mapContainerRef.current as any;
