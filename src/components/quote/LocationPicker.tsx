@@ -117,12 +117,12 @@ export default function LocationPicker({
       // Add zoom control to bottom-right
       L.control.zoom({ position: "bottomright" }).addTo(map);
 
-      // Use a clean, modern tile layer
+      // Use OpenStreetMap tiles (universally accessible)
       L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
           maxZoom: 19,
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }
       ).addTo(map);
 
