@@ -149,8 +149,8 @@ export class OSRMRoutingProvider implements RoutingProvider {
       }
       throw new Error("No route found in OSRM response");
     } catch (e) {
-      console.error("OSRM Error:", e);
-      // Fallback: use haversine × 1.35 as a rough driving estimate
+      console.warn("OSRM Warning (using fallback):", (e as Error).message);
+      // Fallback: use haversine * 1.35 as a rough driving estimate
       return haversineDistanceMiles(originLat, originLng, destLat, destLng) * 1.35;
     }
   }
