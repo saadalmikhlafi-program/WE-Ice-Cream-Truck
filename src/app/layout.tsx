@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Outfit } from "next/font/google";
 import "./globals.css";
+import "leaflet/dist/leaflet.css";
 import { BUSINESS_CONFIG } from "@/lib/config";
 import { getSettings } from "@/lib/settings";
 import { constructMetadata } from "@/lib/seo";
