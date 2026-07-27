@@ -185,13 +185,19 @@ export default function LocationPicker({
       mapInstanceRef.current = map;
       markerRef.current = marker;
 
-      // Force a size recalculation in case the container was not visible on init
+      // Force a size recalculation - the container may not be visible/measured yet
+      // Use multiple attempts to ensure the map renders properly
       setTimeout(() => {
         if (!destroyed && mapInstanceRef.current) {
-          mapInstanceRef.current.invalidateSize();
-          setMapReady(true);
+          mapInstanceRef.current.invalidateSize(true);
         }
       }, 100);
+      setTimeout(() => {
+        if (!destroyed && mapInstanceRef.current) {
+          mapInstanceRef.current.invalidateSize(true);
+          setMapReady(true);
+        }
+      }, 500);
     };
 
     initMap();
@@ -490,10 +496,11 @@ export default function LocationPicker({
       </div>
 
       {/* Map */}
-      <div className="relative rounded-2xl overflow-hidden border-2 border-gray-200 bg-gray-100 shadow-inner">
+      <div className="relative rounded-2xl border-2 border-gray-200 bg-gray-100 shadow-inner" style={{ overflow: 'hidden' }}>
         <div
           ref={mapContainerRef}
-          className="w-full h-[320px] md:h-[380px] z-0"
+          style={{ width: '100%', height: '320px', position: 'relative', zIndex: 0 }}
+          className="md:h-[380px]"
         />
 
         {/* Map loading overlay */}
