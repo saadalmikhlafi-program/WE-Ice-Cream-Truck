@@ -51,7 +51,9 @@ export async function POST(req: Request) {
     }
 
     // ─── 2. Get package info from database (Strict Server-Side Pricing) ──
-    const dbPackage = packageId ? await prisma.package.findUnique({ where: { id: packageId } }) : null;
+    const dbPackage = packageId ? await prisma.package.findFirst({ 
+      where: { OR: [{ id: packageId }, { slug: packageId }] } 
+    }) : null;
     
     const durationMins = dbPackage?.durationMins ?? 60;
     const totalGuests = (dbPackage?.servings ?? 0) + (extraGuests ?? 0);

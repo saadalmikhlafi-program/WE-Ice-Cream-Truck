@@ -5,6 +5,8 @@ import MultiStepQuoteForm from "@/components/quote/MultiStepQuoteForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
+import prisma from "@/lib/prisma";
+
 export const metadata: Metadata = constructMetadata({
   title: "Get a Free Quote | WE Ice Cream Truck",
   description: "Book Massachusetts' premium ice cream truck for your next event. Fill out our quick 2-minute form for instant pricing and availability.",
@@ -22,7 +24,12 @@ function QuoteFormLoading() {
   );
 }
 
-export default function GetAQuotePage() {
+export default async function GetAQuotePage() {
+  const dbPackages = await prisma.package.findMany({
+    where: { isActive: true },
+    orderBy: { sortOrder: 'asc' }
+  });
+
   return (
     <div className="min-h-screen bg-sand flex flex-col relative pb-24 md:pb-0">
       {/* Distraction-free header */}
@@ -52,7 +59,7 @@ export default function GetAQuotePage() {
           </div>
 
           <Suspense fallback={<QuoteFormLoading />}>
-            <MultiStepQuoteForm />
+            <MultiStepQuoteForm dbPackages={dbPackages} />
           </Suspense>
         </div>
       </main>

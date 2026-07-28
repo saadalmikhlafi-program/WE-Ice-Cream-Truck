@@ -54,6 +54,11 @@ export function constructMetadata({
       description: fullDescription,
       images: [image],
     },
+    icons: {
+      icon: "/images/we-icecream.jpg",
+      shortcut: "/images/we-icecream.jpg",
+      apple: "/images/we-icecream.jpg",
+    },
     robots: {
       index: !noIndex,
       follow: !noIndex,

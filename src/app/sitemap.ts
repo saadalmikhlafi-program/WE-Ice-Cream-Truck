@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { BUSINESS_CONFIG } from '@/lib/config';
 import { getAllServices } from '@/lib/services-data';
-import { getTopCities } from '@/lib/cities-data';
+import { MASSACHUSETTS_CITIES } from '@/lib/cities-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = BUSINESS_CONFIG.domain;
@@ -33,12 +33,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  // Dynamic City routes
-  const cities = getTopCities().map((city) => ({
+  // Dynamic City routes — include ALL cities so Google can find and index them
+  const cities = MASSACHUSETTS_CITIES.map((city) => ({
     url: `${baseUrl}/cities/${city.slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
-    priority: 0.7,
+    priority: city.isTopCity ? 0.8 : 0.6,
   }));
 
   return [...routes, ...services, ...cities];

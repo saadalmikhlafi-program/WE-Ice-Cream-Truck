@@ -7,7 +7,7 @@ import {
   Calendar, Clock, MapPin, Users, Map, User, Mail, Phone, 
   ArrowRight, ArrowLeft, Check, CheckCircle2, AlertCircle, Loader2, Info
 } from "lucide-react";
-import { PACKAGES, getPackageBySlug, Package } from "@/lib/packages-data";
+import { PACKAGES, Package } from "@/lib/packages-data";
 import dynamic from "next/dynamic";
 
 const LocationPicker = dynamic(
@@ -17,10 +17,43 @@ const LocationPicker = dynamic(
 
 type RoutingMode = "SINGLE" | "SEQUENTIAL" | "SIMULTANEOUS";
 
-export default function MultiStepQuoteForm() {
+export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] }) {
   const searchParams = useSearchParams();
   const initialPackageSlug = searchParams.get("package");
-  const initialPackage = initialPackageSlug ? getPackageBySlug(initialPackageSlug) : undefined;
+  
+  // Try to find the package from DB first (which has updated prices), fallback to hardcoded if not found
+  let initialPackage: Package | undefined = undefined;
+  if (initialPackageSlug) {
+    if (dbPackages && dbPackages.length > 0) {
+      const dbMatch = dbPackages.find(p => p.slug === initialPackageSlug);
+      if (dbMatch) {
+        initialPackage = {
+          id: dbMatch.id, // we pass the CUID to backend
+          slug: dbMatch.slug,
+          name: dbMatch.name,
+          tagline: dbMatch.description || "",
+          vehicleType: "TRUCK",
+          vehicleLabel: "Ice Cream Truck",
+          servings: dbMatch.servings,
+          price: dbMatch.price,
+          extraGuestPrice: dbMatch.extraPiecePrice,
+          durationMins: 60, // Default duration
+          durationLabel: "60 Minute Service",
+          description: dbMatch.description || "",
+          features: [],
+          isPopular: false,
+          isCustom: false,
+          sortOrder: dbMatch.sortOrder,
+          iconName: dbMatch.badge || "Star",
+          illustrationSlug: "truck-50",
+        };
+      }
+    }
+    // If not found in DB, use hardcoded (legacy support)
+    if (!initialPackage) {
+      initialPackage = PACKAGES.find((p) => p.slug === initialPackageSlug);
+    }
+  }
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
