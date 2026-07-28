@@ -14,6 +14,14 @@ const REPLY_TO     = 'info@weicecreamtruck.com';
 
 const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key_to_prevent_build_error');
 
+export function getAdminRecipients() {
+  const recipients = new Set(['info@weicecreamtruck.com']);
+  if (process.env.ADMIN_EMAIL) {
+    recipients.add(process.env.ADMIN_EMAIL);
+  }
+  return Array.from(recipients);
+}
+
 // ─── BASE TEMPLATE ───────────────────────────────────────────────
 function baseTemplate(content: string, title: string) {
   return `<!DOCTYPE html>
