@@ -102,43 +102,39 @@ export default function HeroSection() {
             />
           </div>
           
-          {/* Secondary Photo 1 */}
+          {/* Secondary Photo 1 - hidden on mobile, no priority needed */}
           <div className="absolute -bottom-10 -left-10 w-2/3 aspect-[4/3] rounded-3xl overflow-hidden border-8 border-white shadow-xl -rotate-6 hover:-rotate-2 transition-transform duration-500 z-30 hidden md:block">
             <Image 
               src="/images/marketing-events.jpg" 
               alt="Corporate marketing event catering with WE Ice Cream Truck in Boston Massachusetts serving frozen desserts" 
               title="Corporate Ice Cream Truck Catering for Marketing Events in Boston MA"
               fill
-              sizes="(max-width: 768px) 100vw, 33vw"
+              sizes="33vw"
               className="object-cover"
-              priority
+              loading="lazy"
             />
           </div>
 
-          {/* Secondary Photo 2 */}
+          {/* Secondary Photo 2 - hidden on mobile, no priority needed */}
           <div className="absolute -top-10 -right-10 w-1/2 aspect-square rounded-full overflow-hidden border-8 border-white shadow-xl rotate-12 hover:rotate-6 transition-transform duration-500 z-10 hidden md:block">
             <Image 
               src="/images/launch-parties.jpg" 
               alt="Delicious premium ice cream novelties served at a product launch party in Massachusetts" 
               title="Premium Ice Cream Catering for Launch Parties in Massachusetts"
               fill
-              sizes="(max-width: 768px) 100vw, 33vw"
+              sizes="25vw"
               className="object-cover"
-              priority
+              loading="lazy"
             />
           </div>
           
-          {/* Floating Element */}
-          <motion.div 
-            animate={{ y: [0, -15, 0] }}
-            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            className="absolute top-10 -left-5 bg-white py-3 px-6 rounded-full shadow-lg z-40 flex items-center gap-2 border-2 border-gold/20"
-          >
+          {/* Floating Element - CSS animation instead of JS (GPU composited) */}
+          <div className="absolute top-10 -left-5 bg-white py-3 px-6 rounded-full shadow-lg z-40 flex items-center gap-2 border-2 border-gold/20 animate-float">
             <div className="flex text-gold">
               {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
             </div>
             <span className="font-bold text-navy">500+ Events</span>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
 

@@ -1,18 +1,22 @@
 import { Metadata } from "next";
 import { BUSINESS_CONFIG } from "@/lib/config";
 import { constructMetadata } from "@/lib/seo";
+import dynamic from "next/dynamic";
 
+// ─── Critical (above-fold): load eagerly ──────────────────────────────
 import HeroSection from "@/components/home/HeroSection";
 import TrustStats from "@/components/home/TrustStats";
-import ServicesMarquee from "@/components/home/ServicesMarquee";
-import BrandCarousel from "@/components/shared/BrandCarousel";
-import HowItWorks from "@/components/home/HowItWorks";
-import BlogSection from "@/components/home/BlogSection";
-import PackagesPreview from "@/components/home/PackagesPreview";
-import TestimonialsCarousel from "@/components/home/TestimonialsCarousel";
-import CityMapSection from "@/components/home/CityMapSection";
-import AIConciergeTeaser from "@/components/home/AIConciergeTeaser";
-import FinalCTA from "@/components/home/FinalCTA";
+
+// ─── Below-fold: lazy-load to reduce initial bundle ──────────────────
+const ServicesMarquee = dynamic(() => import("@/components/home/ServicesMarquee"));
+const BrandCarousel = dynamic(() => import("@/components/shared/BrandCarousel"));
+const HowItWorks = dynamic(() => import("@/components/home/HowItWorks"));
+const BlogSection = dynamic(() => import("@/components/home/BlogSection"));
+const PackagesPreview = dynamic(() => import("@/components/home/PackagesPreview"));
+const TestimonialsCarousel = dynamic(() => import("@/components/home/TestimonialsCarousel"));
+const CityMapSection = dynamic(() => import("@/components/home/CityMapSection"));
+const AIConciergeTeaser = dynamic(() => import("@/components/home/AIConciergeTeaser"));
+const FinalCTA = dynamic(() => import("@/components/home/FinalCTA"));
 
 import { prisma } from "@/lib/prisma";
 

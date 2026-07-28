@@ -84,6 +84,14 @@
     66% { transform: translate(-20px, 20px) scale(0.9); border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
     100% { transform: translate(0px, 0px) scale(1); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
   }
+
+  /* GPU-composited float animation (uses transform only) */
+  --animate-float: float 4s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+  }
 }
 
 @layer base {

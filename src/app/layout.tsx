@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Outfit } from "next/font/google";
 import "./globals.css";
-import "leaflet/dist/leaflet.css";
+
 import { BUSINESS_CONFIG } from "@/lib/config";
 import { getSettings } from "@/lib/settings";
 import { constructMetadata } from "@/lib/seo";
@@ -95,6 +95,10 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        {/* Preload LCP hero image for faster rendering */}
+        <link rel="preload" as="image" href="/images/fundraise.jpg" fetchPriority="high" />
+      </head>
       <body
         className={`${playfair.variable} ${outfit.variable} font-sans bg-cream text-charcoal antialiased min-h-screen flex flex-col relative`}
       >
