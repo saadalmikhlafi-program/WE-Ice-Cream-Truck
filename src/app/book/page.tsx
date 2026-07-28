@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Logo from "@/components/shared/Logo";
 
+import prisma from "@/lib/prisma";
+
 export const metadata: Metadata = constructMetadata({
   title: "Book Your Event | WE Ice Cream Truck",
   description: "Book your ice cream truck or van experience for any event in Massachusetts. Easy online booking in just a few steps.",
@@ -23,7 +25,12 @@ function BookingLoading() {
   );
 }
 
-export default function BookPage() {
+export default async function BookPage() {
+  const dbPackages = await prisma.package.findMany({
+    where: { isActive: true },
+    orderBy: { sortOrder: 'asc' }
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream via-sand/30 to-cream flex flex-col relative pb-24 md:pb-0">
       {/* Distraction-free header */}
@@ -62,7 +69,7 @@ export default function BookPage() {
           </div>
 
           <Suspense fallback={<BookingLoading />}>
-            <MultiStepQuoteForm />
+            <MultiStepQuoteForm dbPackages={dbPackages} />
           </Suspense>
         </div>
       </main>

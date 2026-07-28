@@ -23,36 +23,41 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
   
   // Try to find the package from DB first (which has updated prices), fallback to hardcoded if not found
   let initialPackage: Package | undefined = undefined;
-  if (initialPackageSlug) {
-    if (dbPackages && dbPackages.length > 0) {
-      const dbMatch = dbPackages.find(p => p.slug === initialPackageSlug);
-      if (dbMatch) {
-        initialPackage = {
-          id: dbMatch.id, // we pass the CUID to backend
-          slug: dbMatch.slug,
-          name: dbMatch.name,
-          tagline: dbMatch.description || "",
-          vehicleType: "TRUCK",
-          vehicleLabel: "Ice Cream Truck",
-          servings: dbMatch.servings,
-          price: dbMatch.price,
-          extraGuestPrice: dbMatch.extraPiecePrice,
-          durationMins: 60, // Default duration
-          durationLabel: "60 Minute Service",
-          description: dbMatch.description || "",
-          features: [],
-          isPopular: false,
-          isCustom: false,
-          sortOrder: dbMatch.sortOrder,
-          iconName: dbMatch.badge || "Star",
-          illustrationSlug: "truck-50",
-        };
-      }
+  
+  if (dbPackages && dbPackages.length > 0) {
+    const dbMatch = initialPackageSlug 
+      ? dbPackages.find(p => p.slug === initialPackageSlug)
+      : dbPackages[0];
+      
+    if (dbMatch) {
+      initialPackage = {
+        id: dbMatch.id, // we pass the CUID to backend
+        slug: dbMatch.slug,
+        name: dbMatch.name,
+        tagline: dbMatch.description || "The perfect ice cream experience",
+        vehicleType: dbMatch.serviceType === "VAN" ? "VAN" : dbMatch.serviceType === "CUSTOM" ? "CUSTOM" : "TRUCK",
+        vehicleLabel: dbMatch.serviceType === "VAN" ? "Premium Van" : dbMatch.serviceType === "CUSTOM" ? "Custom" : "Ice Cream Truck",
+        servings: dbMatch.servings,
+        price: dbMatch.price,
+        extraGuestPrice: dbMatch.extraPiecePrice ?? 5,
+        durationMins: dbMatch.durationMins || 60,
+        durationLabel: `${dbMatch.durationMins || 60} Minute Service`,
+        description: dbMatch.description || "",
+        features: [],
+        isPopular: dbMatch.badge === "Most Popular",
+        isCustom: dbMatch.serviceType === "CUSTOM",
+        sortOrder: dbMatch.sortOrder || 1,
+        iconName: dbMatch.badge || "Star",
+        illustrationSlug: "truck-50",
+      };
     }
-    // If not found in DB, use hardcoded (legacy support)
-    if (!initialPackage) {
-      initialPackage = PACKAGES.find((p) => p.slug === initialPackageSlug);
-    }
+  }
+
+  // Fallback to hardcoded packages-data if not found in DB
+  if (!initialPackage) {
+    initialPackage = initialPackageSlug 
+      ? PACKAGES.find((p) => p.slug === initialPackageSlug) || PACKAGES[0]
+      : PACKAGES[0];
   }
 
   const [step, setStep] = useState(1);
