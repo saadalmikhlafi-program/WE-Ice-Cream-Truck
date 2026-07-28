@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { BookingSchema } from "@/lib/validations";
-import { sendBookingPendingEmail, sendOwnerNewBookingEmail } from "@/lib/email";
+import { 
+  sendBookingPendingEmail, 
+  sendBookingPendingReviewEmail,
+  sendOwnerNewBookingEmail, 
+  sendOwnerRequiresApprovalEmail 
+} from "@/lib/email";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -149,12 +154,37 @@ export async function POST(req: Request) {
       }
     });
 
-    // ─── 6. Send Emails ───────────────────────────────────────────
+    // ─── 6. Send Emails (Independent try-catch for customer vs owner) ────
     try {
-      await sendBookingPendingEmail(email.toLowerCase(), firstName, bookingNumber, {}, booking.id);
-      await sendOwnerNewBookingEmail(booking);
-    } catch (emailError) {
-      console.error("[BOOKING] Email failed:", emailError);
+      if (status === "PENDING_REVIEW") {
+        await sendBookingPendingReviewEmail(
+          email.toLowerCase(), 
+          firstName, 
+          bookingNumber, 
+          "Special location distance or setup requires manual review by our team.", 
+          booking.id
+        );
+      } else {
+        await sendBookingPendingEmail(
+          email.toLowerCase(), 
+          firstName, 
+          bookingNumber, 
+          { packageName: pkgName, totalAmount: serverTotalAmount }, 
+          booking.id
+        );
+      }
+    } catch (customerEmailError) {
+      console.error("[BOOKING] Customer notification email failed:", customerEmailError);
+    }
+
+    try {
+      if (status === "PENDING_REVIEW") {
+        await sendOwnerRequiresApprovalEmail(booking);
+      } else {
+        await sendOwnerNewBookingEmail(booking);
+      }
+    } catch (ownerEmailError) {
+      console.error("[BOOKING] Owner notification email failed:", ownerEmailError);
     }
 
     return NextResponse.json({ success: true, bookingNumber, status });

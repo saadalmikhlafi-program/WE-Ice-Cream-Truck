@@ -82,21 +82,23 @@ function baseTemplate(content: string, title: string) {
 }
 
 // ─── CORE SEND WITH RETRY ──────────────────────────────────────
-export async function sendEmail({ to, subject, html, title, replyTo }: { to: string; subject: string; html: string; title?: string; replyTo?: string }) {
+export async function sendEmail({ to, subject, html, title, replyTo }: { to: string | string[]; subject: string; html: string; title?: string; replyTo?: string }) {
   const MAX_RETRIES = 2;
   const RETRY_DELAY_MS = 2000;
 
   if (!process.env.RESEND_API_KEY) {
-    console.warn(`[Email] ⚠️ RESEND_API_KEY is not set. Skipped sending "${subject}" to ${to}`);
+    console.warn(`[Email] ⚠️ RESEND_API_KEY is not set. Skipped sending "${subject}" to ${JSON.stringify(to)}`);
     return false;
   }
+
+  const recipients = Array.from(new Set((Array.isArray(to) ? to : [to]).filter(Boolean)));
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
       const { data, error } = await resend.emails.send({
         from: `"WE Ice Cream Truck" <${SENDER_EMAIL}>`,
         replyTo: replyTo || REPLY_TO,
-        to: [to],
+        to: recipients,
         subject: subject,
         html: baseTemplate(html, title || subject),
       });
@@ -554,8 +556,8 @@ function formatEventDate(dateObj: Date | string | null | undefined) {
 }
 
 export async function sendOwnerNewBookingEmail(booking: any) {
-  const to = ADMIN_EMAIL;
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
+  const to = getAdminRecipients();
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://weicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const dateStr = formatEventDate(booking.eventDate);
   const subject = `New Booking Received – ${booking.customer?.firstName} ${booking.customer?.lastName} – ${dateStr}`;
   const html = `
@@ -581,8 +583,8 @@ export async function sendOwnerNewBookingEmail(booking: any) {
 }
 
 export async function sendOwnerRequiresApprovalEmail(booking: any) {
-  const to = ADMIN_EMAIL;
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
+  const to = getAdminRecipients();
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://weicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const html = `
     <h2 style="color:${BRAND_NAVY};margin-top:0;">Booking Awaiting Approval</h2>
     <p>The following booking requires manual approval:</p>
@@ -598,10 +600,10 @@ export async function sendOwnerRequiresApprovalEmail(booking: any) {
 }
 
 export async function sendOwnerLateBookingAlert(booking: any) {
-  const to = ADMIN_EMAIL;
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
+  const to = getAdminRecipients();
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://weicecreamtruck.com'}/admin/bookings/${booking.id}`;
   const html = `
-    <h2 style="color:\${BRAND_CORAL};margin-top:0;">⚠️ URGENT – Last Minute Booking</h2>
+    <h2 style="color:${BRAND_CORAL};margin-top:0;">⚠️ URGENT – Last Minute Booking</h2>
     <p>A booking was just created for an event starting in less than 24 hours.</p>
     <table width="100%" cellpadding="10" cellspacing="0" style="border-collapse:collapse;font-size:15px;color:#374151;">
       <tr><td width="35%" style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Customer Name</td><td style="border-bottom:1px solid #E5E7EB;">${booking.customer?.firstName} ${booking.customer?.lastName}</td></tr>
