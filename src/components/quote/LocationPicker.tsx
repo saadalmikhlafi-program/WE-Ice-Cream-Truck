@@ -87,15 +87,6 @@ export default function LocationPicker({
     const initMap = async () => {
       if (!mapContainerRef.current) return;
       
-      // Load Leaflet CSS dynamically only when the map is needed
-      if (!document.getElementById("leaflet-css")) {
-        const link = document.createElement("link");
-        link.id = "leaflet-css";
-        link.rel = "stylesheet";
-        link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.min.css";
-        document.head.appendChild(link);
-      }
-      
       const L = (await import("leaflet")).default;
       
       if (destroyed) return; // Component unmounted before leaflet loaded
