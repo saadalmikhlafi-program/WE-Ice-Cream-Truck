@@ -102,7 +102,7 @@ export default function HeroSection() {
             />
           </div>
           
-          {/* Secondary Photo 1 - hidden on mobile, no priority needed */}
+          {/* Secondary Photo 1 - visible on md+ screens, load with priority */}
           <div className="absolute -bottom-10 -left-10 w-2/3 aspect-[4/3] rounded-3xl overflow-hidden border-8 border-white shadow-xl -rotate-6 hover:-rotate-2 transition-transform duration-500 z-30 hidden md:block">
             <Image 
               src="/images/marketing-events.jpg" 
@@ -111,11 +111,11 @@ export default function HeroSection() {
               fill
               sizes="33vw"
               className="object-cover"
-              loading="lazy"
+              priority
             />
           </div>
 
-          {/* Secondary Photo 2 - hidden on mobile, no priority needed */}
+          {/* Secondary Photo 2 - visible on md+ screens, load with priority */}
           <div className="absolute -top-10 -right-10 w-1/2 aspect-square rounded-full overflow-hidden border-8 border-white shadow-xl rotate-12 hover:rotate-6 transition-transform duration-500 z-10 hidden md:block">
             <Image 
               src="/images/launch-parties.jpg" 
@@ -124,7 +124,7 @@ export default function HeroSection() {
               fill
               sizes="25vw"
               className="object-cover"
-              loading="lazy"
+              priority
             />
           </div>
           

@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { unstable_cache } from "next/cache";
 
 export const DEFAULT_SETTINGS = {
   companyName: "WE Ice Cream Truck",
@@ -21,25 +22,29 @@ export const DEFAULT_SETTINGS = {
 };
 
 /**
- * Get all settings combined with defaults.
+ * Get all settings combined with defaults (cached for 1 hour).
  */
-export async function getSettings(): Promise<typeof DEFAULT_SETTINGS> {
-  try {
-    const records = await prisma.setting.findMany();
-    const dict = records.reduce((acc, curr) => {
-      acc[curr.key] = curr.value;
-      return acc;
-    }, {} as Record<string, string>);
+export const getSettings = unstable_cache(
+  async (): Promise<typeof DEFAULT_SETTINGS> => {
+    try {
+      const records = await prisma.setting.findMany();
+      const dict = records.reduce((acc, curr) => {
+        acc[curr.key] = curr.value;
+        return acc;
+      }, {} as Record<string, string>);
 
-    return {
-      ...DEFAULT_SETTINGS,
-      ...dict,
-    };
-  } catch (error) {
-    console.error("Failed to get settings:", error);
-    return DEFAULT_SETTINGS;
-  }
-}
+      return {
+        ...DEFAULT_SETTINGS,
+        ...dict,
+      };
+    } catch (error) {
+      console.error("Failed to get settings:", error);
+      return DEFAULT_SETTINGS;
+    }
+  },
+  ["site-settings"],
+  { revalidate: 3600, tags: ["settings"] }
+);
 
 /**
  * Get a specific setting value by key.
