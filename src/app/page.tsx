@@ -21,13 +21,18 @@ export const metadata: Metadata = constructMetadata({
   description: "Massachusetts' most trusted premium ice cream truck catering. Serving weddings, corporate events, and parties across all of MA. Book your unforgettable sweet moment today.",
 });
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const dbPackages = await prisma.package.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' }
-  });
+  let dbPackages: any[] = [];
+  try {
+    dbPackages = await prisma.package.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' }
+    });
+  } catch (err) {
+    console.error("[Home] Failed to fetch packages:", err);
+  }
 
   const formattedPackages = dbPackages.map((pkg) => {
     let featuresList: string[] = [];
@@ -68,12 +73,17 @@ export default async function HomePage() {
   const firstVan = formattedPackages.find(p => p.vehicleType === "VAN");
   const featuredPackages = [firstTruck, firstVan].filter(Boolean);
 
-  const recentPosts = await prisma.post.findMany({
-    where: { status: "PUBLISHED", deletedAt: null },
-    orderBy: { publishedAt: "desc" },
-    take: 3,
-    include: { category: true }
-  });
+  let recentPosts: any[] = [];
+  try {
+    recentPosts = await prisma.post.findMany({
+      where: { status: "PUBLISHED", deletedAt: null },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      include: { category: true }
+    });
+  } catch (err) {
+    console.error("[Home] Failed to fetch posts:", err);
+  }
 
   return (
     <div className="flex flex-col min-h-screen">

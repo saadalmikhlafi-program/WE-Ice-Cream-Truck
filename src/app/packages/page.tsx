@@ -1,13 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import PackagesClient from "./PackagesClient";
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export default async function PackagesPage() {
-  const dbPackages = await prisma.package.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' }
-  });
+  let dbPackages: any[] = [];
+  try {
+    dbPackages = await prisma.package.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' }
+    });
+  } catch (err) {
+    console.error("[Packages] Failed to fetch packages:", err);
+  }
 
   const formattedPackages = dbPackages.map((pkg) => {
     let featuresList: string[] = [];

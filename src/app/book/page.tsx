@@ -25,11 +25,18 @@ function BookingLoading() {
   );
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function BookPage() {
-  const dbPackages = await prisma.package.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' }
-  });
+  let dbPackages: any[] = [];
+  try {
+    dbPackages = await prisma.package.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' }
+    });
+  } catch (err) {
+    console.error("[Book] Failed to fetch packages:", err);
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cream via-sand/30 to-cream flex flex-col relative pb-24 md:pb-0">

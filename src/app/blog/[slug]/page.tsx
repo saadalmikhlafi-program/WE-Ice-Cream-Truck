@@ -7,9 +7,14 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = await prisma.post.findUnique({ where: { slug } });
+  let post: any = null;
+  try {
+    post = await prisma.post.findUnique({ where: { slug } });
+  } catch {}
   
   if (!post || post.status !== "PUBLISHED" || post.deletedAt) {
     return { title: "Post Not Found" };
@@ -26,10 +31,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await prisma.post.findUnique({
-    where: { slug },
-    include: { category: true, author: true }
-  });
+  let post: any = null;
+  try {
+    post = await prisma.post.findUnique({
+      where: { slug },
+      include: { category: true, author: true }
+    });
+  } catch (err) {
+    console.error("[Blog] Failed to fetch post:", err);
+  }
 
   if (!post || post.status !== "PUBLISHED" || post.deletedAt) {
     notFound();

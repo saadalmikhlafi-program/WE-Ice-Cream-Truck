@@ -164,10 +164,15 @@ export default async function CityPage({ params }: Props) {
   // Cache packages fetch to prevent connection exhaustion during static generation of 500+ cities
   const getPackages = unstable_cache(
     async () => {
-      return prisma.package.findMany({
-        where: { isActive: true },
-        orderBy: { sortOrder: 'asc' }
-      });
+      try {
+        return await prisma.package.findMany({
+          where: { isActive: true },
+          orderBy: { sortOrder: 'asc' }
+        });
+      } catch (err) {
+        console.error("[CityPage] Failed to fetch packages:", err);
+        return [];
+      }
     },
     ['active-packages'],
     { revalidate: 3600, tags: ['packages'] }

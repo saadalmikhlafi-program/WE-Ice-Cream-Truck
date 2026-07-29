@@ -24,11 +24,18 @@ function QuoteFormLoading() {
   );
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function GetAQuotePage() {
-  const dbPackages = await prisma.package.findMany({
-    where: { isActive: true },
-    orderBy: { sortOrder: 'asc' }
-  });
+  let dbPackages: any[] = [];
+  try {
+    dbPackages = await prisma.package.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' }
+    });
+  } catch (err) {
+    console.error("[GetAQuote] Failed to fetch packages:", err);
+  }
 
   return (
     <div className="min-h-screen bg-sand flex flex-col relative pb-24 md:pb-0">

@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Our Stories | WE Ice Cream Truck Boston",
   description: "Real events. Real smiles. Explore stories from birthday parties, corporate events, weddings, and more across Greater Boston with WE Ice Cream Truck.",
@@ -20,11 +22,16 @@ function getCategoryStyle(name?: string | null) {
 }
 
 export default async function BlogPage() {
-  const posts = await prisma.post.findMany({
-    where: { status: "PUBLISHED", deletedAt: null },
-    orderBy: { publishedAt: "desc" },
-    include: { category: true },
-  });
+  let posts: any[] = [];
+  try {
+    posts = await prisma.post.findMany({
+      where: { status: "PUBLISHED", deletedAt: null },
+      orderBy: { publishedAt: "desc" },
+      include: { category: true },
+    });
+  } catch (err) {
+    console.error("[Blog] Failed to fetch posts:", err);
+  }
 
   const featured = posts[0];
   const rest = posts.slice(1);
