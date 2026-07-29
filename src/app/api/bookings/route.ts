@@ -23,7 +23,8 @@ export async function POST(req: Request) {
       date, time, eventType, 
       address, city, zip, distance, distanceFee,
       packageId, extraGuests, extraTimeHalfHours, routingMode,
-      basePrice, weekendFee, extraGuestFee, extraTimeFee, routingFee, totalAmount
+      basePrice, weekendFee, extraGuestFee, extraTimeFee, routingFee, totalAmount,
+      distanceFee2
     } = result.data;
 
     // ─── 1. Verify OTP ────────────────────────────────────────────

@@ -62,7 +62,7 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [bookingSuccess, setBookingSuccess] = useState<{ bookingNumber: string; status: string } | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [distanceLoading, setDistanceLoading] = useState(false);
   const [distanceError, setDistanceError] = useState<string | null>(null);
 
@@ -238,6 +238,7 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
     }
 
     setLoading(true);
+    setSubmitError(null);
     try {
       const payload = {
         email, otp, name, phone,
@@ -258,28 +259,22 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
       try {
         data = await res.json();
       } catch {
-        // If JSON parsing fails, show a generic error without crashing
         console.error("[BookingForm] Failed to parse response JSON");
-        alert("Something went wrong. Please try again or contact us directly.");
+        setSubmitError("Something went wrong. Please try again or contact us directly.");
         setLoading(false);
         return;
       }
       
       if (res.ok && data.success) {
-        // Show success state immediately (prevents mobile double-submission)
-        setBookingSuccess({ bookingNumber: data.bookingNumber, status: data.status });
-        // Then redirect after a short delay
-        setTimeout(() => {
-          window.location.href = "/book/success";
-        }, 1500);
+        window.location.href = `/book/success?status=${data.status}&bookingNumber=${data.bookingNumber}`;
       } else {
         const errMsg = data.error || "Booking failed. Please try again.";
-        const detail = data.details ? "\n\nDetails: " + JSON.stringify(data.details, null, 2) : "";
-        alert(errMsg + detail);
+        const detail = data.details ? " (Check details)" : "";
+        setSubmitError(errMsg + detail);
       }
     } catch (err: any) {
       console.error("[BookingForm] Network error:", err);
-      alert("Network error. Please check your connection and try again.");
+      setSubmitError("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -287,23 +282,6 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
 
   const nextStep = () => setStep(s => Math.min(s + 1, 5));
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
-
-  if (bookingSuccess) {
-    return (
-      <div className="relative w-full max-w-5xl mx-auto">
-        <div className="relative z-10 max-w-4xl mx-auto bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-navy/10 border border-white/50 overflow-hidden">
-          <div className="p-8 md:p-14 flex flex-col items-center text-center min-h-[400px] justify-center">
-            <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-100">
-              <CheckCircle2 className="w-10 h-10 text-emerald-500" />
-            </div>
-            <h2 className="font-display font-black text-3xl text-navy mb-3">Booking Confirmed!</h2>
-            <p className="text-gray-500 font-semibold mb-4">Your booking <span className="font-black text-navy">#{bookingSuccess.bookingNumber}</span> has been received.<br/>Check your email for confirmation details.</p>
-            <p className="text-sm text-gray-400">Redirecting you to the success page...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (!selectedPackage) {
     return (
@@ -831,30 +809,39 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
         </AnimatePresence>
 
         {/* Navigation */}
-        <div className="mt-10 flex justify-between items-center pt-6 border-t border-gray-100">
-          {step > 1 ? (
-            <button onClick={prevStep} className="px-6 py-3 rounded-full font-bold text-gray-500 hover:bg-gray-50 flex items-center gap-2 transition-colors">
-              <ArrowLeft className="w-4 h-4" /> Back
-            </button>
-          ) : <div />}
+        <div className="mt-10 pt-6 border-t border-gray-100 flex flex-col items-center">
+          {submitError && step === 4 && !isCustom && (
+            <div className="w-full mb-4 p-4 bg-red-50 text-red-600 rounded-xl flex items-start gap-3 border border-red-100">
+              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+              <p className="text-sm font-semibold">{submitError}</p>
+            </div>
+          )}
+          
+          <div className="w-full flex justify-between items-center">
+            {step > 1 ? (
+              <button onClick={prevStep} className="px-6 py-3 rounded-full font-bold text-gray-500 hover:bg-gray-50 flex items-center gap-2 transition-colors">
+                <ArrowLeft className="w-4 h-4" /> Back
+              </button>
+            ) : <div />}
 
-          {step < 5 ? (
-            <button onClick={nextStep} disabled={
-              (step === 1 && (!date || !time)) || 
-              (step === 2 && !address && !zip) ||
-              (step === 3 && routingMode !== "SINGLE" && (!address2 || !!distanceError2)) ||
-              (step === 3 && isCustom && customGuests < 201) ||
-              (step === 4 && isCustom && (!name || !email)) ||
-              (step === 4 && !isCustom && (!otpSent || otp.length < 6))
-            } 
-            className="px-8 py-3 rounded-full font-black bg-navy text-white hover:bg-coral transition-all disabled:opacity-50 disabled:hover:bg-navy shadow-lg flex items-center gap-2">
-              Continue <ArrowRight className="w-4 h-4" />
-            </button>
-          ) : !isCustom ? (
-            <button onClick={submitFinal} disabled={loading} className="px-10 py-4 rounded-full font-black bg-coral text-white hover:bg-coral-dark hover:scale-105 transition-all shadow-xl shadow-coral/20 flex items-center gap-2">
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirm Booking"}
-            </button>
-          ) : null}
+            {step < 5 ? (
+              <button onClick={nextStep} disabled={
+                (step === 1 && (!date || !time)) || 
+                (step === 2 && !address && !zip) ||
+                (step === 3 && routingMode !== "SINGLE" && (!address2 || !!distanceError2)) ||
+                (step === 3 && isCustom && customGuests < 201) ||
+                (step === 4 && isCustom && (!name || !email)) ||
+                (step === 4 && !isCustom && (!otpSent || otp.length < 6))
+              } 
+              className="px-8 py-3 rounded-full font-black bg-navy text-white hover:bg-coral transition-all disabled:opacity-50 disabled:hover:bg-navy shadow-lg flex items-center gap-2">
+                Continue <ArrowRight className="w-4 h-4" />
+              </button>
+            ) : !isCustom ? (
+              <button onClick={submitFinal} disabled={loading} className="px-10 py-4 rounded-full font-black bg-coral text-white hover:bg-coral-dark hover:scale-105 transition-all shadow-xl shadow-coral/20 flex items-center gap-2">
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Confirm Booking"}
+              </button>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>
