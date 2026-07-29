@@ -355,7 +355,9 @@ function formatBookingDetailsHtml(booking: any) {
       <tr><td width="65%" style="font-weight:600;">Base Package Price</td><td width="35%" align="right" style="font-weight:800;color:${BRAND_NAVY};">$${basePrice.toFixed(2)}</td></tr>
       <tr><td style="font-weight:600;color:#6B7280;font-size:14px;">Included: ${pkgServings} guests, ${pkgDurationMins} min</td><td></td></tr>
       ${extraGuestsFee > 0 ? `<tr><td style="font-weight:600;">Extra Guests Fee (${extraGuestsCount} × $${extraPiecePrice})</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${extraGuestsFee.toFixed(2)}</td></tr>` : ''}
-      ${additionalStopsFee > 0 ? `<tr><td style="font-weight:600;">Additional Stops (${additionalStopsCount})</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${additionalStopsFee.toFixed(2)}</td></tr>` : ''}
+      ${breakdown.extraTimeFee > 0 ? `<tr><td style="font-weight:600;">Extra Service Time (+${(breakdown.extraTimeFee / 35) * 30} mins)</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${Number(breakdown.extraTimeFee).toFixed(2)}</td></tr>` : ''}
+      ${additionalStopsFee > 0 ? `<tr><td style="font-weight:600;">Multi-Location Fee (${breakdown.routingMode ?? 'SEQUENTIAL'})</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${additionalStopsFee.toFixed(2)}</td></tr>` : ''}
+      ${breakdown.distanceFee2 > 0 ? `<tr><td style="font-weight:600;">Second Stop Travel Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${Number(breakdown.distanceFee2).toFixed(2)}</td></tr>` : ''}
       ${extraServiceFee > 0 ? `<tr><td style="font-weight:600;">Additional Service Time (${extraServiceMins} min)</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${extraServiceFee.toFixed(2)}</td></tr>` : ''}
       ${overtimeFee > 0 ? `<tr><td style="font-weight:600;">Overtime Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${overtimeFee.toFixed(2)}</td></tr>` : ''}
       ${travelFee > 0 ? `<tr><td style="font-weight:600;">Travel Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${travelFee.toFixed(2)}</td></tr>` : ''}
@@ -428,10 +430,10 @@ export async function sendBookingPendingEmail(to: string, firstName: string, boo
   } catch (e) { console.error("Error formatting booking details for pending email:", e); }
 
   const html = `
-    <h2 style="margin:0 0 16px;color:${BRAND_NAVY};font-size:24px;font-weight:900;">Your WE Ice Cream Truck Booking Request</h2>
+    <h2 style="margin:0 0 16px;color:${BRAND_NAVY};font-size:24px;font-weight:900;">🎉 Booking Confirmed!</h2>
     <p style="margin:0 0 24px;color:#4B5563;font-size:16px;line-height:1.6;font-weight:600;">
       Hello ${firstName},<br/><br/>
-      We've received your request for a WE Ice Cream Truck. Our concierge team is currently reviewing the details to ensure a flawless experience.
+      Your WE Ice Cream Truck booking has been <strong style="color:#16a34a;">confirmed</strong>! We're excited to bring the sweet celebration to your event. You'll receive a follow-up from our team with final details.
     </p>
     <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:16px;margin-bottom:24px;text-align:center;">
       <p style="margin:0 0 4px;color:\${BRAND_NAVY};font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Booking Reference</p>
@@ -447,14 +449,14 @@ export async function sendBookingPendingEmail(to: string, firstName: string, boo
       <p style="margin:0;font-weight:600;">Payment is collected after the service. We accept multiple payment methods.</p>
     </div>
     <div style="text-align:center;margin-bottom:32px;">
-      <p style="margin:0 0 20px;color:#4B5563;font-size:16px;font-weight:700;">You will hear from us shortly with an official update.</p>
-      <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:white;padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">View Request Status &amp; Portal</a>
+      <p style="margin:0 0 20px;color:#4B5563;font-size:16px;font-weight:700;">Our team will be in touch to finalize the details. We can't wait to make your event special! 🍦</p>
+      <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:white;padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">View Booking Details</a>
     </div>
     <div style="background:#F3F4F6;border-radius:12px;padding:20px;text-align:center;">
       <p style="margin:0;color:#6B7280;font-size:13px;font-weight:600;">Questions? Call us directly at <a href="tel:617-999-3803" style="color:${BRAND_NAVY};text-decoration:none;font-weight:800;">617-999-3803</a>.</p>
     </div>
   `;
-  return sendEmail({ to, subject: `Your WE Ice Cream Truck Booking Request #${bookingNumber}`, html });
+  return sendEmail({ to, subject: `✅ Booking Confirmed — #${bookingNumber} | WE Ice Cream Truck`, html });
 }
 
 // ─── BOOKING REJECTED ─────────────────────────────────────────

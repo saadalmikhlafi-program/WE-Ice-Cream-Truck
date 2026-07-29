@@ -62,6 +62,7 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState<{ bookingNumber: string; status: string } | null>(null);
   const [distanceLoading, setDistanceLoading] = useState(false);
   const [distanceError, setDistanceError] = useState<string | null>(null);
 
@@ -265,7 +266,12 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
       }
       
       if (res.ok && data.success) {
-        window.location.href = "/book/success";
+        // Show success state immediately (prevents mobile double-submission)
+        setBookingSuccess({ bookingNumber: data.bookingNumber, status: data.status });
+        // Then redirect after a short delay
+        setTimeout(() => {
+          window.location.href = "/book/success";
+        }, 1500);
       } else {
         const errMsg = data.error || "Booking failed. Please try again.";
         const detail = data.details ? "\n\nDetails: " + JSON.stringify(data.details, null, 2) : "";
@@ -281,6 +287,23 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
 
   const nextStep = () => setStep(s => Math.min(s + 1, 5));
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
+
+  if (bookingSuccess) {
+    return (
+      <div className="relative w-full max-w-5xl mx-auto">
+        <div className="relative z-10 max-w-4xl mx-auto bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-navy/10 border border-white/50 overflow-hidden">
+          <div className="p-8 md:p-14 flex flex-col items-center text-center min-h-[400px] justify-center">
+            <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-100">
+              <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+            </div>
+            <h2 className="font-display font-black text-3xl text-navy mb-3">Booking Confirmed!</h2>
+            <p className="text-gray-500 font-semibold mb-4">Your booking <span className="font-black text-navy">#{bookingSuccess.bookingNumber}</span> has been received.<br/>Check your email for confirmation details.</p>
+            <p className="text-sm text-gray-400">Redirecting you to the success page...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!selectedPackage) {
     return (

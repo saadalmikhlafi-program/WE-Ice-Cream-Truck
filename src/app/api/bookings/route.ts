@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     const serverWeekendFee = (dayOfWeek === 0 || dayOfWeek === 6) ? 25 : 0;
     const serverExtraGuestFee = (extraGuests ?? 0) * (dbPackage?.extraGuestPrice ?? 0);
     const serverExtraTimeFee = (extraTimeHalfHours ?? 0) * 35;
-    const serverTotalAmount = serverBasePrice + serverWeekendFee + serverExtraGuestFee + serverExtraTimeFee + (distanceFee ?? 0) + (routingFee ?? 0);
+    const serverTotalAmount = serverBasePrice + serverWeekendFee + serverExtraGuestFee + serverExtraTimeFee + (distanceFee ?? 0) + (distanceFee2 ?? 0) + (routingFee ?? 0);
 
     // ─── 3. Create or find Customer ───────────────────────────────
     const [firstName, ...lastNames] = name.trim().split(" ");
@@ -146,11 +146,16 @@ export async function POST(req: Request) {
         snapshotJson: JSON.stringify({
           packageId,
           packageName: pkgName,
+          packagePrice: serverBasePrice,
+          distanceMiles: distance,
+          travelFee: distanceFee ?? 0,
+          distanceFee2: distanceFee2 ?? 0,
           weekendFee: serverWeekendFee,
           extraGuestFee: serverExtraGuestFee,
           extraTimeFee: serverExtraTimeFee,
           routingFee: routingFee ?? 0,
           routingMode: routingMode ?? "SINGLE",
+          estimatedTotal: serverTotalAmount,
           clientQuotedAmount: totalAmount // Record what client saw vs what we charged
         })
       }
