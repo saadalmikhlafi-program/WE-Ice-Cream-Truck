@@ -386,7 +386,7 @@ function formatBookingDetailsHtml(booking: any) {
 
 // ─── BOOKING APPROVED ─────────────────────────────────────────
 export async function sendBookingApprovedEmail(to: string, firstName: string, bookingNumber: string, paymentUrl: string, amount: string, bookingId: string) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/customer/booking/${bookingId}`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   let isCustom = false;
   try {
@@ -420,7 +420,7 @@ export async function sendBookingApprovedEmail(to: string, firstName: string, bo
 
 // ─── BOOKING PENDING ──────────────────────────────────────────
 export async function sendBookingPendingEmail(to: string, firstName: string, bookingNumber: string, details: any, bookingId: string) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/customer/booking/${bookingId}`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   try {
     const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: { customer: true, package: true, quote: true, stops: { orderBy: { stopOrder: 'asc' } } } });
@@ -459,7 +459,7 @@ export async function sendBookingPendingEmail(to: string, firstName: string, boo
 
 // ─── BOOKING REJECTED ─────────────────────────────────────────
 export async function sendBookingRejectedEmail(to: string, firstName: string, bookingNumber: string, reason: string, bookingId: string) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/customer/booking/${bookingId}`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   try {
     const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: { customer: true, package: true, quote: true, stops: { orderBy: { stopOrder: 'asc' } } } });
@@ -489,7 +489,7 @@ export async function sendBookingRejectedEmail(to: string, firstName: string, bo
 
 // ─── BOOKING PENDING REVIEW ───────────────────────────────────
 export async function sendBookingPendingReviewEmail(to: string, firstName: string, bookingNumber: string, reason: string, bookingId: string) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/customer/booking/${bookingId}`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   try {
     const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: { customer: true, package: true, quote: true, stops: { orderBy: { stopOrder: 'asc' } } } });
@@ -519,7 +519,7 @@ export async function sendBookingPendingReviewEmail(to: string, firstName: strin
 
 // ─── CUSTOM QUOTE ─────────────────────────────────────────────
 export async function sendCustomQuoteEmail(to: string, firstName: string, bookingNumber: string, bookingId: string) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/customer/booking/${bookingId}`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   let bookingDateStr = "";
   let bookingStartTime = "";

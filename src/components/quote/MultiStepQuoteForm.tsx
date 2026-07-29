@@ -227,12 +227,21 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
   };
 
   const submitFinal = async () => {
+    // Guard: ensure we have an address or ZIP before submitting
+    const effectiveAddress = address || (zip ? `ZIP: ${zip}` : "");
+    const effectiveCity = city || (zip ? "Massachusetts" : "");
+    if (!effectiveAddress || effectiveAddress.length < 5) {
+      alert("Please select or enter your event location before submitting.");
+      setStep(2); // Go back to location step
+      return;
+    }
+
     setLoading(true);
     try {
       const payload = {
         email, otp, name, phone,
         date, time, eventType,
-        address, city, zip, distance, distanceFee,
+        address: effectiveAddress, city: effectiveCity, zip, distance, distanceFee,
         address2, city2, zip2, distance2, distanceFee2,
         packageId: selectedPackage?.id, extraGuests, extraTimeHalfHours, routingMode,
         basePrice, weekendFee, extraGuestFee, extraTimeFee, routingFee, totalAmount: total
@@ -244,16 +253,27 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch {
+        // If JSON parsing fails, show a generic error without crashing
+        console.error("[BookingForm] Failed to parse response JSON");
+        alert("Something went wrong. Please try again or contact us directly.");
+        setLoading(false);
+        return;
+      }
       
       if (res.ok && data.success) {
         window.location.href = "/book/success";
       } else {
-        alert(data.error + (data.details ? "\n\nDetails: " + JSON.stringify(data.details, null, 2) : ""));
+        const errMsg = data.error || "Booking failed. Please try again.";
+        const detail = data.details ? "\n\nDetails: " + JSON.stringify(data.details, null, 2) : "";
+        alert(errMsg + detail);
       }
-    } catch (err) {
-      console.error(err);
-      alert("Network error");
+    } catch (err: any) {
+      console.error("[BookingForm] Network error:", err);
+      alert("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -798,8 +818,8 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
           {step < 5 ? (
             <button onClick={nextStep} disabled={
               (step === 1 && (!date || !time)) || 
-              (step === 2 && (!address || !city || !!distanceError)) ||
-              (step === 3 && routingMode !== "SINGLE" && (!address2 || !city2 || !!distanceError2)) ||
+              (step === 2 && !address && !zip) ||
+              (step === 3 && routingMode !== "SINGLE" && (!address2 || !!distanceError2)) ||
               (step === 3 && isCustom && customGuests < 201) ||
               (step === 4 && isCustom && (!name || !email)) ||
               (step === 4 && !isCustom && (!otpSent || otp.length < 6))

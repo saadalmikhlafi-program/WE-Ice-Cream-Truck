@@ -31,7 +31,9 @@ export const dynamic = "force-dynamic";
 export default async function BookingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user || (session.user as any).role !== "CUSTOMER") {
-    redirect("/login?callbackUrl=/portal");
+    // Wait for params to resolve
+    const { id } = await params;
+    redirect(`/login?callbackUrl=/portal/booking/${id}`);
   }
 
   const { id } = await params;
