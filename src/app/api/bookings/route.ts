@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     const serverBasePrice = dbPackage?.price ?? basePrice;
     const eventDateObj = new Date(`${date}T12:00:00.000Z`);
     const dayOfWeek = eventDateObj.getDay();
-    const serverWeekendFee = (dayOfWeek === 0 || dayOfWeek === 6) ? 50 : 0;
+    const serverWeekendFee = (dayOfWeek === 0 || dayOfWeek === 6) ? 25 : 0;
     const serverExtraGuestFee = (extraGuests ?? 0) * (dbPackage?.extraGuestPrice ?? 0);
     const serverTotalAmount = serverBasePrice + serverWeekendFee + serverExtraGuestFee + (distanceFee ?? 0) + (routingFee ?? 0);
 

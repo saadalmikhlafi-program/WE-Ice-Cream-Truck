@@ -116,7 +116,7 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
     return day === 6 || day === 0; // Saturday or Sunday
   }, [date]);
 
-  const weekendFee = isWeekend ? 50 : 0;
+  const weekendFee = isWeekend ? 25 : 0;
   
   const routingFee = useMemo(() => {
     if (routingMode === "SEQUENTIAL") return 50;
@@ -318,7 +318,7 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
                   </div>
                   {isWeekend && (
                     <p className="text-xs font-bold text-coral flex items-center gap-1 ml-1 mt-2">
-                      <AlertCircle className="w-3.5 h-3.5" /> Weekend surcharge applies ($50)
+                      <AlertCircle className="w-3.5 h-3.5" /> Weekend surcharge applies ($25)
                     </p>
                   )}
                 </div>
