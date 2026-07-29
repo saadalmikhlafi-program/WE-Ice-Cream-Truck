@@ -47,3 +47,6 @@ scripts/import_bl_blog.*
 .vercel
 .env*
 scratch/tmp_*
+
+# dev tools / one-off scripts (not part of the app)
+/_dev-tools
