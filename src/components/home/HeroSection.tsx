@@ -62,7 +62,7 @@ export default function HeroSection() {
             className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6"
           >
             <Link 
-              href="/get-a-quote"
+              href="/packages"
               onMouseEnter={handleConfetti}
               onClick={handleConfetti}
               className="group relative inline-flex items-center justify-center px-10 py-5 bg-coral text-white font-black text-lg rounded-full overflow-hidden transition-all hover:scale-[1.05] active:scale-[0.95] shadow-[0_10px_30px_-10px_rgba(255,107,107,0.6)]"

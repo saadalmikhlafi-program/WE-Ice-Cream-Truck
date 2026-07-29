@@ -28,7 +28,7 @@ export default function BookingSuccessPage() {
             <Link href="/" className="block w-full py-3.5 bg-navy text-white rounded-xl font-bold hover:bg-navy-mid transition-colors shadow-sm">
               Return Home
             </Link>
-            <Link href="/services" className="block w-full py-3.5 bg-gray-50 text-gray-700 rounded-xl font-bold hover:bg-gray-100 transition-colors">
+            <Link href="/packages" className="block w-full py-3.5 bg-gray-50 text-gray-700 rounded-xl font-bold hover:bg-gray-100 transition-colors">
               Explore Our Packages
             </Link>
           </div>
