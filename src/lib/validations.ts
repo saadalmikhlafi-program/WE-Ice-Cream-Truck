@@ -15,10 +15,12 @@ export const BookingSchema = z.object({
   distanceFee: z.number().min(0),
   packageId: z.string().optional(),
   extraGuests: z.number().min(0),
+  extraTimeHalfHours: z.number().min(0).optional(),
   routingMode: z.string().optional(),
   basePrice: z.number().min(0),
   weekendFee: z.number().min(0),
   extraGuestFee: z.number().min(0),
+  extraTimeFee: z.number().min(0).optional(),
   routingFee: z.number().min(0),
   totalAmount: z.number().min(0),
   // Multi-stop fields (optional)

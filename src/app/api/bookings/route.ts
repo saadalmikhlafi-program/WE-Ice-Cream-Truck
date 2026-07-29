@@ -22,8 +22,8 @@ export async function POST(req: Request) {
       email, otp, name, phone, 
       date, time, eventType, 
       address, city, zip, distance, distanceFee,
-      packageId, extraGuests, routingMode,
-      basePrice, weekendFee, extraGuestFee, routingFee, totalAmount
+      packageId, extraGuests, extraTimeHalfHours, routingMode,
+      basePrice, weekendFee, extraGuestFee, extraTimeFee, routingFee, totalAmount
     } = result.data;
 
     // ─── 1. Verify OTP ────────────────────────────────────────────
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       where: { OR: [{ id: packageId }, { slug: packageId }] } 
     }) : null;
     
-    const durationMins = dbPackage?.durationMins ?? 60;
+    const durationMins = (dbPackage?.durationMins ?? 60) + ((extraTimeHalfHours ?? 0) * 30);
     const totalGuests = (dbPackage?.servings ?? 0) + (extraGuests ?? 0);
     const pkgName = dbPackage?.name ?? "Custom Package";
 
@@ -69,7 +69,8 @@ export async function POST(req: Request) {
     const dayOfWeek = eventDateObj.getDay();
     const serverWeekendFee = (dayOfWeek === 0 || dayOfWeek === 6) ? 25 : 0;
     const serverExtraGuestFee = (extraGuests ?? 0) * (dbPackage?.extraGuestPrice ?? 0);
-    const serverTotalAmount = serverBasePrice + serverWeekendFee + serverExtraGuestFee + (distanceFee ?? 0) + (routingFee ?? 0);
+    const serverExtraTimeFee = (extraTimeHalfHours ?? 0) * 35;
+    const serverTotalAmount = serverBasePrice + serverWeekendFee + serverExtraGuestFee + serverExtraTimeFee + (distanceFee ?? 0) + (routingFee ?? 0);
 
     // ─── 3. Create or find Customer ───────────────────────────────
     const [firstName, ...lastNames] = name.trim().split(" ");
@@ -147,6 +148,7 @@ export async function POST(req: Request) {
           packageName: pkgName,
           weekendFee: serverWeekendFee,
           extraGuestFee: serverExtraGuestFee,
+          extraTimeFee: serverExtraTimeFee,
           routingFee: routingFee ?? 0,
           routingMode: routingMode ?? "SINGLE",
           clientQuotedAmount: totalAmount // Record what client saw vs what we charged

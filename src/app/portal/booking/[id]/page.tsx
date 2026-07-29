@@ -26,6 +26,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return { title: "Booking Details | WE Ice Cream Truck" };
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function BookingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user || (session.user as any).role !== "CUSTOMER") {
@@ -34,15 +36,20 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
 
   const { id } = await params;
 
-  const booking = await prisma.booking.findUnique({
-    where: { id },
-    include: {
-      package: true,
-      quote: true,
-      customer: true,
-      stops: { orderBy: { stopOrder: "asc" } },
-    },
-  });
+  let booking: any = null;
+  try {
+    booking = await prisma.booking.findUnique({
+      where: { id },
+      include: {
+        package: true,
+        quote: true,
+        customer: true,
+        stops: { orderBy: { stopOrder: "asc" } },
+      },
+    });
+  } catch (error) {
+    console.error("[PORTAL_BOOKING] Error fetching booking:", error);
+  }
 
   if (!booking || booking.customerId !== (session.user as any).id) {
     notFound();
@@ -70,8 +77,9 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
   const basePrice = breakdown.packagePrice ?? booking.quote?.basePrice ?? 0;
   const distanceMiles = breakdown.distanceMiles ?? booking.quote?.distanceMiles ?? 0;
   const travelFee = breakdown.travelFee ?? booking.quote?.travelFee ?? 0;
-  const extraGuestsFee = breakdown.additionalGuestsFee ?? 0;
-  const additionalStopsFee = breakdown.additionalStopsFee ?? booking.additionalStopsFee ?? 0;
+  const extraGuestsFee = breakdown.extraGuestFee ?? 0;
+  const extraTimeFee = breakdown.extraTimeFee ?? 0;
+  const additionalStopsFee = breakdown.routingFee ?? booking.additionalStopsFee ?? 0;
   const weekendFee = breakdown.weekendFee ?? 0;
   const totalAmount = booking.totalAmount;
 
@@ -261,6 +269,12 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
                     <div className="flex justify-between text-sm font-medium">
                       <span className="text-gray-500">Extra Guests</span>
                       <span className="text-navy font-bold">+${extraGuestsFee.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {extraTimeFee > 0 && (
+                    <div className="flex justify-between text-sm font-medium">
+                      <span className="text-gray-500">Extra Time</span>
+                      <span className="text-navy font-bold">+${extraTimeFee.toFixed(2)}</span>
                     </div>
                   )}
                   {additionalStopsFee > 0 && (

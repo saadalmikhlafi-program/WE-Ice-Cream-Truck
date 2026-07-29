@@ -37,11 +37,6 @@ export async function GET(request: Request) {
     // If needed in the future, we can still query the DB for specific active zips.
 
     if (lookup) {
-      if (lookup.state !== "MA") {
-        return NextResponse.json({ 
-          error: "Sorry, our services are not currently available in this location, but will be available soon!" 
-        }, { status: 400 });
-      }
       if (!destLat || !destLng) {
         destLat = lookup.latitude;
         destLng = lookup.longitude;

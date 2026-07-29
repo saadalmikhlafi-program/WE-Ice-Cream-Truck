@@ -39,7 +39,7 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
         vehicleLabel: dbMatch.serviceType === "VAN" ? "Premium Van" : dbMatch.serviceType === "CUSTOM" ? "Custom" : "Ice Cream Truck",
         servings: dbMatch.servings,
         price: dbMatch.price,
-        extraGuestPrice: dbMatch.extraPiecePrice ?? 5,
+        extraGuestPrice: dbMatch.extraGuestPrice ?? 5,
         durationMins: dbMatch.durationMins || 60,
         durationLabel: `${dbMatch.durationMins || 60} Minute Service`,
         description: dbMatch.description || "",
@@ -91,6 +91,7 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
   const [distanceError2, setDistanceError2] = useState<string | null>(null);
   
   const [extraGuests, setExtraGuests] = useState(0);
+  const [extraTimeHalfHours, setExtraTimeHalfHours] = useState(0);
   const [routingMode, setRoutingMode] = useState<RoutingMode>("SINGLE");
 
   const [name, setName] = useState("");
@@ -126,8 +127,9 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
 
   const basePrice = selectedPackage?.price || 0;
   const extraGuestFee = extraGuests * (selectedPackage?.extraGuestPrice || 0);
+  const extraTimeFee = extraTimeHalfHours * 35;
   
-  const total = basePrice + weekendFee + distanceFee + distanceFee2 + extraGuestFee + routingFee;
+  const total = basePrice + weekendFee + distanceFee + distanceFee2 + extraGuestFee + extraTimeFee + routingFee;
 
   // Handlers
   const handleLocationDataChange = async (newLat: number, newLng: number, newZip: string) => {
@@ -232,8 +234,8 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
         date, time, eventType,
         address, city, zip, distance, distanceFee,
         address2, city2, zip2, distance2, distanceFee2,
-        packageId: selectedPackage?.id, extraGuests, routingMode,
-        basePrice, weekendFee, extraGuestFee, routingFee, totalAmount: total
+        packageId: selectedPackage?.id, extraGuests, extraTimeHalfHours, routingMode,
+        basePrice, weekendFee, extraGuestFee, extraTimeFee, routingFee, totalAmount: total
       };
 
       const res = await fetch("/api/bookings", {
@@ -476,6 +478,21 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
                       <button onClick={() => setExtraGuests(Math.max(0, extraGuests - 5))} className="w-12 h-12 rounded-xl border border-gray-200 bg-white font-black text-xl hover:bg-gray-50">-</button>
                       <div className="text-2xl font-black text-navy w-16 text-center">{extraGuests}</div>
                       <button onClick={() => setExtraGuests(extraGuests + 5)} className="w-12 h-12 rounded-xl border border-gray-200 bg-white font-black text-xl hover:bg-gray-50">+</button>
+                    </div>
+
+                    <div className="flex items-center gap-3 mb-4 mt-8">
+                      <div className="w-10 h-10 rounded-full bg-coral/10 flex items-center justify-center text-coral">
+                        <Clock className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-navy">Extra Time</h3>
+                        <p className="text-xs text-gray-500 font-medium">Add extra time to your service in 30-minute increments ($35/30 mins).</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <button onClick={() => setExtraTimeHalfHours(Math.max(0, extraTimeHalfHours - 1))} className="w-12 h-12 rounded-xl border border-gray-200 bg-white font-black text-xl hover:bg-gray-50">-</button>
+                      <div className="text-xl font-black text-navy text-center w-32">{extraTimeHalfHours > 0 ? `+${extraTimeHalfHours * 30} mins` : 'None'}</div>
+                      <button onClick={() => setExtraTimeHalfHours(extraTimeHalfHours + 1)} className="w-12 h-12 rounded-xl border border-gray-200 bg-white font-black text-xl hover:bg-gray-50">+</button>
                     </div>
                   </div>
                 )}
@@ -738,6 +755,12 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
                       <div className="flex justify-between items-center font-medium">
                         <span className="text-gray-600">Extra Guests ({extraGuests})</span>
                         <span className="text-navy font-bold">${extraGuestFee.toFixed(2)}</span>
+                      </div>
+                    )}
+                    {extraTimeFee > 0 && (
+                      <div className="flex justify-between items-center font-medium">
+                        <span className="text-gray-600">Extra Time (+{extraTimeHalfHours * 30} mins)</span>
+                        <span className="text-navy font-bold">${extraTimeFee.toFixed(2)}</span>
                       </div>
                     )}
                     {routingMode !== "SINGLE" && distanceFee2 > 0 && (

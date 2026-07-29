@@ -10,6 +10,8 @@ export const metadata = {
   title: "My Portal | WE Ice Cream Truck",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function PortalPage() {
   const session = await getServerSession(authOptions);
 
@@ -18,14 +20,20 @@ export default async function PortalPage() {
   }
 
   // Fetch customer bookings
-  const bookings = await prisma.booking.findMany({
-    where: { customerId: (session.user as any).id },
-    include: {
-      package: true,
-      quote: true,
-    },
-    orderBy: { eventDate: "desc" },
-  });
+  let bookings: any[] = [];
+  try {
+    bookings = await prisma.booking.findMany({
+      where: { customerId: (session.user as any).id },
+      include: {
+        package: true,
+        quote: true,
+      },
+      orderBy: { eventDate: "desc" },
+    });
+  } catch (error) {
+    console.error("[PORTAL] Error fetching bookings:", error);
+    // Graceful degradation: empty array
+  }
 
   const upcomingCount = bookings.filter(b => new Date(b.eventDate) >= new Date()).length;
   const approvedCount = bookings.filter(b => b.status === "APPROVED").length;
