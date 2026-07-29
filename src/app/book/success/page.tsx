@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { CheckCircle2, Clock } from "lucide-react";
 
-export default function BookingSuccessPage({
-  searchParams,
-}: {
-  searchParams: { status?: string; bookingNumber?: string };
+export default async function BookingSuccessPage(props: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const isPending = searchParams.status === "PENDING_REVIEW";
-  const bookingNumber = searchParams.bookingNumber || "";
+  const searchParams = await props.searchParams;
+  const isPending = searchParams?.status === "PENDING_REVIEW";
+  const bookingNumber = (searchParams?.bookingNumber as string) || "";
 
   return (
     <div className="min-h-screen pt-32 pb-20 bg-cream flex items-center justify-center px-4">
