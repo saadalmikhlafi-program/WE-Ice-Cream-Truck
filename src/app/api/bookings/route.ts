@@ -5,7 +5,8 @@ import {
   sendBookingPendingEmail, 
   sendBookingPendingReviewEmail,
   sendOwnerNewBookingEmail, 
-  sendOwnerRequiresApprovalEmail 
+  sendOwnerRequiresApprovalEmail,
+  sendCustomQuoteEmail
 } from "@/lib/email";
 export async function POST(req: Request) {
   try {
