@@ -98,6 +98,38 @@ const menuCategories = [
       { "name": "Root Beer Float Bar", "image": "/images/menu/681dcbdd01debeb53a362395_blue-ribbon-classics-root-beer-float-boston-legend-ice-cream-truck.avif" },
       { "name": "Cookies & Cream Cone", "image": "/images/menu/681dca3d55a1487af4d4cdaf_blue-bunny-big-dipper-cookies-n-cream-cone-boston-legend-ice-cream-truck.avif" }
     ]
+  },
+  {
+    "name": "New Arrivals",
+    "description": "Our latest additions and fresh options for your event.",
+    "emoji": "🌟",
+    "items": [
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-06-13.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-06-26.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-06-31.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-06-35.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-06-37.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-06-40.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-06-44.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-06-47.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-06-52.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-06-57.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-01.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-04.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-06.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-08.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-10.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-12.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-16.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-18.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-19.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-20.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-22.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-23.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-25.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-26.jpg" },
+      { "name": "Ice Cream Treat", "image": "/images/menu/photo_2026-07-31_05-07-28.jpg" }
+    ]
   }
 ];
 
