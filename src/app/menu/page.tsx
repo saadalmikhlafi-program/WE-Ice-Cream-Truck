@@ -454,15 +454,18 @@ export default function MenuPage() {
 
         <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24 relative z-10 text-center">
           <span className="inline-block py-1.5 px-4 bg-navy/5 text-navy font-bold text-xs sm:text-sm tracking-widest uppercase rounded-full mb-4 sm:mb-6">
-            Sweet Selections
+            🌟 Premium Menu
           </span>
           <h1 className="font-display font-black text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-navy mb-4 sm:mb-6">
-            The Ultimate <br className="hidden sm:block" />
-            <span className="text-coral">Menu.</span>
+            Sweet Selections & <br className="hidden sm:block" />
+            <span className="text-coral">Nostalgic Joy.</span>
           </h1>
           <p className="font-sans font-medium text-base sm:text-lg md:text-xl text-navy/70 max-w-3xl mx-auto leading-relaxed">
-            We serve only the highest quality pre-packaged novelties to ensure
-            maximum hygiene, speed of service, and nostalgic joy.
+            Experience our carefully curated selection of premium ice cream
+            novelties, nostalgic favorites, and refreshing treats designed to
+            delight every palate at your event. We serve only the highest
+            quality pre-packaged items to ensure maximum hygiene and speed of
+            service.
           </p>
         </div>
       </section>
@@ -473,19 +476,6 @@ export default function MenuPage() {
           <div className="space-y-16 sm:space-y-20 md:space-y-24">
             {menuCategories.map((category) => (
               <div key={category.name} className="relative">
-                {/* Category Header */}
-                <div className="mb-8 sm:mb-10 md:mb-12 text-center">
-                  <span className="text-4xl sm:text-5xl block mb-3">
-                    {category.emoji}
-                  </span>
-                  <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl text-navy mb-2 sm:mb-3">
-                    {category.name}
-                  </h2>
-                  <p className="font-sans font-medium text-sm sm:text-base md:text-lg text-navy/60 max-w-xl mx-auto">
-                    {category.description}
-                  </p>
-                </div>
-
                 {/* Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
                   {category.items.map((item, idx) => (
