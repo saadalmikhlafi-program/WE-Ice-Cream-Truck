@@ -109,7 +109,8 @@ export async function POST(req: Request) {
 
     // ─── 4. Create Booking ────────────────────────────────────────
     const bookingNumber = `BK-${Math.floor(100000 + Math.random() * 900000)}`;
-    const status = (serverTotalAmount < 500 && distance > 30) ? "PENDING_REVIEW" : "CONFIRMED";
+    const isCustom = dbPackage?.serviceType === "CUSTOM";
+    const status = isCustom || (serverTotalAmount < 500 && distance > 30) ? "PENDING_REVIEW" : "CONFIRMED";
 
     const booking = await prisma.booking.create({
       data: {
@@ -164,7 +165,14 @@ export async function POST(req: Request) {
 
     // ─── 6. Send Emails (Independent try-catch for customer vs owner) ────
     try {
-      if (status === "PENDING_REVIEW") {
+      if (isCustom) {
+        await sendCustomQuoteEmail(
+          email.toLowerCase(),
+          firstName,
+          bookingNumber,
+          booking.id
+        );
+      } else if (status === "PENDING_REVIEW") {
         await sendBookingPendingReviewEmail(
           email.toLowerCase(), 
           firstName, 
@@ -186,7 +194,7 @@ export async function POST(req: Request) {
     }
 
     try {
-      if (status === "PENDING_REVIEW") {
+      if (isCustom || status === "PENDING_REVIEW") {
         await sendOwnerRequiresApprovalEmail(booking);
       } else {
         await sendOwnerNewBookingEmail(booking);

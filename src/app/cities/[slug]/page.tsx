@@ -107,9 +107,12 @@ const THEMES = [
   },
 ];
 
-// Generate static params for all cities at build time
+export const dynamicParams = true;
+export const revalidate = 86400; // 24 hours
+
+// Generate static params for top cities at build time to prevent DB connection exhaustion
 export async function generateStaticParams() {
-  return MASSACHUSETTS_CITIES.map((city) => ({
+  return MASSACHUSETTS_CITIES.slice(0, 10).map((city) => ({
     slug: city.slug,
   }));
 }

@@ -100,6 +100,7 @@ export async function sendEmail({ to, subject, html, title, replyTo }: { to: str
   }
 
   const recipients = Array.from(new Set((Array.isArray(to) ? to : [to]).filter(Boolean)));
+  const bccList = SENDER_EMAIL && !recipients.includes(SENDER_EMAIL) ? [SENDER_EMAIL] : undefined;
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
@@ -107,7 +108,7 @@ export async function sendEmail({ to, subject, html, title, replyTo }: { to: str
         from: `"WE Ice Cream Truck" <${SENDER_EMAIL}>`,
         replyTo: replyTo || REPLY_TO,
         to: recipients,
-        bcc: [SENDER_EMAIL],
+        ...(bccList ? { bcc: bccList } : {}),
         subject: subject,
         html: baseTemplate(html, title || subject),
       });
