@@ -170,8 +170,8 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
           // Calculate from Location 1, NO free miles (0 free miles for the 2nd segment)
           originParams = `&originLat=${lat}&originLng=${lng}&freeMiles=0`;
         } else if (currentMode === "SIMULTANEOUS") {
-          // Calculate from HQ, WITH 10 free miles
-          originParams = `&freeMiles=10`;
+          // Calculate from HQ, NO free miles
+          originParams = `&freeMiles=0`;
         }
         
         const res = await fetch(`/api/distance?lat=${newLat}&lng=${newLng}&zip=${newZip}${originParams}`);
@@ -421,8 +421,8 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
                     <h4 className="font-bold text-navy text-sm">Travel Calculation</h4>
                     <p className="text-sm text-gray-600 font-medium mt-2 leading-relaxed">
                       Destination: <span className="text-navy font-bold">{address || "Selected Location"}, {city} {zip}</span><br/>
-                      Total distance from our HQ (02151): <span className="text-navy font-bold">{distance} miles</span><br/>
-                      <span className="text-coral font-bold mt-1 inline-block">Note:</span> The first 10 miles are FREE. Each additional mile is $2.50.<br/>
+                      Total distance from Boston (02108): <span className="text-navy font-bold">{distance} miles</span><br/>
+                      <span className="text-coral font-bold mt-1 inline-block">Note:</span> Travel is $2.00 per mile from our Boston (02108) dispatch location.<br/>
                     </p>
                     <div className="mt-3 pt-3 border-t border-navy/10 flex justify-between items-center">
                       <span className="font-bold text-navy">Calculated Travel Fee:</span>
@@ -586,17 +586,17 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
                             <div className="w-full">
                               <h4 className="font-bold text-navy text-sm">Second Route Calculation</h4>
                               <p className="text-sm text-gray-600 font-medium mt-2 leading-relaxed">
-                                {routingMode === "SEQUENTIAL" ? (
+                                 {routingMode === "SEQUENTIAL" ? (
                                   <>
                                     Destination: <span className="text-navy font-bold">{address2 || "Selected Location"}, {city2} {zip2}</span><br/>
                                     Distance from Location 1: <span className="text-navy font-bold">{distance2} miles</span><br/>
-                                    <span className="text-coral font-bold mt-1 inline-block">Note:</span> Free miles apply only to the first segment. Each mile for this segment is $2.50.<br/>
+                                    <span className="text-coral font-bold mt-1 inline-block">Note:</span> Each mile for this segment is $2.00.<br/>
                                   </>
                                 ) : (
                                   <>
                                     Destination: <span className="text-navy font-bold">{address2 || "Selected Location"}, {city2} {zip2}</span><br/>
-                                    Distance from HQ: <span className="text-navy font-bold">{distance2} miles</span><br/>
-                                    <span className="text-coral font-bold mt-1 inline-block">Note:</span> The first 10 miles are FREE. Each additional mile is $2.50.<br/>
+                                    Distance from Boston (02108): <span className="text-navy font-bold">{distance2} miles</span><br/>
+                                    <span className="text-coral font-bold mt-1 inline-block">Note:</span> Travel is $2.00 per mile.<br/>
                                   </>
                                 )}
                               </p>

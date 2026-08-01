@@ -3,7 +3,7 @@
  * Upgrade path: swap implementation to Google Maps API
  */
 
-export const BASE_LOCATION = { lat: 42.411991, lng: -71.014689, label: "Boston Revere — 84 Fernwood Ave" };
+export const BASE_LOCATION = { lat: 42.3551, lng: -71.0657, label: "Boston, MA 02108" };
 const NOMINATIM_BASE = "https://nominatim.openstreetmap.org";
 
 const SUPPORTED_REGIONS = [

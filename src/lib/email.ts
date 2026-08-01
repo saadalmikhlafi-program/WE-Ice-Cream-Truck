@@ -443,7 +443,7 @@ export async function sendBookingPendingEmail(to: string, firstName: string, boo
     ${bookingDetailsHtml}
     <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:20px;margin-bottom:24px;font-size:13px;line-height:1.6;color:\${BRAND_NAVY};text-align:left;">
       <p style="margin:0 0 8px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:${BRAND_NAVY};">📍 Travel &amp; Distance Policy</p>
-      <p style="margin:0 0 12px;font-weight:600;">The first 10 miles are free. Any additional miles will be calculated based on the travel distance from our garage at Boston Revere, 84 Fernwood Ave to your event location.</p>
+      <p style="margin:0 0 12px;font-weight:600;">Travel is calculated at $2.00 per mile based on the actual driving distance from our Boston dispatch location (ZIP 02108) to your event location. There are no free miles — the travel fee applies from mile 1.</p>
       <p style="margin:0 0 8px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:${BRAND_NAVY};">👥 Extra Guests Policy</p>
       <p style="margin:0 0 12px;font-weight:600;">Extra guests beyond the included package count are calculated at $5 per person.</p>
       <p style="margin:0 0 8px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:${BRAND_NAVY};">💳 Payment Policy</p>
@@ -718,7 +718,7 @@ export async function sendContactMessageNotification(data: { name: string, email
       <p style="margin:0;font-weight:600;white-space:pre-wrap;">${data.message}</p>
     </div>
   `;
-  return sendEmail({ to: ADMIN_EMAIL, subject: `Contact Form Message from ${data.name}`, html, replyTo: data.email });
+  return sendEmail({ to: getAdminRecipients(), subject: `Contact Form Message from ${data.name}`, html, replyTo: data.email });
 }
 
 export async function sendQuoteRequestNotification(inquiry: any) {

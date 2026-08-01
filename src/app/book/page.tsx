@@ -30,12 +30,18 @@ export const dynamic = "force-dynamic";
 export default async function BookPage() {
   let dbPackages: any[] = [];
   try {
-    dbPackages = await prisma.package.findMany({
-      where: { isActive: true },
-      orderBy: { sortOrder: 'asc' }
-    });
+    const timeout = new Promise<any[]>((_, reject) =>
+      setTimeout(() => reject(new Error("DB timeout")), 3000)
+    );
+    dbPackages = await Promise.race([
+      prisma.package.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: "asc" },
+      }),
+      timeout,
+    ]);
   } catch (err) {
-    console.error("[Book] Failed to fetch packages:", err);
+    console.error("[Book] Failed to fetch packages (using static fallback):", err);
   }
 
   return (

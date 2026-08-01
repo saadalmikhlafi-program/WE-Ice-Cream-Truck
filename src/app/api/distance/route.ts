@@ -3,8 +3,8 @@ import zipcodes from "zipcodes";
 import prisma from "@/lib/prisma";
 import { routingProvider, BASE_LOCATION } from "@/lib/maps";
 
-const FREE_MILES = 10;
-const COST_PER_MILE = 2.50;
+const FREE_MILES = 0;
+const COST_PER_MILE = 2.00;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

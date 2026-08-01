@@ -298,7 +298,7 @@ ${packagesList}
 - **Base Price**: From the package selected above.
 - **Multiple Stops / Routine**: Sequential stops add $50 fee per extra stop. Simultaneous operations at multiple locations add $200.
 - **Multiple Trucks**: If they request multiple vehicles (e.g. 2 trucks) or have >150 guests requiring multiple vehicles, add a $200 setup/dispatch fee per extra vehicle.
-- **Travel Fee**: First 10 miles are FREE. Each additional mile is $2.50. You MUST use the calculateDistance tool to get the exact distance using their ZIP code.
+- **Travel Fee**: $2.00 per mile based on actual driving distance from our Boston dispatch location (ZIP 02108). There are no free miles — the fee applies from mile 1. You MUST use the calculateDistance tool to get the exact distance using their ZIP code.
 - **Weekend Surcharge**: Events on Saturday or Sunday add $25.
 - **Extra Service Time**: $35 per additional 30-minute block beyond the included time.
 - **Extra Guests**: Each extra guest beyond the package limit is $5.

@@ -31,7 +31,7 @@ export default function TermsOfServicePage() {
               <section>
                 <h2 className="text-2xl font-bold text-navy mb-4">3. Distance Fees and Surcharges</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  Our service includes up to 10 free miles of travel from our headquarters. Distances beyond this are subject to a travel fee per mile as calculated by our automated routing system. Weekend surcharges and minimum order requirements may apply based on your event date and location.
+                  Travel fees are calculated at $2.00 per mile based on the actual driving distance from our Boston dispatch location (ZIP 02108) to your event location. There are no free miles — the travel fee applies from the first mile. Weekend surcharges and minimum order requirements may apply based on your event date and location.
                 </p>
               </section>
 

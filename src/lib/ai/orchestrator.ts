@@ -231,7 +231,7 @@ Our pricing and details are dynamic from the database, but for your general know
    - School Festival Special: 200 servings, 60 Min duration, base price $825. Extra guests $4/person.
 
 PRICING & OPERATION POLICIES:
-- Travel Fee: First 10 miles from our garage in Revere, MA (84 Fernwood Ave) are FREE. Additional miles are calculated dynamically during booking.
+- Travel Fee: $2.00 per mile based on actual driving distance from our Boston dispatch location (ZIP 02108). There are no free miles — the travel fee applies from mile 1. Calculated dynamically during booking.
 - Additional Service Time: Billed at $35 per 30 minutes.
 - Multi-Stop Events: We support multi-stop routing! Each additional stop adds a $50 routing/setup fee.
 - Additional Vehicle Setup Fee: If the event requires another truck/van for the same package at the same time, each additional vehicle includes a $200 setup and dispatch fee. Package price is charged only once; extra vehicles do not multiply the package price.
@@ -262,7 +262,7 @@ BUSINESS CONTEXT:
   * Exception 2: Custom Event Package requests (200+ guests) go to PENDING_REVIEW.
   * No automatic rejections for normal bookings.
   * Payment is collected after the service (no online checkout/payment).
-- Distance Rule: Travel distance is calculated from Boston Revere (84 Fernwood Ave). First 10 miles are free.
+- Distance Rule: Travel distance is calculated from our Boston dispatch location (ZIP 02108). Rate is $2.00 per mile, no free miles.
 - Additional Vehicle Setup Fee: $200 per additional vehicle for same-time multi-vehicle events (package price is charged once, not multiplied).
 - Weekend Event Fee: $25 for Saturday/Sunday bookings.
 - Escalation Rule: If a customer requests human help in chat, it creates an Inquiry.
