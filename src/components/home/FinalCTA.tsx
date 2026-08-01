@@ -36,7 +36,7 @@ export default function FinalCTA() {
               className="group relative w-full sm:w-auto inline-flex items-center justify-center px-12 py-5 bg-coral text-white font-sans font-bold text-[0.85rem] tracking-widest uppercase rounded-full overflow-hidden transition-transform hover:scale-[1.02] active:scale-[0.98] shadow-coral"
             >
               <span className="relative z-10 flex items-center gap-3">
-                Get a Free Quote
+                Book Your Event
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </span>
             </Link>

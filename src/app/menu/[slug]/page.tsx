@@ -4,6 +4,10 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { constructMetadata } from "@/lib/seo";
 import { menuItems } from "@/data/menu";
+import FinalCTA from "@/components/home/FinalCTA";
+import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: Promise<{
@@ -28,12 +32,35 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   }
 
+  // Generate some keywords based on item data
+  const keywords = [
+    item.name,
+    item.brand,
+    item.category,
+    "ice cream truck",
+    "boston ice cream",
+    "event catering",
+    ...item.dietary
+  ].join(", ");
+
   return constructMetadata({
     title: `${item.name} | WE Ice Cream Truck Menu`,
     description: item.description,
     url: `/menu/${item.slug}`,
     image: item.image,
   });
+}
+
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
+  "Birthday Parties":   { bg: "bg-pink-50",   text: "text-pink-700",   dot: "bg-pink-400" },
+  "Corporate Events":   { bg: "bg-blue-50",   text: "text-blue-700",   dot: "bg-blue-400" },
+  "Weddings":           { bg: "bg-purple-50", text: "text-purple-700", dot: "bg-purple-400" },
+  "Community Events":   { bg: "bg-green-50",  text: "text-green-700",  dot: "bg-green-400" },
+};
+
+function getCategoryStyle(name?: string | null) {
+  if (!name) return { bg: "bg-coral/10", text: "text-coral", dot: "bg-coral" };
+  return CATEGORY_COLORS[name] || { bg: "bg-coral/10", text: "text-coral", dot: "bg-coral" };
 }
 
 export default async function MenuItemPage({ params }: PageProps) {
@@ -44,9 +71,50 @@ export default async function MenuItemPage({ params }: PageProps) {
     notFound();
   }
 
+  // Fetch blog posts to show related events
+  let recentPosts: any[] = [];
+  try {
+    const allPosts = await prisma.post.findMany({
+      where: { status: "PUBLISHED", deletedAt: null },
+      include: { category: true },
+    });
+    // Shuffle posts and take 3 for variety across item pages
+    recentPosts = allPosts.sort(() => 0.5 - Math.random()).slice(0, 3);
+  } catch (err) {
+    console.error("[Menu Item] Failed to fetch blog posts:", err);
+  }
+
+  // JSON-LD structured data for the product
+  const jsonLd = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    name: item.name,
+    image: `https://www.weicecreamtruck.com${item.image}`,
+    description: item.description,
+    brand: {
+      "@type": "Brand",
+      name: item.brand,
+    },
+    category: item.category,
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+      url: `https://www.weicecreamtruck.com/menu/${item.slug}`,
+      seller: {
+        "@type": "Organization",
+        name: "WE Ice Cream Truck"
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-16 sm:pt-32 sm:pb-24">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+    <div className="min-h-screen bg-cream text-navy pt-24 pb-0">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl pb-16 sm:pb-24">
         {/* Breadcrumb / Back Link */}
         <Link
           href="/menu"
@@ -68,7 +136,7 @@ export default async function MenuItemPage({ params }: PageProps) {
           Back to Menu
         </Link>
 
-        <div className="bg-white rounded-[2rem] sm:rounded-[3rem] shadow-xl shadow-navy/5 overflow-hidden flex flex-col md:flex-row">
+        <div className="bg-white rounded-[2rem] sm:rounded-[3rem] shadow-xl shadow-navy/5 overflow-hidden flex flex-col md:flex-row border border-navy/5">
           {/* Image Section */}
           <div className="md:w-1/2 p-8 sm:p-12 md:p-16 flex items-center justify-center bg-gradient-to-br from-mint/10 to-blue/5">
             <div className="relative w-full aspect-square max-w-md">
@@ -183,6 +251,73 @@ export default async function MenuItemPage({ params }: PageProps) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Blog Posts Section */}
+      {recentPosts.length > 0 && (
+        <section className="py-20 bg-white/50 border-t border-navy/5">
+          <div className="container mx-auto px-6 max-w-7xl">
+            <div className="flex justify-between items-end mb-12">
+              <div>
+                <span className="inline-block py-1 px-3 bg-navy/5 text-navy font-bold text-xs tracking-widest uppercase rounded-full mb-3">
+                  See {item.name} in Action
+                </span>
+                <h2 className="text-3xl md:text-4xl font-black text-navy">
+                  Recent <span className="text-coral">Events</span>
+                </h2>
+              </div>
+              <Link href="/blog" className="hidden sm:inline-flex items-center gap-2 text-navy font-bold hover:text-coral transition-colors">
+                Explore All Events &rarr;
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {recentPosts.map((post) => {
+                const style = getCategoryStyle(post.category?.name);
+                return (
+                  <Link key={post.id} href={`/blog/${post.slug}`} className="group block bg-white rounded-[2rem] border border-navy/5 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div className="relative aspect-[4/3] bg-navy/5 overflow-hidden">
+                      {post.featuredImage ? (
+                        <Image src={post.featuredImage} alt={post.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-navy/20">
+                          <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      )}
+                      <div className="absolute top-4 left-4">
+                        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${style.bg} ${style.text} backdrop-blur-md text-xs font-bold uppercase tracking-wider`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                          {post.category?.name || "Event"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-8">
+                      <h3 className="text-xl font-bold text-navy mb-3 line-clamp-2 group-hover:text-coral transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-navy/60 text-sm line-clamp-2 leading-relaxed">
+                        {post.excerpt}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+            
+            <div className="mt-8 text-center sm:hidden">
+              <Link href="/blog" className="inline-flex items-center justify-center w-full py-4 bg-navy/5 text-navy font-bold rounded-2xl hover:bg-navy/10 transition-colors">
+                Explore All Events
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Final CTA */}
+      <div className="border-t border-navy/5 bg-cream">
+        <FinalCTA />
       </div>
     </div>
   );

@@ -4,6 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import FAQSection from "@/components/shared/FAQSection";
 import { menuItems } from "@/data/menu";
+import FinalCTA from "@/components/home/FinalCTA";
+import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = constructMetadata({
   title: "Ice Cream Menu | WE Ice Cream Truck",
@@ -30,9 +34,33 @@ const faqs = [
   },
 ];
 
-export default function MenuPage() {
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
+  "Birthday Parties":   { bg: "bg-pink-50",   text: "text-pink-700",   dot: "bg-pink-400" },
+  "Corporate Events":   { bg: "bg-blue-50",   text: "text-blue-700",   dot: "bg-blue-400" },
+  "Weddings":           { bg: "bg-purple-50", text: "text-purple-700", dot: "bg-purple-400" },
+  "Community Events":   { bg: "bg-green-50",  text: "text-green-700",  dot: "bg-green-400" },
+};
+
+function getCategoryStyle(name?: string | null) {
+  if (!name) return { bg: "bg-coral/10", text: "text-coral", dot: "bg-coral" };
+  return CATEGORY_COLORS[name] || { bg: "bg-coral/10", text: "text-coral", dot: "bg-coral" };
+}
+
+export default async function MenuPage() {
+  let recentPosts: any[] = [];
+  try {
+    recentPosts = await prisma.post.findMany({
+      where: { status: "PUBLISHED", deletedAt: null },
+      orderBy: { publishedAt: "desc" },
+      take: 3,
+      include: { category: true },
+    });
+  } catch (err) {
+    console.error("[Menu] Failed to fetch blog posts:", err);
+  }
+
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-cream text-navy">
       {/* Hero Section */}
       <section className="relative py-16 sm:py-20 md:py-28 overflow-hidden">
         <div className="absolute top-0 right-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-coral/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
@@ -93,6 +121,85 @@ export default function MenuPage() {
         </div>
       </section>
 
+      {/* Brands Showcase */}
+      <section className="py-16 bg-navy/5 border-y border-navy/10 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('/patterns/topography.svg')] bg-repeat" />
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <p className="text-sm md:text-base font-bold text-navy/60 uppercase tracking-[0.2em] mb-10">
+            Experience the finest ice cream brands served straight from our trucks!
+          </p>
+          <div className="flex flex-wrap justify-center gap-6 md:gap-12 opacity-70">
+            {['Blue Bunny', 'Good Humor', 'Popsicle', 'Blue Ribbon', 'Dove', 'Bomb Pop', 'Snickers', 'Twix', "Reese's"].map(brand => (
+              <span key={brand} className="text-xl md:text-2xl font-black text-navy hover:text-coral transition-colors cursor-default hover:scale-105 transform">
+                {brand}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Blog Posts Section */}
+      {recentPosts.length > 0 && (
+        <section className="py-20 bg-cream">
+          <div className="container mx-auto px-6 max-w-7xl">
+            <div className="flex justify-between items-end mb-12">
+              <div>
+                <span className="inline-block py-1 px-3 bg-navy/5 text-navy font-bold text-xs tracking-widest uppercase rounded-full mb-3">
+                  Latest Events
+                </span>
+                <h2 className="text-3xl md:text-4xl font-black text-navy">
+                  Sweet <span className="text-coral">Stories</span>
+                </h2>
+              </div>
+              <Link href="/blog" className="hidden sm:inline-flex items-center gap-2 text-navy font-bold hover:text-coral transition-colors">
+                View All Events &rarr;
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {recentPosts.map((post) => {
+                const style = getCategoryStyle(post.category?.name);
+                return (
+                  <Link key={post.id} href={`/blog/${post.slug}`} className="group block bg-white rounded-[2rem] border border-navy/5 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div className="relative aspect-[4/3] bg-navy/5 overflow-hidden">
+                      {post.featuredImage ? (
+                        <Image src={post.featuredImage} alt={post.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-navy/20">
+                          <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      )}
+                      <div className="absolute top-4 left-4">
+                        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${style.bg} ${style.text} backdrop-blur-md text-xs font-bold uppercase tracking-wider`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                          {post.category?.name || "Event"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-8">
+                      <h3 className="text-xl font-bold text-navy mb-3 line-clamp-2 group-hover:text-coral transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-navy/60 text-sm line-clamp-2 leading-relaxed">
+                        {post.excerpt}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+            
+            <div className="mt-8 text-center sm:hidden">
+              <Link href="/blog" className="inline-flex items-center justify-center w-full py-4 bg-navy/5 text-navy font-bold rounded-2xl hover:bg-navy/10 transition-colors">
+                View All Events
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Dietary Notice */}
       <section className="py-14 sm:py-16 md:py-20 bg-navy relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('/images/hero-cinematic.jpg')] opacity-10 bg-cover bg-center mix-blend-overlay" />
@@ -129,6 +236,11 @@ export default function MenuPage() {
         subtitle="Common questions about our treats."
         items={faqs}
       />
+      
+      {/* Final CTA */}
+      <div className="border-t border-navy/5 bg-cream">
+        <FinalCTA />
+      </div>
     </div>
   );
 }

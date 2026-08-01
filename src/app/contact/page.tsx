@@ -162,7 +162,7 @@ export default function ContactPage() {
                         For the fastest response and accurate pricing, please use our dedicated Quote form instead of this general contact form.
                       </p>
                       <Link href="/get-a-quote" className="inline-block px-5 py-2 bg-coral text-white text-sm font-bold rounded-full hover:bg-navy transition-colors">
-                        Get a Free Quote
+                        Book Your Event
                       </Link>
                     </div>
                   </div>

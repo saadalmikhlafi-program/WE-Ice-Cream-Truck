@@ -8,7 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import prisma from "@/lib/prisma";
 
 export const metadata: Metadata = constructMetadata({
-  title: "Get a Free Quote | WE Ice Cream Truck",
+  title: "Book Your Event | WE Ice Cream Truck",
   description: "Book Massachusetts' premium ice cream truck for your next event. Fill out our quick 2-minute form for instant pricing and availability.",
   url: "/get-a-quote",
 });
