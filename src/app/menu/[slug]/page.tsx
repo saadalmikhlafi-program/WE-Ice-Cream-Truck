@@ -243,7 +243,7 @@ export default async function MenuItemPage({ params }: PageProps) {
 
             <div className="mt-10 pt-8 border-t border-navy/5">
               <Link
-                href="/book"
+                href="/packages"
                 className="inline-block bg-coral hover:bg-coral-dark text-white font-bold py-4 px-8 rounded-full transition-all hover:scale-105 hover:shadow-lg hover:shadow-coral/30"
               >
                 Book Us For Your Event
