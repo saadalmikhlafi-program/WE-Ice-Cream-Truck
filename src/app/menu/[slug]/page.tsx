@@ -136,7 +136,7 @@ export default async function MenuItemPage({ params }: PageProps) {
           Back to Menu
         </Link>
 
-        <div className="bg-white rounded-[2rem] sm:rounded-[3rem] shadow-xl shadow-navy/5 overflow-hidden flex flex-col md:flex-row border border-navy/5">
+        <div className="bg-white/20 backdrop-blur-xl rounded-[2rem] sm:rounded-[3rem] shadow-2xl shadow-navy/10 border border-white/40 overflow-hidden flex flex-col md:flex-row">
           {/* Image Section */}
           <div className="md:w-1/2 p-8 sm:p-12 md:p-16 flex items-center justify-center bg-gradient-to-br from-mint/10 to-blue/5">
             <div className="relative w-full aspect-square max-w-md">
@@ -257,7 +257,7 @@ export default async function MenuItemPage({ params }: PageProps) {
 
       {/* Blog Posts Section */}
       {recentPosts.length > 0 && (
-        <section className="py-20 bg-white/50 border-t border-navy/5">
+        <section className="py-20">
           <div className="container mx-auto px-6 max-w-7xl">
             <div className="flex justify-between items-end mb-12">
               <div>
