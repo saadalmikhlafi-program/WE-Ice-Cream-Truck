@@ -143,7 +143,7 @@ export default function LocationPicker({
       });
 
       // Home Marker (We Ice Cream Truck HQ)
-      const homeCenter: [number, number] = [42.4084, -70.9996]; // 02151 Revere, MA
+      const homeCenter: [number, number] = [42.3588, -71.0638]; // 02108 Boston, MA
       const homeIcon = L.divIcon({
         className: "home-marker",
         html: `<div class="marker-pin">
@@ -158,7 +158,7 @@ export default function LocationPicker({
         popupAnchor: [0, -52],
       });
 
-      L.marker(homeCenter, { icon: homeIcon }).addTo(map).bindTooltip("We Ice Cream Truck (02151)", { permanent: true, direction: "right", className: "font-bold text-navy" });
+      L.marker(homeCenter, { icon: homeIcon }).addTo(map).bindTooltip("We Ice Cream Truck (02108)", { permanent: true, direction: "right", className: "font-bold text-navy" });
 
       const marker = L.marker(defaultCenter, {
         icon: markerIcon,
@@ -394,7 +394,7 @@ export default function LocationPicker({
                 setManualZip(val);
                 onLocationSelect({ address: query, city: "", zip: val, lat: 0, lng: 0 });
               }}
-              placeholder="e.g. 02151"
+              placeholder="e.g. 02108"
               className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-coral/20 outline-none"
             />
           </div>

@@ -180,8 +180,8 @@ export function generateCitySEOData(slug: string) {
                 "priceRange": "$$",
                 "servesCuisine": "Ice Cream",
                 "areaServed": { "@type": "City", "name": cityName, "containedInPlace": { "@type": "State", "name": "Massachusetts" } },
-                "address": { "@type": "PostalAddress", "streetAddress": "84 Fernwood Ave", "addressLocality": "Revere", "addressRegion": "MA", "postalCode": "02151", "addressCountry": "US" },
-                "geo": { "@type": "GeoCoordinates", "latitude": 42.4084, "longitude": -71.0120 },
+                "address": { "@type": "PostalAddress", "addressLocality": "Boston", "addressRegion": "MA", "postalCode": "02108", "addressCountry": "US" },
+                "geo": { "@type": "GeoCoordinates", "latitude": 42.3588, "longitude": -71.0638 },
                 "openingHours": "Mo-Su 09:00-21:00",
                 "sameAs": ["https://www.facebook.com/bostonlegendicecream", "https://www.instagram.com/bostonlegendicecream"]
             },

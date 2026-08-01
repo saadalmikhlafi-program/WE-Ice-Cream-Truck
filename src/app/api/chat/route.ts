@@ -24,7 +24,7 @@ async function calculateDistance(zip: string): Promise<number> {
     return Math.round(distanceMiles * 10) / 10;
   } catch (e) {
     console.warn("Routing fallback", e);
-    return Math.round(zipcodes.distance("02151", zip) * 10) / 10;
+    return Math.round(zipcodes.distance("02108", zip) * 10) / 10;
   }
 }
 
