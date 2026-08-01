@@ -37,7 +37,7 @@ export default async function BlogPage() {
   const rest = posts.slice(1);
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-navy selection:bg-coral/30">
       {/* ── Hero ── */}
       <section className="relative overflow-hidden bg-transparent pt-32 pb-20 px-6">
         {/* Background pattern */}
@@ -50,11 +50,11 @@ export default async function BlogPage() {
             <span className="w-2 h-2 rounded-full bg-coral animate-pulse" />
             <span className="text-navy/80 text-sm font-semibold tracking-wide uppercase">Real Stories</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-black text-navy mb-6 leading-tight">
+          <h1 className="text-5xl md:text-6xl font-black text-white mb-6 leading-tight">
             Moments That
             <span className="text-coral"> Matter</span>
           </h1>
-          <p className="text-xl text-navy/70 max-w-2xl mx-auto leading-relaxed font-medium">
+          <p className="text-xl text-cream/80 max-w-2xl mx-auto leading-relaxed font-medium">
             From backyard birthday parties to corporate summits and wedding receptions — 
             real events, real smiles, all across Greater Boston.
           </p>
@@ -78,18 +78,21 @@ export default async function BlogPage() {
                   <div className="w-8 h-0.5 bg-coral" />
                   <span className="text-coral font-bold text-sm uppercase tracking-widest">Featured Story</span>
                 </div>
-                <Link href={`/blog/${featured.slug}`} className="group block">
-                  <div className="grid md:grid-cols-2 gap-0 bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
+                <Link href={`/blog/${featured.slug}`} className="group block bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 shadow-xl overflow-hidden hover:border-coral/50 transition-all duration-300">
+                  <div className="grid md:grid-cols-2 gap-0">
                     {/* Image */}
-                    <div className="aspect-[4/3] md:aspect-auto relative overflow-hidden bg-gray-100">
+                    <div className="aspect-[4/3] md:aspect-auto relative overflow-hidden bg-navy-mid">
                       {featured.featuredImage ? (
                         <img
                           src={featured.featuredImage}
                           alt={featured.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          onError={(e) => {
+                            e.currentTarget.src = "/images/blog/starter-event.jpg";
+                          }}
                         />
                       ) : (
-                        <div className="w-full h-full min-h-[300px] flex items-center justify-center bg-gradient-to-br from-coral/20 to-navy/20">
+                        <div className="w-full h-full min-h-[300px] flex items-center justify-center bg-gradient-to-br from-coral/20 to-navy-mid">
                           <span className="text-6xl">🍦</span>
                         </div>
                       )}
@@ -97,7 +100,7 @@ export default async function BlogPage() {
                         const style = getCategoryStyle(featured.category.name);
                         return (
                           <div className="absolute top-5 left-5">
-                            <span className={`inline-flex items-center gap-1.5 ${style.bg} ${style.text} px-3 py-1.5 rounded-full text-xs font-bold shadow-sm`}>
+                            <span className={`inline-flex items-center gap-1.5 ${style.bg} backdrop-blur-sm border border-white/10 ${style.text} px-3 py-1.5 rounded-full text-xs font-bold`}>
                               <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
                               {featured.category.name}
                             </span>
@@ -107,16 +110,16 @@ export default async function BlogPage() {
                     </div>
                     {/* Content */}
                     <div className="p-10 flex flex-col justify-center">
-                      <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
+                      <div className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">
                         {featured.publishedAt
                           ? new Date(featured.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
                           : ""}
                       </div>
-                      <h2 className="text-3xl md:text-4xl font-black text-navy mb-4 leading-tight group-hover:text-coral transition-colors duration-300">
+                      <h2 className="text-3xl md:text-4xl font-black text-white mb-4 leading-tight group-hover:text-coral transition-colors duration-300">
                         {featured.title}
                       </h2>
                       {featured.excerpt && (
-                        <p className="text-gray-500 leading-relaxed mb-8 text-base line-clamp-3">
+                        <p className="text-white/70 leading-relaxed mb-8 text-base line-clamp-3">
                           {featured.excerpt}
                         </p>
                       )}
@@ -146,24 +149,27 @@ export default async function BlogPage() {
                       <Link
                         key={post.id}
                         href={`/blog/${post.slug}`}
-                        className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                        className="group flex flex-col bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden shadow-sm hover:border-coral/50 transition-all duration-300 hover:-translate-y-1"
                       >
                         {/* Thumbnail */}
-                        <div className="aspect-[16/9] relative overflow-hidden bg-gray-100">
+                        <div className="aspect-[16/9] relative overflow-hidden bg-navy-mid">
                           {post.featuredImage ? (
                             <img
                               src={post.featuredImage}
                               alt={post.title}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              onError={(e) => {
+                                e.currentTarget.src = "/images/blog/starter-event.jpg";
+                              }}
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-coral/10 to-navy/10">
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-coral/10 to-navy-mid">
                               <span className="text-4xl opacity-50">🍦</span>
                             </div>
                           )}
                           {post.category && (
                             <div className="absolute top-3 left-3">
-                              <span className={`inline-flex items-center gap-1.5 ${style.bg} ${style.text} px-2.5 py-1 rounded-full text-[11px] font-bold shadow-sm`}>
+                              <span className={`inline-flex items-center gap-1.5 ${style.bg} backdrop-blur-sm ${style.text} px-2.5 py-1 rounded-full text-[11px] font-bold`}>
                                 <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
                                 {post.category.name}
                               </span>
@@ -173,16 +179,16 @@ export default async function BlogPage() {
 
                         {/* Content */}
                         <div className="flex flex-col flex-1 p-6">
-                          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">
+                          <div className="text-[11px] font-bold text-white/40 uppercase tracking-widest mb-3">
                             {post.publishedAt
                               ? new Date(post.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
                               : ""}
                           </div>
-                          <h3 className="text-lg font-black text-navy mb-3 leading-snug group-hover:text-coral transition-colors duration-200 line-clamp-2">
+                          <h3 className="text-lg font-black text-white mb-3 leading-snug group-hover:text-coral transition-colors duration-200 line-clamp-2">
                             {post.title}
                           </h3>
                           {post.excerpt && (
-                            <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 flex-1 mb-4">
+                            <p className="text-white/60 text-sm leading-relaxed line-clamp-2 flex-1 mb-4">
                               {post.excerpt}
                             </p>
                           )}

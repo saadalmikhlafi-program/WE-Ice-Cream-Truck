@@ -9,9 +9,9 @@ export default function BlogSection({ posts = [] }: { posts?: any[] }) {
   if (!posts || posts.length === 0) return null;
 
   return (
-    <section className="relative py-24 bg-transparent overflow-hidden" id="blog">
+    <section className="relative py-24 bg-navy overflow-hidden" id="blog">
       {/* Decorative Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-coral/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-coral/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-mint/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -23,10 +23,10 @@ export default function BlogSection({ posts = [] }: { posts?: any[] }) {
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-coral font-bold tracking-wider uppercase text-sm mb-3">Our Stories</h2>
-            <h3 className="font-display font-black text-4xl md:text-5xl text-navy mb-6">
+            <h3 className="font-display font-black text-4xl md:text-5xl text-white mb-6">
               Real Events. <span className="text-coral italic font-light">Real Smiles.</span>
             </h3>
-            <p className="text-lg text-gray-500">
+            <p className="text-lg text-cream/80">
               Don't just take our word for it. Explore our recent events and see the joy we bring to celebrations across Massachusetts.
             </p>
           </motion.div>
@@ -40,9 +40,9 @@ export default function BlogSection({ posts = [] }: { posts?: any[] }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: idx * 0.15 }}
-              className="group bg-white/60 backdrop-blur-md rounded-3xl border border-gray-100 shadow-xl shadow-navy/5 overflow-hidden hover:shadow-2xl hover:shadow-coral/10 hover:border-coral/20 transition-all duration-300 flex flex-col"
+              className="group bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 shadow-xl overflow-hidden hover:border-coral/50 transition-all duration-300 flex flex-col"
             >
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative h-64 overflow-hidden bg-navy-mid">
                 <Image
                   src={post.featuredImage || "/images/blog/starter-event.jpg"}
                   alt={`${post.title} - WE Ice Cream Truck Massachusetts Blog`}
@@ -50,25 +50,29 @@ export default function BlogSection({ posts = [] }: { posts?: any[] }) {
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 33vw"
+                  onError={(e) => {
+                    e.currentTarget.srcset = "";
+                    e.currentTarget.src = "/images/blog/starter-event.jpg";
+                  }}
                 />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-navy shadow-sm">
+                <div className="absolute top-4 left-4 bg-navy/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-white shadow-sm border border-white/10">
                   {post.category?.name || "Event"}
                 </div>
               </div>
               <div className="p-6 flex flex-col flex-grow">
-                <div className="flex items-center gap-4 text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">
+                <div className="flex items-center gap-4 text-xs font-semibold text-cream/60 mb-3 uppercase tracking-wider">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5" /> 
                     {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
                   </span>
                 </div>
-                <h4 className="text-xl font-bold text-navy mb-3 line-clamp-2 group-hover:text-coral transition-colors">
+                <h4 className="text-xl font-bold text-white mb-3 line-clamp-2 group-hover:text-coral transition-colors">
                   {post.title}
                 </h4>
-                <p className="text-gray-500 text-sm mb-6 flex-grow line-clamp-3">
+                <p className="text-cream/70 text-sm mb-6 flex-grow line-clamp-3">
                   {post.excerpt}
                 </p>
-                <Link href={`/blog/${post.slug}`} className="inline-flex items-center gap-2 text-sm font-bold text-navy group-hover:text-coral transition-colors mt-auto">
+                <Link href={`/blog/${post.slug}`} className="inline-flex items-center gap-2 text-sm font-bold text-coral group-hover:text-coral-light transition-colors mt-auto">
                   Read Full Story <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
