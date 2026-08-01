@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { menuItems } from "@/data/menu";
 
 export async function getPackages() {
   return await prisma.package.findMany({ where: { isActive: true } });
@@ -43,4 +44,14 @@ export async function detectScheduleConflicts(date: string) {
     startTime: c.startTime,
     vehicle: c.vehicle?.name || "Unassigned"
   }));
+}
+
+export async function getMenu(category?: string) {
+  if (category) {
+    return menuItems.filter(item => 
+      item.category.toLowerCase().includes(category.toLowerCase()) || 
+      item.brand.toLowerCase().includes(category.toLowerCase())
+    );
+  }
+  return menuItems.map(item => ({ name: item.name, category: item.category, brand: item.brand }));
 }

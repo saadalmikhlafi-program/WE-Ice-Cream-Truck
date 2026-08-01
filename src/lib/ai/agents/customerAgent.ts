@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getPackages, estimatePrice } from "../tools/businessLogic";
+import { getPackages, estimatePrice, getMenu } from "../tools/businessLogic";
 
 export const CUSTOMER_PROMPT = `
 You are the AI system for WE Ice Cream Truck.
@@ -11,6 +11,7 @@ CUSTOMER AI RESPONSIBILITIES:
 - explain pricing
 - explain scheduling
 - guide users through booking
+- answer questions about our ice cream menu, flavors, brands, and allergens
 
 BEHAVIOR REQUIREMENTS:
 - premium tone
@@ -18,6 +19,7 @@ BEHAVIOR REQUIREMENTS:
 - never generic
 - never compute pricing manually. ALWAYS use the estimatePrice tool.
 - always use getPackages to list options. Do NOT hallucinate packages.
+- always use getMenu to list or search for ice cream flavors, brands, or dietary options. Do NOT hallucinate menu items.
 
 IMPORTANT:
 Do NOT answer with generic fallback messages. 
@@ -38,5 +40,12 @@ export const customerToolDefs = {
     }),
     execute: ({ guests, packageId }: { guests: number; packageId: string }) =>
       estimatePrice(guests, packageId),
+  },
+  getMenu: {
+    description: "Get the ice cream truck menu. If you need a specific category (e.g., 'dairy-free', 'cone', 'candy bar', 'blue bunny'), pass it as a parameter.",
+    parameters: z.object({
+      category: z.string().optional().describe("Optional category, brand, or dietary tag to filter by"),
+    }),
+    execute: ({ category }: { category?: string }) => getMenu(category),
   },
 };
