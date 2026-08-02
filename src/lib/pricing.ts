@@ -43,7 +43,7 @@ export function calculateQuote(params: PricingParams) {
     guests,
     additionalStops = 0,
     extraServiceMins = 0,
-    freeMiles = 10,
+    freeMiles = 0,
     ratePerMile = 2.50,
     locationMode = "SINGLE_LOCATION",
     eventDate,

@@ -231,20 +231,81 @@ export default function BookingDetailPage() {
           </div>
 
           {/* Pricing */}
-          {booking.quote && (
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <h2 className="text-xs font-black text-navy uppercase tracking-wider mb-4 flex items-center gap-2">
-                <DollarSign className="w-3.5 h-3.5 text-coral" /> Pricing
-              </h2>
-              <InfoRow label="Base Price"  value={`$${booking.quote.basePrice?.toFixed(2)}`} />
-              {booking.quote.travelFee > 0 && <InfoRow label="Travel Fee" value={`$${booking.quote.travelFee?.toFixed(2)}`} />}
-              {booking.quote.additionalServiceFee > 0 && <InfoRow label="Additional Service" value={`$${booking.quote.additionalServiceFee?.toFixed(2)}`} />}
-              <div className="pt-3 mt-2 border-t border-gray-100 flex items-center justify-between">
-                <span className="text-xs font-black text-gray-400 uppercase tracking-wider">Total</span>
-                <span className="text-2xl font-black text-navy">${booking.quote.totalAmount?.toFixed(2)}</span>
+          {booking.quote && (() => {
+            let snap: any = {};
+            try { snap = booking.quote.snapshotJson ? JSON.parse(booking.quote.snapshotJson) : {}; } catch {}
+
+            const basePrice            = snap.packagePrice        ?? booking.quote.basePrice           ?? 0;
+            const includedGuests       = snap.includedGuests       ?? booking.package?.servings         ?? 0;
+            const includedMins         = snap.includedServiceMins  ?? booking.package?.durationMins     ?? 0;
+            const extraGuestsCount     = snap.additionalGuests     ?? 0;
+            const extraGuestPrice      = snap.extraGuestPrice      ?? 5;
+            const extraGuestsFee       = snap.additionalGuestsFee  ?? (extraGuestsCount * extraGuestPrice);
+            const travelFee            = snap.travelFee            ?? booking.quote.travelFee           ?? 0;
+            const weekendFee           = snap.weekendFee           ?? 0;
+            const additionalServiceFee = snap.additionalServiceFee ?? booking.quote.additionalServiceFee ?? 0;
+            const additionalServiceMins= snap.additionalServiceMins ?? 0;
+            const extraTimeFee         = snap.extraTimeFee         ?? 0;
+            const additionalStopsFee   = snap.additionalStopsFee   ?? 0;
+            const additionalVehicleFee = snap.additionalVehicleSetupFee ?? 0;
+            const total                = snap.estimatedTotal       ?? booking.quote.totalAmount         ?? booking.totalAmount ?? 0;
+
+            return (
+              <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <h2 className="text-xs font-black text-navy uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <DollarSign className="w-3.5 h-3.5 text-coral" /> Pricing
+                </h2>
+                <InfoRow label="Base Price" value={
+                  <span>
+                    ${basePrice.toFixed(2)}
+                    {(includedGuests > 0 || includedMins > 0) && (
+                      <span className="text-[10px] text-gray-400 font-normal ml-1">
+                        ({includedGuests} guests · {includedMins} min included)
+                      </span>
+                    )}
+                  </span>
+                } />
+                {extraGuestsFee > 0 && (
+                  <InfoRow label="Extra Guests" value={
+                    <span className="text-amber-600">
+                      +${extraGuestsFee.toFixed(2)}
+                      <span className="text-[10px] text-gray-400 font-normal ml-1">
+                        ({extraGuestsCount} × ${extraGuestPrice})
+                      </span>
+                    </span>
+                  } />
+                )}
+                {travelFee > 0 && (
+                  <InfoRow label="Travel Fee" value={<span className="text-amber-600">+${travelFee.toFixed(2)}</span>} />
+                )}
+                {weekendFee > 0 && (
+                  <InfoRow label="Weekend Fee" value={<span className="text-amber-600">+${weekendFee.toFixed(2)}</span>} />
+                )}
+                {additionalServiceFee > 0 && (
+                  <InfoRow label="Extra Service Time" value={
+                    <span className="text-amber-600">
+                      +${additionalServiceFee.toFixed(2)}
+                      {additionalServiceMins > 0 && <span className="text-[10px] text-gray-400 font-normal ml-1">({additionalServiceMins} min)</span>}
+                    </span>
+                  } />
+                )}
+                {extraTimeFee > 0 && (
+                  <InfoRow label="Overtime Fee" value={<span className="text-amber-600">+${extraTimeFee.toFixed(2)}</span>} />
+                )}
+                {additionalStopsFee > 0 && (
+                  <InfoRow label="Multi-Location Fee" value={<span className="text-amber-600">+${additionalStopsFee.toFixed(2)}</span>} />
+                )}
+                {additionalVehicleFee > 0 && (
+                  <InfoRow label="Additional Vehicle" value={<span className="text-amber-600">+${additionalVehicleFee.toFixed(2)}</span>} />
+                )}
+                <div className="pt-3 mt-2 border-t border-gray-100 flex items-center justify-between">
+                  <span className="text-xs font-black text-gray-400 uppercase tracking-wider">Total</span>
+                  <span className="text-2xl font-black text-navy">${total.toFixed(2)}</span>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
+
 
           {/* Internal Notes */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">

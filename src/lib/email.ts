@@ -339,10 +339,8 @@ function formatBookingDetailsHtml(booking: any) {
           ` : ''}
         </td>
       </tr>
-      <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Garage Origin</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">Boston Revere — 84 Fernwood Ave</td></tr>
+      <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Dispatch Origin</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">Boston, MA (ZIP 02108)</td></tr>
       <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Total Distance</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">${distanceMiles.toFixed(1)} miles</td></tr>
-      <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Free Travel Zone</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">First 10.0 miles FREE</td></tr>
-      <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Billable Distance</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">${billableMiles.toFixed(1)} miles</td></tr>
     </table>
 
     <!-- Pricing Breakdown -->

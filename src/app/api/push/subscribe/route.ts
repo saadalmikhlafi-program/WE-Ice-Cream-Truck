@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/rbac";
 
+export async function GET() {
+  return NextResponse.json({ status: "ok" });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const user = await getSessionUser(req);
