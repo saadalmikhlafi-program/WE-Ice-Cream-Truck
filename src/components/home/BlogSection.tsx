@@ -50,10 +50,6 @@ export default function BlogSection({ posts = [] }: { posts?: any[] }) {
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  onError={(e) => {
-                    e.currentTarget.srcset = "";
-                    e.currentTarget.src = "/images/blog/starter-event.jpg";
-                  }}
                 />
                 <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-navy shadow-sm">
                   {post.category?.name || "Event"}

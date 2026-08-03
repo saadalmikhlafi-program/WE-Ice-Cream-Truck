@@ -87,9 +87,6 @@ export default async function BlogPage() {
                           src={featured.featuredImage}
                           alt={featured.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                          onError={(e) => {
-                            e.currentTarget.src = "/images/blog/starter-event.jpg";
-                          }}
                         />
                       ) : (
                         <div className="w-full h-full min-h-[300px] flex items-center justify-center bg-gradient-to-br from-coral/20 to-navy/20">
@@ -158,9 +155,6 @@ export default async function BlogPage() {
                               src={post.featuredImage}
                               alt={post.title}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                              onError={(e) => {
-                                e.currentTarget.src = "/images/blog/starter-event.jpg";
-                              }}
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-coral/10 to-navy/10">
