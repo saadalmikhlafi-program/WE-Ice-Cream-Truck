@@ -12,11 +12,12 @@ const SENDER_EMAIL = 'info@weicecreamtruck.com';
 const ADMIN_EMAIL  = process.env.ADMIN_EMAIL || 'info@weicecreamtruck.com';
 const REPLY_TO     = 'info@weicecreamtruck.com';
 
-const smtpPort = parseInt(process.env.SMTP_PORT || "465", 10);
+const smtpPort = parseInt(process.env.SMTP_PORT || "587", 10);
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  host: process.env.SMTP_HOST || "smtp-relay.gmail.com",
   port: smtpPort,
-  secure: smtpPort === 465,
+  secure: false, // STARTTLS (works for port 587)
+  requireTLS: true,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
