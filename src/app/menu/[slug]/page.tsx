@@ -41,13 +41,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     "boston ice cream",
     "event catering",
     ...item.dietary
-  ].join(", ");
+  ];
 
   return constructMetadata({
     title: `${item.name} | WE Ice Cream Truck Menu`,
     description: item.description,
     url: `/menu/${item.slug}`,
     image: item.image,
+    keywords: keywords,
   });
 }
 

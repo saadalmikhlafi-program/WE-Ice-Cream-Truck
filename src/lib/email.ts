@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { prisma } from "./prisma";
 import { BUSINESS_CONFIG } from "./config";
 
@@ -12,7 +12,16 @@ const SENDER_EMAIL = 'info@weicecreamtruck.com';
 const ADMIN_EMAIL  = process.env.ADMIN_EMAIL || 'info@weicecreamtruck.com';
 const REPLY_TO     = 'info@weicecreamtruck.com';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key_to_prevent_build_error');
+const smtpPort = parseInt(process.env.SMTP_PORT || "465", 10);
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: smtpPort,
+  secure: smtpPort === 465,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 export function getAdminRecipients() {
   const recipients = new Set(['info@weicecreamtruck.com']);
@@ -94,8 +103,8 @@ export async function sendEmail({ to, subject, html, title, replyTo }: { to: str
   const MAX_RETRIES = 2;
   const RETRY_DELAY_MS = 2000;
 
-  if (!process.env.RESEND_API_KEY) {
-    console.warn(`[Email] ⚠️ RESEND_API_KEY is not set. Skipped sending "${subject}" to ${JSON.stringify(to)}`);
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.warn(`[Email] ⚠️ SMTP credentials not set. Skipped sending "${subject}" to ${JSON.stringify(to)}`);
     return false;
   }
 
@@ -104,7 +113,7 @@ export async function sendEmail({ to, subject, html, title, replyTo }: { to: str
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      const { data, error } = await resend.emails.send({
+      const info = await transporter.sendMail({
         from: `"WE Ice Cream Truck" <${SENDER_EMAIL}>`,
         replyTo: replyTo || REPLY_TO,
         to: recipients,
@@ -113,11 +122,7 @@ export async function sendEmail({ to, subject, html, title, replyTo }: { to: str
         html: baseTemplate(html, title || subject),
       });
 
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      console.log(`[Email] ✅ Sent "${subject}" → ${to} (ID: ${data?.id})`);
+      console.log(`[Email] ✅ Sent "${subject}" → ${to} (Message-ID: ${info.messageId})`);
       return true;
     } catch (err: any) {
       console.error(`[Email] ❌ Attempt ${attempt}/${MAX_RETRIES} failed for "${subject}" → ${to}:`, err.message);

@@ -7,6 +7,7 @@ type SEOProps = {
   image?: string;
   url?: string;
   noIndex?: boolean;
+  keywords?: string[];
 };
 
 export function constructMetadata({
@@ -15,19 +16,22 @@ export function constructMetadata({
   image = "/images/we-icecream.jpg",
   url = "",
   noIndex = false,
+  keywords = [],
 }: SEOProps = {}): Metadata {
   const fullTitle = title
     ? `${title} | ${BUSINESS_CONFIG.name}`
     : `${BUSINESS_CONFIG.name} | ${BUSINESS_CONFIG.tagline}`;
-    
+
   const fullDescription = description || BUSINESS_CONFIG.description;
   const fullUrl = `${BUSINESS_CONFIG.domain}${url}`;
+
+  const allKeywords = [...BUSINESS_CONFIG.keywords, ...keywords];
 
   return {
     title: fullTitle,
     description: fullDescription,
     authors: [{ name: BUSINESS_CONFIG.name }],
-    keywords: [...BUSINESS_CONFIG.keywords],
+    keywords: allKeywords,
     metadataBase: new URL(BUSINESS_CONFIG.domain),
     alternates: {
       canonical: fullUrl,

@@ -9,9 +9,9 @@ import { hasPermission } from "./permissions";
 export async function getSessionUser(req: NextRequest | Request) {
   // Using getServerSession is more robust than getToken in App Router API routes
   const session = await getServerSession(authOptions);
-  
+
   if (!session?.user) return null;
-  
+
   return {
     id: (session.user as any).id as string,
     email: session.user.email as string,
