@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BUSINESS_CONFIG } from "@/lib/config";
 import { Phone, Mail, MapPin, Clock, MessageSquareHeart } from "lucide-react";
 import Link from "next/link";
 import FAQSection from "@/components/shared/FAQSection";
+
+const SITE_KEY = "6LchenctAAAAAHpLKDsK-Igil1E3rCXzI8J2DqzC";
 
 const faqs = [
   {
@@ -21,35 +23,86 @@ const faqs = [
   }
 ];
 
+// Load reCAPTCHA Enterprise script
+function useRecaptcha() {
+  useEffect(() => {
+    const existingScript = document.querySelector(`script[src*="recaptcha/enterprise"]`);
+    if (existingScript) return;
+    const script = document.createElement("script");
+    script.src = `https://www.google.com/recaptcha/enterprise.js?render=${SITE_KEY}`;
+    script.async = true;
+    document.head.appendChild(script);
+  }, []);
+
+  const getToken = (action: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const w = window as any;
+      if (!w.grecaptcha?.enterprise) {
+        reject(new Error("reCAPTCHA not loaded"));
+        return;
+      }
+      w.grecaptcha.enterprise.ready(async () => {
+        try {
+          const token = await w.grecaptcha.enterprise.execute(SITE_KEY, { action });
+          resolve(token);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
+  };
+
+  return { getToken };
+}
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    message: ''
+    message: '',
+    _gotcha: '', // honeypot — hidden from real users
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const { getToken } = useRecaptcha();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+    setError('');
+
     try {
+      // Get reCAPTCHA Enterprise token
+      let recaptchaToken = '';
+      try {
+        recaptchaToken = await getToken('CONTACT_FORM');
+      } catch (err) {
+        console.warn('reCAPTCHA token failed:', err);
+        // Still attempt submission — server will handle gracefully
+      }
+
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, recaptchaToken }),
       });
-      
-      if (res.ok) {
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
         setIsSuccess(true);
+      } else if (res.status === 429) {
+        setError("You've sent too many messages recently. Please wait a bit and try again.");
+      } else if (res.status === 400 && data.error?.includes('Security')) {
+        setError("Security check failed. Please refresh the page and try again.");
       } else {
-        alert("There was an error sending your message. Please try again.");
+        setError("There was an error sending your message. Please try again.");
       }
-    } catch (error) {
-      console.error(error);
-      alert("Network error. Please try again.");
+    } catch (err) {
+      console.error(err);
+      setError("Network error. Please check your connection and try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -180,6 +233,18 @@ export default function ContactPage() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Honeypot field — hidden from real users, bots fill it */}
+                    <input
+                      type="text"
+                      name="_gotcha"
+                      value={formData._gotcha}
+                      onChange={(e) => setFormData(prev => ({ ...prev, _gotcha: e.target.value }))}
+                      style={{ display: 'none' }}
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                    />
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label className="block text-sm font-bold text-navy ml-2">First Name</label>
@@ -196,7 +261,6 @@ export default function ContactPage() {
                         <label className="block text-sm font-bold text-navy ml-2">Last Name</label>
                         <input 
                           type="text" 
-                          required 
                           value={formData.lastName}
                           onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
                           className="w-full p-4 bg-cream rounded-2xl border-2 border-transparent focus:bg-white focus:border-navy outline-none transition-all font-medium"
@@ -229,6 +293,12 @@ export default function ContactPage() {
                       />
                     </div>
 
+                    {error && (
+                      <div className="bg-red-50 border border-red-200 text-red-700 text-sm font-semibold px-4 py-3 rounded-xl">
+                        {error}
+                      </div>
+                    )}
+
                     <button 
                       type="submit" 
                       disabled={isSubmitting}
@@ -236,6 +306,13 @@ export default function ContactPage() {
                     >
                       {isSubmitting ? "Sending..." : "Send Message"}
                     </button>
+
+                    <p className="text-center text-xs text-navy/40 font-medium">
+                      Protected by reCAPTCHA Enterprise.{" "}
+                      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-navy/60">Privacy</a>
+                      {" & "}
+                      <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-navy/60">Terms</a>
+                    </p>
                   </form>
                 )}
               </div>
