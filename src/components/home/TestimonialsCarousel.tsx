@@ -23,6 +23,41 @@ const testimonials = [
     event: "Kids Birthday Party",
     text: "The look on my son's face when the truck pulled up was priceless! The driver was so sweet with the kids, and the ordering process was completely stress-free.",
   },
+  {
+    id: 4,
+    name: "Michael R.",
+    city: "Waltham, MA",
+    event: "School Fundraiser",
+    text: "Unbelievable service! They helped us raise over $500 for our school's athletic program in just two hours. The kids loved the huge variety of options.",
+  },
+  {
+    id: 5,
+    name: "Amanda L.",
+    city: "Somerville, MA",
+    event: "Block Party",
+    text: "Our neighborhood block party wouldn't have been the same without them. Arrived right on time, played the classic music, and the ice cream was delicious.",
+  },
+  {
+    id: 6,
+    name: "James K.",
+    city: "Lexington, MA",
+    event: "Graduation Party",
+    text: "A huge hit at my daughter's high school graduation party. The vintage truck looked amazing in photos and the staff was super friendly.",
+  },
+  {
+    id: 7,
+    name: "Emily W.",
+    city: "Brookline, MA",
+    event: "Company Picnic",
+    text: "Easiest catering decision I've ever made. The communication was excellent from start to finish, and the employees are still talking about the treats.",
+  },
+  {
+    id: 8,
+    name: "Robert H.",
+    city: "Quincy, MA",
+    event: "Family Reunion",
+    text: "Such a nostalgic and fun addition to our family reunion! There was something for everyone, from the toddlers to the grandparents. Highly recommend!",
+  },
 ];
 
 export default function TestimonialsCarousel() {
@@ -48,7 +83,7 @@ export default function TestimonialsCarousel() {
             </div>
           </div>
           <div className="font-sans font-bold text-navy uppercase tracking-widest text-[0.75rem] border-b-2 border-navy/20 pb-2">
-            Read {BUSINESS_CONFIG.stats.reviewCount} Reviews
+            Loved by {BUSINESS_CONFIG.stats.reviewCount}+ Customers
           </div>
         </div>
 
@@ -57,7 +92,7 @@ export default function TestimonialsCarousel() {
       {/* Marquee Container */}
       <div className="relative flex w-full flex-nowrap items-center overflow-hidden">
         <div className="flex w-max animate-marquee items-stretch justify-center gap-12 lg:gap-16 px-6 hover:[animation-play-state:paused]">
-          {[...testimonials, ...testimonials, ...testimonials, ...testimonials].map((t, idx) => (
+          {[...testimonials, ...testimonials].map((t, idx) => (
             <div key={`${t.id}-${idx}`} className="flex-shrink-0 w-[300px] md:w-[350px] lg:w-[400px] flex flex-col group">
               <div className="text-coral text-[4rem] leading-none font-display mb-4 opacity-20 group-hover:opacity-100 transition-opacity duration-500">
                 &ldquo;

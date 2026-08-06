@@ -91,7 +91,7 @@ export default function SiteFooter({
               <li><Link href="/occasions/birthday-parties" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Birthday Parties</Link></li>
               <li><Link href="/occasions/school-occasions" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">School Events</Link></li>
               <li><Link href="/occasions/fundraisers" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Fundraisers</Link></li>
-              <li><Link href="/occasions/marketing-activations" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Marketing Activations</Link></li>
+              <li><Link href="/occasions/marketing-events" className="hover:text-coral hover:translate-x-1 inline-block transition-transform duration-300">Marketing Activations</Link></li>
             </ul>
           </div>
 
