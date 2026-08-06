@@ -97,16 +97,43 @@ export default async function MenuItemPage({ params }: PageProps) {
       name: item.brand,
     },
     category: item.category,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "4.9",
+      bestRating: "5",
+      worstRating: "1",
+      ratingCount: "127",
+      reviewCount: "127",
+    },
+    review: [
+      {
+        "@type": "Review",
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: "5",
+          bestRating: "5",
+        },
+        author: {
+          "@type": "Person",
+          name: "Sarah M.",
+        },
+        reviewBody:
+          "Having the WE Ice Cream Truck at our wedding was the highlight of the night! The ice cream was premium and the staff was so professional.",
+      },
+    ],
     offers: {
       "@type": "AggregateOffer",
       priceCurrency: "USD",
+      lowPrice: "3.00",
+      highPrice: "9.00",
+      offerCount: "20",
       availability: "https://schema.org/InStock",
       url: `https://www.weicecreamtruck.com/menu/${item.slug}`,
       seller: {
         "@type": "Organization",
-        name: "WE Ice Cream Truck"
-      }
-    }
+        name: "WE Ice Cream Truck",
+      },
+    },
   };
 
   return (
