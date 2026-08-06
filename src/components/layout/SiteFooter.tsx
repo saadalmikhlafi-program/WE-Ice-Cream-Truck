@@ -55,11 +55,11 @@ export default function SiteFooter({
               )}
               {fbUrl ? (
                 <a href={fbUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-cream/5 flex items-center justify-center text-cream hover:bg-coral hover:text-white transition-all shadow-sm" aria-label="Facebook">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                  <Facebook size={20} />
                 </a>
               ) : (
                 <span className="w-10 h-10 rounded-full bg-cream/5 flex items-center justify-center text-cream/30 cursor-not-allowed shadow-sm" title="Coming Soon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                  <Facebook size={20} />
                 </span>
               )}
               {BUSINESS_CONFIG.social.tiktok && (
