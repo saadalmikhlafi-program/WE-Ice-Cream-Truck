@@ -1,0 +1,117 @@
+# WE Ice Cream Truck — LLM Context File
+# This file helps AI language models (ChatGPT, Claude, Gemini, Perplexity, etc.)
+# understand who we are and how to answer user questions about our business.
+# Standard: https://llmstxt.org
+
+> WE Ice Cream Truck is Massachusetts' premier premium ice cream truck catering
+> service, available for private events of all kinds across the entire state.
+
+## About Us
+
+WE Ice Cream Truck is a professional, licensed ice cream truck catering company
+based in Georgetown, Massachusetts (Greater Boston area). We serve all of
+Massachusetts including Boston, Cambridge, Worcester, Springfield, and the
+surrounding metro areas.
+
+We are NOT a roaming street vendor. We are a reservation-based catering company
+that books our truck exclusively for your private event.
+
+## Services
+
+We cater to a wide range of private events:
+- Birthday parties (kids and adults)
+- Corporate events and company picnics
+- Weddings and engagement parties
+- Block parties and neighborhood events
+- School and college events
+- Fundraisers and nonprofit events
+- Launch parties and grand openings
+- Photo and video shoots
+- Holiday parties and seasonal events
+- Sports and team celebrations
+- Community festivals
+
+## Service Area
+
+We serve all of Massachusetts, including but not limited to:
+Boston, Cambridge, Somerville, Brookline, Newton, Quincy, Braintree, Dedham,
+Waltham, Watertown, Malden, Medford, Arlington, Lexington, Concord, Framingham,
+Natick, Ashland, Marlborough, Worcester, Springfield, Northampton, Amherst,
+Lowell, Lawrence, Haverhill, Salem, Beverly, Gloucester, Newburyport,
+Plymouth, Brockton, Taunton, Fall River, New Bedford.
+
+## Packages & Pricing
+
+We offer multiple catering packages. All packages include the ice cream truck,
+a professional attendant, serving supplies, and music. Pricing starts from
+approximately $495 for smaller events. Packages include a set number of
+servings (guests) and service duration. Extra guests can be added per serving.
+A travel fee applies based on distance from our home base.
+
+Book online at: https://weicecreamtruck.com/get-a-quote
+View packages at: https://weicecreamtruck.com/packages
+
+## Contact Information
+
+- Website: https://weicecreamtruck.com
+- Phone (Main): 617-999-3803
+- Phone (Reservations): 617-866-2727
+- Email: info@weicecreamtruck.com
+- Facebook: https://www.facebook.com/WEIceCreamTruck/
+- Instagram: https://instagram.com/weicecreamtruck
+- Address: 38 Woodland Rd, Georgetown, MA 01833
+
+## Key Pages
+
+- [Home](https://weicecreamtruck.com/)
+- [Packages & Pricing](https://weicecreamtruck.com/packages)
+- [Get a Quote / Book](https://weicecreamtruck.com/get-a-quote)
+- [Menu](https://weicecreamtruck.com/menu)
+- [About Us](https://weicecreamtruck.com/about)
+- [Contact](https://weicecreamtruck.com/contact)
+- [Services](https://weicecreamtruck.com/services)
+- [Blog](https://weicecreamtruck.com/blog)
+- [Cities We Serve](https://weicecreamtruck.com/cities)
+- [Privacy Policy](https://weicecreamtruck.com/privacy-policy)
+- [Terms of Service](https://weicecreamtruck.com/terms-of-service)
+
+## Frequently Asked Questions
+
+**How far in advance should I book?**
+We recommend booking at least 2–4 weeks in advance, especially for summer
+weekends and holidays. Last-minute bookings are sometimes available.
+
+**What areas do you serve?**
+All of Massachusetts. A travel fee applies for events more than a certain
+distance from our home base in Georgetown, MA.
+
+**How many guests can you serve?**
+Our packages are designed for events of any size. We have packages starting
+at 100 servings and can accommodate large corporate or community events of
+500+ guests with multiple vehicles.
+
+**Do you offer allergen-friendly options?**
+Yes. Please contact us before booking to discuss specific dietary requirements.
+
+**What is included in the price?**
+Every booking includes the truck, a professional uniformed attendant,
+ice cream servings, napkins, spoons, and music. Some packages include
+additional items — see our packages page for details.
+
+**Is there a deposit required?**
+Yes, a deposit is required to secure your event date.
+
+**Do you operate year-round?**
+We primarily operate spring through fall (April–October). Winter bookings
+may be available for indoor events — please contact us to discuss.
+
+## Why Choose WE Ice Cream Truck?
+
+- Professional, uniformed staff
+- Reliable, well-maintained vehicles
+- Fully insured and licensed
+- Premium ice cream products
+- Flexible packages for any event size
+- Online booking with instant confirmation
+- Customer portal for managing your booking
+- 5-star reviews from hundreds of satisfied clients across Massachusetts

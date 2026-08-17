@@ -36,8 +36,16 @@ export async function POST(req: Request) {
       },
     });
 
+    // Try to get user's name if they exist
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+      select: { name: true }
+    });
+    
+    const firstName = user?.name ? user.name.split(' ')[0] : undefined;
+
     // We pass purpose to sendOtpEmail to customize the template text
-    const emailSent = await sendOtpEmail(email, otp, "Valued Customer", purpose);
+    const emailSent = await sendOtpEmail(email, otp, firstName, purpose);
 
     if (!emailSent) {
       console.warn(`[OTP Fallback] Email failed. Code for ${email} is ${otp}`);

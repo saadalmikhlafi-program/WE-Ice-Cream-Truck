@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { MapPin, Search, Loader2, X, Navigation, GripVertical, LocateFixed, Edit3, Map as MapIcon, Home } from "lucide-react";
+import "leaflet/dist/leaflet.css";
 
 // Nominatim result type
 interface NominatimResult {
@@ -118,44 +119,32 @@ export default function LocationPicker({
       // Add zoom control to bottom-right
       L.control.zoom({ position: "bottomright" }).addTo(map);
 
-      // Use Esri WorldStreetMap (highly reliable, no API key needed, never blocked)
+      // Use CartoDB Voyager tiles for a clean, premium look
       L.tileLayer(
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
+        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png",
         {
           maxZoom: 19,
-          attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         }
       ).addTo(map);
 
-      // Custom marker icon
+      // Custom marker icon for selected location
       const markerIcon = L.divIcon({
-        className: "custom-marker",
-        html: `<div class="marker-pin">
-          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="52" viewBox="0 0 40 52" fill="none">
-            <path d="M20 0C8.954 0 0 8.954 0 20c0 14 20 32 20 32s20-18 20-32C40 8.954 31.046 0 20 0z" fill="#FF6B6B"/>
-            <circle cx="20" cy="18" r="8" fill="white"/>
-            <circle cx="20" cy="18" r="4" fill="#FF6B6B"/>
-          </svg>
-        </div>`,
-        iconSize: [40, 52],
-        iconAnchor: [20, 52],
-        popupAnchor: [0, -52],
+        className: "custom-leaflet-icon",
+        html: `<div style="background:linear-gradient(135deg,#FF6B6B,#FF8F8F);border-radius:50% 50% 50% 0;width:40px;height:40px;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(255,107,107,0.6);border:3px solid white;animation:bounce-in 0.5s ease-out;"><span style="transform:rotate(45deg);font-size:16px;">📍</span></div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40],
       });
 
       // Home Marker (We Ice Cream Truck HQ)
       const homeCenter: [number, number] = [42.3588, -71.0638]; // 02108 Boston, MA
       const homeIcon = L.divIcon({
-        className: "home-marker",
-        html: `<div class="marker-pin">
-          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="52" viewBox="0 0 40 52" fill="none">
-            <path d="M20 0C8.954 0 0 8.954 0 20c0 14 20 32 20 32s20-18 20-32C40 8.954 31.046 0 20 0z" fill="#0A1128"/>
-            <circle cx="20" cy="18" r="10" fill="white"/>
-            <circle cx="20" cy="18" r="5" fill="#0A1128"/>
-          </svg>
-        </div>`,
-        iconSize: [40, 52],
-        iconAnchor: [20, 52],
-        popupAnchor: [0, -52],
+        className: "custom-leaflet-icon",
+        html: `<div style="background:linear-gradient(135deg,#0A1128,#1A2440);color:#D4AF37;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 8px 24px rgba(10,17,40,0.5);border:3px solid white;transition:all 0.3s;animation:bounce-in 0.5s ease-out;">🍦</div>`,
+        iconSize: [44, 44],
+        iconAnchor: [22, 22],
+        popupAnchor: [0, -22],
       });
 
       L.marker(homeCenter, { icon: homeIcon }).addTo(map).bindTooltip("We Ice Cream Truck (02108)", { permanent: true, direction: "right", className: "font-bold text-navy" });
@@ -500,11 +489,22 @@ export default function LocationPicker({
       <div className="relative rounded-2xl border-2 border-gray-200 bg-gray-100 shadow-inner" style={{ overflow: 'hidden' }}>
         <div
           ref={mapContainerRef}
-          style={{ width: '100%', height: '320px', position: 'relative', zIndex: 0 }}
-          className="md:h-[380px]"
-        />
-
-        {/* Map loading overlay */}
+          className={`w-full h-full rounded-2xl md:rounded-3xl shadow-inner bg-[#f8f9fc] ${
+            isDragging ? "cursor-grabbing" : "cursor-crosshair"
+          }`}
+          style={{ minHeight: "350px", position: "relative", zIndex: 1 }}
+        >
+          {/* Global styles for Leaflet overrides */}
+          <style>{`
+            .leaflet-container { background: #f8f9fc; font-family: 'Inter', sans-serif; }
+            .leaflet-control-zoom { border: none !important; box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important; border-radius: 12px !important; overflow: hidden; margin: 16px !important; }
+            .leaflet-control-zoom a { background: rgba(255,255,255,0.9) !important; backdrop-filter: blur(12px); color: #0A1128 !important; width: 36px !important; height: 36px !important; line-height: 36px !important; transition: all 0.2s !important; border-bottom: 1px solid rgba(0,0,0,0.05) !important; }
+            .leaflet-control-zoom a:hover { background: #0A1128 !important; color: #D4AF37 !important; }
+            .leaflet-control-attribution { background: rgba(255,255,255,0.7) !important; backdrop-filter: blur(4px); border-radius: 4px 0 0 0; font-size: 9px !important; color: #9CA3AF !important; }
+            .leaflet-control-attribution a { color: #0A1128 !important; }
+            @keyframes bounce-in { 0% { transform: scale(0.3) translateY(20px); opacity: 0; } 50% { transform: scale(1.1) translateY(-5px); } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+          `}</style>
+        </div>
         {!mapReady && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
             <div className="text-center">

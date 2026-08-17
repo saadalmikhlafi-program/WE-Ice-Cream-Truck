@@ -56,8 +56,8 @@ export const BUSINESS_CONFIG = {
   // Update when social accounts are created
   social: {
     instagram: "https://instagram.com/weicecreamtruck",
-    facebook: "https://www.facebook.com/profile.php?id=61592744978695",
-    tiktok: "https://tiktok.com/@weicecreamtruck",
+    facebook: "https://www.facebook.com/WEIceCreamTruck/",
+    tiktok: "", // Not yet created
     youtube: "",
   },
 
