@@ -293,7 +293,7 @@ export async function orchestrateAI(role: "customer" | "admin", messages: ChatMe
     model = google("gemini-2.5-flash");
     providerUsed = "google";
   } else if (useGroq) {
-    model = groq("groq/compound");
+    model = groq("openai/gpt-oss-20b");
     providerUsed = "groq";
   } else {
     throw new Error("No AI API keys configured in environment.");
@@ -408,7 +408,7 @@ ${dataContext}`;
       console.warn(`[AI Orchestrator] Primary provider (${providerUsed}) failed, trying fallback:`, error.message || error);
       
       if (providerUsed === "google" && useGroq) {
-        return await executeCall(groq("groq/compound"));
+        return await executeCall(groq("openai/gpt-oss-20b"));
       } else if (providerUsed === "groq" && useGemini) {
         return await executeCall(google("gemini-2.5-flash"));
       }

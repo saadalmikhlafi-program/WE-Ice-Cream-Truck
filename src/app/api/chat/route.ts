@@ -332,7 +332,7 @@ ${packagesList}
     if (process.env.GROQ_API_KEY) {
       apiUrl = "https://api.groq.com/openai/v1/chat/completions";
       apiKey = process.env.GROQ_API_KEY;
-      apiModel = "groq/compound";
+      apiModel = "openai/gpt-oss-20b";
     } else if (process.env.GOOGLE_AI_KEY) {
       apiUrl = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
       apiKey = process.env.GOOGLE_AI_KEY;
