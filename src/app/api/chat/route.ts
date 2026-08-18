@@ -332,7 +332,7 @@ ${packagesList}
     if (process.env.GROQ_API_KEY) {
       apiUrl = "https://api.groq.com/openai/v1/chat/completions";
       apiKey = process.env.GROQ_API_KEY;
-      apiModel = "llama3-70b-8192";
+      apiModel = "groq/compound";
     } else if (process.env.GOOGLE_AI_KEY) {
       apiUrl = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
       apiKey = process.env.GOOGLE_AI_KEY;
