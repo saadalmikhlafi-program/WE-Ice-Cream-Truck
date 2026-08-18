@@ -83,7 +83,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
             </ul>
 
             <Link 
-              href="/get-a-quote" 
+              href="/book" 
               className="inline-flex items-center gap-2 px-8 py-4 bg-coral text-white font-bold rounded-full hover:bg-navy transition-colors duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
             >
               {service.ctaText}

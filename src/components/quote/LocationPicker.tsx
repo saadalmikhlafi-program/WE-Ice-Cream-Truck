@@ -63,6 +63,7 @@ export default function LocationPicker({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markerRef = useRef<any>(null);
+  const initializingRef = useRef(false);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -82,6 +83,8 @@ export default function LocationPicker({
 
   // Initialize Leaflet map
   useEffect(() => {
+    if (initializingRef.current) return;
+    initializingRef.current = true;
     let destroyed = false;
 
     // Dynamic import to avoid SSR issues
@@ -194,6 +197,7 @@ export default function LocationPicker({
 
     return () => {
       destroyed = true;
+      initializingRef.current = false;
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;

@@ -311,7 +311,7 @@ export default async function CityPage({ params }: Props) {
 
             <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
               <Link
-                href={`/get-a-quote?city=${encodeURIComponent(city.name)}`}
+                href={`/book?city=${encodeURIComponent(city.name)}`}
                 className={`inline-flex items-center gap-3 px-10 py-5 font-bold text-base rounded-full transition-all duration-300 hover:scale-105 ${theme.buttonClass}`}
               >
                 Book in {city.name} <ArrowRight size={18} />

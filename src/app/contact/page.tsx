@@ -246,7 +246,7 @@ export default function ContactPage() {
                       <p className="text-navy/70 text-sm font-medium mt-1 mb-3">
                         For the fastest response and accurate pricing, please use our dedicated Quote form instead of this general contact form.
                       </p>
-                      <Link href="/get-a-quote" className="inline-block px-5 py-2 bg-coral text-white text-sm font-bold rounded-full hover:bg-navy transition-colors">
+                      <Link href="/book" className="inline-block px-5 py-2 bg-coral text-white text-sm font-bold rounded-full hover:bg-navy transition-colors">
                         Book Your Event
                       </Link>
                     </div>
