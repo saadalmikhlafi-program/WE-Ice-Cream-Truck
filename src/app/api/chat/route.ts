@@ -362,7 +362,7 @@ ${packagesList}
       messages: chatMessages,
       temperature: 0.5,
       max_tokens: 1000,
-      tools: [BOOKING_TOOL, DISTANCE_TOOL],
+      tools: (session && session.user) ? [BOOKING_TOOL, DISTANCE_TOOL] : [DISTANCE_TOOL],
       tool_choice: "auto",
     };
 
@@ -416,7 +416,7 @@ ${packagesList}
             model: apiModel,
             messages: chatMessages,
             temperature: 0.5,
-            tools: [BOOKING_TOOL], // Only booking tool allowed on second pass
+            tools: (session && session.user) ? [BOOKING_TOOL] : undefined, // Only booking tool allowed on second pass if logged in
           }),
         });
 
@@ -432,6 +432,10 @@ ${packagesList}
           args = JSON.parse(finalToolCall.function.arguments);
         } catch {
           return Response.json({ text: "I had trouble processing the booking details. Could you please repeat them?" });
+        }
+
+        if (!session || !session.user) {
+          return Response.json({ text: "لإتمام الحجز، الرجاء تسجيل الدخول أو إنشاء حساب جديد من الزر أعلى الصفحة. To proceed with booking, please Sign In or Create an Account using the button at the top of the page." });
         }
 
         // ─── Server-side validation: reject hallucinated/placeholder data ───
