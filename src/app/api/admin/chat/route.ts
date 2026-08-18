@@ -193,7 +193,7 @@ Total Revenue (all time): $${totalRevenue.toFixed(2)}`;
     if (process.env.GOOGLE_AI_KEY) {
       apiUrl = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
       apiKey = process.env.GOOGLE_AI_KEY;
-      apiModel = "gemini-2.5-flash";
+      apiModel = "gemini-3.6-flash";
     } else if (process.env.GROQ_API_KEY) {
       apiUrl = "https://api.groq.com/openai/v1/chat/completions";
       apiKey = process.env.GROQ_API_KEY;

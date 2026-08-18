@@ -290,7 +290,7 @@ export async function orchestrateAI(role: "customer" | "admin", messages: ChatMe
   let providerUsed: "google" | "groq" = "groq";
 
   if (useGemini) {
-    model = google("gemini-2.5-flash");
+    model = google("gemini-3.6-flash");
     providerUsed = "google";
   } else if (useGroq) {
     model = groq("openai/gpt-oss-20b");
@@ -410,7 +410,7 @@ ${dataContext}`;
       if (providerUsed === "google" && useGroq) {
         return await executeCall(groq("openai/gpt-oss-20b"));
       } else if (providerUsed === "groq" && useGemini) {
-        return await executeCall(google("gemini-2.5-flash"));
+        return await executeCall(google("gemini-3.6-flash"));
       }
       
       throw error;
