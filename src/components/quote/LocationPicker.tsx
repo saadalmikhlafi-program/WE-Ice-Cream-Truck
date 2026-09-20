@@ -115,19 +115,23 @@ export default function LocationPicker({
       const map = L.map(container, {
         center: defaultCenter,
         zoom: 10,
+        maxZoom: 18,  // Cap at 18 — beyond this OSM tiles show API errors
         zoomControl: false,
-        attributionControl: true,
+        attributionControl: false, // Hidden via CSS
       });
 
       // Add zoom control to bottom-right
       L.control.zoom({ position: "bottomright" }).addTo(map);
 
       // Use OpenStreetMap tiles — completely free, no API key needed
+      // maxNativeZoom=18 prevents requesting tiles that don't exist and
+      // show placeholder 'API Key required' errors
       L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
-          maxZoom: 19,
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          maxZoom: 18,
+          maxNativeZoom: 18,
+          attribution: '',
         }
       ).addTo(map);
 
