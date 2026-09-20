@@ -260,12 +260,12 @@ export default function AdminDashboard() {
 
   const { stats, todayBookings = [], pendingBookings = [], recentBookings = [], upcomingBookings = [], vehicles = [], revenueChart = [] } = data;
 
-  const PIE_COLORS = ["#10B981", "#FF6B6B", "#F59E0B", "#6B7280"];
+  // Colors are embedded in data so .filter() doesn't break color-index alignment
   const bookingsByStatus = [
-    { name: "Confirmed",  value: stats?.confirmed ?? 0 },
-    { name: "Cancelled",  value: stats?.cancelled ?? 0 },
-    { name: "Pending",    value: stats?.pending   ?? 0 },
-    { name: "Completed",  value: stats?.completed ?? 0 },
+    { name: "Confirmed",  value: stats?.confirmed ?? 0, color: "#10B981" },
+    { name: "Cancelled",  value: stats?.cancelled ?? 0, color: "#FF6B6B" },
+    { name: "Pending",    value: stats?.pending   ?? 0, color: "#F59E0B" },
+    { name: "Completed",  value: stats?.completed ?? 0, color: "#6B7280" },
   ].filter(b => b.value > 0);
 
   const formatCurrency = (v: number) => v >= 1000 ? `$${(v/1000).toFixed(1)}k` : `$${v.toFixed(0)}`;
@@ -372,7 +372,7 @@ export default function AdminDashboard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie data={bookingsByStatus} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={3} dataKey="value">
-                      {bookingsByStatus.map((_, idx) => <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />)}
+                      {bookingsByStatus.map((entry, idx) => <Cell key={idx} fill={entry.color} />)}
                     </Pie>
                     <Tooltip contentStyle={{ borderRadius: 12, border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.10)", fontWeight: 600, fontSize: 13 }} />
                   </PieChart>
@@ -382,7 +382,7 @@ export default function AdminDashboard() {
                 {bookingsByStatus.map((item, idx) => (
                   <div key={item.name} className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: PIE_COLORS[idx % PIE_COLORS.length] }} />
+                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: item.color }} />
                       <span className="font-semibold text-gray-600">{item.name}</span>
                     </div>
                     <span className="font-bold text-navy">{item.value}</span>
