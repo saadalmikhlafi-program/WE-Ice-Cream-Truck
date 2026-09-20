@@ -111,7 +111,11 @@ export async function POST(req: Request) {
     // ─── 4. Create Booking ────────────────────────────────────────
     const bookingNumber = `BK-${Math.floor(100000 + Math.random() * 900000)}`;
     const isCustom = dbPackage?.serviceType === "CUSTOM";
-    const status = isCustom || (serverTotalAmount < 500 && distance > 30) ? "PENDING_REVIEW" : "CONFIRMED";
+    const isWithin24Hours = (eventDateObj.getTime() - new Date().getTime()) <= (24 * 60 * 60 * 1000);
+    let status = "PENDING";
+    if (isCustom || (serverTotalAmount < 500 && distance > 30) || isWithin24Hours) {
+      status = "PENDING_REVIEW";
+    }
 
     const booking = await prisma.booking.create({
       data: {

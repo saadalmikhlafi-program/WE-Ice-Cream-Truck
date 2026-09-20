@@ -53,7 +53,7 @@ export async function POST(req: Request) {
       // allowing the user to enter the backdoor code (000000).
       return NextResponse.json({ 
         success: true, 
-        message: "Email sending failed due to Resend restrictions, but you can use the test code 000000" 
+        message: "Email sending failed. Please check your inbox or contact us directly." 
       });
     }
 

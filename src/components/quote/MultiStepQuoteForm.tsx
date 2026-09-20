@@ -827,7 +827,7 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
             {step < 5 ? (
               <button onClick={nextStep} disabled={
                 (step === 1 && (!date || !time)) || 
-                (step === 2 && !address && !zip) ||
+                (step === 2 && (!address || (lat === 0 && lng === 0 && zip.length !== 5) || !!distanceError)) ||
                 (step === 3 && routingMode !== "SINGLE" && (!address2 || !!distanceError2)) ||
                 (step === 3 && isCustom && customGuests < 201) ||
                 (step === 4 && isCustom && (!name || !email)) ||

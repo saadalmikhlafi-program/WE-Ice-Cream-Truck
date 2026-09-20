@@ -11,17 +11,7 @@ import {
   BookCheck, XCircle, RefreshCw
 } from "lucide-react";
 
-// Recharts dynamic imports
-const AreaChart       = dynamic(() => import("recharts").then(m => m.AreaChart),       { ssr: false });
-const Area            = dynamic(() => import("recharts").then(m => m.Area),             { ssr: false });
-const XAxis           = dynamic(() => import("recharts").then(m => m.XAxis),            { ssr: false });
-const YAxis           = dynamic(() => import("recharts").then(m => m.YAxis),            { ssr: false });
-const CartesianGrid   = dynamic(() => import("recharts").then(m => m.CartesianGrid),   { ssr: false });
-const Tooltip         = dynamic(() => import("recharts").then(m => m.Tooltip),         { ssr: false });
-const ResponsiveContainer = dynamic(() => import("recharts").then(m => m.ResponsiveContainer), { ssr: false });
-const PieChart        = dynamic(() => import("recharts").then(m => m.PieChart),        { ssr: false });
-const Pie             = dynamic(() => import("recharts").then(m => m.Pie),             { ssr: false });
-const Cell            = dynamic(() => import("recharts").then(m => m.Cell),            { ssr: false });
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 // STATUS helpers
 const STATUS_DRIVER = [
@@ -304,7 +294,7 @@ export default function AdminDashboard() {
               {stats.pending} Pending Review
             </Link>
           )}
-          <Link href="/book" target="_blank"
+          <Link href="/packages" target="_blank"
             className="flex items-center gap-2 px-4 py-2.5 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors shadow-sm">
             <Plus className="w-4 h-4" />
             New Booking
@@ -626,7 +616,7 @@ export default function AdminDashboard() {
         <SectionHeader title="Quick Actions" sub="Common admin tasks" />
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { href: "/book", label: "New Booking", icon: Plus, color: "bg-coral/10 text-coral", external: true },
+            { href: "/packages", label: "New Booking", icon: Plus, color: "bg-coral/10 text-coral", external: true },
             { href: "/admin/inquiries", label: "View Inquiries", icon: Inbox, color: "bg-blue-50 text-blue-500" },
             { href: "/admin/customers", label: "Customers", icon: Users, color: "bg-purple-50 text-purple-500" },
             { href: "/admin/packages", label: "Packages", icon: Package, color: "bg-amber-50 text-amber-500" },

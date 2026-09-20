@@ -116,18 +116,18 @@ export default function LocationPicker({
         center: defaultCenter,
         zoom: 10,
         zoomControl: false,
-        attributionControl: false,
+        attributionControl: true,
       });
 
       // Add zoom control to bottom-right
       L.control.zoom({ position: "bottomright" }).addTo(map);
 
-      // Use CartoDB Voyager tiles for a clean, premium look
+      // Use OpenStreetMap tiles — completely free, no API key needed
       L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png",
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {
           maxZoom: 19,
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }
       ).addTo(map);
 
