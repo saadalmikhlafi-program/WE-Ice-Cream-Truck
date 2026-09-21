@@ -525,6 +525,7 @@ export default function LocationPicker({
             .leaflet-control-zoom a { background: rgba(255,255,255,0.9) !important; backdrop-filter: blur(12px); color: #0A1128 !important; width: 36px !important; height: 36px !important; line-height: 36px !important; transition: all 0.2s !important; border-bottom: 1px solid rgba(0,0,0,0.05) !important; }
             .leaflet-control-zoom a:hover { background: #0A1128 !important; color: #D4AF37 !important; }
             .leaflet-control-attribution { display: none !important; }
+            .leaflet-tile { visibility: visible !important; }
             @keyframes bounce-in { 0% { transform: scale(0.3) translateY(20px); opacity: 0; } 50% { transform: scale(1.1) translateY(-5px); } 100% { transform: scale(1) translateY(0); opacity: 1; } }
           `}</style>
         </div>
