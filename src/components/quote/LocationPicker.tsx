@@ -123,15 +123,15 @@ export default function LocationPicker({
       // Add zoom control to bottom-right
       L.control.zoom({ position: "bottomright" }).addTo(map);
 
-      // Use OpenStreetMap tiles — completely free, no API key needed
-      // maxNativeZoom=18 prevents requesting tiles that don't exist and
-      // show placeholder 'API Key required' errors
+      // Use Maptiler tiles for reliable production usage
+      // This solves the 'white map' issue caused by OpenStreetMap blocking requests
+      const maptilerKey = process.env.NEXT_PUBLIC_MAPTILER_API_KEY || "WZ8VL38FgUJGHkn2mlNa";
       L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        `https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=${maptilerKey}`,
         {
           maxZoom: 18,
           maxNativeZoom: 18,
-          attribution: '',
+          attribution: '\u003ca href="https://www.maptiler.com/copyright/" target="_blank"\u003e\u0026copy; MapTiler\u003c/a\u003e',
         }
       ).addTo(map);
 
