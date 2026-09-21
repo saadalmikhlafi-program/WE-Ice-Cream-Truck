@@ -182,19 +182,26 @@ export default function LocationPicker({
       mapInstanceRef.current = map;
       markerRef.current = marker;
 
-      // Force a size recalculation - the container may not be visible/measured yet
-      // Use multiple attempts to ensure the map renders properly
+      // Force a size recalculation initially
       setTimeout(() => {
         if (!destroyed && mapInstanceRef.current) {
           mapInstanceRef.current.invalidateSize(true);
         }
       }, 100);
-      setTimeout(() => {
+
+      // Use ResizeObserver to detect when the map container becomes visible or resizes
+      // This is crucial for multi-step forms where the map might initially be display: none
+      const resizeObserver = new ResizeObserver(() => {
         if (!destroyed && mapInstanceRef.current) {
           mapInstanceRef.current.invalidateSize(true);
           setMapReady(true);
         }
-      }, 500);
+      });
+      
+      resizeObserver.observe(container);
+      
+      // Store the observer to disconnect it on unmount
+      (container as any)._resizeObserver = resizeObserver;
     };
 
     initMap();
@@ -202,6 +209,15 @@ export default function LocationPicker({
     return () => {
       destroyed = true;
       initializingRef.current = false;
+      
+      if (mapContainerRef.current) {
+        const obs = (mapContainerRef.current as any)._resizeObserver;
+        if (obs) {
+          obs.disconnect();
+          (mapContainerRef.current as any)._resizeObserver = null;
+        }
+      }
+
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
