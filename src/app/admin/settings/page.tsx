@@ -1,5 +1,5 @@
 "use client";
-import { Settings, Save, Bell, Shield, PaintBucket, Loader2, MapPin, DollarSign, Bot, Globe } from "lucide-react";
+import { Settings, Save, Bell, Shield, PaintBucket, Loader2, MapPin, DollarSign, Bot, Globe, Link2, CheckCircle2, XCircle, Calendar } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const TABS = [
@@ -9,6 +9,7 @@ const TABS = [
   { id: "seo", label: "SEO & Social", icon: Globe },
   { id: "ai", label: "AI Assistant", icon: Bot },
   { id: "appearance", label: "Brand Appearance", icon: PaintBucket },
+  { id: "integrations", label: "Integrations", icon: Link2 },
 ];
 
 export default function SettingsPage() {
@@ -18,6 +19,36 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("general");
   
   const [settings, setSettings] = useState<Record<string, string>>({});
+  const [gcalConnected, setGcalConnected] = useState<boolean | null>(null);
+  const [gcalLoading, setGcalLoading] = useState(false);
+
+  // Read URL params for success/error after OAuth redirect
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab === "integrations") setActiveTab("integrations");
+  }, []);
+
+  // Load Google Calendar status
+  const checkGcalStatus = async () => {
+    try {
+      const r = await fetch("/api/auth/google/status");
+      const data = await r.json();
+      setGcalConnected(data.connected);
+    } catch {
+      setGcalConnected(false);
+    }
+  };
+
+  const disconnectGcal = async () => {
+    setGcalLoading(true);
+    try {
+      await fetch("/api/auth/google/status", { method: "DELETE" });
+      setGcalConnected(false);
+    } finally {
+      setGcalLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetch("/api/admin/settings")
@@ -30,6 +61,7 @@ export default function SettingsPage() {
         console.error(e);
         setLoading(false);
       });
+    checkGcalStatus();
   }, []);
 
   const handleSave = async () => {
@@ -221,6 +253,65 @@ export default function SettingsPage() {
                   <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Favicon URL</label>
                   <input type="text" value={settings.faviconUrl || ""} onChange={e => handleChange("faviconUrl", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
                 </div>
+              </div>
+            </div>
+          )}
+          {activeTab === "integrations" && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">Integrations</h2>
+
+              {/* Google Calendar Card */}
+              <div className="border border-gray-200 rounded-2xl p-6 max-w-2xl">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                      <Calendar className="w-6 h-6 text-blue-500" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-navy text-sm">Google Calendar</h3>
+                      <p className="text-xs text-gray-500 font-medium mt-0.5">
+                        Sync confirmed bookings automatically to your Google Calendar.
+                      </p>
+                    </div>
+                  </div>
+                  {gcalConnected === null ? (
+                    <Loader2 className="w-5 h-5 animate-spin text-gray-400 shrink-0" />
+                  ) : gcalConnected ? (
+                    <span className="flex items-center gap-1.5 text-[11px] font-bold text-green-600 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full shrink-0">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Connected
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1.5 text-[11px] font-bold text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full shrink-0">
+                      <XCircle className="w-3.5 h-3.5" /> Not Connected
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-5 pt-5 border-t border-gray-100 flex gap-3">
+                  {gcalConnected ? (
+                    <button
+                      onClick={disconnectGcal}
+                      disabled={gcalLoading}
+                      className="flex items-center gap-2 px-4 py-2 border border-red-200 text-red-500 text-sm font-bold rounded-xl hover:bg-red-50 transition-colors disabled:opacity-50"
+                    >
+                      {gcalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
+                      Disconnect Google Calendar
+                    </button>
+                  ) : (
+                    <a
+                      href="/api/auth/google/connect"
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors"
+                    >
+                      <Calendar className="w-4 h-4" />
+                      Connect Google Calendar
+                    </a>
+                  )}
+                </div>
+
+                <p className="mt-4 text-xs text-gray-400 leading-relaxed">
+                  When a booking is <strong>Confirmed</strong>, it will automatically appear in your Google Calendar.
+                  Cancellations and updates are synced automatically too.
+                </p>
               </div>
             </div>
           )}
