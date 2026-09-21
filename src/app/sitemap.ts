@@ -14,7 +14,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/gallery',
     '/menu',
     '/packages',
-    '/get-a-quote',
     '/faq',
     '/cities',
     '/occasions',

@@ -36,7 +36,7 @@ const WELCOME_MESSAGE: Message = {
   id: "welcome",
   role: "assistant",
   content:
-    "Hey there! 🍦 I'm your WE Ice Cream Truck concierge.\n\nI can help you explore our packages, check pricing, and even book an event right here in chat!\n\nHow can I sweeten your day?",
+    "👋 **Welcome to WE Ice Cream Truck!**\n\nI'm your AI concierge. I'm here to make planning your next sweet event as easy as possible.\n\nHow can I help you today?",
 };
 
 const QUICK_REPLIES = [
@@ -333,12 +333,12 @@ export default function AIChatWidget() {
               transition={{ type: "spring", stiffness: 350, damping: 30 }}
               className={cn(
                 "fixed z-[60] flex flex-col overflow-hidden bg-gray-50 shadow-[0_30px_80px_-15px_rgba(0,0,0,0.3)]",
-                // Mobile: Full screen covering everything
-                "inset-0 w-full h-[100dvh] rounded-none",
+                // Mobile: Floating card instead of full screen
+                "bottom-4 left-4 right-4 h-[80vh] rounded-[2rem]",
                 // Desktop: Floating card at bottom right
                 "sm:inset-auto sm:bottom-8 sm:right-6 md:right-10",
                 "sm:w-[400px] md:w-[440px] sm:h-[650px] md:h-[700px] sm:max-h-[85vh]",
-                "sm:rounded-[2rem] sm:border sm:border-gray-100"
+                "sm:border sm:border-gray-100"
               )}
             >
               {/* Premium Background Mesh Gradient */}
@@ -382,19 +382,19 @@ export default function AIChatWidget() {
               <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-6 space-y-6 z-10 scrollbar-hide relative pb-10">
                 {memoizedMessages}
 
-                {/* Quick Replies (Horizontal Scroll on Mobile) */}
+                {/* Quick Replies (Stacked Vertically) */}
                 {hasQuickRepliesShown && !isLoading && (
                   <motion.div 
                     initial={{ opacity: 0, y: 10 }} 
                     animate={{ opacity: 1, y: 0 }} 
                     transition={{ delay: 0.3 }}
-                    className="flex flex-nowrap overflow-x-auto pb-4 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0 gap-2 sm:flex-wrap scrollbar-hide"
+                    className="flex flex-col gap-2.5 mt-2 pl-[44px] pr-4 sm:pr-8"
                   >
                     {QUICK_REPLIES.map((q) => (
                       <button
                         key={q}
                         onClick={() => handleSend(undefined, q)}
-                        className="shrink-0 px-4 py-2.5 text-[13px] font-bold rounded-full bg-white border border-coral/20 text-navy hover:bg-coral hover:border-coral hover:text-white transition-all shadow-sm"
+                        className="text-left px-5 py-3.5 text-[14px] font-semibold rounded-2xl rounded-bl-sm bg-coral/10 text-coral hover:bg-coral hover:text-white transition-all border border-coral/20 shadow-[0_2px_10px_rgb(255,107,107,0.1)] hover:shadow-[0_4px_15px_rgb(255,107,107,0.25)]"
                       >
                         {q}
                       </button>
