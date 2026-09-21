@@ -266,8 +266,32 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
     
     let userState = "User Status: LOGGED OUT. The user is currently browsing as a guest.";
-    if (session && session.user) {
+    if (session && session.user && session.user.email) {
       userState = `User Status: LOGGED IN. User Name: ${session.user.name}, Email: ${session.user.email}, Role: ${(session.user as any).role}.`;
+      
+      try {
+        const customerRecord = await prisma.customer.findFirst({
+          where: { email: session.user.email.toLowerCase() },
+          include: {
+            bookings: {
+              include: { package: true },
+              orderBy: { eventDate: "desc" },
+            }
+          }
+        });
+
+        if (customerRecord && customerRecord.bookings.length > 0) {
+          const pastBookings = customerRecord.bookings.map(b => 
+            `- ${b.eventDate.toISOString().split("T")[0]}: ${b.package?.name || "Custom Package"} (${b.status})`
+          ).join("\n");
+          
+          userState += `\n\nCustomer History:\nThis is a returning customer with ${customerRecord.bookings.length} past/upcoming bookings:\n${pastBookings}\nYou can warmly welcome them back and gently reference their past events if appropriate (e.g. "Welcome back! I see you booked the Silver Package last time...").`;
+        } else {
+          userState += `\n\nCustomer History:\nThis is a new customer with no past bookings.`;
+        }
+      } catch (e) {
+        console.error("Failed to fetch customer history for AI chat:", e);
+      }
     }
 
     const activePackages = await prisma.package.findMany({
@@ -304,7 +328,7 @@ ${packagesList}
 - **Extra Guests**: Each extra guest beyond the package limit is $5.
 
 ## Booking via Chat - CRITICAL RULES
-1. If the User Status is LOGGED OUT: You CANNOT book for them. You must tell them: "To proceed with booking, please Sign In or Create an Account using the button at the top of the page." Do NOT call the createBookingRequest tool if they are logged out.
+1. If the User Status is LOGGED OUT: You CANNOT book for them. If the user claims they are logged in or just created an account, but the User Status above still says LOGGED OUT, politely inform them that the system still sees them as a guest and they must click the "Sign In" button on the website. Do NOT call the createBookingRequest tool if they are logged out under any circumstances.
 2. NEVER call createBookingRequest unless the customer has EXPLICITLY provided ALL of the following in this conversation:
    - Their real full name (NOT "John Doe" or any placeholder)
    - Their real phone number
