@@ -353,14 +353,15 @@ ${packagesList}
     let apiKey = "";
     let apiModel = "";
 
-    if (process.env.GOOGLE_AI_KEY) {
+    // Use Groq as primary for ultra-fast responses (solves the delay and Gemini 503 errors)
+    if (process.env.GROQ_API_KEY) {
+      apiUrl = "https://api.groq.com/openai/v1/chat/completions";
+      apiKey = process.env.GROQ_API_KEY;
+      apiModel = "llama3-70b-8192";
+    } else if (process.env.GOOGLE_AI_KEY) {
       apiUrl = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
       apiKey = process.env.GOOGLE_AI_KEY;
       apiModel = "gemini-3.6-flash";
-    } else if (process.env.GROQ_API_KEY) {
-      apiUrl = "https://api.groq.com/openai/v1/chat/completions";
-      apiKey = process.env.GROQ_API_KEY;
-      apiModel = "openai/gpt-oss-20b";
     } else if (process.env.OPENROUTER_API_KEY) {
       apiUrl = "https://openrouter.ai/api/v1/chat/completions";
       apiKey = process.env.OPENROUTER_API_KEY;
