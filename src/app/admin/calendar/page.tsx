@@ -72,7 +72,7 @@ export default function CalendarPage() {
           <h1 className="text-2xl font-black text-navy tracking-tight">Calendar</h1>
           <p className="text-sm font-medium text-gray-400 mt-0.5">{events.length} total bookings</p>
         </div>
-        <Link href="/booking" target="_blank"
+        <Link href="/packages" target="_blank"
           className="flex items-center gap-2 px-4 py-2 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors shadow-sm">
           <Plus className="w-4 h-4" /> New Booking
         </Link>
