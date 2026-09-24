@@ -161,9 +161,13 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
     // APPROVE unless totalAmount < $500 AND distance > 30 miles → then PENDING for human review
     let bookingStatus = "CONFIRMED";
     let pendingReason = "";
-    if (totalAmount < 500 && distanceMiles > 30) {
+    const isWithin24Hours = (parsedDate.getTime() - new Date().getTime()) <= (24 * 60 * 60 * 1000);
+    
+    if ((totalAmount < 500 && distanceMiles > 30) || isWithin24Hours) {
       bookingStatus = "PENDING_REVIEW";
-      pendingReason = `Low value booking ($${totalAmount.toFixed(2)}) with long distance (${distanceMiles.toFixed(1)} miles). Requires manual review.`;
+      pendingReason = isWithin24Hours 
+        ? "Booking is within 24 hours and requires manual review." 
+        : `Low value booking ($${totalAmount.toFixed(2)}) with long distance (${distanceMiles.toFixed(1)} miles). Requires manual review.`;
     }
 
     const booking = await prisma.booking.create({
