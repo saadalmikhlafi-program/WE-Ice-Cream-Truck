@@ -50,7 +50,7 @@ export const ROLE_PERMISSIONS: Record<string, Permission[]> = {
     "packages.view", "packages.create", "packages.update",
     "serviceAreas.view", "serviceAreas.create", "serviceAreas.update",
     "customers.view", "customers.update", "drivers.view", "drivers.assign",
-    "settings.view", "ai.view", "ai.use", "notifications.view",
+    "settings.view", "settings.update", "ai.view", "ai.use", "notifications.view",
     "driver.jobs.view", "driver.jobs.updateStatus", "google.connect"
   ],
   DISPATCHER: [
