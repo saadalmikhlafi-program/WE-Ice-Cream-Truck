@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, Loader2, Plus, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, Loader2, Plus, X, Calendar } from "lucide-react";
 import Link from "next/link";
 
 type CalEvent = {
@@ -36,6 +36,7 @@ export default function CalendarPage() {
   const [viewDate, setViewDate]   = useState(new Date());
   const [selected, setSelected]   = useState<CalEvent | null>(null);
   const [dayEvents, setDayEvents] = useState<{ date: Date; events: CalEvent[] } | null>(null);
+  const [activeTab, setActiveTab] = useState<"internal" | "google">("internal");
 
   useEffect(() => {
     (async () => {
@@ -78,80 +79,131 @@ export default function CalendarPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        {/* Month Nav */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <button onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
-            className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:border-coral hover:text-coral transition-all">
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <div className="text-center">
-            <h2 className="text-lg font-black text-navy">{MONTHS[month]} {year}</h2>
-            <button onClick={() => setViewDate(new Date())} className="text-xs font-bold text-coral hover:underline">
-              Today
-            </button>
-          </div>
-          <button onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))}
-            className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:border-coral hover:text-coral transition-all">
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
+      {/* View Tabs */}
+      <div className="flex gap-1 bg-white border border-gray-100 rounded-2xl p-1 shadow-sm w-fit">
+        <button
+          onClick={() => setActiveTab("internal")}
+          className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all ${
+            activeTab === "internal" ? "bg-navy text-white shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+          }`}>
+          <ChevronLeft className="w-3.5 h-3.5" />
+          Bookings View
+        </button>
+        <button
+          onClick={() => setActiveTab("google")}
+          className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-bold transition-all ${
+            activeTab === "google" ? "bg-navy text-white shadow-sm" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+          }`}>
+          <Calendar className="w-3.5 h-3.5" />
+          Google Calendar
+        </button>
+      </div>
 
-        {/* Day Headers */}
-        <div className="grid grid-cols-7 border-b border-gray-100">
-          {DAYS.map(d => (
-            <div key={d} className="py-3 text-center text-[11px] font-black text-gray-400 uppercase tracking-wider">
-              {d}
+      {activeTab === "internal" && (
+        <>
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            {/* Month Nav */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <button onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
+                className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:border-coral hover:text-coral transition-all">
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <div className="text-center">
+                <h2 className="text-lg font-black text-navy">{MONTHS[month]} {year}</h2>
+                <button onClick={() => setViewDate(new Date())} className="text-xs font-bold text-coral hover:underline">
+                  Today
+                </button>
+              </div>
+              <button onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))}
+                className="w-9 h-9 rounded-xl border border-gray-200 flex items-center justify-center text-gray-500 hover:border-coral hover:text-coral transition-all">
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
-          ))}
-        </div>
 
-        {/* Grid */}
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-7 h-7 animate-spin text-coral" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-7">
-            {cells.map((d, idx) => {
-              if (!d) return <div key={`empty-${idx}`} className="border-b border-r border-gray-50 min-h-[100px]" />;
-              const dayEvs = eventsForDay(d);
-              return (
-                <div key={d}
-                  onClick={() => dayEvs.length > 0 && setDayEvents({ date: new Date(year, month, d), events: dayEvs })}
-                  className={`border-b border-r border-gray-50 min-h-[100px] p-2 transition-colors ${dayEvs.length > 0 ? "cursor-pointer hover:bg-gray-50" : ""}`}>
-                  <div className={`w-7 h-7 flex items-center justify-center rounded-full text-sm font-bold mb-1 ${
-                    isToday(d) ? "bg-coral text-white" : "text-navy"
-                  }`}>{d}</div>
-                  <div className="space-y-0.5">
-                    {dayEvs.slice(0, 3).map(ev => (
-                      <div key={ev.id}
-                        onClick={e => { e.stopPropagation(); setSelected(ev); }}
-                        className="text-[10px] font-bold px-1.5 py-0.5 rounded truncate cursor-pointer"
-                        style={{ background: STATUS_BG[ev.status] ?? "#F8FAFC", color: STATUS_COLORS[ev.status] ?? "#475569" }}>
-                        {ev.startTime} {ev.customer.firstName}
-                      </div>
-                    ))}
-                    {dayEvs.length > 3 && (
-                      <div className="text-[10px] font-bold text-gray-400 px-1.5">+{dayEvs.length - 3} more</div>
-                    )}
-                  </div>
+            {/* Day Headers */}
+            <div className="grid grid-cols-7 border-b border-gray-100">
+              {DAYS.map(d => (
+                <div key={d} className="py-3 text-center text-[11px] font-black text-gray-400 uppercase tracking-wider">
+                  {d}
                 </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
 
-      {/* Legend */}
-      <div className="flex items-center gap-4 flex-wrap">
-        {Object.entries(STATUS_COLORS).map(([k, c]) => (
-          <div key={k} className="flex items-center gap-1.5">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />
-            <span className="text-xs font-semibold text-gray-500">{k.replace(/_/g, " ")}</span>
+            {/* Grid */}
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="w-7 h-7 animate-spin text-coral" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-7">
+                {cells.map((d, idx) => {
+                  if (!d) return <div key={`empty-${idx}`} className="border-b border-r border-gray-50 min-h-[100px]" />;
+                  const dayEvs = eventsForDay(d);
+                  return (
+                    <div key={d}
+                      onClick={() => dayEvs.length > 0 && setDayEvents({ date: new Date(year, month, d), events: dayEvs })}
+                      className={`border-b border-r border-gray-50 min-h-[100px] p-2 transition-colors ${dayEvs.length > 0 ? "cursor-pointer hover:bg-gray-50" : ""}`}>
+                      <div className={`w-7 h-7 flex items-center justify-center rounded-full text-sm font-bold mb-1 ${
+                        isToday(d) ? "bg-coral text-white" : "text-navy"
+                      }`}>{d}</div>
+                      <div className="space-y-0.5">
+                        {dayEvs.slice(0, 3).map(ev => (
+                          <div key={ev.id}
+                            onClick={e => { e.stopPropagation(); setSelected(ev); }}
+                            className="text-[10px] font-bold px-1.5 py-0.5 rounded truncate cursor-pointer"
+                            style={{ background: STATUS_BG[ev.status] ?? "#F8FAFC", color: STATUS_COLORS[ev.status] ?? "#475569" }}>
+                            {ev.startTime} {ev.customer.firstName}
+                          </div>
+                        ))}
+                        {dayEvs.length > 3 && (
+                          <div className="text-[10px] font-bold text-gray-400 px-1.5">+{dayEvs.length - 3} more</div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        ))}
-      </div>
+
+          {/* Legend */}
+          <div className="flex items-center gap-4 flex-wrap">
+            {Object.entries(STATUS_COLORS).map(([k, c]) => (
+              <div key={k} className="flex items-center gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />
+                <span className="text-xs font-semibold text-gray-500">{k.replace(/_/g, " ")}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {activeTab === "google" && (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <div>
+              <h2 className="text-base font-black text-navy">Google Calendar</h2>
+              <p className="text-xs text-gray-400 font-medium mt-0.5">info@weicecreamtruck.com · America/New_York</p>
+            </div>
+            <a
+              href="https://calendar.google.com/calendar/u/0/r"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-bold text-coral hover:underline">
+              Open in Google →
+            </a>
+          </div>
+          <div className="w-full" style={{ height: "640px" }}>
+            <iframe
+              src="https://calendar.google.com/calendar/embed?src=info%40weicecreamtruck.com&ctz=America%2FNew_York&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=1"
+              style={{ border: 0, width: "100%", height: "100%" }}
+              frameBorder="0"
+              scrolling="no"
+              title="WE Ice Cream Truck Google Calendar"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Day Modal */}
       {dayEvents && (
