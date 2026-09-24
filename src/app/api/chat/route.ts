@@ -12,6 +12,7 @@ import {
   sendOwnerRequiresApprovalEmail,
 } from "@/lib/email";
 import { routingProvider, BASE_LOCATION } from "@/lib/maps";
+import { googleCalendarService } from "@/lib/google-calendar";
 
 async function calculateDistance(zip: string): Promise<number> {
   const lookup = zipcodes.lookup(zip);
@@ -242,6 +243,19 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
         pendingReason,
         booking.id
       ).catch(e => console.error("Failed to send pending review email:", e));
+    }
+
+    // --- Google Calendar Sync for Auto-Approved AI Bookings ---
+    if (bookingStatus === "CONFIRMED") {
+      try {
+        console.log(`[Google Calendar] Creating event for auto-confirmed AI booking ${bookingNumber}`);
+        // We pass the fullBooking object which has customer and package relations
+        if (fullBooking) {
+          await googleCalendarService.createBookingEvent(fullBooking as any);
+        }
+      } catch (gcalErr) {
+        console.error("[Google Calendar Sync Error in AI Chat]:", gcalErr);
+      }
     }
 
     // Send to Owner
