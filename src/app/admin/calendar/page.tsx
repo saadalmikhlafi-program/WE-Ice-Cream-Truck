@@ -54,7 +54,7 @@ export default function CalendarPage() {
 
   const eventsForDay = (d: number) => events.filter(e => {
     const ev = new Date(e.eventDate);
-    return ev.getUTCFullYear() === year && ev.getUTCMonth() === month && ev.getUTCDate() === d;
+    return ev.getFullYear() === year && ev.getMonth() === month && ev.getDate() === d;
   });
 
   const cells = [];
