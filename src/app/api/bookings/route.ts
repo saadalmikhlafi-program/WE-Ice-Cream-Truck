@@ -112,7 +112,7 @@ export async function POST(req: Request) {
     const bookingNumber = `BK-${Math.floor(100000 + Math.random() * 900000)}`;
     const isCustom = dbPackage?.serviceType === "CUSTOM";
     const isWithin24Hours = (eventDateObj.getTime() - new Date().getTime()) <= (24 * 60 * 60 * 1000);
-    let status = "PENDING";
+    let status = "CONFIRMED";
     if (isCustom || (serverTotalAmount < 500 && distance > 30) || isWithin24Hours) {
       status = "PENDING_REVIEW";
     }
@@ -141,6 +141,16 @@ export async function POST(req: Request) {
         vehicle: true
       }
     });
+
+    if (status === "CONFIRMED") {
+      try {
+        const { googleCalendarService } = require("@/lib/google-calendar");
+        const eventId = await googleCalendarService.createBookingEvent(booking);
+        if (eventId) console.log(`[Google Calendar] Created event ${eventId} for booking ${bookingNumber}`);
+      } catch (calErr) {
+        console.error("[Google Calendar] Failed to create event during booking checkout:", calErr);
+      }
+    }
 
     // ─── 5. Create Quote Snapshot ─────────────────────────────────
     await prisma.quote.create({
