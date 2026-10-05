@@ -252,8 +252,7 @@ export const BUSINESS_CONFIG = {
     "Cash",
     "Credit Card",
     "Debit Card",
-    "Check",
-    "Online Payment",
+    "Check"
   ],
 
   // Cuisine types (for schema)

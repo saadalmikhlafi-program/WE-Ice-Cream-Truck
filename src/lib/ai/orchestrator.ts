@@ -85,7 +85,7 @@ const ADMIN_TOOLS = {
   getBookings: tool({
     description: "Get a list of bookings filtered by status. Use 'ALL' for no filter.",
     parameters: z.object({
-      status: z.enum(["ALL", "PENDING_REVIEW", "PENDING_PAYMENT", "CONFIRMED", "COMPLETED", "CANCELLED"]).describe("Booking status filter"),
+      status: z.enum(["ALL", "PENDING_REVIEW", "CONFIRMED", "COMPLETED", "CANCELLED"]).describe("Booking status filter"),
     }),
     execute: async (args: any) => {
       const { status } = args || {};
@@ -158,19 +158,7 @@ const ADMIN_TOOLS = {
       return JSON.parse(JSON.stringify(res));
     }
   } as any),
-  getUnpaidBookings: tool({
-    description: "Get all bookings that are confirmed or pending but unpaid (PENDING_PAYMENT status).",
-    parameters: z.object({ dummy: z.string().optional() }),
-    execute: async () => {
-      const { prisma } = await import("@/lib/prisma");
-      const res = await prisma.booking.findMany({
-        where: { status: "PENDING_PAYMENT" },
-        include: { customer: true },
-        orderBy: { eventDate: "asc" }
-      });
-      return JSON.parse(JSON.stringify(res));
-    }
-  } as any),
+
   getWeeklyRevenue: tool({
     description: "Get revenue stats grouped by day for the last 7 days to analyze weekly revenue.",
     parameters: z.object({ dummy: z.string().optional() }),
@@ -236,7 +224,7 @@ PRICING & OPERATION POLICIES:
 - Multi-Stop Events: We support multi-stop routing! Each additional stop adds a $50 routing/setup fee.
 - Additional Vehicle Setup Fee: If the event requires another truck/van for the same package at the same time, each additional vehicle includes a $200 setup and dispatch fee. Package price is charged only once; extra vehicles do not multiply the package price.
 - Weekend Event Fee: Saturday and Sunday bookings include an additional $25 weekend event fee (applies once per booking, not per vehicle/location).
-- Payment Policy: We collect payment *after* the service is completed (no online checkout or Pay Now). We accept cash, Zelle, Venmo, and credit/debit cards.
+
 - Booking Flow: Fully automated online booking is available at [/booking](/booking). All normal bookings are automatically CONFIRMED, except if the travel distance is greater than 30 miles AND the total package price (excluding travel/stops/extra fees) is less than $500, OR if the request is for the Custom Event Package (200+ guests), in which cases they go to PENDING_REVIEW for manual team approval. No normal booking is automatically rejected.
 - Manage Booking: Customers can securely view, modify, or request cancellations for their bookings through the Customer Portal at [/manage-booking](/manage-booking).
 
@@ -261,7 +249,7 @@ BUSINESS CONTEXT:
   * Exception 1: If the travel distance is greater than 30 miles and the total package price (excluding travel/stops/extra fees) is less than $500, the status goes to PENDING_REVIEW.
   * Exception 2: Custom Event Package requests (200+ guests) go to PENDING_REVIEW.
   * No automatic rejections for normal bookings.
-  * Payment is collected after the service (no online checkout/payment).
+
 - Distance Rule: Travel distance is calculated from our Boston dispatch location (ZIP 02108). Rate is $2.00 per mile, no free miles.
 - Additional Vehicle Setup Fee: $200 per additional vehicle for same-time multi-vehicle events (package price is charged once, not multiplied).
 - Weekend Event Fee: $25 for Saturday/Sunday bookings.

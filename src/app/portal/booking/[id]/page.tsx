@@ -59,8 +59,8 @@ export default async function BookingDetailPage({ params }: { params: Promise<{ 
 
   const isPast = new Date(booking.eventDate) < new Date();
   
-  // Allow cancellation for PENDING, PENDING_REVIEW, PENDING_PAYMENT, CONFIRMED
-  const allowedStatuses = ["PENDING", "PENDING_REVIEW", "PENDING_PAYMENT", "CONFIRMED"];
+  // Allow cancellation for PENDING, PENDING_REVIEW, CONFIRMED
+  const allowedStatuses = ["PENDING", "PENDING_REVIEW", "CONFIRMED"];
   const now = new Date();
   const eventTime = new Date(booking.eventDate.getTime());
   const hoursUntilEvent = (eventTime.getTime() - now.getTime()) / (1000 * 60 * 60);

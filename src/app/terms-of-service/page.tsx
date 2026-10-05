@@ -22,9 +22,9 @@ export default function TermsOfServicePage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-navy mb-4">2. Booking and Payments</h2>
+                <h2 className="text-2xl font-bold text-navy mb-4">2. Bookings</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  All bookings are subject to availability and our approval. A booking is not confirmed until you receive a confirmation email from our team and any required deposits are paid. We reserve the right to cancel or refuse any booking for any reason.
+                  All bookings are subject to availability and our approval. A booking is not confirmed until you receive a confirmation email from our team. We reserve the right to cancel or refuse any booking for any reason.
                 </p>
               </section>
 
@@ -38,14 +38,14 @@ export default function TermsOfServicePage() {
               <section>
                 <h2 className="text-2xl font-bold text-navy mb-4">4. Cancellations and Refunds</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  Cancellations must be made at least 48 hours in advance of the scheduled event time for a full refund of any deposits. Cancellations made within 48 hours of the event may be subject to a cancellation fee.
+                  Cancellations must be made at least 48 hours in advance of the scheduled event time. Cancellations made within 48 hours of the event may be subject to a cancellation fee.
                 </p>
               </section>
               
               <section>
                 <h2 className="text-2xl font-bold text-navy mb-4">5. Liability</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  While we strive to provide excellent service, we are not liable for delays caused by severe weather, traffic conditions, or mechanical issues beyond our control. In the rare event we cannot fulfill a booking, our liability is limited to the refund of any payments made for that booking.
+                  While we strive to provide excellent service, we are not liable for delays caused by severe weather, traffic conditions, or mechanical issues beyond our control. In the rare event we cannot fulfill a booking, we will notify you as soon as possible.
                 </p>
               </section>
 

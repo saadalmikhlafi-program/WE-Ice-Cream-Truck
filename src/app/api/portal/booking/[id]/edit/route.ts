@@ -27,8 +27,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
     }
 
-    // Allow editing for PENDING, PENDING_REVIEW, PENDING_PAYMENT, CONFIRMED
-    const allowedStatuses = ["PENDING", "PENDING_REVIEW", "PENDING_PAYMENT", "CONFIRMED"];
+    // Allow editing for PENDING, PENDING_REVIEW, CONFIRMED
+    const allowedStatuses = ["PENDING", "PENDING_REVIEW", "CONFIRMED"];
     if (!allowedStatuses.includes(booking.status)) {
       return NextResponse.json({ error: "This booking cannot be edited at this stage." }, { status: 400 });
     }

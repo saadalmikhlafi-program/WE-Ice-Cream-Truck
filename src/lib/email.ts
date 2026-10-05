@@ -382,15 +382,12 @@ function formatBookingDetailsHtml(booking: any) {
     </div>
     ` : ''}
 
-    <!-- Payment Policy -->
-    <div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:12px;padding:16px 20px;margin-bottom:20px;">
-      <p style="margin:0;color:#166534;font-size:14px;font-weight:700;">💳 Payment Policy: Payment is collected after the service. We accept multiple payment methods.</p>
-    </div>
+
   `;
 }
 
 // ─── BOOKING APPROVED ─────────────────────────────────────────
-export async function sendBookingApprovedEmail(to: string, firstName: string, bookingNumber: string, paymentUrl: string, amount: string, bookingId: string) {
+export async function sendBookingApprovedEmail(to: string, firstName: string, bookingNumber: string, _portalUrl: string, amount: string, bookingId: string) {
   const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   let isCustom = false;
@@ -412,7 +409,6 @@ export async function sendBookingApprovedEmail(to: string, firstName: string, bo
     <div style="background:#F9FAFB;border:2px solid #E5E7EB;border-radius:16px;padding:24px;margin-bottom:32px;text-align:center;">
       <p style="margin:0 0 4px;color:\${BRAND_NAVY};font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;">Approved Price Total</p>
       <p style="margin:0 0 10px;color:${BRAND_NAVY};font-size:36px;font-weight:900;">$${amount}</p>
-      <p style="margin:0;color:#047857;font-size:14px;font-weight:700;">Payment is collected after the service. We accept multiple payment methods.</p>
     </div>
     ${bookingDetailsHtml}
     <div style="text-align:center;margin-top:24px;padding:24px 16px;background:#F8F9FC;border-radius:16px;">
@@ -448,8 +444,7 @@ export async function sendBookingPendingEmail(to: string, firstName: string, boo
       <p style="margin:0 0 12px;font-weight:600;">Travel is calculated at $2.00 per mile based on the actual driving distance from our Boston dispatch location (ZIP 02108) to your event location. There are no free miles — the travel fee applies from mile 1.</p>
       <p style="margin:0 0 8px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:${BRAND_NAVY};">👥 Extra Guests Policy</p>
       <p style="margin:0 0 12px;font-weight:600;">Extra guests beyond the included package count are calculated at $5 per person.</p>
-      <p style="margin:0 0 8px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:${BRAND_NAVY};">💳 Payment Policy</p>
-      <p style="margin:0;font-weight:600;">Payment is collected after the service. We accept multiple payment methods.</p>
+
     </div>
     <div style="text-align:center;margin-bottom:32px;">
       <p style="margin:0 0 20px;color:#4B5563;font-size:16px;font-weight:700;">Our team will be in touch to finalize the details. We can't wait to make your event special! 🍦</p>
@@ -676,7 +671,7 @@ export async function sendChatEscalationOwnerEmail(inquiry: { id: string; name: 
 }
 
 // ─── GOOGLE REVIEW REQUEST ────────────────────────────────────
-const GOOGLE_REVIEW_URL = "https://g.page/r/CWDhxc3sMbFAEAI/review";
+const GOOGLE_REVIEW_URL = "https://g.page/r/CW93SjQLeL63EAI/review";
 
 export async function sendGoogleReviewRequestEmail(booking: { id: string; bookingNumber: string; eventDate: Date; eventType: string; customer: { firstName: string; lastName: string; email: string }; package?: { name: string } | null; }) {
   const customerName = `${booking.customer.firstName}`;

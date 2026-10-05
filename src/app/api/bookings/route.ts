@@ -110,11 +110,20 @@ export async function POST(req: Request) {
     }
 
     // ─── 4. Create Booking ────────────────────────────────────────
+    const timeUntilEvent = eventDateObj.getTime() - new Date().getTime();
+    const hoursUntilEvent = timeUntilEvent / (1000 * 60 * 60);
+
+    if (hoursUntilEvent <= 24) {
+      return NextResponse.json(
+        { success: false, error: "عفواً، لا يمكننا قبول الحجوزات قبل أقل من 24 ساعة من موعد المناسبة." },
+        { status: 400 }
+      );
+    }
+
     const bookingNumber = `BK-${Math.floor(100000 + Math.random() * 900000)}`;
     const isCustom = dbPackage?.serviceType === "CUSTOM";
-    const isWithin24Hours = (eventDateObj.getTime() - new Date().getTime()) <= (24 * 60 * 60 * 1000);
     let status = "CONFIRMED";
-    if (isCustom || (serverTotalAmount < 500 && distance > 30) || isWithin24Hours) {
+    if (isCustom || (serverTotalAmount <= 500 && distance > 30) || hoursUntilEvent <= 48) {
       status = "PENDING_REVIEW";
     }
 

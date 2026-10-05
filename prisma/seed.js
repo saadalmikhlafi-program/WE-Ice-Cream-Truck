@@ -7,7 +7,10 @@ require('dotenv').config({ path: '.env.local' });
 require('dotenv').config({ path: '.env' });
 
 const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL;
-const pool = new Pool({ connectionString });
+const pool = new Pool({ 
+  connectionString, 
+  ssl: process.env.NODE_ENV === 'production' || connectionString.includes('supabase') ? { rejectUnauthorized: false } : undefined 
+});
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
@@ -31,24 +34,49 @@ const PACKAGES = [
 async function main() {
   console.log('🌱 Seeding database...');
 
-  // 1. Create Admin User
+  // 1. Create Owner User
+  const ownerEmail = 'info@weicecreamtruck.com';
+  const ownerPassword = 'WE#2026';
+  const hashedOwnerPassword = await bcrypt.hash(ownerPassword, 10);
+
+  const owner = await prisma.user.upsert({
+    where: { email: ownerEmail },
+    update: {
+      passwordHash: hashedOwnerPassword,
+      role: 'OWNER',
+      name: 'Khaldoun Alhiari',
+      permissions: '["*"]',
+      active: true,
+    },
+    create: {
+      email: ownerEmail,
+      passwordHash: hashedOwnerPassword,
+      role: 'OWNER',
+      name: 'Khaldoun Alhiari',
+      permissions: '["*"]',
+      active: true,
+    },
+  });
+  console.log(`✅ Owner user seeded: ${owner.email}`);
+
+  // 1b. Create Admin User
   const adminEmail = 'saadmoad2004@gmail.com';
-  const adminPassword = 'Kals123456##';
-  const hashedPassword = await bcrypt.hash(adminPassword, 10);
+  const adminPassword = '123456789SS';
+  const hashedAdminPassword = await bcrypt.hash(adminPassword, 10);
 
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
     update: {
-      passwordHash: hashedPassword,
-      role: 'OWNER',
+      passwordHash: hashedAdminPassword,
+      role: 'ADMIN',
       name: 'Saad Moad',
       permissions: '["*"]',
       active: true,
     },
     create: {
       email: adminEmail,
-      passwordHash: hashedPassword,
-      role: 'OWNER',
+      passwordHash: hashedAdminPassword,
+      role: 'ADMIN',
       name: 'Saad Moad',
       permissions: '["*"]',
       active: true,
@@ -108,6 +136,8 @@ async function main() {
 
   console.log('\n🎉 Database seeded successfully!');
   console.log('──────────────────────────────────');
+  console.log(`📧 Owner email:    ${ownerEmail}`);
+  console.log(`🔑 Owner password: ${ownerPassword}`);
   console.log(`📧 Admin email:    ${adminEmail}`);
   console.log(`🔑 Admin password: ${adminPassword}`);
   console.log('──────────────────────────────────');

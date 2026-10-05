@@ -27,8 +27,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return Response.json({ error: "Unauthorized" }, { status: 403 });
   }
 
-  // Allow cancellation for PENDING, PENDING_REVIEW, PENDING_PAYMENT, CONFIRMED
-  const allowedStatuses = ["PENDING", "PENDING_REVIEW", "PENDING_PAYMENT", "CONFIRMED"];
+  // Allow cancellation for PENDING, PENDING_REVIEW, CONFIRMED
+  const allowedStatuses = ["PENDING", "PENDING_REVIEW", "CONFIRMED"];
   if (!allowedStatuses.includes(booking.status)) {
     return Response.json({ error: "This booking cannot be cancelled." }, { status: 400 });
   }

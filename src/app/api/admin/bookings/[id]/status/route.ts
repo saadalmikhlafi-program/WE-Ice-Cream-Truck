@@ -15,7 +15,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const { status, internalNote, customPrice, customerNotes } = await req.json();
 
     // Enforce permission matrix for status change actions
-    if (status === "CONFIRMED" || status === "PENDING_PAYMENT") {
+    if (status === "CONFIRMED") {
       if (!hasPermission(user.role, "bookings.approve")) {
         return unauthorized();
       }
@@ -29,16 +29,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       }
     }
 
-    let targetStatus = status;
-    if (status === "PENDING_PAYMENT") {
-      targetStatus = "CONFIRMED";
-    }
+    const targetStatus = status;
 
     const updateData: any = { status: targetStatus };
     if (internalNote !== undefined) {
       updateData.internalNote = internalNote;
     }
-    if (customPrice !== undefined && (status === "CONFIRMED" || status === "PENDING_PAYMENT")) {
+    if (customPrice !== undefined && status === "CONFIRMED") {
       updateData.totalAmount = parseFloat(customPrice);
     }
     if (customerNotes !== undefined) {
@@ -46,7 +43,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     // If customPrice is provided, update associated BookingItems and Quote
-    if (customPrice !== undefined && (status === "CONFIRMED" || status === "PENDING_PAYMENT")) {
+    if (customPrice !== undefined && status === "CONFIRMED") {
       const priceNum = parseFloat(customPrice);
       
       // Update BookingItem of lineType "PACKAGE"
@@ -109,7 +106,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
     // Send emails on status change
     try {
-      if (status === "CONFIRMED" || status === "PENDING_PAYMENT") {
+      if (status === "CONFIRMED") {
         const portalUrl = `${process.env.NEXTAUTH_URL || 'https://bostonlegendwebflowio.vercel.app'}/customer/booking/${booking.id}`;
         await sendBookingApprovedEmail(
           booking.customer.email,
@@ -188,7 +185,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
     // Google Calendar Sync
     try {
-      if (status === "CONFIRMED" || status === "PENDING_PAYMENT") {
+      if (status === "CONFIRMED") {
         // Re-fetch with all relations needed for calendar
         const bookingForCal = await prisma.booking.findUnique({
           where: { id: (await params).id },
