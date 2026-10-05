@@ -65,6 +65,53 @@ export default function LocationPicker({
   const markerRef = useRef<any>(null);
   const initializingRef = useRef(false);
 
+  // Reverse geocode a lat/lng to get the address — via server proxy to avoid browser blocking
+  const reverseGeocode = async (lat: number, lng: number) => {
+    try {
+      const res = await fetch(`/api/geocode?action=reverse&lat=${lat}&lon=${lng}`);
+      if (!res.ok) throw new Error("Geocoding failed");
+      
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      const addr = data.address || {};
+      const streetAddress = [addr.house_number, addr.road].filter(Boolean).join(" ");
+      const cityName = addr.city || addr.town || addr.village || addr.hamlet || addr.county || "";
+      const zipCode = addr.postcode || "";
+      const state = addr.state || "";
+      
+      const fullAddress = streetAddress || cityName || (data.display_name?.split(",")[0] ?? "");
+      const displayStr = `${fullAddress}${cityName && cityName !== fullAddress ? `, ${cityName}` : ""}${state ? `, ${state}` : ""}${zipCode ? ` ${zipCode}` : ""}`;
+      
+      setQuery(displayStr);
+      onAddressChange(displayStr);
+      setSelectedLocation({ lat, lng, display: displayStr, street: streetAddress || "", city: cityName, zip: zipCode });
+      
+      onLocationSelect({
+        address: displayStr,
+        city: cityName,
+        zip: zipCode,
+        lat,
+        lng,
+      });
+    } catch (err) {
+      console.error("[reverseGeocode] Error:", err);
+      // Show coordinates as fallback only if geocoding completely fails
+      const fallbackAddress = `Selected Location`;
+      setQuery(fallbackAddress);
+      onAddressChange(fallbackAddress);
+      setSelectedLocation({ lat, lng, display: fallbackAddress, street: "", city: "", zip: "" });
+      
+      onLocationSelect({
+        address: fallbackAddress,
+        city: "",
+        zip: "",
+        lat,
+        lng,
+      });
+    }
+  };
+
   // Close suggestions when clicking outside
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -224,54 +271,10 @@ export default function LocationPicker({
         markerRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Reverse geocode a lat/lng to get the address — via server proxy to avoid browser blocking
-  const reverseGeocode = async (lat: number, lng: number) => {
-    try {
-      const res = await fetch(`/api/geocode?action=reverse&lat=${lat}&lon=${lng}`);
-      if (!res.ok) throw new Error("Geocoding failed");
-      
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
 
-      const addr = data.address || {};
-      const streetAddress = [addr.house_number, addr.road].filter(Boolean).join(" ");
-      const cityName = addr.city || addr.town || addr.village || addr.hamlet || addr.county || "";
-      const zipCode = addr.postcode || "";
-      const state = addr.state || "";
-      
-      const fullAddress = streetAddress || cityName || (data.display_name?.split(",")[0] ?? "");
-      const displayStr = `${fullAddress}${cityName && cityName !== fullAddress ? `, ${cityName}` : ""}${state ? `, ${state}` : ""}${zipCode ? ` ${zipCode}` : ""}`;
-      
-      setQuery(displayStr);
-      onAddressChange(displayStr);
-      setSelectedLocation({ lat, lng, display: displayStr, street: streetAddress || "", city: cityName, zip: zipCode });
-      
-      onLocationSelect({
-        address: displayStr,
-        city: cityName,
-        zip: zipCode,
-        lat,
-        lng,
-      });
-    } catch (err) {
-      console.error("[reverseGeocode] Error:", err);
-      // Show coordinates as fallback only if geocoding completely fails
-      const fallbackAddress = `Selected Location`;
-      setQuery(fallbackAddress);
-      onAddressChange(fallbackAddress);
-      setSelectedLocation({ lat, lng, display: fallbackAddress, street: "", city: "", zip: "" });
-      
-      onLocationSelect({
-        address: fallbackAddress,
-        city: "",
-        zip: "",
-        lat,
-        lng,
-      });
-    }
-  };
 
   // Search for addresses
   const searchAddress = useCallback(async (searchQuery: string) => {

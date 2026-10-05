@@ -8,6 +8,7 @@ import {
   sendOwnerRequiresApprovalEmail,
   sendCustomQuoteEmail
 } from "@/lib/email";
+import { googleCalendarService } from "@/lib/google-calendar";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -144,8 +145,7 @@ export async function POST(req: Request) {
 
     if (status === "CONFIRMED") {
       try {
-        const { googleCalendarService } = require("@/lib/google-calendar");
-        const eventId = await googleCalendarService.createBookingEvent(booking);
+        const eventId = await googleCalendarService.createBookingEvent(booking as any);
         if (eventId) console.log(`[Google Calendar] Created event ${eventId} for booking ${bookingNumber}`);
       } catch (calErr) {
         console.error("[Google Calendar] Failed to create event during booking checkout:", calErr);

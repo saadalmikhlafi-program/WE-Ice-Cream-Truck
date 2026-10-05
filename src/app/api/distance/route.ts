@@ -24,7 +24,7 @@ export async function GET(request: Request) {
   let destLng = lngParam ? parseFloat(lngParam) : null;
   let destCity = "Selected Location";
   let destState = "MA";
-  let destZip = zip || "";
+  const destZip = zip || "";
 
   const effectiveOriginLat = originLatParam ? parseFloat(originLatParam) : BASE_LOCATION.lat;
   const effectiveOriginLng = originLngParam ? parseFloat(originLngParam) : BASE_LOCATION.lng;

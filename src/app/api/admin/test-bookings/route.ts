@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
       { name: "Test 5: Weekend", dist: 12, amount: 225 },
     ];
 
-    let results = [];
+    const results = [];
 
     for (const sc of scenarios) {
       const bookingNumber = `TEST-${Math.floor(100000 + Math.random() * 900000)}`;

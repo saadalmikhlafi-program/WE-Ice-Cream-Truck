@@ -85,7 +85,7 @@ export default function AIChatWidget() {
     const text = overrideText || inputValue.trim();
     if (!text || isLoading) return;
 
-    const userMsg: Message = { id: `u-${Date.now()}`, role: "user", content: text };
+    const userMsg: Message = { id: `u-${crypto.randomUUID()}`, role: "user", content: text };
     setMessages((prev) => [...prev, userMsg]);
     setInputValue("");
     setIsLoading(true);
@@ -106,7 +106,7 @@ export default function AIChatWidget() {
       const data = await res.json();
 
       const assistantMsg: Message = {
-        id: `a-${Date.now()}`,
+        id: `a-${crypto.randomUUID()}`,
         role: "assistant",
         content: data.text || "",
         bookingRequest: data.bookingRequest,

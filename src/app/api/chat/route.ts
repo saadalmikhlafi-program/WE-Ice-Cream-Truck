@@ -397,7 +397,7 @@ ${packagesList}
       Authorization: `Bearer ${apiKey}`,
     };
 
-    let chatMessages = [{ role: "system", content: SYSTEM_PROMPT }, ...messages];
+    const chatMessages = [{ role: "system", content: SYSTEM_PROMPT }, ...messages];
 
     // Build request body
     const requestBody: any = {

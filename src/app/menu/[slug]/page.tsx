@@ -80,7 +80,7 @@ export default async function MenuItemPage({ params }: PageProps) {
       include: { category: true },
     });
     // Shuffle posts and take 3 for variety across item pages
-    recentPosts = allPosts.sort(() => 0.5 - Math.random()).slice(0, 3);
+    recentPosts = allPosts.slice(0, 3);
   } catch (err) {
     console.error("[Menu Item] Failed to fetch blog posts:", err);
   }
