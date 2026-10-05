@@ -120,7 +120,7 @@ export default function AIChatWidget() {
         {
           id: `a-${Date.now()}`,
           role: "assistant",
-          content: "I'm sorry, I'm having trouble connecting right now. Please try again or call us at 617-999-3803! 📞",
+          content: "I'm sorry, I'm having trouble connecting right now. Please try again or call us at 781-824-7000! 📞",
         },
       ]);
     } finally {
@@ -145,7 +145,7 @@ export default function AIChatWidget() {
           {
             id: `a-${Date.now()}`,
             role: "assistant",
-            content: `🎉 **Booking Confirmed!**\n\nYour reference number is **#${data.bookingNumber}**.\n\nOur team will review it and contact you shortly at ${bookingData.email}. You can also call us at 617-999-3803 for any questions!\n\nThank you for choosing WE Ice Cream Truck! 🍦`,
+            content: `🎉 **Booking Confirmed!**\n\nYour reference number is **#${data.bookingNumber}**.\n\nOur team will review it and contact you shortly at ${bookingData.email}. You can also call us at 781-824-7000 for any questions!\n\nThank you for choosing WE Ice Cream Truck! 🍦`,
           },
         ]);
       } else {
@@ -154,7 +154,7 @@ export default function AIChatWidget() {
           {
             id: `a-${Date.now()}`,
             role: "assistant",
-            content: `I'm sorry, there was an issue creating your booking: ${data.error || "Unknown error"}. Please try again or call us directly at 617-999-3803.`,
+            content: `I'm sorry, there was an issue creating your booking: ${data.error || "Unknown error"}. Please try again or call us directly at 781-824-7000.`,
           },
         ]);
       }
@@ -164,7 +164,7 @@ export default function AIChatWidget() {
         {
           id: `a-${Date.now()}`,
           role: "assistant",
-          content: "I'm sorry, I couldn't process the booking right now. Please call us at 617-999-3803 and we'll be happy to help! 📞",
+          content: "I'm sorry, I couldn't process the booking right now. Please call us at 781-824-7000 and we'll be happy to help! 📞",
         },
       ]);
     } finally {

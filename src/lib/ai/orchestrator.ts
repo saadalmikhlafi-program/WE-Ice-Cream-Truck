@@ -232,7 +232,7 @@ RULES:
 1. ALWAYS be highly professional, warm, premium, and concise. You can converse in Arabic or English based on the user's language.
 2. NEVER guess or hallucinate packages or prices. ALWAYS use the getPackages tool to list options and estimatePrice to calculate costs.
 3. If users ask about availability, use the checkAvailability tool.
-4. Guide users to [Book Online](/booking) or call 617-999-3803 for complex requests or if they are ready to book.
+4. Guide users to [Book Online](/booking) or call 781-824-7000 for complex requests or if they are ready to book.
 5. Emphasize the premium aspect of WE Ice Cream Truck (e.g. "We provide an unforgettable premium ice cream experience").
 6. NEVER return a generic "Sorry I'm having trouble" fallback. Always provide a helpful response.
 `;
@@ -410,7 +410,7 @@ ${dataContext}`;
       tool_calls: [],
       data: [],
       final_response: role === "customer"
-        ? "I apologize, but I am experiencing a temporary connection issue. Please call 617-999-3803."
+        ? "I apologize, but I am experiencing a temporary connection issue. Please call 781-824-7000."
         : "Copilot Error: I am having trouble connecting to the database. Please try again.",
     };
   }

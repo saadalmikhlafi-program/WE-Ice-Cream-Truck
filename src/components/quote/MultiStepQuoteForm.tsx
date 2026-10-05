@@ -730,15 +730,15 @@ export default function MultiStepQuoteForm({ dbPackages }: { dbPackages?: any[] 
                   <div className="pt-6">
                     <p className="text-sm text-gray-500 font-medium mb-6 text-center">To finalize your custom event, please contact our concierge team directly. They have all your details ready!</p>
                     <div className="flex flex-col gap-4">
-                      <a href={`https://wa.me/16179993803?text=${encodeURIComponent(`Hi WE Ice Cream Truck! I'd like to book a Custom Event.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nEvent: ${eventType}\nGuests: ${customGuests}\nDuration: ${customDuration}\nLocation: ${address}, ${city} ${zip}\nDistance: ${distance} miles (Base travel fee: $${distanceFee.toFixed(2)})\nRouting: ${routingMode}\n\nPlease let me know the custom quote!`)}`} 
+                      <a href={`https://wa.me/17818247000?text=${encodeURIComponent(`Hi WE Ice Cream Truck! I'd like to book a Custom Event.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nEvent: ${eventType}\nGuests: ${customGuests}\nDuration: ${customDuration}\nLocation: ${address}, ${city} ${zip}\nDistance: ${distance} miles (Base travel fee: $${distanceFee.toFixed(2)})\nRouting: ${routingMode}\n\nPlease let me know the custom quote!`)}`} 
                         target="_blank" rel="noreferrer"
                         className="w-full py-4 rounded-xl font-black bg-[#25D366] text-white hover:bg-[#128C7E] hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-2">
-                        WhatsApp 617-999-3803
+                        WhatsApp 781-824-7000
                       </a>
-                      <a href={`https://wa.me/16178662727?text=${encodeURIComponent(`Hi WE Ice Cream Truck! I'd like to book a Custom Event.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nEvent: ${eventType}\nGuests: ${customGuests}\nDuration: ${customDuration}\nLocation: ${address}, ${city} ${zip}\nDistance: ${distance} miles (Base travel fee: $${distanceFee.toFixed(2)})\nRouting: ${routingMode}\n\nPlease let me know the custom quote!`)}`} 
+                      <a href={`https://wa.me/17818247000?text=${encodeURIComponent(`Hi WE Ice Cream Truck! I'd like to book a Custom Event.\n\nName: ${name}\nDate: ${date}\nTime: ${time}\nEvent: ${eventType}\nGuests: ${customGuests}\nDuration: ${customDuration}\nLocation: ${address}, ${city} ${zip}\nDistance: ${distance} miles (Base travel fee: $${distanceFee.toFixed(2)})\nRouting: ${routingMode}\n\nPlease let me know the custom quote!`)}`} 
                         target="_blank" rel="noreferrer"
                         className="w-full py-4 rounded-xl font-black bg-[#25D366] text-white hover:bg-[#128C7E] hover:scale-105 transition-all shadow-xl flex items-center justify-center gap-2">
-                        WhatsApp 617-866-2727
+                        WhatsApp 781-824-7000
                       </a>
                     </div>
                   </div>

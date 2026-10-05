@@ -78,7 +78,7 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: "ai",
-        text: data.message || "I'm having trouble responding right now. Please call us at 617-999-3803!",
+        text: data.message || "I'm having trouble responding right now. Please call us at 781-824-7000!",
       };
       setMessages((prev) => [...prev, aiMsg]);
     } catch {
@@ -87,7 +87,7 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
         {
           id: (Date.now() + 1).toString(),
           sender: "ai",
-          text: "Sorry, I'm experiencing a connection issue. Please call us at 617-999-3803!",
+          text: "Sorry, I'm experiencing a connection issue. Please call us at 781-824-7000!",
         },
       ]);
     } finally {

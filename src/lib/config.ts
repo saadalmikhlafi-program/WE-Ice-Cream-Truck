@@ -13,11 +13,11 @@ export const BUSINESS_CONFIG = {
   domain: "https://weicecreamtruck.com",
 
   contact: {
-    phone1: "617-999-3803",
-    phone1Formatted: "+16179993803",
+    phone1: "781-824-7000",
+    phone1Formatted: "+17818247000",
     phone1Label: "Main Line",
-    phone2: "617-866-2727",
-    phone2Formatted: "+16178662727",
+    phone2: "781-824-7000",
+    phone2Formatted: "+17818247000",
     phone2Label: "Reservations",
     email: "info@weicecreamtruck.com",
   },

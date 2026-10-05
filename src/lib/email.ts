@@ -86,7 +86,7 @@ function baseTemplate(content: string, title: string) {
         <tr>
           <td class="ftr" style="background:#F8F7F5;padding:20px 28px;text-align:center;border-top:1px solid #EDE9E4;">
             <p style="margin:0 0 4px;font-size:13px;font-weight:700;color:${BRAND_NAVY};">WE Ice Cream Truck</p>
-            <p style="margin:0 0 4px;font-size:12px;color:#9CA3AF;">Greater Boston, MA &middot; <a href="tel:617-999-3803" style="color:${BRAND_CORAL};font-weight:600;text-decoration:none;">617-999-3803</a></p>
+            <p style="margin:0 0 4px;font-size:12px;color:#9CA3AF;">Greater Boston, MA &middot; <a href="tel:781-824-7000" style="color:${BRAND_CORAL};font-weight:600;text-decoration:none;">781-824-7000</a></p>
             <p style="margin:0;font-size:11px;color:#C4BFB8;">&copy; ${new Date().getFullYear()} WE Ice Cream Truck LLC. All rights reserved.</p>
           </td>
         </tr>
@@ -202,7 +202,7 @@ export async function sendWelcomeEmail(to: string, firstName: string) {
       </td></tr>
     </table>
 
-    <p style="text-align:center;font-size:13px;color:#9CA3AF;margin:0;">Questions? <a href="tel:617-999-3803" style="color:${BRAND_CORAL};font-weight:700;text-decoration:none;">617-999-3803</a></p>
+    <p style="text-align:center;font-size:13px;color:#9CA3AF;margin:0;">Questions? <a href="tel:781-824-7000" style="color:${BRAND_CORAL};font-weight:700;text-decoration:none;">781-824-7000</a></p>
   `;
   return sendEmail({ to, subject: "Welcome to WE Ice Cream Truck! 🍦", html, title: "Welcome to WE Ice Cream Truck" });
 }
@@ -230,7 +230,7 @@ export async function sendForgotPasswordEmail(to: string, otp: string, firstName
     </div>
 
     <p style="color:#6B7280;font-size:13px;font-weight:600;text-align:center;">
-      Need help? Call us at <a href="tel:617-999-3803" style="color:${BRAND_NAVY};font-weight:800;">617-999-3803</a>
+      Need help? Call us at <a href="tel:781-824-7000" style="color:${BRAND_NAVY};font-weight:800;">781-824-7000</a>
     </p>
   `;
   return sendEmail({ to, subject: `${otp} — WE Ice Cream Truck Password Reset Code`, html, title: "Password Reset" });
@@ -451,7 +451,7 @@ export async function sendBookingPendingEmail(to: string, firstName: string, boo
       <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:white;padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">View Booking Details</a>
     </div>
     <div style="background:#F3F4F6;border-radius:12px;padding:20px;text-align:center;">
-      <p style="margin:0;color:#6B7280;font-size:13px;font-weight:600;">Questions? Call us directly at <a href="tel:617-999-3803" style="color:${BRAND_NAVY};text-decoration:none;font-weight:800;">617-999-3803</a>.</p>
+      <p style="margin:0;color:#6B7280;font-size:13px;font-weight:600;">Questions? Call us directly at <a href="tel:781-824-7000" style="color:${BRAND_NAVY};text-decoration:none;font-weight:800;">781-824-7000</a>.</p>
     </div>
   `;
   return sendEmail({ to, subject: `✅ Booking Confirmed — #${bookingNumber} | WE Ice Cream Truck`, html });
@@ -546,9 +546,8 @@ export async function sendCustomQuoteEmail(to: string, firstName: string, bookin
     </div>
     <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:16px;padding:20px 24px;margin-bottom:24px;">
       <p style="margin:0 0 8px;font-size:13px;font-weight:900;text-transform:uppercase;color:\${BRAND_NAVY};">WhatsApp Contact</p>
-      <p style="margin:0 0 16px;color:\${BRAND_NAVY};font-size:15px;font-weight:600;line-height:1.4;">We will contact you through WhatsApp: 📞 617-999-3803 · 📞 617-866-2727</p>
-      <a href="${getWaLink('16179993803')}" style="display:block;background:#25D366;color:#ffffff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:950;font-size:15px;margin-bottom:10px;text-align:center;">WhatsApp 617-999-3803</a>
-      <a href="${getWaLink('16178662727')}" style="display:block;background:#25D366;color:#ffffff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:950;font-size:15px;text-align:center;">WhatsApp 617-866-2727</a>
+      <p style="margin:0 0 16px;color:\${BRAND_NAVY};font-size:15px;font-weight:600;line-height:1.4;">We will contact you through WhatsApp: 📞 +1 781-824-7000</p>
+      <a href="${getWaLink('17818247000')}" style="display:block;background:#25D366;color:#ffffff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:950;font-size:15px;margin-bottom:10px;text-align:center;">WhatsApp +1 781-824-7000</a>
     </div>
     ${bookingDetailsHtml}
     <div style="text-align:center;margin:32px 0 24px;">

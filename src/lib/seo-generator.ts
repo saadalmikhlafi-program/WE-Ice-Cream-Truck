@@ -174,7 +174,7 @@ export function generateCitySEOData(slug: string) {
                 "name": "WE Ice Cream Truck",
                 "description": `Professional ice cream truck rental service serving ${cityName}, MA and Greater Boston.`,
                 "url": `https://www.bostonlegendicecreamtruck.com/cities/${slug}`,
-                "telephone": "+16179993803",
+                "telephone": "+17818247000",
                 "email": "info@bostonlegendicecreamtruck.com",
                 "image": "https://cdn.prod.website-files.com/67dc601bc29781a5af1632a2/67e3936366827af4bed1d0d0_logo-boston-legend-ice-cream-truck.avif",
                 "priceRange": "$$",

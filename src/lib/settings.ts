@@ -4,7 +4,7 @@ import { unstable_cache } from "next/cache";
 export const DEFAULT_SETTINGS = {
   companyName: "WE Ice Cream Truck",
   companyAddress: "38 Woodland Rd, Georgetown, MA 01833",
-  companyPhone: "617-999-3803",
+  companyPhone: "781-824-7000",
   companyEmail: "info@weicecreamtruck.com",
   logoUrl: "/images/we-icecream.jpg",
   faviconUrl: "/favicon.ico",

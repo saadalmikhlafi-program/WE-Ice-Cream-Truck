@@ -43,9 +43,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         <div style="background:#FFFBEB;border:1px solid #FFA000;border-radius:12px;padding:16px 20px;margin-bottom:24px;">
           <p style="margin:0;color:#92400E;font-size:14px;font-weight:700;">
             💬 Need more help? Reply to this email or contact us directly:
-            <br/>📞 <a href="tel:6179993803" style="color:#000223;font-weight:900;">617-999-3803</a>
+            <br/>📞 <a href="tel:7818247000" style="color:#000223;font-weight:900;">781-824-7000</a>
             &nbsp;|&nbsp;
-            📞 <a href="tel:6178662727" style="color:#000223;font-weight:900;">617-866-2727</a>
+            📞 <a href="tel:7818247000" style="color:#000223;font-weight:900;">781-824-7000</a>
           </p>
         </div>
 
