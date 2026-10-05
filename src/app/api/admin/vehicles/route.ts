@@ -16,18 +16,18 @@ export async function GET(req: NextRequest) {
       include: {
         assignments: {
           where: {
-            jobStatus: { in: ["PENDING", "ON_THE_WAY", "ARRIVED"] }
+            jobStatus: { in: ["PENDING", "ON_THE_WAY", "ARRIVED"] },
           },
           include: {
             driver: true,
-            booking: true
+            booking: true,
           },
-          take: 1
-        }
-      }
+          take: 1,
+        },
+      },
     });
 
-    const mapped = vehicles.map(v => {
+    const mapped = vehicles.map((v) => {
       const active = v.assignments[0];
       return {
         id: v.id,
@@ -36,14 +36,19 @@ export async function GET(req: NextRequest) {
         type: v.type,
         status: v.status,
         driver: active?.driver?.displayName || null,
-        location: active?.booking?.city || (v.status === "MAINTENANCE" ? "Garage" : "Boston Metro")
+        location:
+          active?.booking?.city ||
+          (v.status === "MAINTENANCE" ? "Garage" : "Boston Metro"),
       };
     });
 
     return NextResponse.json(mapped);
   } catch (error: any) {
     console.error("Vehicles API GET error:", error);
-    return NextResponse.json({ error: "Failed to fetch vehicles" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch vehicles" },
+      { status: 500 },
+    );
   }
 }
 
@@ -56,16 +61,22 @@ export async function POST(req: NextRequest) {
 
     const { code, name, type, status } = await req.json();
     if (!code || !name || !type) {
-      return NextResponse.json({ error: "Code, name, and type are required." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Code, name, and type are required." },
+        { status: 400 },
+      );
     }
 
     const exists = await prisma.vehicle.findUnique({ where: { code } });
     if (exists) {
-      return NextResponse.json({ error: "A vehicle with this code already exists." }, { status: 400 });
+      return NextResponse.json(
+        { error: "A vehicle with this code already exists." },
+        { status: 400 },
+      );
     }
 
     const vehicle = await prisma.vehicle.create({
-      data: { code, name, type, status: status || "AVAILABLE" }
+      data: { code, name, type, status: status || "AVAILABLE" },
     });
 
     // Write audit log
@@ -74,13 +85,16 @@ export async function POST(req: NextRequest) {
         entityType: "VEHICLE",
         entityId: vehicle.id,
         action: "VEHICLE_CREATED",
-        metadataJson: JSON.stringify({ code, name, type, status })
-      }
+        metadataJson: JSON.stringify({ code, name, type, status }),
+      },
     });
 
     return NextResponse.json(vehicle, { status: 201 });
   } catch (error: any) {
     console.error("Vehicles API POST error:", error);
-    return NextResponse.json({ error: "Failed to create vehicle" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create vehicle" },
+      { status: 500 },
+    );
   }
 }

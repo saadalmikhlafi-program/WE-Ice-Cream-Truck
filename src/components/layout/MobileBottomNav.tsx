@@ -21,15 +21,17 @@ export default function MobileBottomNav() {
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-navy/95 backdrop-blur-md border-t border-white/10 pb-safe">
       <div className="flex items-center justify-around px-2 h-16">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== "/" && pathname?.startsWith(item.href));
-          
+          const isActive =
+            pathname === item.href ||
+            (item.href !== "/" && pathname?.startsWith(item.href));
+
           return (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
                 "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors",
-                isActive ? "text-coral" : "text-cream/70 hover:text-cream"
+                isActive ? "text-coral" : "text-cream/70 hover:text-cream",
               )}
             >
               <item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />

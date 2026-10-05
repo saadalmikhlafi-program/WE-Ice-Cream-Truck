@@ -2,30 +2,30 @@
 
 @theme {
   /* Colors */
-  --color-cream: #FFFBF5;
-  --color-sand: #F5EDE3;
-  --color-white: #FFFFFF;
-  --color-navy: #0A1128;
-  --color-navy-mid: #1A2440;
+  --color-cream: #fffbf5;
+  --color-sand: #f5ede3;
+  --color-white: #ffffff;
+  --color-navy: #0a1128;
+  --color-navy-mid: #1a2440;
 
-  --color-coral: #FF6B6B;
-  --color-coral-dark: #E65A5A;
-  --color-coral-light: #FF8F8F;
-  
-  --color-gold: #D4AF37;
-  --color-gold-light: #F3E5AB;
-  
-  --color-mint: #4ECDC4;
-  --color-mint-light: #E8FAF8;
+  --color-coral: #ff6b6b;
+  --color-coral-dark: #e65a5a;
+  --color-coral-light: #ff8f8f;
 
-  --color-charcoal: #1C1C2E;
-  --color-gray-600: #4B5563;
-  --color-gray-400: #9CA3AF;
-  --color-gray-100: #F3F4F6;
+  --color-gold: #d4af37;
+  --color-gold-light: #f3e5ab;
 
-  --color-success: #10B981;
-  --color-error: #EF4444;
-  --color-warning: #F59E0B;
+  --color-mint: #4ecdc4;
+  --color-mint-light: #e8faf8;
+
+  --color-charcoal: #1c1c2e;
+  --color-gray-600: #4b5563;
+  --color-gray-400: #9ca3af;
+  --color-gray-100: #f3f4f6;
+
+  --color-success: #10b981;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
 
   /* Typography */
   --font-display: var(--font-playfair);
@@ -61,36 +61,57 @@
   --shadow-xs: 0 1px 3px rgba(10, 17, 40, 0.04);
   --shadow-sm: 0 2px 8px rgba(10, 17, 40, 0.06);
   --shadow-md: 0 8px 24px rgba(10, 17, 40, 0.08);
-  --shadow-lg: 0 16px 48px rgba(10, 17, 40, 0.10);
+  --shadow-lg: 0 16px 48px rgba(10, 17, 40, 0.1);
   --shadow-xl: 0 24px 64px rgba(10, 17, 40, 0.12);
   --shadow-2xl: 0 32px 80px rgba(10, 17, 40, 0.16);
   --shadow-float: 0 20px 40px -15px rgba(10, 17, 40, 0.05);
   --shadow-coral: 0 8px 32px rgba(255, 107, 107, 0.35);
-  --shadow-coral-lg: 0 16px 48px rgba(255, 107, 107, 0.40);
-  --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.30);
+  --shadow-coral-lg: 0 16px 48px rgba(255, 107, 107, 0.4);
+  --shadow-gold: 0 4px 20px rgba(212, 175, 55, 0.3);
 
   /* Animations */
   --animate-marquee: marquee 30s linear infinite;
   --animate-blob: blob 20s infinite ease-in-out alternate;
-  
+
   @keyframes marquee {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(-33.33%); }
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-33.33%);
+    }
   }
 
   @keyframes blob {
-    0% { transform: translate(0px, 0px) scale(1); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-    33% { transform: translate(30px, -50px) scale(1.1); border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
-    66% { transform: translate(-20px, 20px) scale(0.9); border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
-    100% { transform: translate(0px, 0px) scale(1); border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+    0% {
+      transform: translate(0px, 0px) scale(1);
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+      border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+      border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%;
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    }
   }
 
   /* GPU-composited float animation (uses transform only) */
   --animate-float: float 4s ease-in-out infinite;
 
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
   }
 }
 
@@ -118,7 +139,7 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .glass {
     background: rgba(255, 251, 245, 0.85);
     backdrop-filter: blur(20px) saturate(1.8);
@@ -142,15 +163,15 @@
   .animation-delay-6000 {
     animation-delay: 6s;
   }
-  
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
   /* Hide scrollbar for IE, Edge and Firefox */
   .hide-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }
 
@@ -175,7 +196,7 @@
 
 .leaflet-control-zoom a {
   background-color: white !important;
-  color: #0A1128 !important;
+  color: #0a1128 !important;
   border-radius: 12px !important;
   width: 36px !important;
   height: 36px !important;
@@ -187,7 +208,7 @@
 }
 
 .leaflet-control-zoom a:hover {
-  background-color: #FF6B6B !important;
+  background-color: #ff6b6b !important;
   color: white !important;
 }
 
@@ -198,18 +219,17 @@
   box-shadow: none !important;
 }
 
-
 /* Move reCAPTCHA badge to the bottom-left so it doesn't overlap the AI Chatbot */
 .grecaptcha-badge {
-    width: 70px !important;
-    overflow: hidden !important;
-    transition: all 0.3s ease !important;
-    left: 4px !important;
-    right: auto !important;
-    bottom: 24px !important;
-    z-index: 50 !important;
+  width: 70px !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  left: 4px !important;
+  right: auto !important;
+  bottom: 24px !important;
+  z-index: 50 !important;
 }
 
 .grecaptcha-badge:hover {
-    width: 256px !important;
+  width: 256px !important;
 }

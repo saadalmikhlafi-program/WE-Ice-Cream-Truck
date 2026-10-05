@@ -7,7 +7,10 @@ export async function GET(req: NextRequest) {
   try {
     const auth = await requirePermission(req, "bookings.view");
     if (!auth.success) {
-      return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+      return NextResponse.json(
+        { success: false, error: auth.error },
+        { status: auth.status },
+      );
     }
 
     const { searchParams } = new URL(req.url);
@@ -30,7 +33,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: true, data: tasks });
   } catch (error) {
     console.error("Failed to fetch tasks", error);
-    return NextResponse.json({ success: false, error: "Failed to fetch tasks" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch tasks" },
+      { status: 500 },
+    );
   }
 }
 
@@ -38,11 +44,23 @@ export async function POST(req: NextRequest) {
   try {
     const auth = await requirePermission(req, "bookings.update");
     if (!auth.success) {
-      return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+      return NextResponse.json(
+        { success: false, error: auth.error },
+        { status: auth.status },
+      );
     }
 
     const body = await req.json();
-    const { title, description, priority, dueDate, assignedToId, inquiryId, bookingId, customerId } = body;
+    const {
+      title,
+      description,
+      priority,
+      dueDate,
+      assignedToId,
+      inquiryId,
+      bookingId,
+      customerId,
+    } = body;
 
     const task = await prisma.task.create({
       data: {
@@ -55,7 +73,7 @@ export async function POST(req: NextRequest) {
         inquiryId,
         bookingId,
         customerId,
-      }
+      },
     });
 
     await prisma.auditLog.create({
@@ -63,13 +81,16 @@ export async function POST(req: NextRequest) {
         entityType: "TASK",
         entityId: task.id,
         action: "TASK_CREATED",
-        metadataJson: JSON.stringify({ title, assignedToId })
-      }
+        metadataJson: JSON.stringify({ title, assignedToId }),
+      },
     });
 
     return NextResponse.json({ success: true, data: task });
   } catch (error) {
     console.error("Failed to create task", error);
-    return NextResponse.json({ success: false, error: "Failed to create task" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to create task" },
+      { status: 500 },
+    );
   }
 }

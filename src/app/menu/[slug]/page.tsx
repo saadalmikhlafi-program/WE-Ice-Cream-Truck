@@ -22,7 +22,9 @@ export function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const item = menuItems.find((i) => i.slug === slug);
 
@@ -40,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     "ice cream truck",
     "boston ice cream",
     "event catering",
-    ...item.dietary
+    ...item.dietary,
   ];
 
   return constructMetadata({
@@ -52,16 +54,41 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 }
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
-  "Birthday Parties":   { bg: "bg-pink-50",   text: "text-pink-700",   dot: "bg-pink-400" },
-  "Corporate Events":   { bg: "bg-blue-50",   text: "text-blue-700",   dot: "bg-blue-400" },
-  "Weddings":           { bg: "bg-purple-50", text: "text-purple-700", dot: "bg-purple-400" },
-  "Community Events":   { bg: "bg-green-50",  text: "text-green-700",  dot: "bg-green-400" },
+const CATEGORY_COLORS: Record<
+  string,
+  { bg: string; text: string; dot: string }
+> = {
+  "Birthday Parties": {
+    bg: "bg-pink-50",
+    text: "text-pink-700",
+    dot: "bg-pink-400",
+  },
+  "Corporate Events": {
+    bg: "bg-blue-50",
+    text: "text-blue-700",
+    dot: "bg-blue-400",
+  },
+  Weddings: {
+    bg: "bg-purple-50",
+    text: "text-purple-700",
+    dot: "bg-purple-400",
+  },
+  "Community Events": {
+    bg: "bg-green-50",
+    text: "text-green-700",
+    dot: "bg-green-400",
+  },
 };
 
 function getCategoryStyle(name?: string | null) {
   if (!name) return { bg: "bg-coral/10", text: "text-coral", dot: "bg-coral" };
-  return CATEGORY_COLORS[name] || { bg: "bg-coral/10", text: "text-coral", dot: "bg-coral" };
+  return (
+    CATEGORY_COLORS[name] || {
+      bg: "bg-coral/10",
+      text: "text-coral",
+      dot: "bg-coral",
+    }
+  );
 }
 
 export default async function MenuItemPage({ params }: PageProps) {
@@ -256,13 +283,16 @@ export default async function MenuItemPage({ params }: PageProps) {
                         key={i}
                         className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-md border border-gray-200"
                       >
-                        {allergen.includes("None") ? "Allergy-Friendly" : `Contains: ${allergen}`}
+                        {allergen.includes("None")
+                          ? "Allergy-Friendly"
+                          : `Contains: ${allergen}`}
                       </span>
                     ))}
                   </div>
                   {!item.allergens.includes("None (Dairy Free)") && (
                     <p className="text-xs text-navy/40 mt-2">
-                      Processed in a facility that may handle other common allergens.
+                      Processed in a facility that may handle other common
+                      allergens.
                     </p>
                   )}
                 </div>
@@ -296,29 +326,41 @@ export default async function MenuItemPage({ params }: PageProps) {
                   Recent <span className="text-coral">Events</span>
                 </h2>
               </div>
-              <Link href="/blog" className="hidden sm:inline-flex items-center gap-2 text-navy font-bold hover:text-coral transition-colors">
+              <Link
+                href="/blog"
+                className="hidden sm:inline-flex items-center gap-2 text-navy font-bold hover:text-coral transition-colors"
+              >
                 Explore All Events &rarr;
               </Link>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {recentPosts.map((post) => {
                 const style = getCategoryStyle(post.category?.name);
                 // Use a default image if featuredImage is missing
-                const imageSrc = post.featuredImage || "/images/hero-cinematic.jpg";
-                
+                const imageSrc =
+                  post.featuredImage || "/images/hero-cinematic.jpg";
+
                 return (
-                  <Link key={post.id} href={`/blog/${post.slug}`} className="group block bg-white rounded-[2rem] border border-navy/5 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                  <Link
+                    key={post.id}
+                    href={`/blog/${post.slug}`}
+                    className="group block bg-white rounded-[2rem] border border-navy/5 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                  >
                     <div className="relative aspect-[4/3] bg-navy/5 overflow-hidden">
-                      <Image 
-                        src={imageSrc} 
-                        alt={post.title} 
-                        fill 
-                        className="object-cover transition-transform duration-500 group-hover:scale-105" 
+                      <Image
+                        src={imageSrc}
+                        alt={post.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute top-4 left-4">
-                        <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${style.bg} ${style.text} backdrop-blur-md text-xs font-bold uppercase tracking-wider`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                        <div
+                          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${style.bg} ${style.text} backdrop-blur-md text-xs font-bold uppercase tracking-wider`}
+                        >
+                          <span
+                            className={`w-1.5 h-1.5 rounded-full ${style.dot}`}
+                          />
                           {post.category?.name || "Event"}
                         </div>
                       </div>
@@ -335,9 +377,12 @@ export default async function MenuItemPage({ params }: PageProps) {
                 );
               })}
             </div>
-            
+
             <div className="mt-8 text-center sm:hidden">
-              <Link href="/blog" className="inline-flex items-center justify-center w-full py-4 bg-navy/5 text-navy font-bold rounded-2xl hover:bg-navy/10 transition-colors">
+              <Link
+                href="/blog"
+                className="inline-flex items-center justify-center w-full py-4 bg-navy/5 text-navy font-bold rounded-2xl hover:bg-navy/10 transition-colors"
+              >
                 Explore All Events
               </Link>
             </div>

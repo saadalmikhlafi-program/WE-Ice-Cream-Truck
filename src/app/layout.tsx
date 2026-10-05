@@ -98,7 +98,12 @@ export default async function RootLayout({
     <html lang="en">
       <head>
         {/* Preload LCP hero image for faster rendering */}
-        <link rel="preload" as="image" href="/images/fundraise.jpg" fetchPriority="high" />
+        <link
+          rel="preload"
+          as="image"
+          href="/images/fundraise.jpg"
+          fetchPriority="high"
+        />
       </head>
       <body
         className={`${playfair.variable} ${outfit.variable} font-sans bg-cream text-charcoal antialiased min-h-screen flex flex-col relative`}

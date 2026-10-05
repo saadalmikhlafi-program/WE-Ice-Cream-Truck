@@ -33,15 +33,26 @@ export async function POST(req: Request) {
         where: { email },
         data: { passwordHash, role, name, permissions, active: true },
       });
-      return NextResponse.json({ success: true, message: "Owner account updated", email });
+      return NextResponse.json({
+        success: true,
+        message: "Owner account updated",
+        email,
+      });
     } else {
       await prisma.user.create({
         data: { email, passwordHash, name, role, permissions, active: true },
       });
-      return NextResponse.json({ success: true, message: "Owner account created", email });
+      return NextResponse.json({
+        success: true,
+        message: "Owner account created",
+        email,
+      });
     }
   } catch (error) {
     console.error("[SETUP_OWNER] Error:", error);
-    return NextResponse.json({ error: "Failed to create owner account", details: String(error) }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create owner account", details: String(error) },
+      { status: 500 },
+    );
   }
 }

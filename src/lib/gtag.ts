@@ -75,7 +75,9 @@ export function trackBookingConfirmed(params: {
     transaction_id: params.bookingNumber,
     value: params.totalAmount,
     currency: "USD",
-    items: [{ item_name: params.packageName, price: params.totalAmount, quantity: 1 }],
+    items: [
+      { item_name: params.packageName, price: params.totalAmount, quantity: 1 },
+    ],
   });
 
   // Google Ads conversion — Booking Confirmed

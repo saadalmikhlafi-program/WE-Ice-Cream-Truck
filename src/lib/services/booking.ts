@@ -42,17 +42,19 @@ export const BookingService = {
           customerId: params.customerId,
           eventDate: params.eventDate,
           startTime: params.startTime,
-          status: { in: ["APPROVED", "PENDING", "PENDING_REVIEW"] }
-        }
+          status: { in: ["APPROVED", "PENDING", "PENDING_REVIEW"] },
+        },
       });
 
       if (existing) {
-        throw new Error("A booking already exists for this customer at the requested time.");
+        throw new Error(
+          "A booking already exists for this customer at the requested time.",
+        );
       }
 
       // 3. Generate Booking Number
       const count = await prisma.booking.count();
-      const bookingNumber = `BKG-${new Date().getFullYear()}-${String(count + 1000).padStart(4, '0')}`;
+      const bookingNumber = `BKG-${new Date().getFullYear()}-${String(count + 1000).padStart(4, "0")}`;
 
       // 4. Create Booking
       const booking = await prisma.booking.create({
@@ -71,7 +73,7 @@ export const BookingService = {
           eventType: params.eventType,
           notes: params.notes,
           totalAmount: params.totalAmount,
-        }
+        },
       });
 
       // 5. Audit Log
@@ -90,12 +92,11 @@ export const BookingService = {
       return {
         success: true,
         booking,
-        requiresAdminReview
+        requiresAdminReview,
       };
-
     } catch (error: any) {
       console.error("[BookingService] Failed to create booking:", error);
-      
+
       // Log Failure
       await AuditService.log({
         entityType: "BOOKING",
@@ -110,5 +111,5 @@ export const BookingService = {
 
       return { success: false, error: error.message };
     }
-  }
+  },
 };

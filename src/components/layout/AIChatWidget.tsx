@@ -5,7 +5,14 @@ import { useSession } from "next-auth/react";
 import { useState, useEffect, useRef, FormEvent, useMemo } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { X, Send, CheckCircle2, Loader2, Sparkles, ChevronDown } from "lucide-react";
+import {
+  X,
+  Send,
+  CheckCircle2,
+  Loader2,
+  Sparkles,
+  ChevronDown,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -85,7 +92,11 @@ export default function AIChatWidget() {
     const text = overrideText || inputValue.trim();
     if (!text || isLoading) return;
 
-    const userMsg: Message = { id: `u-${crypto.randomUUID()}`, role: "user", content: text };
+    const userMsg: Message = {
+      id: `u-${crypto.randomUUID()}`,
+      role: "user",
+      content: text,
+    };
     setMessages((prev) => [...prev, userMsg]);
     setInputValue("");
     setIsLoading(true);
@@ -120,7 +131,8 @@ export default function AIChatWidget() {
         {
           id: `a-${Date.now()}`,
           role: "assistant",
-          content: "I'm sorry, I'm having trouble connecting right now. Please try again or call us at 781-824-7000! 📞",
+          content:
+            "I'm sorry, I'm having trouble connecting right now. Please try again or call us at 781-824-7000! 📞",
         },
       ]);
     } finally {
@@ -164,7 +176,8 @@ export default function AIChatWidget() {
         {
           id: `a-${Date.now()}`,
           role: "assistant",
-          content: "I'm sorry, I couldn't process the booking right now. Please call us at 781-824-7000 and we'll be happy to help! 📞",
+          content:
+            "I'm sorry, I couldn't process the booking right now. Please call us at 781-824-7000 and we'll be happy to help! 📞",
         },
       ]);
     } finally {
@@ -174,111 +187,154 @@ export default function AIChatWidget() {
 
   const hasQuickRepliesShown = messages.length <= 1;
 
-  const memoizedMessages = useMemo(() => messages.map((msg) => (
-    <motion.div 
-      initial={{ opacity: 0, y: 15, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      key={msg.id} 
-      className="relative w-full flex flex-col"
-    >
-      <div className={cn("flex gap-3 max-w-[88%]", msg.role === "user" ? "self-end flex-row-reverse" : "self-start")}>
-        {msg.role === "assistant" && (
-          <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto shadow-[0_2px_10px_rgb(0,0,0,0.08)] border border-white">
-            <Image src="/images/we-icecream.jpg" alt="WE" fill className="object-cover" sizes="32px" />
-          </div>
-        )}
-        <div
-          className={cn(
-            "px-4 py-3 text-[15px] sm:text-[14px] leading-relaxed font-medium whitespace-pre-wrap shadow-sm",
-            msg.role === "user"
-              ? "bg-navy text-white rounded-2xl rounded-br-sm shadow-[0_4px_14px_rgb(10,17,40,0.2)]"
-              : "bg-white text-navy rounded-2xl rounded-bl-sm border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.04)]"
-          )}
-        >
-          {msg.role === "assistant" ? (
-            <div className="prose prose-sm prose-p:leading-relaxed prose-pre:p-0 prose-ul:my-1 prose-ol:my-1 max-w-none prose-li:marker:text-coral text-navy prose-strong:text-navy prose-strong:font-black">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content || "…"}</ReactMarkdown>
-            </div>
-          ) : (
-            msg.content || <span className="opacity-40">…</span>
-          )}
-        </div>
-      </div>
-
-      {/* Booking Confirmation Card */}
-      {msg.bookingRequest && (
+  const memoizedMessages = useMemo(
+    () =>
+      messages.map((msg) => (
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="self-start ml-11 mt-3 w-[280px] sm:w-[320px] bg-white rounded-2xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden"
+          initial={{ opacity: 0, y: 15, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          key={msg.id}
+          className="relative w-full flex flex-col"
         >
-          <div className="bg-gradient-to-r from-coral/10 to-transparent px-5 py-3.5 border-b border-gray-50">
-            <p className="text-coral text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
-              <CheckCircle2 size={14} /> Booking Summary
-            </p>
-          </div>
-          <div className="p-5 space-y-3 text-sm">
-            <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Name</span>
-              <span className="text-navy font-black">{msg.bookingRequest.name}</span>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Date</span>
-              <span className="text-navy font-black">{msg.bookingRequest.eventDate}</span>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Time</span>
-              <span className="text-navy font-black">{msg.bookingRequest.startTime}</span>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Event</span>
-              <span className="text-navy font-black">{msg.bookingRequest.eventType}</span>
-            </div>
-            <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">Guests</span>
-              <span className="text-navy font-black">{msg.bookingRequest.guests}</span>
-            </div>
-            <div className="flex justify-between items-start pt-1">
-              <span className="text-gray-400 font-bold text-xs uppercase tracking-wider mt-0.5">Location</span>
-              <span className="text-navy font-black text-right max-w-[60%]">
-                {msg.bookingRequest.address}<br />
-                {msg.bookingRequest.city}, {msg.bookingRequest.zip}
-              </span>
-            </div>
-            <div className="pt-4 mt-2">
-              {status === "authenticated" ? (
-                <button
-                  onClick={() => msg.bookingRequest && handleConfirmBooking(msg.bookingRequest)}
-                  disabled={bookingConfirming}
-                  className="w-full py-3.5 rounded-xl font-black text-sm bg-coral text-white hover:bg-coral-dark shadow-[0_8px_20px_rgb(255,107,107,0.25)] hover:shadow-[0_8px_25px_rgb(255,107,107,0.4)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  {bookingConfirming ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle2 className="w-5 h-5" />
-                      Confirm Booking Now
-                    </>
-                  )}
-                </button>
+          <div
+            className={cn(
+              "flex gap-3 max-w-[88%]",
+              msg.role === "user" ? "self-end flex-row-reverse" : "self-start",
+            )}
+          >
+            {msg.role === "assistant" && (
+              <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto shadow-[0_2px_10px_rgb(0,0,0,0.08)] border border-white">
+                <Image
+                  src="/images/we-icecream.jpg"
+                  alt="WE"
+                  fill
+                  className="object-cover"
+                  sizes="32px"
+                />
+              </div>
+            )}
+            <div
+              className={cn(
+                "px-4 py-3 text-[15px] sm:text-[14px] leading-relaxed font-medium whitespace-pre-wrap shadow-sm",
+                msg.role === "user"
+                  ? "bg-navy text-white rounded-2xl rounded-br-sm shadow-[0_4px_14px_rgb(10,17,40,0.2)]"
+                  : "bg-white text-navy rounded-2xl rounded-bl-sm border border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.04)]",
+              )}
+            >
+              {msg.role === "assistant" ? (
+                <div className="prose prose-sm prose-p:leading-relaxed prose-pre:p-0 prose-ul:my-1 prose-ol:my-1 max-w-none prose-li:marker:text-coral text-navy prose-strong:text-navy prose-strong:font-black">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {msg.content || "…"}
+                  </ReactMarkdown>
+                </div>
               ) : (
-                <button
-                  onClick={() => window.location.href = "/login"}
-                  className="w-full py-3.5 rounded-xl font-black text-sm bg-navy text-white hover:bg-navy-light shadow-lg transition-all flex items-center justify-center gap-2"
-                >
-                  Log in or Sign up to Confirm
-                </button>
+                msg.content || <span className="opacity-40">…</span>
               )}
             </div>
           </div>
+
+          {/* Booking Confirmation Card */}
+          {msg.bookingRequest && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="self-start ml-11 mt-3 w-[280px] sm:w-[320px] bg-white rounded-2xl border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden"
+            >
+              <div className="bg-gradient-to-r from-coral/10 to-transparent px-5 py-3.5 border-b border-gray-50">
+                <p className="text-coral text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
+                  <CheckCircle2 size={14} /> Booking Summary
+                </p>
+              </div>
+              <div className="p-5 space-y-3 text-sm">
+                <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+                  <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">
+                    Name
+                  </span>
+                  <span className="text-navy font-black">
+                    {msg.bookingRequest.name}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+                  <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">
+                    Date
+                  </span>
+                  <span className="text-navy font-black">
+                    {msg.bookingRequest.eventDate}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+                  <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">
+                    Time
+                  </span>
+                  <span className="text-navy font-black">
+                    {msg.bookingRequest.startTime}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+                  <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">
+                    Event
+                  </span>
+                  <span className="text-navy font-black">
+                    {msg.bookingRequest.eventType}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+                  <span className="text-gray-400 font-bold text-xs uppercase tracking-wider">
+                    Guests
+                  </span>
+                  <span className="text-navy font-black">
+                    {msg.bookingRequest.guests}
+                  </span>
+                </div>
+                <div className="flex justify-between items-start pt-1">
+                  <span className="text-gray-400 font-bold text-xs uppercase tracking-wider mt-0.5">
+                    Location
+                  </span>
+                  <span className="text-navy font-black text-right max-w-[60%]">
+                    {msg.bookingRequest.address}
+                    <br />
+                    {msg.bookingRequest.city}, {msg.bookingRequest.zip}
+                  </span>
+                </div>
+                <div className="pt-4 mt-2">
+                  {status === "authenticated" ? (
+                    <button
+                      onClick={() =>
+                        msg.bookingRequest &&
+                        handleConfirmBooking(msg.bookingRequest)
+                      }
+                      disabled={bookingConfirming}
+                      className="w-full py-3.5 rounded-xl font-black text-sm bg-coral text-white hover:bg-coral-dark shadow-[0_8px_20px_rgb(255,107,107,0.25)] hover:shadow-[0_8px_25px_rgb(255,107,107,0.4)] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {bookingConfirming ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-5 h-5" />
+                          Confirm Booking Now
+                        </>
+                      )}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => (window.location.href = "/login")}
+                      className="w-full py-3.5 rounded-xl font-black text-sm bg-navy text-white hover:bg-navy-light shadow-lg transition-all flex items-center justify-center gap-2"
+                    >
+                      Log in or Sign up to Confirm
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
-      )}
-    </motion.div>
-  )), [messages, bookingConfirming]);
+      )),
+    [messages, bookingConfirming],
+  );
 
   return (
     <>
@@ -298,7 +354,13 @@ export default function AIChatWidget() {
         aria-label="Open AI Chat"
       >
         <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden shadow-sm border-2 border-white">
-          <Image src="/images/we-icecream.jpg" alt="WE Assistant" fill className="object-cover" sizes="44px" />
+          <Image
+            src="/images/we-icecream.jpg"
+            alt="WE Assistant"
+            fill
+            className="object-cover"
+            sizes="44px"
+          />
         </div>
         <div className="flex flex-col items-start">
           <span className="text-navy font-black text-xs sm:text-sm tracking-tight leading-none flex items-center gap-1">
@@ -309,7 +371,9 @@ export default function AIChatWidget() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            <span className="text-gray-500 font-bold text-[9px] sm:text-[10px] uppercase tracking-widest">Online</span>
+            <span className="text-gray-500 font-bold text-[9px] sm:text-[10px] uppercase tracking-widest">
+              Online
+            </span>
           </span>
         </div>
       </motion.button>
@@ -338,7 +402,7 @@ export default function AIChatWidget() {
                 // Desktop: Floating card at bottom right
                 "sm:inset-auto sm:bottom-8 sm:right-6 md:right-10",
                 "sm:w-[400px] md:w-[440px] sm:h-[650px] md:h-[700px] sm:max-h-[85vh]",
-                "sm:border sm:border-gray-100"
+                "sm:border sm:border-gray-100",
               )}
             >
               {/* Premium Background Mesh Gradient */}
@@ -351,7 +415,13 @@ export default function AIChatWidget() {
               {/* ── Header ── */}
               <div className="relative px-5 sm:px-6 py-4 flex items-center gap-4 shrink-0 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-[0_4px_20px_rgb(0,0,0,0.02)] z-20">
                 <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-md border-2 border-white">
-                  <Image src="/images/we-icecream.jpg" alt="WE Assistant" fill className="object-cover" sizes="48px" />
+                  <Image
+                    src="/images/we-icecream.jpg"
+                    alt="WE Assistant"
+                    fill
+                    className="object-cover"
+                    sizes="48px"
+                  />
                   <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -359,7 +429,9 @@ export default function AIChatWidget() {
                     WE Assistant <Sparkles className="w-4 h-4 text-coral" />
                   </h3>
                   <p className="flex items-center gap-1.5 mt-0.5">
-                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-widest">AI Concierge</span>
+                    <span className="text-gray-500 text-[11px] font-bold uppercase tracking-widest">
+                      AI Concierge
+                    </span>
                   </p>
                 </div>
                 <button
@@ -384,9 +456,9 @@ export default function AIChatWidget() {
 
                 {/* Quick Replies (Stacked Vertically) */}
                 {hasQuickRepliesShown && !isLoading && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }} 
-                    animate={{ opacity: 1, y: 0 }} 
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                     className="flex flex-col gap-2.5 mt-2 pl-[44px] pr-4 sm:pr-8"
                   >
@@ -403,41 +475,63 @@ export default function AIChatWidget() {
                 )}
 
                 {/* Animated Typing Indicator */}
-                {isLoading && messages[messages.length - 1]?.role === "user" && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex gap-3 max-w-[85%]"
-                  >
-                    <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto shadow-sm border border-white">
-                      <Image src="/images/we-icecream.jpg" alt="WE" fill className="object-cover" sizes="32px" />
-                    </div>
-                    <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-3.5 shadow-sm border border-gray-100 flex items-center gap-1.5 h-[42px]">
-                      <motion.span 
-                        animate={{ y: [0, -5, 0] }}
-                        transition={{ repeat: Infinity, duration: 0.8, delay: 0 }}
-                        className="w-1.5 h-1.5 rounded-full bg-navy/40" 
-                      />
-                      <motion.span 
-                        animate={{ y: [0, -5, 0] }}
-                        transition={{ repeat: Infinity, duration: 0.8, delay: 0.2 }}
-                        className="w-1.5 h-1.5 rounded-full bg-navy/40" 
-                      />
-                      <motion.span 
-                        animate={{ y: [0, -5, 0] }}
-                        transition={{ repeat: Infinity, duration: 0.8, delay: 0.4 }}
-                        className="w-1.5 h-1.5 rounded-full bg-navy/40" 
-                      />
-                    </div>
-                  </motion.div>
-                )}
+                {isLoading &&
+                  messages[messages.length - 1]?.role === "user" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex gap-3 max-w-[85%]"
+                    >
+                      <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 mt-auto shadow-sm border border-white">
+                        <Image
+                          src="/images/we-icecream.jpg"
+                          alt="WE"
+                          fill
+                          className="object-cover"
+                          sizes="32px"
+                        />
+                      </div>
+                      <div className="bg-white rounded-2xl rounded-bl-sm px-4 py-3.5 shadow-sm border border-gray-100 flex items-center gap-1.5 h-[42px]">
+                        <motion.span
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 0.8,
+                            delay: 0,
+                          }}
+                          className="w-1.5 h-1.5 rounded-full bg-navy/40"
+                        />
+                        <motion.span
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 0.8,
+                            delay: 0.2,
+                          }}
+                          className="w-1.5 h-1.5 rounded-full bg-navy/40"
+                        />
+                        <motion.span
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 0.8,
+                            delay: 0.4,
+                          }}
+                          className="w-1.5 h-1.5 rounded-full bg-navy/40"
+                        />
+                      </div>
+                    </motion.div>
+                  )}
                 <div ref={messagesEndRef} className="h-2" />
               </div>
 
               {/* ── Input Area ── */}
               <div className="shrink-0 bg-white/90 backdrop-blur-xl border-t border-gray-100 z-20 pb-[env(safe-area-inset-bottom)]">
                 <div className="px-4 py-3 sm:py-4">
-                  <form onSubmit={handleSend} className="relative flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-3xl p-1.5 focus-within:bg-white focus-within:ring-2 focus-within:ring-coral/20 focus-within:border-coral/30 transition-all shadow-sm">
+                  <form
+                    onSubmit={handleSend}
+                    className="relative flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-3xl p-1.5 focus-within:bg-white focus-within:ring-2 focus-within:ring-coral/20 focus-within:border-coral/30 transition-all shadow-sm"
+                  >
                     <TextareaAutosize
                       ref={inputRef}
                       minRows={1}
@@ -462,7 +556,7 @@ export default function AIChatWidget() {
                         "w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-300 shrink-0",
                         inputValue.trim() && !isLoading
                           ? "bg-coral text-white hover:bg-coral-dark shadow-[0_4px_12px_rgb(255,107,107,0.3)]"
-                          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          : "bg-gray-200 text-gray-400 cursor-not-allowed",
                       )}
                       aria-label="Send message"
                     >

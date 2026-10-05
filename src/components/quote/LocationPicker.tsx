@@ -1,7 +1,18 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { MapPin, Search, Loader2, X, Navigation, GripVertical, LocateFixed, Edit3, Map as MapIcon, Home } from "lucide-react";
+import {
+  MapPin,
+  Search,
+  Loader2,
+  X,
+  Navigation,
+  GripVertical,
+  LocateFixed,
+  Edit3,
+  Map as MapIcon,
+  Home,
+} from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
 // Nominatim result type
@@ -68,25 +79,43 @@ export default function LocationPicker({
   // Reverse geocode a lat/lng to get the address — via server proxy to avoid browser blocking
   const reverseGeocode = async (lat: number, lng: number) => {
     try {
-      const res = await fetch(`/api/geocode?action=reverse&lat=${lat}&lon=${lng}`);
+      const res = await fetch(
+        `/api/geocode?action=reverse&lat=${lat}&lon=${lng}`,
+      );
       if (!res.ok) throw new Error("Geocoding failed");
-      
+
       const data = await res.json();
       if (data.error) throw new Error(data.error);
 
       const addr = data.address || {};
-      const streetAddress = [addr.house_number, addr.road].filter(Boolean).join(" ");
-      const cityName = addr.city || addr.town || addr.village || addr.hamlet || addr.county || "";
+      const streetAddress = [addr.house_number, addr.road]
+        .filter(Boolean)
+        .join(" ");
+      const cityName =
+        addr.city ||
+        addr.town ||
+        addr.village ||
+        addr.hamlet ||
+        addr.county ||
+        "";
       const zipCode = addr.postcode || "";
       const state = addr.state || "";
-      
-      const fullAddress = streetAddress || cityName || (data.display_name?.split(",")[0] ?? "");
+
+      const fullAddress =
+        streetAddress || cityName || (data.display_name?.split(",")[0] ?? "");
       const displayStr = `${fullAddress}${cityName && cityName !== fullAddress ? `, ${cityName}` : ""}${state ? `, ${state}` : ""}${zipCode ? ` ${zipCode}` : ""}`;
-      
+
       setQuery(displayStr);
       onAddressChange(displayStr);
-      setSelectedLocation({ lat, lng, display: displayStr, street: streetAddress || "", city: cityName, zip: zipCode });
-      
+      setSelectedLocation({
+        lat,
+        lng,
+        display: displayStr,
+        street: streetAddress || "",
+        city: cityName,
+        zip: zipCode,
+      });
+
       onLocationSelect({
         address: displayStr,
         city: cityName,
@@ -100,8 +129,15 @@ export default function LocationPicker({
       const fallbackAddress = `Selected Location`;
       setQuery(fallbackAddress);
       onAddressChange(fallbackAddress);
-      setSelectedLocation({ lat, lng, display: fallbackAddress, street: "", city: "", zip: "" });
-      
+      setSelectedLocation({
+        lat,
+        lng,
+        display: fallbackAddress,
+        street: "",
+        city: "",
+        zip: "",
+      });
+
       onLocationSelect({
         address: fallbackAddress,
         city: "",
@@ -137,11 +173,10 @@ export default function LocationPicker({
     // Dynamic import to avoid SSR issues
     const initMap = async () => {
       if (!mapContainerRef.current) return;
-      
-      const L = (await import("leaflet")).default;
-      
-      if (destroyed) return; // Component unmounted before leaflet loaded
 
+      const L = (await import("leaflet")).default;
+
+      if (destroyed) return; // Component unmounted before leaflet loaded
 
       // If a map already exists on this container, remove it first
       const container = mapContainerRef.current as any;
@@ -162,7 +197,7 @@ export default function LocationPicker({
       const map = L.map(container, {
         center: defaultCenter,
         zoom: 10,
-        maxZoom: 18,  // Cap at 18 — beyond this OSM tiles show API errors
+        maxZoom: 18, // Cap at 18 — beyond this OSM tiles show API errors
         zoomControl: false,
         attributionControl: false, // Hidden via CSS
       });
@@ -172,14 +207,16 @@ export default function LocationPicker({
 
       // Use Maptiler tiles for reliable production usage
       // This solves the 'white map' issue caused by OpenStreetMap blocking requests
-      const maptilerKey = process.env.NEXT_PUBLIC_MAPTILER_API_KEY || "WZ8VL38FgUJGHkn2mlNa";
+      const maptilerKey =
+        process.env.NEXT_PUBLIC_MAPTILER_API_KEY || "WZ8VL38FgUJGHkn2mlNa";
       L.tileLayer(
         `https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=${maptilerKey}`,
         {
           maxZoom: 18,
           maxNativeZoom: 18,
-          attribution: '\u003ca href="https://www.maptiler.com/copyright/" target="_blank"\u003e\u0026copy; MapTiler\u003c/a\u003e',
-        }
+          attribution:
+            '\u003ca href="https://www.maptiler.com/copyright/" target="_blank"\u003e\u0026copy; MapTiler\u003c/a\u003e',
+        },
       ).addTo(map);
 
       // Custom marker icon for selected location
@@ -201,7 +238,13 @@ export default function LocationPicker({
         popupAnchor: [0, -22],
       });
 
-      L.marker(homeCenter, { icon: homeIcon }).addTo(map).bindTooltip("We Ice Cream Truck (02108)", { permanent: true, direction: "right", className: "font-bold text-navy" });
+      L.marker(homeCenter, { icon: homeIcon })
+        .addTo(map)
+        .bindTooltip("We Ice Cream Truck (02108)", {
+          permanent: true,
+          direction: "right",
+          className: "font-bold text-navy",
+        });
 
       const marker = L.marker(defaultCenter, {
         icon: markerIcon,
@@ -244,9 +287,9 @@ export default function LocationPicker({
           setMapReady(true);
         }
       });
-      
+
       resizeObserver.observe(container);
-      
+
       // Store the observer to disconnect it on unmount
       (container as any)._resizeObserver = resizeObserver;
     };
@@ -256,7 +299,7 @@ export default function LocationPicker({
     return () => {
       destroyed = true;
       initializingRef.current = false;
-      
+
       if (mapContainerRef.current) {
         const obs = (mapContainerRef.current as any)._resizeObserver;
         if (obs) {
@@ -274,8 +317,6 @@ export default function LocationPicker({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-
   // Search for addresses
   const searchAddress = useCallback(async (searchQuery: string) => {
     if (searchQuery.length < 3) {
@@ -285,13 +326,15 @@ export default function LocationPicker({
 
     setIsSearching(true);
     try {
-      const res = await fetch(`/api/geocode?action=search&q=${encodeURIComponent(searchQuery + ", Massachusetts, USA")}`);
+      const res = await fetch(
+        `/api/geocode?action=search&q=${encodeURIComponent(searchQuery + ", Massachusetts, USA")}`,
+      );
       if (!res.ok) throw new Error("Fetch failed");
       const data: NominatimResult[] = await res.json();
 
       // Filter to Massachusetts only
       const maResults = data.filter(
-        (r) => r.address?.state === "Massachusetts"
+        (r) => r.address?.state === "Massachusetts",
       );
       setSuggestions(maResults.length > 0 ? maResults : data.slice(0, 5));
       setShowSuggestions(true);
@@ -329,7 +372,14 @@ export default function LocationPicker({
     setQuery(fullAddress);
     onAddressChange(fullAddress);
     setShowSuggestions(false);
-    setSelectedLocation({ lat, lng, display: fullAddress, street: streetAddress || "", city: cityName, zip: zipCode });
+    setSelectedLocation({
+      lat,
+      lng,
+      display: fullAddress,
+      street: streetAddress || "",
+      city: cityName,
+      zip: zipCode,
+    });
 
     // Move map to the selected location
     if (mapInstanceRef.current && markerRef.current) {
@@ -357,7 +407,9 @@ export default function LocationPicker({
       async (position) => {
         const { latitude, longitude } = position.coords;
         if (mapInstanceRef.current && markerRef.current) {
-          mapInstanceRef.current.flyTo([latitude, longitude], 15, { duration: 1.2 });
+          mapInstanceRef.current.flyTo([latitude, longitude], 15, {
+            duration: 1.2,
+          });
           markerRef.current.setLatLng([latitude, longitude]);
         }
         await reverseGeocode(latitude, longitude);
@@ -367,7 +419,7 @@ export default function LocationPicker({
         console.error("Locate error:", error);
         alert("Unable to retrieve your location.");
         setLocating(false);
-      }
+      },
     );
   };
 
@@ -377,38 +429,56 @@ export default function LocationPicker({
       {manualMode && (
         <div className="space-y-4 bg-white p-6 rounded-2xl border-2 border-gray-200 shadow-lg mb-4">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-black font-display text-navy">Manual Location Entry</h3>
-            <button 
+            <h3 className="text-xl font-black font-display text-navy">
+              Manual Location Entry
+            </h3>
+            <button
               onClick={() => setManualMode(false)}
               className="px-4 py-2 bg-navy text-white text-sm font-bold rounded-xl shadow-md hover:bg-navy-light transition-all flex items-center gap-2"
             >
               <MapIcon className="w-4 h-4" /> Use Map Instead
             </button>
           </div>
-          
+
           <div>
-            <label className="text-sm font-bold text-navy ml-1">Street Address</label>
+            <label className="text-sm font-bold text-navy ml-1">
+              Street Address
+            </label>
             <input
               type="text"
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
                 onAddressChange(e.target.value);
-                onLocationSelect({ address: e.target.value, city: "", zip: manualZip, lat: 0, lng: 0 });
+                onLocationSelect({
+                  address: e.target.value,
+                  city: "",
+                  zip: manualZip,
+                  lat: 0,
+                  lng: 0,
+                });
               }}
               placeholder="123 Main St, Boston"
               className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-coral/20 outline-none"
             />
           </div>
           <div>
-            <label className="text-sm font-bold text-navy ml-1">ZIP Code (For Distance Calculation)</label>
+            <label className="text-sm font-bold text-navy ml-1">
+              ZIP Code (For Distance Calculation)
+            </label>
             <input
               type="text"
               value={manualZip}
               onChange={(e) => {
                 const val = e.target.value.replace(/[^0-9]/g, "").slice(0, 5);
                 setManualZip(val);
-                onLocationSelect({ address: query, city: "", zip: val, lat: 0, lng: 0 });
+                onLocationSelect({
+                  address: query,
+                  city: "",
+                  zip: val,
+                  lat: 0,
+                  lng: 0,
+                });
               }}
               placeholder="e.g. 02108"
               className="w-full mt-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-coral/20 outline-none"
@@ -419,110 +489,117 @@ export default function LocationPicker({
 
       {/* Map Mode UI */}
       <div className={manualMode ? "hidden" : "block"}>
-      {/* Top Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <button
-          onClick={handleLocateMe}
-          disabled={locating}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 bg-navy text-white font-bold rounded-xl shadow-md hover:bg-navy-light transition-all disabled:opacity-50"
-        >
-          {locating ? <Loader2 className="w-5 h-5 animate-spin" /> : <LocateFixed className="w-5 h-5" />}
-          Locate Me Automatically
-        </button>
-        <button
-          onClick={() => setManualMode(true)}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 bg-coral text-white font-bold rounded-xl shadow-md hover:bg-coral-dark transition-all"
-        >
-          <Edit3 className="w-5 h-5" />
-          Enter Address Manually
-        </button>
-      </div>
-
-      {/* Search Input */}
-      <div className="space-y-2">
-        <label className="text-sm font-bold text-navy ml-1">
-          Or Search Location
-        </label>
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => handleInputChange(e.target.value)}
-            onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-            placeholder="Start typing an address in Massachusetts..."
-            className="w-full pl-12 pr-12 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 focus:border-coral/40 outline-none transition-all font-medium"
-          />
-          {isSearching && (
-            <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-coral" />
-          )}
-          {query && !isSearching && (
-            <button
-              onClick={() => {
-                setQuery("");
-                onAddressChange("");
-                setSuggestions([]);
-              }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 shadow-sm"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          )}
-
-          {/* Suggestions Dropdown */}
-          {showSuggestions && suggestions.length > 0 && (
-            <div
-              ref={suggestionsRef}
-              className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl shadow-navy/10 overflow-hidden"
-            >
-              {suggestions.map((result) => {
-                const addr = result.address;
-                const primary = [addr?.house_number, addr?.road]
-                  .filter(Boolean)
-                  .join(" ");
-                const secondary = [
-                  addr?.city || addr?.town || addr?.village,
-                  addr?.state,
-                  addr?.postcode,
-                ]
-                  .filter(Boolean)
-                  .join(", ");
-
-                return (
-                  <button
-                    key={result.place_id}
-                    onClick={() => selectSuggestion(result)}
-                    className="w-full text-left px-5 py-3.5 hover:bg-coral/5 transition-colors flex items-start gap-3 border-b border-gray-50 last:border-b-0"
-                  >
-                    <MapPin className="w-4 h-4 text-coral mt-0.5 shrink-0" />
-                    <div className="min-w-0">
-                      <p className="font-semibold text-navy text-sm truncate">
-                        {primary || result.display_name.split(",")[0]}
-                      </p>
-                      <p className="text-xs text-gray-500 truncate">
-                        {secondary || result.display_name}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+        {/* Top Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={handleLocateMe}
+            disabled={locating}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 bg-navy text-white font-bold rounded-xl shadow-md hover:bg-navy-light transition-all disabled:opacity-50"
+          >
+            {locating ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <LocateFixed className="w-5 h-5" />
+            )}
+            Locate Me Automatically
+          </button>
+          <button
+            onClick={() => setManualMode(true)}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3.5 bg-coral text-white font-bold rounded-xl shadow-md hover:bg-coral-dark transition-all"
+          >
+            <Edit3 className="w-5 h-5" />
+            Enter Address Manually
+          </button>
         </div>
-      </div>
 
-      {/* Map */}
-      <div className="relative rounded-2xl border-2 border-gray-200 bg-gray-100 shadow-inner" style={{ overflow: 'hidden' }}>
+        {/* Search Input */}
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-navy ml-1">
+            Or Search Location
+          </label>
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={(e) => handleInputChange(e.target.value)}
+              onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+              placeholder="Start typing an address in Massachusetts..."
+              className="w-full pl-12 pr-12 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-coral/20 focus:border-coral/40 outline-none transition-all font-medium"
+            />
+            {isSearching && (
+              <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 animate-spin text-coral" />
+            )}
+            {query && !isSearching && (
+              <button
+                onClick={() => {
+                  setQuery("");
+                  onAddressChange("");
+                  setSuggestions([]);
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors bg-white rounded-full p-1 shadow-sm"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
+
+            {/* Suggestions Dropdown */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div
+                ref={suggestionsRef}
+                className="absolute z-50 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-2xl shadow-navy/10 overflow-hidden"
+              >
+                {suggestions.map((result) => {
+                  const addr = result.address;
+                  const primary = [addr?.house_number, addr?.road]
+                    .filter(Boolean)
+                    .join(" ");
+                  const secondary = [
+                    addr?.city || addr?.town || addr?.village,
+                    addr?.state,
+                    addr?.postcode,
+                  ]
+                    .filter(Boolean)
+                    .join(", ");
+
+                  return (
+                    <button
+                      key={result.place_id}
+                      onClick={() => selectSuggestion(result)}
+                      className="w-full text-left px-5 py-3.5 hover:bg-coral/5 transition-colors flex items-start gap-3 border-b border-gray-50 last:border-b-0"
+                    >
+                      <MapPin className="w-4 h-4 text-coral mt-0.5 shrink-0" />
+                      <div className="min-w-0">
+                        <p className="font-semibold text-navy text-sm truncate">
+                          {primary || result.display_name.split(",")[0]}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {secondary || result.display_name}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Map */}
         <div
-          ref={mapContainerRef}
-          className={`w-full h-full rounded-2xl md:rounded-3xl shadow-inner bg-[#f8f9fc] ${
-            isDragging ? "cursor-grabbing" : "cursor-crosshair"
-          }`}
-          style={{ minHeight: "350px", position: "relative", zIndex: 1 }}
+          className="relative rounded-2xl border-2 border-gray-200 bg-gray-100 shadow-inner"
+          style={{ overflow: "hidden" }}
         >
-          {/* Global styles for Leaflet overrides */}
-          <style>{`
+          <div
+            ref={mapContainerRef}
+            className={`w-full h-full rounded-2xl md:rounded-3xl shadow-inner bg-[#f8f9fc] ${
+              isDragging ? "cursor-grabbing" : "cursor-crosshair"
+            }`}
+            style={{ minHeight: "350px", position: "relative", zIndex: 1 }}
+          >
+            {/* Global styles for Leaflet overrides */}
+            <style>{`
             .leaflet-container { background: #f8f9fc; font-family: 'Inter', sans-serif; }
             .leaflet-control-zoom { border: none !important; box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important; border-radius: 12px !important; overflow: hidden; margin: 16px !important; }
             .leaflet-control-zoom a { background: rgba(255,255,255,0.9) !important; backdrop-filter: blur(12px); color: #0A1128 !important; width: 36px !important; height: 36px !important; line-height: 36px !important; transition: all 0.2s !important; border-bottom: 1px solid rgba(0,0,0,0.05) !important; }
@@ -531,63 +608,75 @@ export default function LocationPicker({
             .leaflet-tile { visibility: visible !important; }
             @keyframes bounce-in { 0% { transform: scale(0.3) translateY(20px); opacity: 0; } 50% { transform: scale(1.1) translateY(-5px); } 100% { transform: scale(1) translateY(0); opacity: 1; } }
           `}</style>
+          </div>
+          {!mapReady && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-coral mx-auto mb-3" />
+                <p className="text-sm text-gray-500 font-medium">
+                  Loading map...
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Dragging indicator */}
+          {isDragging && (
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 bg-navy/90 backdrop-blur text-white text-xs font-bold rounded-full shadow-lg">
+              Release to set location
+            </div>
+          )}
+
+          {/* Drag hint badge */}
+          {mapReady && !isDragging && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 bg-white/90 backdrop-blur border border-gray-200 text-gray-600 text-xs font-semibold rounded-full shadow-lg flex items-center gap-2">
+              <GripVertical className="w-3.5 h-3.5" />
+              Drag the pin or click the map to adjust
+            </div>
+          )}
         </div>
-        {!mapReady && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
-            <div className="text-center">
-              <Loader2 className="w-8 h-8 animate-spin text-coral mx-auto mb-3" />
-              <p className="text-sm text-gray-500 font-medium">
-                Loading map...
+
+        {/* Selected location display */}
+        {selectedLocation && (
+          <div className="flex items-start gap-3 p-4 bg-mint/5 border border-mint/20 rounded-2xl">
+            <div className="w-9 h-9 rounded-full bg-mint/20 text-mint flex items-center justify-center shrink-0 mt-0.5">
+              <Navigation className="w-4 h-4" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-mint uppercase tracking-wider mb-1">
+                📍 Event Location Confirmed
               </p>
+              {selectedLocation.street && (
+                <p className="text-sm font-bold text-navy">
+                  {selectedLocation.street}
+                </p>
+              )}
+              <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
+                {selectedLocation.city && (
+                  <span className="text-sm text-gray-600 font-medium">
+                    🏙{" "}
+                    <span className="font-bold text-navy">
+                      {selectedLocation.city}
+                    </span>
+                  </span>
+                )}
+                {selectedLocation.zip && (
+                  <span className="text-sm text-gray-600 font-medium">
+                    📮 ZIP:{" "}
+                    <span className="font-bold text-navy">
+                      {selectedLocation.zip}
+                    </span>
+                  </span>
+                )}
+                {!selectedLocation.street && !selectedLocation.city && (
+                  <span className="text-sm text-gray-500">
+                    {selectedLocation.display}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         )}
-
-        {/* Dragging indicator */}
-        {isDragging && (
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 bg-navy/90 backdrop-blur text-white text-xs font-bold rounded-full shadow-lg">
-            Release to set location
-          </div>
-        )}
-
-        {/* Drag hint badge */}
-        {mapReady && !isDragging && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 bg-white/90 backdrop-blur border border-gray-200 text-gray-600 text-xs font-semibold rounded-full shadow-lg flex items-center gap-2">
-            <GripVertical className="w-3.5 h-3.5" />
-            Drag the pin or click the map to adjust
-          </div>
-        )}
-      </div>
-
-      {/* Selected location display */}
-      {selectedLocation && (
-        <div className="flex items-start gap-3 p-4 bg-mint/5 border border-mint/20 rounded-2xl">
-          <div className="w-9 h-9 rounded-full bg-mint/20 text-mint flex items-center justify-center shrink-0 mt-0.5">
-            <Navigation className="w-4 h-4" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-mint uppercase tracking-wider mb-1">📍 Event Location Confirmed</p>
-            {selectedLocation.street && (
-              <p className="text-sm font-bold text-navy">{selectedLocation.street}</p>
-            )}
-            <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1">
-              {selectedLocation.city && (
-                <span className="text-sm text-gray-600 font-medium">
-                  🏙 <span className="font-bold text-navy">{selectedLocation.city}</span>
-                </span>
-              )}
-              {selectedLocation.zip && (
-                <span className="text-sm text-gray-600 font-medium">
-                  📮 ZIP: <span className="font-bold text-navy">{selectedLocation.zip}</span>
-                </span>
-              )}
-              {!selectedLocation.street && !selectedLocation.city && (
-                <span className="text-sm text-gray-500">{selectedLocation.display}</span>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
       </div>
     </div>
   );

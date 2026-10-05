@@ -4,7 +4,10 @@ import { requirePermission } from "@/lib/rbac";
 
 export const dynamic = "force-dynamic";
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const auth = await requirePermission(req, "settings.update");
     if (!auth.success) {
@@ -21,7 +24,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
     const vehicle = await prisma.vehicle.update({
       where: { id: (await params).id },
-      data: updateData
+      data: updateData,
     });
 
     // Write audit log
@@ -30,18 +33,24 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         entityType: "VEHICLE",
         entityId: vehicle.id,
         action: "VEHICLE_UPDATED",
-        metadataJson: JSON.stringify(updateData)
-      }
+        metadataJson: JSON.stringify(updateData),
+      },
     });
 
     return NextResponse.json(vehicle);
   } catch (error: any) {
     console.error("Vehicle PATCH error:", error);
-    return NextResponse.json({ error: "Failed to update vehicle" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update vehicle" },
+      { status: 500 },
+    );
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const auth = await requirePermission(req, "settings.update");
     if (!auth.success) {
@@ -49,17 +58,25 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     }
 
     // Check if the vehicle is attached to bookings
-    const bookingsCount = await prisma.booking.count({ where: { vehicleId: (await params).id } });
-    const assignmentsCount = await prisma.vehicleAssignment.count({ where: { vehicleId: (await params).id } });
-    
+    const bookingsCount = await prisma.booking.count({
+      where: { vehicleId: (await params).id },
+    });
+    const assignmentsCount = await prisma.vehicleAssignment.count({
+      where: { vehicleId: (await params).id },
+    });
+
     if (bookingsCount > 0 || assignmentsCount > 0) {
-      return NextResponse.json({
-        error: "Cannot delete vehicle because it has historical assignments. Please set status to 'MAINTENANCE' or 'OFFLINE' instead."
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          error:
+            "Cannot delete vehicle because it has historical assignments. Please set status to 'MAINTENANCE' or 'OFFLINE' instead.",
+        },
+        { status: 400 },
+      );
     }
 
     await prisma.vehicle.delete({
-      where: { id: (await params).id }
+      where: { id: (await params).id },
     });
 
     // Write audit log
@@ -68,13 +85,16 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
         entityType: "VEHICLE",
         entityId: (await params).id,
         action: "VEHICLE_DELETED",
-        metadataJson: JSON.stringify({ id: (await params).id })
-      }
+        metadataJson: JSON.stringify({ id: (await params).id }),
+      },
     });
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Vehicle DELETE error:", error);
-    return NextResponse.json({ error: "Failed to delete vehicle" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to delete vehicle" },
+      { status: 500 },
+    );
   }
 }

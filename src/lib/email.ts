@@ -1,16 +1,16 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 import { prisma } from "./prisma";
 import { BUSINESS_CONFIG } from "./config";
 
-const BRAND_NAVY  = "#0A1128";
+const BRAND_NAVY = "#0A1128";
 const BRAND_CORAL = "#FF6B6B";
 // Hardcode the site URL to the domain so the logo always loads in emails
-const SITE_URL    = "https://weicecreamtruck.com";
-const LOGO_URL    = `${SITE_URL}/images/we-icecream.jpg`; 
+const SITE_URL = "https://weicecreamtruck.com";
+const LOGO_URL = `${SITE_URL}/images/we-icecream.jpg`;
 
-const SENDER_EMAIL = 'info@weicecreamtruck.com';
-const ADMIN_EMAIL  = process.env.ADMIN_EMAIL || 'info@weicecreamtruck.com';
-const REPLY_TO     = 'info@weicecreamtruck.com';
+const SENDER_EMAIL = "info@weicecreamtruck.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "info@weicecreamtruck.com";
+const REPLY_TO = "info@weicecreamtruck.com";
 
 const smtpPort = parseInt(process.env.SMTP_PORT || "587", 10);
 const transporter = nodemailer.createTransport({
@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
 });
 
 export function getAdminRecipients() {
-  const recipients = new Set(['info@weicecreamtruck.com']);
+  const recipients = new Set(["info@weicecreamtruck.com"]);
   if (process.env.ADMIN_EMAIL) {
     recipients.add(process.env.ADMIN_EMAIL);
   }
@@ -100,16 +100,32 @@ function baseTemplate(content: string, title: string) {
 }
 
 // ─── CORE SEND WITH RETRY ──────────────────────────────────────
-export async function sendEmail({ to, subject, html, title, replyTo }: { to: string | string[]; subject: string; html: string; title?: string; replyTo?: string }) {
+export async function sendEmail({
+  to,
+  subject,
+  html,
+  title,
+  replyTo,
+}: {
+  to: string | string[];
+  subject: string;
+  html: string;
+  title?: string;
+  replyTo?: string;
+}) {
   const MAX_RETRIES = 2;
   const RETRY_DELAY_MS = 2000;
 
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.warn(`[Email] ⚠️ SMTP credentials not set. Skipped sending "${subject}" to ${JSON.stringify(to)}`);
+    console.warn(
+      `[Email] ⚠️ SMTP credentials not set. Skipped sending "${subject}" to ${JSON.stringify(to)}`,
+    );
     return false;
   }
 
-  const recipients = Array.from(new Set((Array.isArray(to) ? to : [to]).filter(Boolean)));
+  const recipients = Array.from(
+    new Set((Array.isArray(to) ? to : [to]).filter(Boolean)),
+  );
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
@@ -121,16 +137,23 @@ export async function sendEmail({ to, subject, html, title, replyTo }: { to: str
         html: baseTemplate(html, title || subject),
       });
 
-      console.log(`[Email] ✅ Sent "${subject}" → ${to} (Message-ID: ${info.messageId})`);
+      console.log(
+        `[Email] ✅ Sent "${subject}" → ${to} (Message-ID: ${info.messageId})`,
+      );
       return true;
     } catch (err: any) {
-      console.error(`[Email] ❌ Attempt ${attempt}/${MAX_RETRIES} failed for "${subject}" → ${to}:`, err.message);
+      console.error(
+        `[Email] ❌ Attempt ${attempt}/${MAX_RETRIES} failed for "${subject}" → ${to}:`,
+        err.message,
+      );
       if (attempt < MAX_RETRIES) {
-        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+        await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
       }
     }
   }
-  console.error(`[Email] 🔴 All ${MAX_RETRIES} attempts exhausted for "${subject}" → ${to}`);
+  console.error(
+    `[Email] 🔴 All ${MAX_RETRIES} attempts exhausted for "${subject}" → ${to}`,
+  );
   return false;
 }
 
@@ -141,7 +164,14 @@ export async function sendOtpEmail(
   to: string,
   otp: string,
   firstName?: string,
-  purpose: "BOOKING" | "PORTAL" | "PASSWORD_RESET" | "EMAIL_CHANGE" | "SETTINGS" | "STAFF_INVITE" | "GENERAL" = "GENERAL"
+  purpose:
+    | "BOOKING"
+    | "PORTAL"
+    | "PASSWORD_RESET"
+    | "EMAIL_CHANGE"
+    | "SETTINGS"
+    | "STAFF_INVITE"
+    | "GENERAL" = "GENERAL",
 ) {
   const purposeLabels: Record<string, string> = {
     BOOKING: "Booking Verification",
@@ -204,11 +234,20 @@ export async function sendWelcomeEmail(to: string, firstName: string) {
 
     <p style="text-align:center;font-size:13px;color:#9CA3AF;margin:0;">Questions? <a href="tel:781-824-7000" style="color:${BRAND_CORAL};font-weight:700;text-decoration:none;">781-824-7000</a></p>
   `;
-  return sendEmail({ to, subject: "Welcome to WE Ice Cream Truck! 🍦", html, title: "Welcome to WE Ice Cream Truck" });
+  return sendEmail({
+    to,
+    subject: "Welcome to WE Ice Cream Truck! 🍦",
+    html,
+    title: "Welcome to WE Ice Cream Truck",
+  });
 }
 
 // ─── FORGOT PASSWORD EMAIL ────────────────────────────────────
-export async function sendForgotPasswordEmail(to: string, otp: string, firstName?: string) {
+export async function sendForgotPasswordEmail(
+  to: string,
+  otp: string,
+  firstName?: string,
+) {
   const TTL = 10;
   const html = `
     <div style="text-align:center;padding:24px 0 20px;">
@@ -233,11 +272,21 @@ export async function sendForgotPasswordEmail(to: string, otp: string, firstName
       Need help? Call us at <a href="tel:781-824-7000" style="color:${BRAND_NAVY};font-weight:800;">781-824-7000</a>
     </p>
   `;
-  return sendEmail({ to, subject: `${otp} — WE Ice Cream Truck Password Reset Code`, html, title: "Password Reset" });
+  return sendEmail({
+    to,
+    subject: `${otp} — WE Ice Cream Truck Password Reset Code`,
+    html,
+    title: "Password Reset",
+  });
 }
 
 // ─── STAFF INVITE EMAIL ──────────────────────────────────────
-export async function sendStaffInviteEmail(to: string, inviterName: string, inviteToken: string, role: string) {
+export async function sendStaffInviteEmail(
+  to: string,
+  inviterName: string,
+  inviteToken: string,
+  role: string,
+) {
   const acceptUrl = `${SITE_URL}/admin/accept-invite?token=${inviteToken}`;
   const EXPIRES_HOURS = 48;
 
@@ -248,11 +297,21 @@ export async function sendStaffInviteEmail(to: string, inviterName: string, invi
       </p>
     </div>
   `;
-  return sendEmail({ to, subject: `You've been invited to join WE Ice Cream Truck Staff`, html, title: "Staff Invitation" });
+  return sendEmail({
+    to,
+    subject: `You've been invited to join WE Ice Cream Truck Staff`,
+    html,
+    title: "Staff Invitation",
+  });
 }
 
 // ─── SENSITIVE ACTION OTP EMAIL ──────────────────────────────
-export async function sendSensitiveActionOtpEmail(to: string, otp: string, action: string, userName?: string) {
+export async function sendSensitiveActionOtpEmail(
+  to: string,
+  otp: string,
+  action: string,
+  userName?: string,
+) {
   const TTL = 5;
   const html = `
     <div style="text-align:center;padding:24px 0 20px;">
@@ -278,19 +337,30 @@ export async function sendSensitiveActionOtpEmail(to: string, otp: string, actio
       </p>
     </div>
   `;
-  return sendEmail({ to, subject: `${otp} — WE Ice Cream Truck Admin Security Code`, html, title: "Security Verification" });
+  return sendEmail({
+    to,
+    subject: `${otp} — WE Ice Cream Truck Admin Security Code`,
+    html,
+    title: "Security Verification",
+  });
 }
 
 // ─── BOOKING DETAIL FORMATTER ─────────────────────────────────
 function formatBookingDetailsHtml(booking: any) {
   if (!booking) return "";
-  
+
   const formatEnDate = (d: Date) => {
     if (!d) return "";
     try {
       const dateObj = new Date(d);
-      return dateObj.toLocaleDateString("en-US", { year: 'numeric', month: '2-digit', day: '2-digit' });
-    } catch { return String(d); }
+      return dateObj.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+    } catch {
+      return String(d);
+    }
   };
 
   const quote = booking.quote;
@@ -305,20 +375,46 @@ function formatBookingDetailsHtml(booking: any) {
     console.error("Failed to parse quote snapshot JSON in email:", e);
   }
 
-  const pkgDurationMins = breakdown.includedServiceMins ?? ((pkg as any)?.durationMins ?? pkg?.includedMinutes ?? booking.durationMins);
-  const pkgServings = breakdown.includedGuests ?? (pkg?.servings ?? 50);
-  const extraPiecePrice = breakdown.extraGuestPrice ?? ((pkg as any)?.extraGuestPrice ?? pkg?.extraPiecePrice ?? 5);
-  const extraGuestsCount = breakdown.additionalGuests ?? Math.max(0, booking.guests - pkgServings);
-  const extraGuestsFee = breakdown.additionalGuestsFee ?? (extraGuestsCount * extraPiecePrice);
-  const distanceMiles = breakdown.distanceMiles ?? (quote?.distanceMiles ?? 0);
-  const travelFee = breakdown.travelFee ?? (quote?.travelFee ?? 0);
+  const pkgDurationMins =
+    breakdown.includedServiceMins ??
+    (pkg as any)?.durationMins ??
+    pkg?.includedMinutes ??
+    booking.durationMins;
+  const pkgServings = breakdown.includedGuests ?? pkg?.servings ?? 50;
+  const extraPiecePrice =
+    breakdown.extraGuestPrice ??
+    (pkg as any)?.extraGuestPrice ??
+    pkg?.extraPiecePrice ??
+    5;
+  const extraGuestsCount =
+    breakdown.additionalGuests ?? Math.max(0, booking.guests - pkgServings);
+  const extraGuestsFee =
+    breakdown.additionalGuestsFee ?? extraGuestsCount * extraPiecePrice;
+  const distanceMiles = breakdown.distanceMiles ?? quote?.distanceMiles ?? 0;
+  const travelFee = breakdown.travelFee ?? quote?.travelFee ?? 0;
   const overtimeFee = quote?.overtimeFee ?? 0;
-  const extraServiceFee = breakdown.additionalServiceFee ?? (quote?.additionalServiceFee ?? (booking.extraServiceFee || 0));
-  const extraServiceMins = breakdown.additionalServiceMins ?? (quote?.extraServiceMins ?? (booking.extraServiceMins || 0));
-  const basePrice = breakdown.packagePrice ?? (quote?.basePrice ?? (booking.totalAmount - travelFee - overtimeFee - extraServiceFee - extraGuestsFee));
-  const billableMiles = breakdown.billableMiles ?? Math.max(0, distanceMiles - 10);
-  const additionalStopsCount = breakdown.additionalStopsCount ?? (booking.additionalStops || 0);
-  const additionalStopsFee = breakdown.additionalStopsFee ?? (booking.additionalStopsFee || 0);
+  const extraServiceFee =
+    breakdown.additionalServiceFee ??
+    quote?.additionalServiceFee ??
+    (booking.extraServiceFee || 0);
+  const extraServiceMins =
+    breakdown.additionalServiceMins ??
+    quote?.extraServiceMins ??
+    (booking.extraServiceMins || 0);
+  const basePrice =
+    breakdown.packagePrice ??
+    quote?.basePrice ??
+    booking.totalAmount -
+      travelFee -
+      overtimeFee -
+      extraServiceFee -
+      extraGuestsFee;
+  const billableMiles =
+    breakdown.billableMiles ?? Math.max(0, distanceMiles - 10);
+  const additionalStopsCount =
+    breakdown.additionalStopsCount ?? (booking.additionalStops || 0);
+  const additionalStopsFee =
+    breakdown.additionalStopsFee ?? (booking.additionalStopsFee || 0);
   const estimatedTotal = breakdown.estimatedTotal ?? booking.totalAmount;
   const additionalVehicleSetupFee = breakdown.additionalVehicleSetupFee ?? 0;
   const weekendFee = breakdown.weekendFee ?? 0;
@@ -328,19 +424,23 @@ function formatBookingDetailsHtml(booking: any) {
     <h3 style="margin:24px 0 12px;color:${BRAND_NAVY};font-size:20px;font-weight:900;border-bottom:2px solid #F3F4F6;padding-bottom:8px;">Event Summary</h3>
     <table width="100%" cellpadding="10" cellspacing="0" style="margin-bottom:24px;font-size:16px;color:#4B5563;">
       <tr><td width="40%" style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Event Type</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">${booking.eventType}</td></tr>
-      <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Package</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">${pkg?.name || 'Custom Package'}</td></tr>
+      <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Package</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">${pkg?.name || "Custom Package"}</td></tr>
       <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Date &amp; Time</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">${formatEnDate(booking.eventDate)} at ${booking.startTime}</td></tr>
       <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Included Service Time</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">${pkgDurationMins} minutes</td></tr>
-      ${extraServiceMins > 0 ? `<tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Additional Service Time</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">+${extraServiceMins} minutes</td></tr>` : ''}
+      ${extraServiceMins > 0 ? `<tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Additional Service Time</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">+${extraServiceMins} minutes</td></tr>` : ""}
       <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Included Guests</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">${pkgServings} guests</td></tr>
       <tr>
         <td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Location</td>
         <td style="border-bottom:1px solid #F3F4F6;font-weight:600;">
           ${booking.address}, ${booking.city} ${booking.zip}
-          ${booking.stops && booking.stops.length > 0 ? `<br/><br/>
+          ${
+            booking.stops && booking.stops.length > 0
+              ? `<br/><br/>
             <strong style="color:${BRAND_CORAL}">Additional Stops:</strong><br/>
-            ${booking.stops.map((s: any, i: number) => `Stop ${i+1}: ${s.street}, ${s.city} ${s.state} ${s.zipCode}`).join('<br/>')}
-          ` : ''}
+            ${booking.stops.map((s: any, i: number) => `Stop ${i + 1}: ${s.street}, ${s.city} ${s.state} ${s.zipCode}`).join("<br/>")}
+          `
+              : ""
+          }
         </td>
       </tr>
       <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #F3F4F6;">Dispatch Origin</td><td style="border-bottom:1px solid #F3F4F6;font-weight:600;">Boston, MA (ZIP 02108)</td></tr>
@@ -349,56 +449,96 @@ function formatBookingDetailsHtml(booking: any) {
 
     <!-- Pricing Breakdown -->
     <h3 style="margin:0 0 12px;color:${BRAND_NAVY};font-size:20px;font-weight:900;border-bottom:2px solid #F3F4F6;padding-bottom:8px;">Pricing &amp; Travel Fee</h3>
-    ${(booking.package?.slug === "custom-event-package" || booking.packageId === "custom-event-package" || booking.package?.name === "Custom Event Package") ? `
+    ${
+      booking.package?.slug === "custom-event-package" ||
+      booking.packageId === "custom-event-package" ||
+      booking.package?.name === "Custom Event Package"
+        ? `
     <div style="background:#FFF9F0;border:1px dashed #FFA000;border-radius:12px;padding:16px 20px;margin-bottom:24px;font-size:16px;color:\${BRAND_NAVY};font-weight:700;">
       Custom Quote Pending — our team will review your guest count, vehicle needs, route, timing, and event details before preparing your final quote.
     </div>
-    ` : `
+    `
+        : `
     <table width="100%" cellpadding="10" cellspacing="0" style="margin-bottom:24px;font-size:16px;color:#4B5563;background:#F8F9FC;border-radius:12px;">
       <tr><td width="65%" style="font-weight:600;">Base Package Price</td><td width="35%" align="right" style="font-weight:800;color:${BRAND_NAVY};">$${basePrice.toFixed(2)}</td></tr>
       <tr><td style="font-weight:600;color:#6B7280;font-size:14px;">Included: ${pkgServings} guests, ${pkgDurationMins} min</td><td></td></tr>
-      ${extraGuestsFee > 0 ? `<tr><td style="font-weight:600;">Extra Guests Fee (${extraGuestsCount} × $${extraPiecePrice})</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${extraGuestsFee.toFixed(2)}</td></tr>` : ''}
-      ${breakdown.extraTimeFee > 0 ? `<tr><td style="font-weight:600;">Extra Service Time (+${(breakdown.extraTimeFee / 35) * 30} mins)</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${Number(breakdown.extraTimeFee).toFixed(2)}</td></tr>` : ''}
-      ${additionalStopsFee > 0 ? `<tr><td style="font-weight:600;">Multi-Location Fee (${breakdown.routingMode ?? 'SEQUENTIAL'})</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${additionalStopsFee.toFixed(2)}</td></tr>` : ''}
-      ${breakdown.distanceFee2 > 0 ? `<tr><td style="font-weight:600;">Second Stop Travel Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${Number(breakdown.distanceFee2).toFixed(2)}</td></tr>` : ''}
-      ${extraServiceFee > 0 ? `<tr><td style="font-weight:600;">Additional Service Time (${extraServiceMins} min)</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${extraServiceFee.toFixed(2)}</td></tr>` : ''}
-      ${overtimeFee > 0 ? `<tr><td style="font-weight:600;">Overtime Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${overtimeFee.toFixed(2)}</td></tr>` : ''}
-      ${travelFee > 0 ? `<tr><td style="font-weight:600;">Travel Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${travelFee.toFixed(2)}</td></tr>` : ''}
-      ${additionalVehicleSetupFee > 0 ? `<tr><td style="font-weight:600;">Additional Vehicle Setup Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${additionalVehicleSetupFee.toFixed(2)}</td></tr>` : ''}
-      ${weekendFee > 0 ? `<tr><td style="font-weight:600;">Weekend Event Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${weekendFee.toFixed(2)}</td></tr>` : ''}
+      ${extraGuestsFee > 0 ? `<tr><td style="font-weight:600;">Extra Guests Fee (${extraGuestsCount} × $${extraPiecePrice})</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${extraGuestsFee.toFixed(2)}</td></tr>` : ""}
+      ${breakdown.extraTimeFee > 0 ? `<tr><td style="font-weight:600;">Extra Service Time (+${(breakdown.extraTimeFee / 35) * 30} mins)</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${Number(breakdown.extraTimeFee).toFixed(2)}</td></tr>` : ""}
+      ${additionalStopsFee > 0 ? `<tr><td style="font-weight:600;">Multi-Location Fee (${breakdown.routingMode ?? "SEQUENTIAL"})</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${additionalStopsFee.toFixed(2)}</td></tr>` : ""}
+      ${breakdown.distanceFee2 > 0 ? `<tr><td style="font-weight:600;">Second Stop Travel Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${Number(breakdown.distanceFee2).toFixed(2)}</td></tr>` : ""}
+      ${extraServiceFee > 0 ? `<tr><td style="font-weight:600;">Additional Service Time (${extraServiceMins} min)</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${extraServiceFee.toFixed(2)}</td></tr>` : ""}
+      ${overtimeFee > 0 ? `<tr><td style="font-weight:600;">Overtime Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${overtimeFee.toFixed(2)}</td></tr>` : ""}
+      ${travelFee > 0 ? `<tr><td style="font-weight:600;">Travel Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${travelFee.toFixed(2)}</td></tr>` : ""}
+      ${additionalVehicleSetupFee > 0 ? `<tr><td style="font-weight:600;">Additional Vehicle Setup Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${additionalVehicleSetupFee.toFixed(2)}</td></tr>` : ""}
+      ${weekendFee > 0 ? `<tr><td style="font-weight:600;">Weekend Event Fee</td><td align="right" style="font-weight:800;color:${BRAND_NAVY};">+$${weekendFee.toFixed(2)}</td></tr>` : ""}
       <tr><td style="font-weight:900;color:${BRAND_NAVY};border-top:2px solid #E5E7EB;padding-top:16px;">Total Estimated Price</td><td align="right" style="font-weight:900;color:${BRAND_CORAL};font-size:22px;border-top:2px solid #E5E7EB;padding-top:16px;">$${estimatedTotal.toFixed(2)}</td></tr>
     </table>
-    `}
+    `
+    }
 
-    ${additionalVehicleSetupFee > 0 ? `
+    ${
+      additionalVehicleSetupFee > 0
+        ? `
     <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:\${BRAND_NAVY};font-weight:600;">
       🚚 Additional Vehicle Setup Fee: If your event requires another truck/van for the same package at the same time, each additional vehicle includes a $200 setup and dispatch fee.
     </div>
-    ` : ''}
+    `
+        : ""
+    }
 
-    ${weekendFee > 0 ? `
+    ${
+      weekendFee > 0
+        ? `
     <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:\${BRAND_NAVY};font-weight:600;">
       📅 Weekend Event Fee: Saturday and Sunday bookings include an additional $25 weekend event fee.
     </div>
-    ` : ''}
+    `
+        : ""
+    }
 
 
   `;
 }
 
 // ─── BOOKING APPROVED ─────────────────────────────────────────
-export async function sendBookingApprovedEmail(to: string, firstName: string, bookingNumber: string, _portalUrl: string, amount: string, bookingId: string) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
+export async function sendBookingApprovedEmail(
+  to: string,
+  firstName: string,
+  bookingNumber: string,
+  _portalUrl: string,
+  amount: string,
+  bookingId: string,
+) {
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.weicecreamtruck.com"}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   let isCustom = false;
   try {
-    const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: { customer: true, package: true, quote: true, stops: { orderBy: { stopOrder: 'asc' } } } });
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        customer: true,
+        package: true,
+        quote: true,
+        stops: { orderBy: { stopOrder: "asc" } },
+      },
+    });
     bookingDetailsHtml = formatBookingDetailsHtml(booking);
-    if (booking?.package?.slug === "custom-event-package" || booking?.packageId === "custom-event-package" || booking?.package?.name === "Custom Event Package") isCustom = true;
-  } catch (e) { console.error("Error formatting booking details for approved email:", e); }
+    if (
+      booking?.package?.slug === "custom-event-package" ||
+      booking?.packageId === "custom-event-package" ||
+      booking?.package?.name === "Custom Event Package"
+    )
+      isCustom = true;
+  } catch (e) {
+    console.error("Error formatting booking details for approved email:", e);
+  }
 
-  const subject = isCustom ? `Approved: Your WE Ice Cream Truck Custom Quote #${bookingNumber}` : `Approved: Your WE Ice Cream Truck Booking #${bookingNumber}`;
-  const headerText = isCustom ? `Your Custom Quote is Approved! 🎉` : `Legendary News, ${firstName}! 🎉`;
+  const subject = isCustom
+    ? `Approved: Your WE Ice Cream Truck Custom Quote #${bookingNumber}`
+    : `Approved: Your WE Ice Cream Truck Booking #${bookingNumber}`;
+  const headerText = isCustom
+    ? `Your Custom Quote is Approved! 🎉`
+    : `Legendary News, ${firstName}! 🎉`;
   const bodyText = isCustom
     ? `Your custom quote request **#${bookingNumber}** has been approved with a finalized price.`
     : `Your reservation **#${bookingNumber}** has been officially **APPROVED**. We can't wait to sweeten your event!`;
@@ -420,13 +560,29 @@ export async function sendBookingApprovedEmail(to: string, firstName: string, bo
 }
 
 // ─── BOOKING PENDING ──────────────────────────────────────────
-export async function sendBookingPendingEmail(to: string, firstName: string, bookingNumber: string, details: any, bookingId: string) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
+export async function sendBookingPendingEmail(
+  to: string,
+  firstName: string,
+  bookingNumber: string,
+  details: any,
+  bookingId: string,
+) {
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.weicecreamtruck.com"}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   try {
-    const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: { customer: true, package: true, quote: true, stops: { orderBy: { stopOrder: 'asc' } } } });
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        customer: true,
+        package: true,
+        quote: true,
+        stops: { orderBy: { stopOrder: "asc" } },
+      },
+    });
     bookingDetailsHtml = formatBookingDetailsHtml(booking);
-  } catch (e) { console.error("Error formatting booking details for pending email:", e); }
+  } catch (e) {
+    console.error("Error formatting booking details for pending email:", e);
+  }
 
   const html = `
     <h2 style="margin:0 0 16px;color:${BRAND_NAVY};font-size:24px;font-weight:900;">🎉 Booking Confirmed!</h2>
@@ -454,17 +610,37 @@ export async function sendBookingPendingEmail(to: string, firstName: string, boo
       <p style="margin:0;color:#6B7280;font-size:13px;font-weight:600;">Questions? Call us directly at <a href="tel:781-824-7000" style="color:${BRAND_NAVY};text-decoration:none;font-weight:800;">781-824-7000</a>.</p>
     </div>
   `;
-  return sendEmail({ to, subject: `✅ Booking Confirmed — #${bookingNumber} | WE Ice Cream Truck`, html });
+  return sendEmail({
+    to,
+    subject: `✅ Booking Confirmed — #${bookingNumber} | WE Ice Cream Truck`,
+    html,
+  });
 }
 
 // ─── BOOKING REJECTED ─────────────────────────────────────────
-export async function sendBookingRejectedEmail(to: string, firstName: string, bookingNumber: string, reason: string, bookingId: string) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
+export async function sendBookingRejectedEmail(
+  to: string,
+  firstName: string,
+  bookingNumber: string,
+  reason: string,
+  bookingId: string,
+) {
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.weicecreamtruck.com"}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   try {
-    const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: { customer: true, package: true, quote: true, stops: { orderBy: { stopOrder: 'asc' } } } });
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        customer: true,
+        package: true,
+        quote: true,
+        stops: { orderBy: { stopOrder: "asc" } },
+      },
+    });
     bookingDetailsHtml = formatBookingDetailsHtml(booking);
-  } catch (e) { console.error("Error formatting booking details for rejected email:", e); }
+  } catch (e) {
+    console.error("Error formatting booking details for rejected email:", e);
+  }
 
   const html = `
     <div style="text-align:center;padding:24px 0 24px;">
@@ -484,17 +660,40 @@ export async function sendBookingRejectedEmail(to: string, firstName: string, bo
       <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">Update My Booking Request</a>
     </div>
   `;
-  return sendEmail({ to, subject: `Update Needed: Your WE Ice Cream Truck Booking Request #${bookingNumber}`, html });
+  return sendEmail({
+    to,
+    subject: `Update Needed: Your WE Ice Cream Truck Booking Request #${bookingNumber}`,
+    html,
+  });
 }
 
 // ─── BOOKING PENDING REVIEW ───────────────────────────────────
-export async function sendBookingPendingReviewEmail(to: string, firstName: string, bookingNumber: string, reason: string, bookingId: string) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
+export async function sendBookingPendingReviewEmail(
+  to: string,
+  firstName: string,
+  bookingNumber: string,
+  reason: string,
+  bookingId: string,
+) {
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.weicecreamtruck.com"}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   try {
-    const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: { customer: true, package: true, quote: true, stops: { orderBy: { stopOrder: 'asc' } } } });
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        customer: true,
+        package: true,
+        quote: true,
+        stops: { orderBy: { stopOrder: "asc" } },
+      },
+    });
     bookingDetailsHtml = formatBookingDetailsHtml(booking);
-  } catch (e) { console.error("Error formatting booking details for pending review email:", e); }
+  } catch (e) {
+    console.error(
+      "Error formatting booking details for pending review email:",
+      e,
+    );
+  }
 
   const html = `
     <div style="text-align:center;padding:24px 0 24px;">
@@ -514,21 +713,49 @@ export async function sendBookingPendingReviewEmail(to: string, firstName: strin
       <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">View or Manage Your Booking</a>
     </div>
   `;
-  return sendEmail({ to, subject: `Booking Under Review: Your WE Ice Cream Truck Request #${bookingNumber}`, html });
+  return sendEmail({
+    to,
+    subject: `Booking Under Review: Your WE Ice Cream Truck Request #${bookingNumber}`,
+    html,
+  });
 }
 
 // ─── CUSTOM QUOTE ─────────────────────────────────────────────
-export async function sendCustomQuoteEmail(to: string, firstName: string, bookingNumber: string, bookingId: string) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.weicecreamtruck.com'}/portal/booking/${bookingId}`;
+export async function sendCustomQuoteEmail(
+  to: string,
+  firstName: string,
+  bookingNumber: string,
+  bookingId: string,
+) {
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.weicecreamtruck.com"}/portal/booking/${bookingId}`;
   let bookingDetailsHtml = "";
   let bookingDateStr = "";
   let bookingStartTime = "";
   let bookingGuests = "200+";
   try {
-    const booking = await prisma.booking.findUnique({ where: { id: bookingId }, include: { customer: true, package: true, quote: true, stops: { orderBy: { stopOrder: 'asc' } } } });
+    const booking = await prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        customer: true,
+        package: true,
+        quote: true,
+        stops: { orderBy: { stopOrder: "asc" } },
+      },
+    });
     bookingDetailsHtml = formatBookingDetailsHtml(booking);
-    if (booking) { bookingDateStr = booking.eventDate ? new Date(booking.eventDate).toLocaleDateString("en-US") : ""; bookingStartTime = booking.startTime || ""; bookingGuests = String(booking.guests); }
-  } catch (e) { console.error("Error formatting booking details for custom quote email:", e); }
+    if (booking) {
+      bookingDateStr = booking.eventDate
+        ? new Date(booking.eventDate).toLocaleDateString("en-US")
+        : "";
+      bookingStartTime = booking.startTime || "";
+      bookingGuests = String(booking.guests);
+    }
+  } catch (e) {
+    console.error(
+      "Error formatting booking details for custom quote email:",
+      e,
+    );
+  }
 
   const getWaLink = (waNumber: string) => {
     const msg = `Hello! I just submitted a Custom Quote request (Ref: #${bookingNumber}) for my event on ${bookingDateStr} at ${bookingStartTime} with ${bookingGuests} guests. Please review and provide the custom quote.`;
@@ -547,40 +774,52 @@ export async function sendCustomQuoteEmail(to: string, firstName: string, bookin
     <div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:16px;padding:20px 24px;margin-bottom:24px;">
       <p style="margin:0 0 8px;font-size:13px;font-weight:900;text-transform:uppercase;color:\${BRAND_NAVY};">WhatsApp Contact</p>
       <p style="margin:0 0 16px;color:\${BRAND_NAVY};font-size:15px;font-weight:600;line-height:1.4;">We will contact you through WhatsApp: 📞 +1 781-824-7000</p>
-      <a href="${getWaLink('17818247000')}" style="display:block;background:#25D366;color:#ffffff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:950;font-size:15px;margin-bottom:10px;text-align:center;">WhatsApp +1 781-824-7000</a>
+      <a href="${getWaLink("17818247000")}" style="display:block;background:#25D366;color:#ffffff;padding:12px 20px;border-radius:12px;text-decoration:none;font-weight:950;font-size:15px;margin-bottom:10px;text-align:center;">WhatsApp +1 781-824-7000</a>
     </div>
     ${bookingDetailsHtml}
     <div style="text-align:center;margin:32px 0 24px;">
       <a href="${portalUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:950;font-size:16px;text-transform:uppercase;">View or Manage Your Request</a>
     </div>
   `;
-  return sendEmail({ to, subject: `Custom Quote Request Received — WE Ice Cream Truck`, html });
+  return sendEmail({
+    to,
+    subject: `Custom Quote Request Received — WE Ice Cream Truck`,
+    html,
+  });
 }
 
 // ─── OWNER NOTIFICATIONS ────────────────────────────────────────
 function formatEventDate(dateObj: Date | string | null | undefined) {
   if (!dateObj) return "";
-  try { return new Date(dateObj).toLocaleDateString("en-US", { month: 'long', day: 'numeric', year: 'numeric' }); } catch { return String(dateObj); }
+  try {
+    return new Date(dateObj).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  } catch {
+    return String(dateObj);
+  }
 }
 
 export async function sendOwnerNewBookingEmail(booking: any) {
   const to = getAdminRecipients();
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://weicecreamtruck.com'}/admin/bookings/${booking.id}`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://weicecreamtruck.com"}/admin/bookings/${booking.id}`;
   const dateStr = formatEventDate(booking.eventDate);
   const subject = `New Booking Received – ${booking.customer?.firstName} ${booking.customer?.lastName} – ${dateStr}`;
   const html = `
     <h2 style="color:${BRAND_NAVY};margin-top:0;">New Booking Received</h2>
     <table width="100%" cellpadding="10" cellspacing="0" style="border-collapse:collapse;font-size:15px;color:#374151;">
       <tr><td width="35%" style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Customer Name</td><td style="border-bottom:1px solid #E5E7EB;">${booking.customer?.firstName} ${booking.customer?.lastName}</td></tr>
-      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Phone Number</td><td style="border-bottom:1px solid #E5E7EB;">${booking.customer?.phone || 'N/A'}</td></tr>
-      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Email Address</td><td style="border-bottom:1px solid #E5E7EB;">${booking.customer?.email || 'N/A'}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Phone Number</td><td style="border-bottom:1px solid #E5E7EB;">${booking.customer?.phone || "N/A"}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Email Address</td><td style="border-bottom:1px solid #E5E7EB;">${booking.customer?.email || "N/A"}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Event Date</td><td style="border-bottom:1px solid #E5E7EB;">${dateStr}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Start Time</td><td style="border-bottom:1px solid #E5E7EB;">${booking.startTime}</td></tr>
-      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package Selected</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || 'Custom Package'}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package Selected</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || "Custom Package"}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Location</td><td style="border-bottom:1px solid #E5E7EB;">${booking.address}, ${booking.city} ${booking.zip}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Guest Count</td><td style="border-bottom:1px solid #E5E7EB;">${booking.guests}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Status</td><td style="border-bottom:1px solid #E5E7EB;">${booking.status}</td></tr>
-      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Special Requests</td><td style="border-bottom:1px solid #E5E7EB;">${booking.notes || 'None'}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Special Requests</td><td style="border-bottom:1px solid #E5E7EB;">${booking.notes || "None"}</td></tr>
     </table>
     <br/>
     <div style="text-align:center;">
@@ -592,24 +831,29 @@ export async function sendOwnerNewBookingEmail(booking: any) {
 
 export async function sendOwnerRequiresApprovalEmail(booking: any) {
   const to = getAdminRecipients();
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://weicecreamtruck.com'}/admin/bookings/${booking.id}`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://weicecreamtruck.com"}/admin/bookings/${booking.id}`;
   const html = `
     <h2 style="color:${BRAND_NAVY};margin-top:0;">Booking Awaiting Approval</h2>
     <p>The following booking requires manual approval:</p>
     <table width="100%" cellpadding="8" cellspacing="0" style="border-collapse:collapse;font-size:15px;color:#374151;">
       <tr><td width="35%" style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Customer Name</td><td style="border-bottom:1px solid #E5E7EB;">${booking.customer?.firstName} ${booking.customer?.lastName}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Date</td><td style="border-bottom:1px solid #E5E7EB;">${formatEventDate(booking.eventDate)}</td></tr>
-      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || 'Custom Package'}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || "Custom Package"}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Booking ID</td><td style="border-bottom:1px solid #E5E7EB;">${booking.bookingNumber}</td></tr>
     </table>
     <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Approve Booking</a></div>
   `;
-  return sendEmail({ to, subject: `Booking Awaiting Approval`, html, replyTo: booking.customer?.email });
+  return sendEmail({
+    to,
+    subject: `Booking Awaiting Approval`,
+    html,
+    replyTo: booking.customer?.email,
+  });
 }
 
 export async function sendOwnerLateBookingAlert(booking: any) {
   const to = getAdminRecipients();
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://weicecreamtruck.com'}/admin/bookings/${booking.id}`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://weicecreamtruck.com"}/admin/bookings/${booking.id}`;
   const html = `
     <h2 style="color:${BRAND_CORAL};margin-top:0;">⚠️ URGENT – Last Minute Booking</h2>
     <p>A booking was just created for an event starting in less than 24 hours.</p>
@@ -618,16 +862,21 @@ export async function sendOwnerLateBookingAlert(booking: any) {
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Event Date</td><td style="border-bottom:1px solid #E5E7EB;">${formatEventDate(booking.eventDate)}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Start Time</td><td style="border-bottom:1px solid #E5E7EB;">${booking.startTime}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Location</td><td style="border-bottom:1px solid #E5E7EB;">${booking.address}, ${booking.city} ${booking.zip}</td></tr>
-      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || 'Custom Package'}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || "Custom Package"}</td></tr>
     </table>
     <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:\${BRAND_CORAL};color:#FFFFFF;padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">View Urgent Booking</a></div>
   `;
-  return sendEmail({ to, subject: `URGENT – Last Minute Booking`, html, replyTo: booking.customer?.email });
+  return sendEmail({
+    to,
+    subject: `URGENT – Last Minute Booking`,
+    html,
+    replyTo: booking.customer?.email,
+  });
 }
 
 export async function sendOwnerEventReminderEmail(booking: any) {
   const to = ADMIN_EMAIL;
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/bookings/${booking.id}`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.bostonlegendicecreamtruck.com"}/admin/bookings/${booking.id}`;
   const html = `
     <h2 style="color:${BRAND_NAVY};margin-top:0;">Upcoming Event Tomorrow</h2>
     <p>This is a 24-hour reminder for the following upcoming event:</p>
@@ -636,7 +885,7 @@ export async function sendOwnerEventReminderEmail(booking: any) {
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Date</td><td style="border-bottom:1px solid #E5E7EB;">${formatEventDate(booking.eventDate)}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Time</td><td style="border-bottom:1px solid #E5E7EB;">${booking.startTime}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Address</td><td style="border-bottom:1px solid #E5E7EB;">${booking.address}, ${booking.city} ${booking.zip}</td></tr>
-      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || 'Custom Package'}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Package</td><td style="border-bottom:1px solid #E5E7EB;">${booking.package?.name || "Custom Package"}</td></tr>
     </table>
     <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">Review Booking Details</a></div>
   `;
@@ -644,11 +893,29 @@ export async function sendOwnerEventReminderEmail(booking: any) {
 }
 
 // ─── INQUIRY REPLY / ESCALATION ──────────────────────────────
-export async function sendChatEscalationOwnerEmail(inquiry: { id: string; name: string; email: string; phone?: string | null; notes?: string | null; pageUrl?: string | null; createdAt?: Date | string; }) {
+export async function sendChatEscalationOwnerEmail(inquiry: {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  notes?: string | null;
+  pageUrl?: string | null;
+  createdAt?: Date | string;
+}) {
   const OWNER_EMAIL = BUSINESS_CONFIG.contact.email;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com';
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "https://www.bostonlegendicecreamtruck.com";
   const inquiryUrl = `${siteUrl}/admin/inquiries`;
-  const timestamp = inquiry.createdAt ? new Date(inquiry.createdAt).toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" });
+  const timestamp = inquiry.createdAt
+    ? new Date(inquiry.createdAt).toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      })
+    : new Date().toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      });
 
   const html = `
     <div style="text-align:center;padding:24px 0 20px;">
@@ -658,24 +925,42 @@ export async function sendChatEscalationOwnerEmail(inquiry: { id: string; name: 
     <table width="100%" cellpadding="12" cellspacing="0" style="font-size:15px;color:#374151;border-collapse:collapse;margin-bottom:24px;background:#F8F9FC;border-radius:12px;">
       <tr><td width="35%" style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #E5E7EB;">Customer Name</td><td style="border-bottom:1px solid #E5E7EB;font-weight:600;">${inquiry.name}</td></tr>
       <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #E5E7EB;">Email</td><td style="border-bottom:1px solid #E5E7EB;font-weight:600;"><a href="mailto:${inquiry.email}" style="color:${BRAND_NAVY};font-weight:700;">${inquiry.email}</a></td></tr>
-      <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #E5E7EB;">Phone</td><td style="border-bottom:1px solid #E5E7EB;font-weight:600;">${inquiry.phone || 'Not provided'}</td></tr>
+      <tr><td style="font-weight:800;color:${BRAND_NAVY};border-bottom:1px solid #E5E7EB;">Phone</td><td style="border-bottom:1px solid #E5E7EB;font-weight:600;">${inquiry.phone || "Not provided"}</td></tr>
       <tr><td style="font-weight:800;color:${BRAND_NAVY};">Timestamp</td><td style="font-weight:600;">${timestamp}</td></tr>
     </table>
-    ${inquiry.notes ? `<div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 8px;font-size:12px;font-weight:900;text-transform:uppercase;color:\${BRAND_NAVY};">Chat Context</p><p style="margin:0;color:#374151;font-size:14px;font-weight:600;white-space:pre-wrap;">${inquiry.notes}</p></div>` : ''}
+    ${inquiry.notes ? `<div style="background:#F9FAFB;border:1px solid #E5E7EB;border-radius:12px;padding:16px 20px;margin-bottom:24px;"><p style="margin:0 0 8px;font-size:12px;font-weight:900;text-transform:uppercase;color:\${BRAND_NAVY};">Chat Context</p><p style="margin:0;color:#374151;font-size:14px;font-weight:600;white-space:pre-wrap;">${inquiry.notes}</p></div>` : ""}
     <div style="text-align:center;margin-top:16px;">
       <a href="${inquiryUrl}" style="display:block;width:100%;box-sizing:border-box;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:18px 24px;border-radius:12px;text-decoration:none;font-weight:900;font-size:16px;text-transform:uppercase;">View Conversation in Admin Inbox</a>
     </div>
   `;
-  return sendEmail({ to: OWNER_EMAIL, subject: `🚨 Human Support Requested — ${inquiry.name}`, html, title: "Human Support Requested", replyTo: inquiry.email });
+  return sendEmail({
+    to: OWNER_EMAIL,
+    subject: `🚨 Human Support Requested — ${inquiry.name}`,
+    html,
+    title: "Human Support Requested",
+    replyTo: inquiry.email,
+  });
 }
 
 // ─── GOOGLE REVIEW REQUEST ────────────────────────────────────
 const GOOGLE_REVIEW_URL = "https://g.page/r/CW93SjQLeL63EAI/review";
 
-export async function sendGoogleReviewRequestEmail(booking: { id: string; bookingNumber: string; eventDate: Date; eventType: string; customer: { firstName: string; lastName: string; email: string }; package?: { name: string } | null; }) {
+export async function sendGoogleReviewRequestEmail(booking: {
+  id: string;
+  bookingNumber: string;
+  eventDate: Date;
+  eventType: string;
+  customer: { firstName: string; lastName: string; email: string };
+  package?: { name: string } | null;
+}) {
   const customerName = `${booking.customer.firstName}`;
   const packageName = booking.package?.name ?? "Ice Cream Truck";
-  const eventDate = new Date(booking.eventDate).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  const eventDate = new Date(booking.eventDate).toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 
   const html = `
     <div style="text-align:center;margin-bottom:24px;">
@@ -699,11 +984,20 @@ export async function sendGoogleReviewRequestEmail(booking: { id: string; bookin
       <a href="https://www.bostonlegendicecreamtruck.com/packages" style="color:${BRAND_CORAL};font-weight:800;font-size:14px;">Book your next event →</a>
     </div>
   `;
-  return sendEmail({ to: booking.customer.email, subject: `${customerName}, thank you for choosing WE Ice Cream Truck! ⭐`, html, title: "Thank You — WE Ice Cream Truck" });
+  return sendEmail({
+    to: booking.customer.email,
+    subject: `${customerName}, thank you for choosing WE Ice Cream Truck! ⭐`,
+    html,
+    title: "Thank You — WE Ice Cream Truck",
+  });
 }
 
 // ─── CONTACT AND QUOTE REQUEST NOTIFICATIONS ──────────────────
-export async function sendContactMessageNotification(data: { name: string, email: string, message: string }) {
+export async function sendContactMessageNotification(data: {
+  name: string;
+  email: string;
+  message: string;
+}) {
   const html = `
     <h2 style="color:${BRAND_NAVY};margin-top:0;">New Contact Form Message</h2>
     <table width="100%" cellpadding="10" cellspacing="0" style="border-collapse:collapse;font-size:15px;color:#374151;">
@@ -714,23 +1008,33 @@ export async function sendContactMessageNotification(data: { name: string, email
       <p style="margin:0;font-weight:600;white-space:pre-wrap;">${data.message}</p>
     </div>
   `;
-  return sendEmail({ to: getAdminRecipients(), subject: `Contact Form Message from ${data.name}`, html, replyTo: data.email });
+  return sendEmail({
+    to: getAdminRecipients(),
+    subject: `Contact Form Message from ${data.name}`,
+    html,
+    replyTo: data.email,
+  });
 }
 
 export async function sendQuoteRequestNotification(inquiry: any) {
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bostonlegendicecreamtruck.com'}/admin/inquiries`;
+  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.bostonlegendicecreamtruck.com"}/admin/inquiries`;
   const html = `
     <h2 style="color:${BRAND_NAVY};margin-top:0;">New Custom Quote Request</h2>
     <table width="100%" cellpadding="10" cellspacing="0" style="border-collapse:collapse;font-size:15px;color:#374151;">
       <tr><td width="35%" style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Customer Name</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.name}</td></tr>
-      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Phone</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.phone || 'N/A'}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Phone</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.phone || "N/A"}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Email</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.email}</td></tr>
       <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Event Type</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.eventType}</td></tr>
-      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Event Date</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.eventDate ? new Date(inquiry.eventDate).toLocaleDateString() : 'N/A'}</td></tr>
-      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Guest Count</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.guestCount || 'N/A'}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Event Date</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.eventDate ? new Date(inquiry.eventDate).toLocaleDateString() : "N/A"}</td></tr>
+      <tr><td style="font-weight:bold;border-bottom:1px solid #E5E7EB;">Guest Count</td><td style="border-bottom:1px solid #E5E7EB;">${inquiry.guestCount || "N/A"}</td></tr>
     </table>
-    ${inquiry.notes ? `<div style="margin-top:20px;padding:15px;background:#F9FAFB;border-left:4px solid ${BRAND_CORAL};"><p style="margin:0;font-weight:600;white-space:pre-wrap;">${inquiry.notes}</p></div>` : ''}
+    ${inquiry.notes ? `<div style="margin-top:20px;padding:15px;background:#F9FAFB;border-left:4px solid ${BRAND_CORAL};"><p style="margin:0;font-weight:600;white-space:pre-wrap;">${inquiry.notes}</p></div>` : ""}
     <br/><div style="text-align:center;"><a href="${portalUrl}" style="display:inline-block;background:${BRAND_NAVY};color:${BRAND_CORAL};padding:14px 24px;border-radius:8px;text-decoration:none;font-weight:bold;">View in Admin</a></div>
   `;
-  return sendEmail({ to: ADMIN_EMAIL, subject: `Custom Quote Request: ${inquiry.name}`, html, replyTo: inquiry.email });
+  return sendEmail({
+    to: ADMIN_EMAIL,
+    subject: `Custom Quote Request: ${inquiry.name}`,
+    html,
+    replyTo: inquiry.email,
+  });
 }

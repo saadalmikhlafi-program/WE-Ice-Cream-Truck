@@ -6,8 +6,11 @@ import { formatPrice } from "@/lib/utils";
 import { ArrowRight, Check } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 
-export default function PackagesPreview({ featuredPackages }: { featuredPackages: any[] }) {
-
+export default function PackagesPreview({
+  featuredPackages,
+}: {
+  featuredPackages: any[];
+}) {
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
@@ -29,7 +32,6 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-coral/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
       <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
-
         {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-16 md:mb-24 text-center lg:text-left">
           <div className="max-w-2xl mx-auto lg:mx-0">
@@ -39,7 +41,10 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
               viewport={{ once: true }}
               className="font-display font-black text-[clamp(2.5rem,5vw,4.5rem)] leading-tight text-navy mb-4"
             >
-              Sweet <span className="text-coral underline decoration-wavy decoration-coral/30 underline-offset-8">Packages</span>
+              Sweet{" "}
+              <span className="text-coral underline decoration-wavy decoration-coral/30 underline-offset-8">
+                Packages
+              </span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -48,7 +53,8 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
               transition={{ delay: 0.1 }}
               className="font-sans text-navy/70 text-[clamp(1.125rem,1.5vw,1.25rem)] leading-relaxed font-medium"
             >
-              Whether it's the classic truck or the premium van, we have the perfect sweet experience for your event.
+              Whether it's the classic truck or the premium van, we have the
+              perfect sweet experience for your event.
             </motion.p>
           </div>
           <motion.div
@@ -79,8 +85,11 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
               key={pkg.id}
               variants={itemVariants}
               whileHover={{ y: -10 }}
-              className={`group flex flex-col bg-white rounded-[2.5rem] overflow-hidden border transition-all duration-300 shadow-xl ${pkg.isPopular ? "border-coral shadow-coral/20 relative" : "border-gray-100 shadow-gray-100/80"
-                }`}
+              className={`group flex flex-col bg-white rounded-[2.5rem] overflow-hidden border transition-all duration-300 shadow-xl ${
+                pkg.isPopular
+                  ? "border-coral shadow-coral/20 relative"
+                  : "border-gray-100 shadow-gray-100/80"
+              }`}
             >
               {pkg.isPopular && (
                 <div className="absolute top-0 right-8 bg-coral text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-b-xl shadow-lg z-10">
@@ -90,43 +99,62 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
 
               {/* Card Image */}
               {pkg.imageUrl && (
-                <div className={`relative w-full shrink-0 overflow-hidden ${
-                  (pkg.serviceType === "VAN" || (pkg.imageUrl && pkg.imageUrl.includes("van_packages") && !pkg.imageUrl.includes("custom_event"))) 
-                    ? "aspect-[3/4]" 
-                    : "aspect-video"
-                }`}>
+                <div
+                  className={`relative w-full shrink-0 overflow-hidden ${
+                    pkg.serviceType === "VAN" ||
+                    (pkg.imageUrl &&
+                      pkg.imageUrl.includes("van_packages") &&
+                      !pkg.imageUrl.includes("custom_event"))
+                      ? "aspect-[3/4]"
+                      : "aspect-video"
+                  }`}
+                >
                   <div className="absolute inset-0 bg-navy/10 z-10 group-hover:bg-transparent transition-colors duration-500 pointer-events-none" />
-                  
+
                   {/* Main Content */}
-                  <Image 
-                    src={pkg.imageUrl} 
-                    alt={`${pkg.name} - Ice cream truck rental and catering package in Massachusetts`} 
+                  <Image
+                    src={pkg.imageUrl}
+                    alt={`${pkg.name} - Ice cream truck rental and catering package in Massachusetts`}
                     title={`Rent our ${pkg.name} for your event in MA`}
-                    fill 
+                    fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   {/* Smooth gradient blending into the header */}
-                  <div className={`absolute bottom-0 left-0 w-full h-1/2 z-10 bg-gradient-to-t ${pkg.isPopular ? "from-navy" : "from-white"} to-transparent pointer-events-none`} />
+                  <div
+                    className={`absolute bottom-0 left-0 w-full h-1/2 z-10 bg-gradient-to-t ${pkg.isPopular ? "from-navy" : "from-white"} to-transparent pointer-events-none`}
+                  />
                 </div>
               )}
 
               {/* Card Header */}
-              <div className={`relative z-20 px-8 md:px-10 pb-8 md:pb-10 pt-6 border-b ${pkg.isPopular ? "bg-navy border-navy/5" : "bg-white border-gray-100"}`}>
-                <div className={`text-xs font-black uppercase tracking-widest mb-3 ${pkg.isPopular ? "text-coral" : "text-coral"}`}>
+              <div
+                className={`relative z-20 px-8 md:px-10 pb-8 md:pb-10 pt-6 border-b ${pkg.isPopular ? "bg-navy border-navy/5" : "bg-white border-gray-100"}`}
+              >
+                <div
+                  className={`text-xs font-black uppercase tracking-widest mb-3 ${pkg.isPopular ? "text-coral" : "text-coral"}`}
+                >
                   {pkg.durationLabel} · {pkg.servings} Servings
                 </div>
-                <h3 className={`font-display font-black text-3xl md:text-4xl mb-2 ${pkg.isPopular ? "text-white drop-shadow-sm" : "text-navy"}`}>
+                <h3
+                  className={`font-display font-black text-3xl md:text-4xl mb-2 ${pkg.isPopular ? "text-white drop-shadow-sm" : "text-navy"}`}
+                >
                   {pkg.name}
                 </h3>
-                <p className={`text-sm md:text-base font-medium mb-8 min-h-[48px] ${pkg.isPopular ? "text-white/70" : "text-gray-500"}`}>
+                <p
+                  className={`text-sm md:text-base font-medium mb-8 min-h-[48px] ${pkg.isPopular ? "text-white/70" : "text-gray-500"}`}
+                >
                   {pkg.tagline}
                 </p>
                 <div className="flex items-baseline gap-2">
-                  <span className={`text-6xl font-black tracking-tighter ${pkg.isPopular ? "text-white" : "text-navy"}`}>
+                  <span
+                    className={`text-6xl font-black tracking-tighter ${pkg.isPopular ? "text-white" : "text-navy"}`}
+                  >
                     ${pkg.price}
                   </span>
-                  <span className={`font-bold text-sm ${pkg.isPopular ? "text-white/40" : "text-gray-400"}`}>
+                  <span
+                    className={`font-bold text-sm ${pkg.isPopular ? "text-white/40" : "text-gray-400"}`}
+                  >
                     base price
                   </span>
                 </div>
@@ -140,17 +168,20 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
                       <div className="bg-coral/10 p-1.5 rounded-full shrink-0 mt-0.5">
                         <Check className="w-4 h-4 text-coral" strokeWidth={3} />
                       </div>
-                      <span className="font-sans text-navy/80 font-bold text-[0.95rem]">{feature}</span>
+                      <span className="font-sans text-navy/80 font-bold text-[0.95rem]">
+                        {feature}
+                      </span>
                     </li>
                   ))}
                 </ul>
 
                 <Link
                   href={`/get-a-quote?package=${pkg.slug}`}
-                  className={`w-full py-5 rounded-full text-center font-sans font-black text-[0.9rem] tracking-widest uppercase transition-all duration-300 transform active:scale-95 ${pkg.isPopular
+                  className={`w-full py-5 rounded-full text-center font-sans font-black text-[0.9rem] tracking-widest uppercase transition-all duration-300 transform active:scale-95 ${
+                    pkg.isPopular
                       ? "bg-coral text-white shadow-lg shadow-coral/30 hover:bg-navy"
                       : "bg-navy text-white hover:bg-[#1a2a4a] shadow-navy/20"
-                    }`}
+                  }`}
                 >
                   Book This Experience
                 </Link>
@@ -158,7 +189,6 @@ export default function PackagesPreview({ featuredPackages }: { featuredPackages
             </motion.div>
           ))}
         </motion.div>
-
       </div>
     </section>
   );

@@ -60,9 +60,7 @@ export function getLocalBusinessSchema() {
 /**
  * FAQ Schema generator
  */
-export function getFAQSchema(
-  faqs: { question: string; answer: string }[]
-) {
+export function getFAQSchema(faqs: { question: string; answer: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -126,9 +124,7 @@ export function getPackageSchema(pkg: Package) {
 /**
  * Breadcrumb Schema
  */
-export function getBreadcrumbSchema(
-  items: { name: string; url: string }[]
-) {
+export function getBreadcrumbSchema(items: { name: string; url: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

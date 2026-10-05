@@ -1,5 +1,20 @@
 "use client";
-import { Settings, Save, Bell, Shield, PaintBucket, Loader2, MapPin, DollarSign, Bot, Globe, Link2, CheckCircle2, XCircle, Calendar } from "lucide-react";
+import {
+  Settings,
+  Save,
+  Bell,
+  Shield,
+  PaintBucket,
+  Loader2,
+  MapPin,
+  DollarSign,
+  Bot,
+  Globe,
+  Link2,
+  CheckCircle2,
+  XCircle,
+  Calendar,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 
 const TABS = [
@@ -17,7 +32,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
-  
+
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [gcalConnected, setGcalConnected] = useState<boolean | null>(null);
   const [gcalLoading, setGcalLoading] = useState(false);
@@ -52,12 +67,12 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetch("/api/admin/settings")
-      .then(r => r.json())
-      .then(data => {
+      .then((r) => r.json())
+      .then((data) => {
         setSettings(data);
         setLoading(false);
       })
-      .catch(e => {
+      .catch((e) => {
         console.error(e);
         setLoading(false);
       });
@@ -73,7 +88,7 @@ export default function SettingsPage() {
         body: JSON.stringify(settings),
       });
       if (!res.ok) throw new Error("Failed to save");
-      
+
       setToast(true);
       setTimeout(() => setToast(false), 3000);
     } catch (err) {
@@ -85,7 +100,7 @@ export default function SettingsPage() {
   };
 
   const handleChange = (key: string, value: string) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    setSettings((prev) => ({ ...prev, [key]: value }));
   };
 
   if (loading) {
@@ -105,12 +120,23 @@ export default function SettingsPage() {
       )}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-black text-navy tracking-tight">System Settings</h1>
-          <p className="text-sm font-medium text-gray-400 mt-0.5">Manage global application configurations</p>
+          <h1 className="text-2xl font-black text-navy tracking-tight">
+            System Settings
+          </h1>
+          <p className="text-sm font-medium text-gray-400 mt-0.5">
+            Manage global application configurations
+          </p>
         </div>
-        <button onClick={handleSave} disabled={saving}
-          className="flex items-center gap-2 px-6 py-2.5 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors shadow-sm disabled:opacity-60">
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex items-center gap-2 px-6 py-2.5 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors shadow-sm disabled:opacity-60"
+        >
+          {saving ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Save className="w-4 h-4" />
+          )}
           Save Changes
         </button>
       </div>
@@ -118,11 +144,11 @@ export default function SettingsPage() {
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex flex-col md:flex-row min-h-[600px]">
         {/* Tabs Sidebar */}
         <div className="w-full md:w-64 border-b md:border-b-0 md:border-r border-gray-100 p-4 space-y-1 bg-gray-50/50">
-          {TABS.map(tab => (
-            <button 
-              key={tab.id} 
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-colors ${activeTab === tab.id ? 'bg-navy text-white shadow-md' : 'text-gray-500 hover:bg-gray-100'}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-colors ${activeTab === tab.id ? "bg-navy text-white shadow-md" : "text-gray-500 hover:bg-gray-100"}`}
             >
               <tab.icon className="w-4 h-4" /> {tab.label}
             </button>
@@ -131,18 +157,38 @@ export default function SettingsPage() {
 
         {/* Tab Content */}
         <div className="flex-1 p-6 md:p-8">
-          
           {activeTab === "general" && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">General Information</h2>
+              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">
+                General Information
+              </h2>
               <div className="grid gap-6 max-w-2xl">
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Company Name</label>
-                  <input type="text" value={settings.companyName || ""} onChange={e => handleChange("companyName", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Company Name
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.companyName || ""}
+                    onChange={(e) =>
+                      handleChange("companyName", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Business Hours</label>
-                  <input type="text" value={settings.businessHours || ""} onChange={e => handleChange("businessHours", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" placeholder="e.g. Mon-Sun 10AM - 8PM" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Business Hours
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.businessHours || ""}
+                    onChange={(e) =>
+                      handleChange("businessHours", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                    placeholder="e.g. Mon-Sun 10AM - 8PM"
+                  />
                 </div>
               </div>
             </div>
@@ -150,19 +196,48 @@ export default function SettingsPage() {
 
           {activeTab === "contact" && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">Contact & Location</h2>
+              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">
+                Contact & Location
+              </h2>
               <div className="grid gap-6 max-w-2xl">
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Company Email</label>
-                  <input type="email" value={settings.companyEmail || ""} onChange={e => handleChange("companyEmail", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Company Email
+                  </label>
+                  <input
+                    type="email"
+                    value={settings.companyEmail || ""}
+                    onChange={(e) =>
+                      handleChange("companyEmail", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Phone Number</label>
-                  <input type="text" value={settings.companyPhone || ""} onChange={e => handleChange("companyPhone", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Phone Number
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.companyPhone || ""}
+                    onChange={(e) =>
+                      handleChange("companyPhone", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Physical Address</label>
-                  <textarea rows={3} value={settings.companyAddress || ""} onChange={e => handleChange("companyAddress", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors resize-none" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Physical Address
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={settings.companyAddress || ""}
+                    onChange={(e) =>
+                      handleChange("companyAddress", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors resize-none"
+                  />
                 </div>
               </div>
             </div>
@@ -170,24 +245,63 @@ export default function SettingsPage() {
 
           {activeTab === "business" && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">Business Rules & Pricing</h2>
+              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">
+                Business Rules & Pricing
+              </h2>
               <div className="grid gap-6 max-w-2xl">
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Base Service Radius (Miles)</label>
-                  <input type="number" value={settings.serviceRadius || ""} onChange={e => handleChange("serviceRadius", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Base Service Radius (Miles)
+                  </label>
+                  <input
+                    type="number"
+                    value={settings.serviceRadius || ""}
+                    onChange={(e) =>
+                      handleChange("serviceRadius", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Travel Fee Per Extra Mile ($)</label>
-                  <input type="number" step="0.01" value={settings.travelFeePerMile || ""} onChange={e => handleChange("travelFeePerMile", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Travel Fee Per Extra Mile ($)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={settings.travelFeePerMile || ""}
+                    onChange={(e) =>
+                      handleChange("travelFeePerMile", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Tax Rate (%)</label>
-                  <input type="number" step="0.01" value={settings.taxRate || ""} onChange={e => handleChange("taxRate", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Tax Rate (%)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={settings.taxRate || ""}
+                    onChange={(e) => handleChange("taxRate", e.target.value)}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Auto-Approve Bookings</label>
-                  <select value={settings.bookingAutoApprove || "false"} onChange={e => handleChange("bookingAutoApprove", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors bg-white">
-                    <option value="false">Require Manual Approval (Pending Review)</option>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Auto-Approve Bookings
+                  </label>
+                  <select
+                    value={settings.bookingAutoApprove || "false"}
+                    onChange={(e) =>
+                      handleChange("bookingAutoApprove", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors bg-white"
+                  >
+                    <option value="false">
+                      Require Manual Approval (Pending Review)
+                    </option>
                     <option value="true">Auto-Approve New Bookings</option>
                   </select>
                 </div>
@@ -197,23 +311,61 @@ export default function SettingsPage() {
 
           {activeTab === "seo" && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">SEO & Social Media</h2>
+              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">
+                SEO & Social Media
+              </h2>
               <div className="grid gap-6 max-w-2xl">
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Default SEO Title</label>
-                  <input type="text" value={settings.seoTitle || ""} onChange={e => handleChange("seoTitle", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Default SEO Title
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.seoTitle || ""}
+                    onChange={(e) => handleChange("seoTitle", e.target.value)}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Default SEO Description</label>
-                  <textarea rows={3} value={settings.seoDescription || ""} onChange={e => handleChange("seoDescription", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors resize-none" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Default SEO Description
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={settings.seoDescription || ""}
+                    onChange={(e) =>
+                      handleChange("seoDescription", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors resize-none"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Facebook URL</label>
-                  <input type="url" value={settings.facebookUrl || ""} onChange={e => handleChange("facebookUrl", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" placeholder="https://facebook.com/..." />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Facebook URL
+                  </label>
+                  <input
+                    type="url"
+                    value={settings.facebookUrl || ""}
+                    onChange={(e) =>
+                      handleChange("facebookUrl", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                    placeholder="https://facebook.com/..."
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Instagram URL</label>
-                  <input type="url" value={settings.instagramUrl || ""} onChange={e => handleChange("instagramUrl", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" placeholder="https://instagram.com/..." />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Instagram URL
+                  </label>
+                  <input
+                    type="url"
+                    value={settings.instagramUrl || ""}
+                    onChange={(e) =>
+                      handleChange("instagramUrl", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                    placeholder="https://instagram.com/..."
+                  />
                 </div>
               </div>
             </div>
@@ -221,15 +373,36 @@ export default function SettingsPage() {
 
           {activeTab === "ai" && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">AI Assistant Config</h2>
+              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">
+                AI Assistant Config
+              </h2>
               <div className="grid gap-6 max-w-2xl">
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Assistant Name</label>
-                  <input type="text" value={settings.aiAssistantName || ""} onChange={e => handleChange("aiAssistantName", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Assistant Name
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.aiAssistantName || ""}
+                    onChange={(e) =>
+                      handleChange("aiAssistantName", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">System Prompt</label>
-                  <textarea rows={8} value={settings.aiAssistantSystemPrompt || ""} onChange={e => handleChange("aiAssistantSystemPrompt", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors resize-none" placeholder="Instructions for the AI assistant..." />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    System Prompt
+                  </label>
+                  <textarea
+                    rows={8}
+                    value={settings.aiAssistantSystemPrompt || ""}
+                    onChange={(e) =>
+                      handleChange("aiAssistantSystemPrompt", e.target.value)
+                    }
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors resize-none"
+                    placeholder="Instructions for the AI assistant..."
+                  />
                 </div>
               </div>
             </div>
@@ -237,28 +410,47 @@ export default function SettingsPage() {
 
           {activeTab === "appearance" && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">Brand Appearance</h2>
+              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">
+                Brand Appearance
+              </h2>
               <div className="grid gap-6 max-w-2xl">
                 <div className="p-4 rounded-xl border border-blue-100 bg-blue-50/50">
                   <p className="text-sm text-blue-800 font-medium flex items-center gap-2">
                     <PaintBucket className="w-4 h-4" />
-                    Media Library integration for Logo and Favicon uploads will be available in Phase 3.
+                    Media Library integration for Logo and Favicon uploads will
+                    be available in Phase 3.
                   </p>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Logo URL</label>
-                  <input type="text" value={settings.logoUrl || ""} onChange={e => handleChange("logoUrl", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Logo URL
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.logoUrl || ""}
+                    onChange={(e) => handleChange("logoUrl", e.target.value)}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                  />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Favicon URL</label>
-                  <input type="text" value={settings.faviconUrl || ""} onChange={e => handleChange("faviconUrl", e.target.value)} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors" />
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                    Favicon URL
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.faviconUrl || ""}
+                    onChange={(e) => handleChange("faviconUrl", e.target.value)}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-coral transition-colors"
+                  />
                 </div>
               </div>
             </div>
           )}
           {activeTab === "integrations" && (
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">Integrations</h2>
+              <h2 className="text-lg font-black text-navy border-b border-gray-100 pb-4">
+                Integrations
+              </h2>
 
               {/* Google Calendar Card */}
               <div className="border border-gray-200 rounded-2xl p-6 max-w-2xl">
@@ -268,9 +460,12 @@ export default function SettingsPage() {
                       <Calendar className="w-6 h-6 text-blue-500" />
                     </div>
                     <div>
-                      <h3 className="font-black text-navy text-sm">Google Calendar</h3>
+                      <h3 className="font-black text-navy text-sm">
+                        Google Calendar
+                      </h3>
                       <p className="text-xs text-gray-500 font-medium mt-0.5">
-                        Sync confirmed bookings automatically to your Google Calendar.
+                        Sync confirmed bookings automatically to your Google
+                        Calendar.
                       </p>
                     </div>
                   </div>
@@ -294,7 +489,11 @@ export default function SettingsPage() {
                       disabled={gcalLoading}
                       className="flex items-center gap-2 px-4 py-2 border border-red-200 text-red-500 text-sm font-bold rounded-xl hover:bg-red-50 transition-colors disabled:opacity-50"
                     >
-                      {gcalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
+                      {gcalLoading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <XCircle className="w-4 h-4" />
+                      )}
                       Disconnect Google Calendar
                     </button>
                   ) : (
@@ -309,13 +508,13 @@ export default function SettingsPage() {
                 </div>
 
                 <p className="mt-4 text-xs text-gray-400 leading-relaxed">
-                  When a booking is <strong>Confirmed</strong>, it will automatically appear in your Google Calendar.
-                  Cancellations and updates are synced automatically too.
+                  When a booking is <strong>Confirmed</strong>, it will
+                  automatically appear in your Google Calendar. Cancellations
+                  and updates are synced automatically too.
                 </p>
               </div>
             </div>
           )}
-
         </div>
       </div>
     </div>

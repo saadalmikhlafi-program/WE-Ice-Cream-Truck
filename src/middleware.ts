@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
@@ -7,9 +7,9 @@ export function middleware(request: NextRequest) {
 
   // Ignore API routes, static files, images, etc.
   if (
-    path.startsWith('/api') ||
-    path.startsWith('/_next') ||
-    path.includes('.')
+    path.startsWith("/api") ||
+    path.startsWith("/_next") ||
+    path.includes(".")
   ) {
     return NextResponse.next();
   }
@@ -21,7 +21,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Handle trailing slashes gracefully if they sneak in
-  if (path.length > 1 && path.endsWith('/')) {
+  if (path.length > 1 && path.endsWith("/")) {
     url.pathname = path.slice(0, -1);
     return NextResponse.redirect(url, 308);
   }
@@ -31,7 +31,5 @@ export function middleware(request: NextRequest) {
 
 // Only run middleware on non-static, non-api routes
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|images|.*\\..*).*)',
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|images|.*\\..*).*)"],
 };

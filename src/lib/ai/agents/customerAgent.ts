@@ -28,12 +28,16 @@ You are part of the WE Ice Cream Truck platform.
 
 export const customerToolDefs = {
   getPackages: {
-    description: "Get a list of all available ice cream truck packages and their base prices.",
-    parameters: z.object({ confirm: z.literal("yes").describe("Pass 'yes' to confirm") }),
+    description:
+      "Get a list of all available ice cream truck packages and their base prices.",
+    parameters: z.object({
+      confirm: z.literal("yes").describe("Pass 'yes' to confirm"),
+    }),
     execute: getPackages,
   },
   estimatePrice: {
-    description: "Estimate the price of an event based on guest count and package ID.",
+    description:
+      "Estimate the price of an event based on guest count and package ID.",
     parameters: z.object({
       guests: z.number().describe("The number of guests"),
       packageId: z.string().describe("The package ID"),
@@ -42,9 +46,13 @@ export const customerToolDefs = {
       estimatePrice(guests, packageId),
   },
   getMenu: {
-    description: "Get the ice cream truck menu. If you need a specific category (e.g., 'dairy-free', 'cone', 'candy bar', 'blue bunny'), pass it as a parameter.",
+    description:
+      "Get the ice cream truck menu. If you need a specific category (e.g., 'dairy-free', 'cone', 'candy bar', 'blue bunny'), pass it as a parameter.",
     parameters: z.object({
-      category: z.string().optional().describe("Optional category, brand, or dietary tag to filter by"),
+      category: z
+        .string()
+        .optional()
+        .describe("Optional category, brand, or dietary tag to filter by"),
     }),
     execute: ({ category }: { category?: string }) => getMenu(category),
   },

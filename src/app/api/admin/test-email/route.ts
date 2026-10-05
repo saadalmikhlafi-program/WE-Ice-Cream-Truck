@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionUser, unauthenticated, unauthorized, hasPermission } from "@/lib/rbac";
+import {
+  getSessionUser,
+  unauthenticated,
+  unauthorized,
+  hasPermission,
+} from "@/lib/rbac";
 import { sendEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
@@ -19,12 +24,20 @@ export async function POST(req: NextRequest) {
     const to: string = body.to || process.env.SMTP_USER || "";
 
     if (!to) {
-      return NextResponse.json({ success: false, error: "No recipient email specified and SMTP_USER not set" }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "No recipient email specified and SMTP_USER not set",
+        },
+        { status: 400 },
+      );
     }
 
     // Log the SMTP config state (never log the actual password)
     const smtpState = {
-      SMTP_USER: process.env.SMTP_USER ? `${process.env.SMTP_USER.slice(0, 4)}...` : "NOT SET",
+      SMTP_USER: process.env.SMTP_USER
+        ? `${process.env.SMTP_USER.slice(0, 4)}...`
+        : "NOT SET",
       SMTP_PASS: process.env.SMTP_PASS ? "SET (hidden)" : "NOT SET",
     };
     console.log("[Test Email] SMTP config state:", smtpState);
@@ -48,12 +61,27 @@ export async function POST(req: NextRequest) {
     });
 
     if (sent) {
-      return NextResponse.json({ success: true, message: `Test email sent to ${to}`, smtpState });
+      return NextResponse.json({
+        success: true,
+        message: `Test email sent to ${to}`,
+        smtpState,
+      });
     } else {
-      return NextResponse.json({ success: false, error: "sendEmail() returned false — check Vercel/server logs for SMTP error details", smtpState }, { status: 500 });
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "sendEmail() returned false — check Vercel/server logs for SMTP error details",
+          smtpState,
+        },
+        { status: 500 },
+      );
     }
   } catch (error: any) {
     console.error("[Test Email] Error:", error?.message || error);
-    return NextResponse.json({ success: false, error: error?.message || "Unknown error" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: error?.message || "Unknown error" },
+      { status: 500 },
+    );
   }
 }

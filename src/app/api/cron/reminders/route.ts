@@ -6,7 +6,10 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get("authorization");
-  if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (
+    process.env.CRON_SECRET &&
+    authHeader !== `Bearer ${process.env.CRON_SECRET}`
+  ) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -20,13 +23,13 @@ export async function GET(req: NextRequest) {
         status: "CONFIRMED",
         eventDate: {
           gte: now,
-          lte: tomorrow
-        }
+          lte: tomorrow,
+        },
       },
       include: {
         customer: true,
-        assignment: { include: { driver: { include: { user: true } } } }
-      }
+        assignment: { include: { driver: { include: { user: true } } } },
+      },
     });
 
     let reminderCount = 0;
@@ -34,24 +37,31 @@ export async function GET(req: NextRequest) {
     for (const b of upcomingBookings) {
       // Check if we already sent a reminder (we can use audit log to prevent duplicate reminders)
       const hasReminder = await prisma.auditLog.findFirst({
-        where: { bookingId: b.id, action: "REMINDER_24H_SENT" }
+        where: { bookingId: b.id, action: "REMINDER_24H_SENT" },
       });
 
       if (!hasReminder) {
         // Send Push to Admin
-        await sendPushNotification({
-          title: `Upcoming Event: #${b.bookingNumber}`,
-          body: `Event for ${b.customer.firstName} is in less than 24 hours.`,
-          url: `/admin/bookings/${b.id}`
-        }, ["OWNER", "ADMIN"]);
+        await sendPushNotification(
+          {
+            title: `Upcoming Event: #${b.bookingNumber}`,
+            body: `Event for ${b.customer.firstName} is in less than 24 hours.`,
+            url: `/admin/bookings/${b.id}`,
+          },
+          ["OWNER", "ADMIN"],
+        );
 
         // If driver assigned, send to driver too
         if (b.assignment?.driver?.user) {
-          await sendPushNotification({
-            title: `Your next gig: #${b.bookingNumber}`,
-            body: `You are assigned to an event in less than 24 hours at ${b.city}.`,
-            url: `/admin/bookings/${b.id}`
-          }, [], [b.assignment.driver.user.id]);
+          await sendPushNotification(
+            {
+              title: `Your next gig: #${b.bookingNumber}`,
+              body: `You are assigned to an event in less than 24 hours at ${b.city}.`,
+              url: `/admin/bookings/${b.id}`,
+            },
+            [],
+            [b.assignment.driver.user.id],
+          );
         }
 
         await prisma.auditLog.create({
@@ -60,8 +70,8 @@ export async function GET(req: NextRequest) {
             entityId: b.id,
             bookingId: b.id,
             action: "REMINDER_24H_SENT",
-            metadataJson: JSON.stringify({ sentAt: new Date().toISOString() })
-          }
+            metadataJson: JSON.stringify({ sentAt: new Date().toISOString() }),
+          },
         });
 
         reminderCount++;
@@ -71,6 +81,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: true, processed: reminderCount });
   } catch (error) {
     console.error("Reminder cron error:", error);
-    return NextResponse.json({ success: false, error: "Cron failed" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Cron failed" },
+      { status: 500 },
+    );
   }
 }

@@ -18,7 +18,7 @@ function groupCitiesAlphabetically(cities: CityData[]) {
       acc[letter].push(city);
       return acc;
     },
-    {} as Record<string, CityData[]>
+    {} as Record<string, CityData[]>,
   );
 }
 
@@ -28,7 +28,8 @@ export default function CitiesIndexPage() {
   const totalCities = MASSACHUSETTS_CITIES.length;
 
   // Stats
-  const counties = [...new Set(MASSACHUSETTS_CITIES.map((c) => c.county))].length;
+  const counties = [...new Set(MASSACHUSETTS_CITIES.map((c) => c.county))]
+    .length;
 
   return (
     <>
@@ -41,8 +42,18 @@ export default function CitiesIndexPage() {
           {/* Subtle grid */}
           <svg className="absolute inset-0 w-full h-full opacity-5">
             <defs>
-              <pattern id="cities-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
+              <pattern
+                id="cities-grid"
+                width="40"
+                height="40"
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d="M 40 0 L 0 0 0 40"
+                  fill="none"
+                  stroke="white"
+                  strokeWidth="0.5"
+                />
               </pattern>
             </defs>
             <rect width="100%" height="100%" fill="url(#cities-grid)" />
@@ -62,8 +73,9 @@ export default function CitiesIndexPage() {
               <span className="italic text-coral">Massachusetts</span>
             </h1>
             <p className="font-sans text-cream/70 text-lg md:text-xl leading-relaxed mb-10 max-w-2xl">
-              From Greater Boston to the Berkshires, the North Shore to the South Coast — WE Ice
-              Cream Truck proudly serves every corner of the Commonwealth.
+              From Greater Boston to the Berkshires, the North Shore to the
+              South Coast — WE Ice Cream Truck proudly serves every corner of
+              the Commonwealth.
             </p>
 
             {/* Quick Stats */}
@@ -74,7 +86,9 @@ export default function CitiesIndexPage() {
                 { value: "351", label: "Official Municipalities" },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
-                  <div className="font-display text-4xl text-coral font-bold">{stat.value}</div>
+                  <div className="font-display text-4xl text-coral font-bold">
+                    {stat.value}
+                  </div>
                   <div className="text-cream/50 text-xs uppercase tracking-widest font-bold mt-1">
                     {stat.label}
                   </div>
@@ -107,11 +121,17 @@ export default function CitiesIndexPage() {
         <div className="container mx-auto px-6 md:px-12 lg:px-24">
           <div className="space-y-20">
             {alphabet.map((letter) => (
-              <div key={letter} id={`letter-${letter}`} className="scroll-mt-40">
+              <div
+                key={letter}
+                id={`letter-${letter}`}
+                className="scroll-mt-40"
+              >
                 {/* Letter Heading */}
                 <div className="flex items-center gap-6 mb-8">
                   <div className="w-16 h-16 rounded-2xl bg-navy flex items-center justify-center shrink-0 shadow-lg">
-                    <span className="font-display text-3xl text-cream font-bold">{letter}</span>
+                    <span className="font-display text-3xl text-cream font-bold">
+                      {letter}
+                    </span>
                   </div>
                   <div className="flex-1 h-px bg-navy/10" />
                   <span className="text-xs text-navy/40 font-bold uppercase tracking-widest">
@@ -158,8 +178,8 @@ export default function CitiesIndexPage() {
             Don&apos;t see your city?
           </h2>
           <p className="text-cream/60 text-lg mb-10 max-w-xl mx-auto">
-            We travel all across Massachusetts and can accommodate events in nearby areas too. Just
-            reach out and we&apos;ll make it work.
+            We travel all across Massachusetts and can accommodate events in
+            nearby areas too. Just reach out and we&apos;ll make it work.
           </p>
           <Link
             href="/contact"

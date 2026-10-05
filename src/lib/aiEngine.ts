@@ -17,8 +17,8 @@ export type AIDecision = {
 };
 
 interface BookingRequest {
-  eventDate: string;       // ISO date string
-  startTime: string;       // "HH:MM"
+  eventDate: string; // ISO date string
+  startTime: string; // "HH:MM"
   durationMins: number;
   zip: string;
   city: string;
@@ -45,15 +45,19 @@ function minsToTime(m: number): string {
   return `${hour}:${min.toString().padStart(2, "0")} ${ampm}`;
 }
 
-export async function evaluateBooking(req: BookingRequest): Promise<AIDecision> {
+export async function evaluateBooking(
+  req: BookingRequest,
+): Promise<AIDecision> {
   const flags: string[] = [];
   const startMins = timeToMins(req.startTime);
-  const endMins   = startMins + req.durationMins;
+  const endMins = startMins + req.durationMins;
 
   // ── 1. Fetch package price from DB ────────────────────────────
   let packagePrice = 0;
   if (req.packageId) {
-    const pkg = await prisma.package.findUnique({ where: { id: req.packageId } });
+    const pkg = await prisma.package.findUnique({
+      where: { id: req.packageId },
+    });
     if (pkg) {
       packagePrice = pkg.price;
     }
@@ -70,22 +74,27 @@ export async function evaluateBooking(req: BookingRequest): Promise<AIDecision> 
   });
 
   // Find conflicting time windows (with 60-min buffer)
-  const conflicts = conflictingBookings.filter(b => {
+  const conflicts = conflictingBookings.filter((b) => {
     const bStart = timeToMins(b.startTime);
-    const bEnd   = bStart + b.durationMins + 60;
+    const bEnd = bStart + b.durationMins + 60;
     return startMins < bEnd && endMins > bStart;
   });
 
   // Count available vehicles
-  const allVehicles = await prisma.vehicle.findMany({ where: { status: "AVAILABLE" } });
-  const busyVehicleIds = new Set(conflicts.map(b => b.vehicleId).filter(Boolean));
-  const freeVehicles = allVehicles.filter(v => !busyVehicleIds.has(v.id));
+  const allVehicles = await prisma.vehicle.findMany({
+    where: { status: "AVAILABLE" },
+  });
+  const busyVehicleIds = new Set(
+    conflicts.map((b) => b.vehicleId).filter(Boolean),
+  );
+  const freeVehicles = allVehicles.filter((v) => !busyVehicleIds.has(v.id));
 
   if (freeVehicles.length === 0) {
     return {
       verdict: "PENDING_REVIEW",
       reason: "Vehicle availability needs manual review",
-      customerMessage: "Your booking request is being reviewed because we need to manually coordinate vehicle availability for your requested slot. Our team will follow up shortly.",
+      customerMessage:
+        "Your booking request is being reviewed because we need to manually coordinate vehicle availability for your requested slot. Our team will follow up shortly.",
       autoConfirm: false,
       flags: ["NO_VEHICLE_AVAILABLE"],
     };
@@ -93,7 +102,9 @@ export async function evaluateBooking(req: BookingRequest): Promise<AIDecision> 
 
   // Pick best vehicle
   const preferredType = req.guests > 100 ? "TRUCK" : undefined;
-  const suggestedVehicle = freeVehicles.find(v => !preferredType || v.type === preferredType) ?? freeVehicles[0];
+  const suggestedVehicle =
+    freeVehicles.find((v) => !preferredType || v.type === preferredType) ??
+    freeVehicles[0];
   flags.push(`VEHICLE_${suggestedVehicle.name}`);
 
   // ── 3. Decision logic ─────────────────────────────────────────
@@ -103,7 +114,8 @@ export async function evaluateBooking(req: BookingRequest): Promise<AIDecision> 
     return {
       verdict: "PENDING_REVIEW",
       reason: "Long distance + package below $500",
-      customerMessage: "Your request is being reviewed because your event is outside our standard 30-mile travel range and the selected package is below the automatic approval threshold. Our team will review it and follow up shortly.",
+      customerMessage:
+        "Your request is being reviewed because your event is outside our standard 30-mile travel range and the selected package is below the automatic approval threshold. Our team will review it and follow up shortly.",
       autoConfirm: false,
       flags: [...flags, "LONG_DISTANCE_LOW_PACKAGE_VALUE"],
       suggestedVehicle: suggestedVehicle.name,

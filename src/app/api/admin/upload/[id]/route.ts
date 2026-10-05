@@ -5,15 +5,26 @@ import { requirePermission } from "@/lib/rbac";
 
 export const dynamic = "force-dynamic";
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const auth = await requirePermission(req, "settings.update");
-    if (!auth.success) return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+    if (!auth.success)
+      return NextResponse.json(
+        { success: false, error: auth.error },
+        { status: auth.status },
+      );
 
     const { id } = await params;
 
     const media = await prisma.media.findUnique({ where: { id } });
-    if (!media) return NextResponse.json({ success: false, error: "Media not found" }, { status: 404 });
+    if (!media)
+      return NextResponse.json(
+        { success: false, error: "Media not found" },
+        { status: 404 },
+      );
 
     // Delete from Vercel Blob
     try {
@@ -27,6 +38,9 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 },
+    );
   }
 }

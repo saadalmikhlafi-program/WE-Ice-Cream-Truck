@@ -25,7 +25,9 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ServicePageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const service = getServiceBySlug(resolvedParams.slug);
 
@@ -53,9 +55,16 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <div className="container mx-auto px-4">
         {/* Breadcrumb */}
         <nav className="mb-8 text-sm text-charcoal/60">
-          <Link href="/" className="hover:text-coral transition-colors">Home</Link>
+          <Link href="/" className="hover:text-coral transition-colors">
+            Home
+          </Link>
           <span className="mx-2">/</span>
-          <Link href="/occasions" className="hover:text-coral transition-colors">Services</Link>
+          <Link
+            href="/occasions"
+            className="hover:text-coral transition-colors"
+          >
+            Services
+          </Link>
           <span className="mx-2">/</span>
           <span className="text-charcoal font-medium">{service.name}</span>
         </nav>
@@ -76,14 +85,17 @@ export default async function ServicePage({ params }: ServicePageProps) {
             <ul className="space-y-4 mb-10">
               {service.features.map((feature, idx) => (
                 <li key={idx} className="flex items-start gap-3">
-                  <CheckCircle2 className="text-coral shrink-0 mt-1" size={20} />
+                  <CheckCircle2
+                    className="text-coral shrink-0 mt-1"
+                    size={20}
+                  />
                   <span className="text-charcoal font-medium">{feature}</span>
                 </li>
               ))}
             </ul>
 
-            <Link 
-              href="/packages" 
+            <Link
+              href="/packages"
               className="inline-flex items-center gap-2 px-8 py-4 bg-coral text-white font-bold rounded-full hover:bg-navy transition-colors duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
             >
               {service.ctaText}
@@ -92,9 +104,12 @@ export default async function ServicePage({ params }: ServicePageProps) {
           </AnimatedSection>
 
           {/* Image */}
-          <AnimatedSection variants={fadeUp} className="relative aspect-square md:aspect-[4/3] lg:aspect-square w-full rounded-3xl overflow-hidden shadow-2xl">
-            <Image 
-              src={service.imagePath} 
+          <AnimatedSection
+            variants={fadeUp}
+            className="relative aspect-square md:aspect-[4/3] lg:aspect-square w-full rounded-3xl overflow-hidden shadow-2xl"
+          >
+            <Image
+              src={service.imagePath}
               alt={`${service.name} catering by WE Ice Cream Truck`}
               fill
               className="object-cover"

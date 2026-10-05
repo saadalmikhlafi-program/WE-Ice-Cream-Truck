@@ -6,41 +6,42 @@ export function getOAuth2Client() {
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   const redirectUri = process.env.GOOGLE_REDIRECT_URI;
 
-  return new google.auth.OAuth2(
-    clientId,
-    clientSecret,
-    redirectUri
-  );
+  return new google.auth.OAuth2(clientId, clientSecret, redirectUri);
 }
 
 async function getAuthenticatedClient() {
   const client = getOAuth2Client();
 
   const refreshTokenSetting = await prisma.setting.findUnique({
-    where: { key: "google_calendar_refresh_token" }
+    where: { key: "google_calendar_refresh_token" },
   });
 
   const accessTokenSetting = await prisma.setting.findUnique({
-    where: { key: "google_calendar_access_token" }
+    where: { key: "google_calendar_access_token" },
   });
 
   if (!refreshTokenSetting?.value) {
-    console.warn("Google Calendar OAuth: No refresh token found. User must connect account.");
+    console.warn(
+      "Google Calendar OAuth: No refresh token found. User must connect account.",
+    );
     return null;
   }
 
   client.setCredentials({
     refresh_token: refreshTokenSetting.value,
-    access_token: accessTokenSetting?.value || undefined
+    access_token: accessTokenSetting?.value || undefined,
   });
 
   // Automatically listen for token refreshes and save the new access token
-  client.on('tokens', async (tokens) => {
+  client.on("tokens", async (tokens) => {
     if (tokens.access_token) {
       await prisma.setting.upsert({
         where: { key: "google_calendar_access_token" },
         update: { value: tokens.access_token },
-        create: { key: "google_calendar_access_token", value: tokens.access_token }
+        create: {
+          key: "google_calendar_access_token",
+          value: tokens.access_token,
+        },
       });
     }
     // Very rarely a new refresh token might be issued
@@ -48,7 +49,10 @@ async function getAuthenticatedClient() {
       await prisma.setting.upsert({
         where: { key: "google_calendar_refresh_token" },
         update: { value: tokens.refresh_token },
-        create: { key: "google_calendar_refresh_token", value: tokens.refresh_token }
+        create: {
+          key: "google_calendar_refresh_token",
+          value: tokens.refresh_token,
+        },
       });
     }
   });
@@ -57,7 +61,6 @@ async function getAuthenticatedClient() {
 }
 
 export const googleCalendarService = {
-  
   async createBookingEvent(booking: any) {
     const client = await getAuthenticatedClient();
     if (!client) return null;
@@ -65,12 +68,14 @@ export const googleCalendarService = {
     try {
       const eventDate = new Date(booking.eventDate);
       const [hours, minutes] = (booking.startTime || "12:00").split(":");
-      
+
       const startDateTime = new Date(eventDate);
       startDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
-      
+
       const endDateTime = new Date(startDateTime);
-      endDateTime.setMinutes(endDateTime.getMinutes() + (booking.durationMins || 60));
+      endDateTime.setMinutes(
+        endDateTime.getMinutes() + (booking.durationMins || 60),
+      );
 
       const eventBody: calendar_v3.Schema$Event = {
         summary: `WE Ice Cream Truck - ${booking.customer.firstName} ${booking.customer.lastName}`,
@@ -87,7 +92,7 @@ export const googleCalendarService = {
       };
 
       const res = await client.events.insert({
-        calendarId: 'primary',
+        calendarId: "primary",
         requestBody: eventBody,
       });
 
@@ -95,7 +100,7 @@ export const googleCalendarService = {
         // Save the Google Event ID on the booking
         await prisma.booking.update({
           where: { id: booking.id },
-          data: { googleEventId: res.data.id }
+          data: { googleEventId: res.data.id },
         });
         return res.data.id;
       }
@@ -109,7 +114,7 @@ export const googleCalendarService = {
     if (!booking.googleEventId) {
       // If it doesn't exist but we are updating, maybe we should create it
       if (booking.status === "CONFIRMED") {
-         return await this.createBookingEvent(booking);
+        return await this.createBookingEvent(booking);
       }
       return null;
     }
@@ -120,12 +125,14 @@ export const googleCalendarService = {
     try {
       const eventDate = new Date(booking.eventDate);
       const [hours, minutes] = (booking.startTime || "12:00").split(":");
-      
+
       const startDateTime = new Date(eventDate);
       startDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
-      
+
       const endDateTime = new Date(startDateTime);
-      endDateTime.setMinutes(endDateTime.getMinutes() + (booking.durationMins || 60));
+      endDateTime.setMinutes(
+        endDateTime.getMinutes() + (booking.durationMins || 60),
+      );
 
       const eventBody: calendar_v3.Schema$Event = {
         summary: `WE Ice Cream Truck - ${booking.customer.firstName} ${booking.customer.lastName}`,
@@ -142,7 +149,7 @@ export const googleCalendarService = {
       };
 
       await client.events.update({
-        calendarId: 'primary',
+        calendarId: "primary",
         eventId: booking.googleEventId,
         requestBody: eventBody,
       });
@@ -151,10 +158,12 @@ export const googleCalendarService = {
     } catch (error: any) {
       // If the event was manually deleted from Google Calendar, it might return a 404
       if (error.code === 404) {
-         console.warn(`Google Event ${booking.googleEventId} not found for updating. Will recreate if confirmed.`);
-         if (booking.status === "CONFIRMED") {
-            return await this.createBookingEvent(booking);
-         }
+        console.warn(
+          `Google Event ${booking.googleEventId} not found for updating. Will recreate if confirmed.`,
+        );
+        if (booking.status === "CONFIRMED") {
+          return await this.createBookingEvent(booking);
+        }
       }
       console.error("Error updating Google Calendar event:", error);
       return null;
@@ -169,7 +178,7 @@ export const googleCalendarService = {
 
     try {
       await client.events.delete({
-        calendarId: 'primary',
+        calendarId: "primary",
         eventId: googleEventId,
       });
       return true;
@@ -181,5 +190,5 @@ export const googleCalendarService = {
       console.error("Error deleting Google Calendar event:", error);
       return false;
     }
-  }
+  },
 };

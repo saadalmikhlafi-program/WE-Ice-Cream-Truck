@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const action = searchParams.get("action");
-  
+
   try {
     let url = "";
     if (action === "search") {
@@ -13,7 +13,11 @@ export async function GET(request: Request) {
     } else if (action === "reverse") {
       const lat = searchParams.get("lat");
       const lon = searchParams.get("lon");
-      if (!lat || !lon) return NextResponse.json({ error: "Missing coordinates" }, { status: 400 });
+      if (!lat || !lon)
+        return NextResponse.json(
+          { error: "Missing coordinates" },
+          { status: 400 },
+        );
       url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1&zoom=18`;
     } else {
       return NextResponse.json({ error: "Invalid action" }, { status: 400 });
@@ -22,8 +26,8 @@ export async function GET(request: Request) {
     const res = await fetch(url, {
       headers: {
         "Accept-Language": "en",
-        "User-Agent": "WeIceCreamTruck/1.0 (info@weicecreamtruck.com)"
-      }
+        "User-Agent": "WeIceCreamTruck/1.0 (info@weicecreamtruck.com)",
+      },
     });
 
     if (!res.ok) {
@@ -34,6 +38,9 @@ export async function GET(request: Request) {
     return NextResponse.json(data);
   } catch (error: any) {
     console.error("Geocoding Proxy Error:", error);
-    return NextResponse.json({ error: "Failed to fetch from geocoding service" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch from geocoding service" },
+      { status: 500 },
+    );
   }
 }

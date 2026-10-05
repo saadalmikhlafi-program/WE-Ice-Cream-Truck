@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, hasPermission, unauthenticated, unauthorized } from "@/lib/rbac";
+import {
+  getSessionUser,
+  hasPermission,
+  unauthenticated,
+  unauthorized,
+} from "@/lib/rbac";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +15,10 @@ export async function GET(req: NextRequest) {
     if (!user) return unauthenticated();
 
     const canViewAll = hasPermission(user.role, "bookings.view");
-    const canViewAssigned = hasPermission(user.role, "bookings.view.assignedOnly");
+    const canViewAssigned = hasPermission(
+      user.role,
+      "bookings.view.assignedOnly",
+    );
 
     if (!canViewAll && !canViewAssigned) {
       return unauthorized();
@@ -22,13 +30,13 @@ export async function GET(req: NextRequest) {
 
     const where: any = {};
     if (status) where.status = status;
-    
+
     // Enforce DRIVER role assigned-only filtering
     if (user.role === "DRIVER" || (!canViewAll && canViewAssigned)) {
       where.assignment = {
         driver: {
-          userId: user.id
-        }
+          userId: user.id,
+        },
       };
     }
 
@@ -49,10 +57,10 @@ export async function GET(req: NextRequest) {
         package: true,
         assignment: {
           include: {
-            driver: true
-          }
+            driver: true,
+          },
         },
-        quote: true
+        quote: true,
       },
       orderBy: { createdAt: "desc" },
     });
@@ -60,6 +68,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: true, data: bookings });
   } catch (error: any) {
     console.error("Failed to fetch bookings", error);
-    return NextResponse.json({ success: false, error: "Failed to fetch bookings" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch bookings" },
+      { status: 500 },
+    );
   }
 }

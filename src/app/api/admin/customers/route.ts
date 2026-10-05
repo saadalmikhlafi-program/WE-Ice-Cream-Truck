@@ -8,7 +8,10 @@ export async function GET(req: Request) {
   try {
     const auth = await requirePermission(req, "customers.view");
     if (!auth.success) {
-      return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+      return NextResponse.json(
+        { success: false, error: auth.error },
+        { status: auth.status },
+      );
     }
 
     const customers = await prisma.customer.findMany({
@@ -16,10 +19,10 @@ export async function GET(req: Request) {
       include: {
         _count: { select: { bookings: true } },
         bookings: {
-          select: { quote: { select: { totalAmount: true } } }
-        }
+          select: { quote: { select: { totalAmount: true } } },
+        },
       },
-      orderBy: { createdAt: "desc" }
+      orderBy: { createdAt: "desc" },
     });
 
     const formatted = customers.map((c: any) => ({
@@ -31,11 +34,17 @@ export async function GET(req: Request) {
       company: c.company,
       createdAt: c.createdAt,
       bookingsCount: c._count.bookings,
-      totalSpent: c.bookings.reduce((sum: number, b: any) => sum + (b.quote?.totalAmount ?? 0), 0)
+      totalSpent: c.bookings.reduce(
+        (sum: number, b: any) => sum + (b.quote?.totalAmount ?? 0),
+        0,
+      ),
     }));
 
     return NextResponse.json(formatted);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch customers" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch customers" },
+      { status: 500 },
+    );
   }
 }

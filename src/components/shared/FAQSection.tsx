@@ -17,11 +17,11 @@ interface FAQSectionProps {
   className?: string;
 }
 
-export default function FAQSection({ 
-  title = "Frequently Asked Questions", 
+export default function FAQSection({
+  title = "Frequently Asked Questions",
   subtitle = "Everything you need to know about this service.",
   items,
-  className 
+  className,
 }: FAQSectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
@@ -29,7 +29,7 @@ export default function FAQSection({
     <section className={cn("py-20 md:py-32 relative", className)}>
       <div className="container mx-auto px-6 md:px-12 lg:px-24">
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -38,7 +38,7 @@ export default function FAQSection({
             {title}
           </motion.h2>
           {subtitle && (
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -62,23 +62,29 @@ export default function FAQSection({
                 transition={{ delay: index * 0.1 }}
                 className={cn(
                   "border-2 rounded-2xl overflow-hidden transition-colors duration-300",
-                  isOpen ? "border-coral bg-white shadow-md shadow-coral/10" : "border-navy/10 bg-white/50 hover:border-navy/20"
+                  isOpen
+                    ? "border-coral bg-white shadow-md shadow-coral/10"
+                    : "border-navy/10 bg-white/50 hover:border-navy/20",
                 )}
               >
                 <button
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   className="flex items-center justify-between w-full p-6 text-left"
                 >
-                  <span className={cn(
-                    "font-bold text-lg md:text-xl pr-8 transition-colors",
-                    isOpen ? "text-coral" : "text-navy"
-                  )}>
+                  <span
+                    className={cn(
+                      "font-bold text-lg md:text-xl pr-8 transition-colors",
+                      isOpen ? "text-coral" : "text-navy",
+                    )}
+                  >
                     {item.question}
                   </span>
-                  <div className={cn(
-                    "shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors",
-                    isOpen ? "bg-coral text-white" : "bg-navy/5 text-navy/50"
-                  )}>
+                  <div
+                    className={cn(
+                      "shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                      isOpen ? "bg-coral text-white" : "bg-navy/5 text-navy/50",
+                    )}
+                  >
                     {isOpen ? <Minus size={18} /> : <Plus size={18} />}
                   </div>
                 </button>

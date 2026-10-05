@@ -9,7 +9,10 @@ export default function BlogSection({ posts = [] }: { posts?: any[] }) {
   if (!posts || posts.length === 0) return null;
 
   return (
-    <section className="relative py-24 bg-transparent overflow-hidden" id="blog">
+    <section
+      className="relative py-24 bg-transparent overflow-hidden"
+      id="blog"
+    >
       {/* Decorative Elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-coral/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-mint/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
@@ -22,12 +25,16 @@ export default function BlogSection({ posts = [] }: { posts?: any[] }) {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-coral font-bold tracking-wider uppercase text-sm mb-3">Our Stories</h2>
+            <h2 className="text-coral font-bold tracking-wider uppercase text-sm mb-3">
+              Our Stories
+            </h2>
             <h3 className="font-display font-black text-4xl md:text-5xl text-navy mb-6">
-              Real Events. <span className="text-coral italic font-light">Real Smiles.</span>
+              Real Events.{" "}
+              <span className="text-coral italic font-light">Real Smiles.</span>
             </h3>
             <p className="text-lg text-gray-500">
-              Don't just take our word for it. Explore our recent events and see the joy we bring to celebrations across Massachusetts.
+              Don't just take our word for it. Explore our recent events and see
+              the joy we bring to celebrations across Massachusetts.
             </p>
           </motion.div>
         </div>
@@ -58,8 +65,14 @@ export default function BlogSection({ posts = [] }: { posts?: any[] }) {
               <div className="p-6 flex flex-col flex-grow">
                 <div className="flex items-center gap-4 text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">
                   <span className="flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5" /> 
-                    {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
+                    <Calendar className="w-3.5 h-3.5" />
+                    {post.publishedAt
+                      ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })
+                      : ""}
                   </span>
                 </div>
                 <h4 className="text-xl font-bold text-navy mb-3 line-clamp-2 group-hover:text-coral transition-colors">
@@ -68,8 +81,12 @@ export default function BlogSection({ posts = [] }: { posts?: any[] }) {
                 <p className="text-gray-500 text-sm mb-6 flex-grow line-clamp-3">
                   {post.excerpt}
                 </p>
-                <Link href={`/blog/${post.slug}`} className="inline-flex items-center gap-2 text-sm font-bold text-navy group-hover:text-coral transition-colors mt-auto">
-                  Read Full Story <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="inline-flex items-center gap-2 text-sm font-bold text-navy group-hover:text-coral transition-colors mt-auto"
+                >
+                  Read Full Story{" "}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             </motion.div>

@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, hasPermission, unauthenticated, unauthorized } from "@/lib/rbac";
+import {
+  getSessionUser,
+  hasPermission,
+  unauthenticated,
+  unauthorized,
+} from "@/lib/rbac";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +14,7 @@ export async function GET(req: Request) {
     const user = await getSessionUser(req);
     if (!user) return unauthenticated();
 
-    const canViewFull    = hasPermission(user.role, "dashboard.view");
+    const canViewFull = hasPermission(user.role, "dashboard.view");
     const canViewLimited = hasPermission(user.role, "dashboard.view.limited");
 
     if (!canViewFull && !canViewLimited) return unauthorized();
@@ -42,11 +47,17 @@ export async function GET(req: Request) {
       prisma.booking.count({ where: { status: "CANCELLED" } }),
       prisma.customer.count(),
       prisma.booking.aggregate({
-        where: { status: { in: ["COMPLETED", "CONFIRMED"] }, eventDate: { gte: sevenDaysAgo } },
+        where: {
+          status: { in: ["COMPLETED", "CONFIRMED"] },
+          eventDate: { gte: sevenDaysAgo },
+        },
         _sum: { totalAmount: true },
       }),
       prisma.booking.aggregate({
-        where: { status: { in: ["COMPLETED", "CONFIRMED"] }, eventDate: { gte: thirtyDaysAgo } },
+        where: {
+          status: { in: ["COMPLETED", "CONFIRMED"] },
+          eventDate: { gte: thirtyDaysAgo },
+        },
         _sum: { totalAmount: true },
       }),
       prisma.booking.aggregate({
@@ -57,7 +68,9 @@ export async function GET(req: Request) {
 
     // ── 2. TODAY BOOKINGS ─────────────────────────────────────────────────
     const todayBookings = await prisma.booking.findMany({
-      where: { eventDate: { gte: today, lt: new Date(today.getTime() + 86400000) } },
+      where: {
+        eventDate: { gte: today, lt: new Date(today.getTime() + 86400000) },
+      },
       include: { customer: true, vehicle: true, package: true },
       orderBy: { startTime: "asc" },
     });
@@ -78,7 +91,9 @@ export async function GET(req: Request) {
     });
 
     // ── 5. VEHICLES ───────────────────────────────────────────────────────
-    const vehicles = await prisma.vehicle.findMany({ orderBy: { code: "asc" } });
+    const vehicles = await prisma.vehicle.findMany({
+      orderBy: { code: "asc" },
+    });
 
     // ── 6. REVENUE CHART — real 7-day data ───────────────────────────────
     const sevenDaysBookings = await prisma.booking.findMany({
@@ -93,9 +108,9 @@ export async function GET(req: Request) {
       const d = new Date(today);
       d.setDate(d.getDate() - (6 - i));
       const dayLabel = d.toLocaleDateString("en-US", { weekday: "short" });
-      const dayKey   = d.toISOString().split("T")[0];
-      const revenue  = sevenDaysBookings
-        .filter(b => b.eventDate.toISOString().split("T")[0] === dayKey)
+      const dayKey = d.toISOString().split("T")[0];
+      const revenue = sevenDaysBookings
+        .filter((b) => b.eventDate.toISOString().split("T")[0] === dayKey)
         .reduce((sum, b) => sum + (b.totalAmount || 0), 0);
       return { day: dayLabel, revenue };
     });
@@ -115,19 +130,19 @@ export async function GET(req: Request) {
     const activityFeed = await prisma.auditLog.findMany({
       take: 15,
       orderBy: { createdAt: "desc" },
-      include: { user: { select: { name: true, email: true } } }
+      include: { user: { select: { name: true, email: true } } },
     });
 
     const finalStats = {
       totalBookings,
-      todayJobs:      todayBookings.length,
-      pending:        pendingReview,
-      confirmed:      confirmedCount,
-      completed:      completedCount,
-      cancelled:      cancelledCount,
-      weekRevenue:    canViewFull ? (weekRevAggr._sum.totalAmount  || 0) : 0,
-      monthRevenue:   canViewFull ? (monthRevAggr._sum.totalAmount || 0) : 0,
-      allTimeRevenue: canViewFull ? (allTimeRevAggr._sum.totalAmount || 0) : 0,
+      todayJobs: todayBookings.length,
+      pending: pendingReview,
+      confirmed: confirmedCount,
+      completed: completedCount,
+      cancelled: cancelledCount,
+      weekRevenue: canViewFull ? weekRevAggr._sum.totalAmount || 0 : 0,
+      monthRevenue: canViewFull ? monthRevAggr._sum.totalAmount || 0 : 0,
+      allTimeRevenue: canViewFull ? allTimeRevAggr._sum.totalAmount || 0 : 0,
       totalCustomers,
     };
 
@@ -135,66 +150,85 @@ export async function GET(req: Request) {
       success: true,
       data: {
         stats: finalStats,
-        todayBookings: todayBookings.map(b => ({
-          id:            b.id,
+        todayBookings: todayBookings.map((b) => ({
+          id: b.id,
           bookingNumber: b.bookingNumber,
-          startTime:     b.startTime,
-          customer:      { firstName: b.customer.firstName, lastName: b.customer.lastName },
-          eventType:     b.eventType,
-          city:          b.city,
-          address:       b.address,
-          package:       b.package ? { name: b.package.name } : null,
-          vehicle:       b.vehicle ? { code: b.vehicle.code } : null,
-          status:        b.status,
-          totalAmount:   b.totalAmount,
+          startTime: b.startTime,
+          customer: {
+            firstName: b.customer.firstName,
+            lastName: b.customer.lastName,
+          },
+          eventType: b.eventType,
+          city: b.city,
+          address: b.address,
+          package: b.package ? { name: b.package.name } : null,
+          vehicle: b.vehicle ? { code: b.vehicle.code } : null,
+          status: b.status,
+          totalAmount: b.totalAmount,
         })),
-        pendingBookings: pendingBookings.map(b => ({
-          id:            b.id,
+        pendingBookings: pendingBookings.map((b) => ({
+          id: b.id,
           bookingNumber: b.bookingNumber,
-          customer:      { firstName: b.customer.firstName, lastName: b.customer.lastName },
-          eventType:     b.eventType,
-          totalAmount:   b.totalAmount,
-          package:       b.package ? { name: b.package.name } : null,
-          createdAt:     b.createdAt,
+          customer: {
+            firstName: b.customer.firstName,
+            lastName: b.customer.lastName,
+          },
+          eventType: b.eventType,
+          totalAmount: b.totalAmount,
+          package: b.package ? { name: b.package.name } : null,
+          createdAt: b.createdAt,
         })),
-        recentBookings: recentBookings.map(b => ({
-          id:            b.id,
+        recentBookings: recentBookings.map((b) => ({
+          id: b.id,
           bookingNumber: b.bookingNumber,
-          customer:      { firstName: b.customer.firstName, lastName: b.customer.lastName },
-          eventType:     b.eventType,
-          totalAmount:   b.totalAmount,
-          package:       b.package ? { name: b.package.name } : null,
-          status:        b.status,
-          createdAt:     b.createdAt,
-          eventDate:     b.eventDate,
-          city:          b.city,
+          customer: {
+            firstName: b.customer.firstName,
+            lastName: b.customer.lastName,
+          },
+          eventType: b.eventType,
+          totalAmount: b.totalAmount,
+          package: b.package ? { name: b.package.name } : null,
+          status: b.status,
+          createdAt: b.createdAt,
+          eventDate: b.eventDate,
+          city: b.city,
         })),
-        upcomingBookings: upcomingBookings.map(b => ({
-          id:            b.id,
+        upcomingBookings: upcomingBookings.map((b) => ({
+          id: b.id,
           bookingNumber: b.bookingNumber,
-          customer:      { firstName: b.customer.firstName, lastName: b.customer.lastName },
-          eventDate:     b.eventDate,
-          startTime:     b.startTime,
-          city:          b.city,
-          status:        b.status,
-          package:       b.package ? { name: b.package.name } : null,
-          totalAmount:   b.totalAmount,
+          customer: {
+            firstName: b.customer.firstName,
+            lastName: b.customer.lastName,
+          },
+          eventDate: b.eventDate,
+          startTime: b.startTime,
+          city: b.city,
+          status: b.status,
+          package: b.package ? { name: b.package.name } : null,
+          totalAmount: b.totalAmount,
         })),
-        vehicles:    vehicles.map(v => ({ code: v.code, type: v.type, status: v.status })),
+        vehicles: vehicles.map((v) => ({
+          code: v.code,
+          type: v.type,
+          status: v.status,
+        })),
         revenueChart: canViewFull ? revenueChart : [],
-        activityFeed: activityFeed.map(a => ({
+        activityFeed: activityFeed.map((a) => ({
           id: a.id,
           action: a.action,
           entityType: a.entityType,
           entityId: a.entityId,
           createdAt: a.createdAt,
           actorName: a.user?.name || a.user?.email || "System",
-          metadata: a.metadataJson ? JSON.parse(a.metadataJson) : null
-        }))
+          metadata: a.metadataJson ? JSON.parse(a.metadataJson) : null,
+        })),
       },
     });
   } catch (error: any) {
     console.error("Dashboard API Error:", error);
-    return NextResponse.json({ success: false, error: "Failed to load dashboard" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to load dashboard" },
+      { status: 500 },
+    );
   }
 }

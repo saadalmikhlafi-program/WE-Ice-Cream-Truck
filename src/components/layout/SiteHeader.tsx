@@ -5,7 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { UserCircle2, ChevronDown, LogOut, LayoutDashboard, CalendarDays } from "lucide-react";
+import {
+  UserCircle2,
+  ChevronDown,
+  LogOut,
+  LayoutDashboard,
+  CalendarDays,
+} from "lucide-react";
 import Logo from "@/components/shared/Logo";
 import { getAllServices } from "@/lib/services-data";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,15 +27,15 @@ export default function SiteHeader() {
   useEffect(() => {
     setIsScrolled(false);
     setUserMenuOpen(false); // close user menu on navigate
-    
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    
+
     const timer = setTimeout(() => {
       handleScroll();
     }, 50);
-    
+
     window.addEventListener("scroll", handleScroll);
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -40,7 +46,10 @@ export default function SiteHeader() {
   // Handle clicking outside to close user menu
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
         setUserMenuOpen(false);
       }
     }
@@ -66,10 +75,13 @@ export default function SiteHeader() {
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         isScrolled
           ? "bg-cream/90 backdrop-blur-xl shadow-sm border-b border-navy/5 py-3"
-          : "bg-transparent py-5 md:py-6 pointer-events-none"
+          : "bg-transparent py-5 md:py-6 pointer-events-none",
       )}
     >
-      <div suppressHydrationWarning className="container mx-auto px-4 md:px-6 flex items-center justify-between pointer-events-auto">
+      <div
+        suppressHydrationWarning
+        className="container mx-auto px-4 md:px-6 flex items-center justify-between pointer-events-auto"
+      >
         {/* Logo */}
         <Link href="/" className="z-50">
           <Logo variant="dark" />
@@ -85,7 +97,9 @@ export default function SiteHeader() {
                 href={link.href}
                 className={cn(
                   "relative px-4 py-2 text-[0.95rem] font-bold tracking-wide transition-colors rounded-full",
-                  isActive ? "text-coral bg-coral/5" : "text-navy/80 hover:text-navy hover:bg-navy/5"
+                  isActive
+                    ? "text-coral bg-coral/5"
+                    : "text-navy/80 hover:text-navy hover:bg-navy/5",
                 )}
               >
                 {link.label}
@@ -94,7 +108,7 @@ export default function SiteHeader() {
           })}
 
           {/* Occasions Dropdown */}
-          <div 
+          <div
             className="relative"
             onMouseEnter={() => setActiveDropdown("occasions")}
             onMouseLeave={() => setActiveDropdown(null)}
@@ -102,11 +116,18 @@ export default function SiteHeader() {
             <button
               className={cn(
                 "flex items-center gap-1 px-4 py-2 text-[0.95rem] font-bold tracking-wide transition-colors rounded-full",
-                pathname.startsWith("/occasions") ? "text-coral bg-coral/5" : "text-navy/80 hover:text-navy hover:bg-navy/5"
+                pathname.startsWith("/occasions")
+                  ? "text-coral bg-coral/5"
+                  : "text-navy/80 hover:text-navy hover:bg-navy/5",
               )}
             >
               Occasions
-              <ChevronDown className={cn("w-4 h-4 transition-transform duration-300", activeDropdown === "occasions" && "rotate-180")} />
+              <ChevronDown
+                className={cn(
+                  "w-4 h-4 transition-transform duration-300",
+                  activeDropdown === "occasions" && "rotate-180",
+                )}
+              />
             </button>
 
             <AnimatePresence>
@@ -151,7 +172,9 @@ export default function SiteHeader() {
                 href={link.href}
                 className={cn(
                   "relative px-4 py-2 text-[0.95rem] font-bold tracking-wide transition-colors rounded-full",
-                  isActive ? "text-coral bg-coral/5" : "text-navy/80 hover:text-navy hover:bg-navy/5"
+                  isActive
+                    ? "text-coral bg-coral/5"
+                    : "text-navy/80 hover:text-navy hover:bg-navy/5",
                 )}
               >
                 {link.label}
@@ -176,9 +199,14 @@ export default function SiteHeader() {
                 <span className="font-bold text-[0.9rem] text-navy hidden sm:block truncate max-w-[100px]">
                   {session.user?.name?.split(" ")[0] || "User"}
                 </span>
-                <ChevronDown className={cn("w-4 h-4 text-gray-400 transition-transform", userMenuOpen && "rotate-180")} />
+                <ChevronDown
+                  className={cn(
+                    "w-4 h-4 text-gray-400 transition-transform",
+                    userMenuOpen && "rotate-180",
+                  )}
+                />
               </button>
-              
+
               <AnimatePresence>
                 {userMenuOpen && (
                   <motion.div
@@ -189,8 +217,12 @@ export default function SiteHeader() {
                     className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-navy/5 overflow-hidden z-50 py-2"
                   >
                     <div className="px-4 py-2 mb-2 border-b border-gray-100">
-                      <p className="text-sm font-bold text-navy truncate">{session.user?.name}</p>
-                      <p className="text-xs text-gray-500 truncate">{session.user?.email}</p>
+                      <p className="text-sm font-bold text-navy truncate">
+                        {session.user?.name}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {session.user?.email}
+                      </p>
                     </div>
 
                     {(session.user as any)?.role === "CUSTOMER" ? (
@@ -212,7 +244,7 @@ export default function SiteHeader() {
                         Admin Dashboard
                       </Link>
                     )}
-                    
+
                     <button
                       onClick={() => signOut({ callbackUrl: "/" })}
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors text-left"
@@ -230,7 +262,9 @@ export default function SiteHeader() {
               className="group flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-navy/10 rounded-full hover:border-coral transition-all shadow-sm hover:shadow-md"
             >
               <UserCircle2 className="w-5 h-5 text-navy/70 group-hover:text-coral transition-colors" />
-              <span className="font-bold text-[0.9rem] text-navy hidden sm:block">Sign In</span>
+              <span className="font-bold text-[0.9rem] text-navy hidden sm:block">
+                Sign In
+              </span>
             </Link>
           )}
         </div>

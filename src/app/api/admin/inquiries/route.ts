@@ -7,7 +7,10 @@ export async function GET(req: NextRequest) {
   try {
     const auth = await requirePermission(req, "bookings.view");
     if (!auth.success) {
-      return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+      return NextResponse.json(
+        { success: false, error: auth.error },
+        { status: auth.status },
+      );
     }
 
     const { searchParams } = new URL(req.url);
@@ -28,6 +31,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ success: true, data: inquiries });
   } catch (error) {
     console.error("Failed to fetch inquiries", error);
-    return NextResponse.json({ success: false, error: "Failed to fetch inquiries" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch inquiries" },
+      { status: 500 },
+    );
   }
 }

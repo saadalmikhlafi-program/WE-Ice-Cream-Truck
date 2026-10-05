@@ -64,7 +64,6 @@ export default function TestimonialsCarousel() {
   return (
     <section className="relative py-24 md:py-40 border-t border-navy/5 overflow-hidden">
       <div className="container mx-auto px-6 md:px-12 lg:px-24 mb-20 md:mb-32">
-        
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="max-w-2xl">
             <h2 className="font-display font-light text-[clamp(3rem,6vw,5.5rem)] leading-tight text-navy mb-6 tracking-tighter">
@@ -86,14 +85,16 @@ export default function TestimonialsCarousel() {
             Loved by {BUSINESS_CONFIG.stats.reviewCount}+ Customers
           </div>
         </div>
-
       </div>
 
       {/* Marquee Container */}
       <div className="relative flex w-full flex-nowrap items-center overflow-hidden">
         <div className="flex w-max animate-marquee items-stretch justify-center gap-12 lg:gap-16 px-6 hover:[animation-play-state:paused]">
           {[...testimonials, ...testimonials].map((t, idx) => (
-            <div key={`${t.id}-${idx}`} className="flex-shrink-0 w-[300px] md:w-[350px] lg:w-[400px] flex flex-col group">
+            <div
+              key={`${t.id}-${idx}`}
+              className="flex-shrink-0 w-[300px] md:w-[350px] lg:w-[400px] flex flex-col group"
+            >
               <div className="text-coral text-[4rem] leading-none font-display mb-4 opacity-20 group-hover:opacity-100 transition-opacity duration-500">
                 &ldquo;
               </div>
@@ -112,7 +113,6 @@ export default function TestimonialsCarousel() {
           ))}
         </div>
       </div>
-
     </section>
   );
 }

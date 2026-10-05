@@ -5,16 +5,94 @@ import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/rbac";
 
 // ─── Arabic & English keyword maps ──────────────────────────────────────────
-const BOOKING_KEYS = ["booking", "reservation", "حجز", "حجوزات", "مواعيد", "موعد", "today", "اليوم", "هذا الأسبوع", "هذا الشهر", "pending", "confirmed", "completed", "approved", "week", "month", "انتظار", "تأكيد"];
-const CUSTOMER_KEYS = ["customer", "client", "عميل", "عملاء", "زبون", "زبائن", "users", "مستخدم"];
-const PACKAGE_KEYS = ["package", "plan", "pricing", "بكج", "باقة", "باقات", "عرض", "تسعير", "أسعار"];
-const SETTINGS_KEYS = ["setting", "config", "business hours", "seo", "إعدادات", "اعدادات", "نظام", "ساعات", "هاتف", "ايميل", "عنوان"];
-const INQUIRY_KEYS = ["inquiry", "inquiries", "lead", "استفسار", "استفسارات", "طلب", "طلبات"];
-const REVENUE_KEYS = ["revenue", "income", "sales", "earnings", "total", "إيرادات", "دخل", "مبيعات", "ارباح"];
-const STATS_KEYS = ["stats", "summary", "overview", "report", "dashboard", "إحصائيات", "ملخص", "تقرير", "نظرة عامة"];
+const BOOKING_KEYS = [
+  "booking",
+  "reservation",
+  "حجز",
+  "حجوزات",
+  "مواعيد",
+  "موعد",
+  "today",
+  "اليوم",
+  "هذا الأسبوع",
+  "هذا الشهر",
+  "pending",
+  "confirmed",
+  "completed",
+  "approved",
+  "week",
+  "month",
+  "انتظار",
+  "تأكيد",
+];
+const CUSTOMER_KEYS = [
+  "customer",
+  "client",
+  "عميل",
+  "عملاء",
+  "زبون",
+  "زبائن",
+  "users",
+  "مستخدم",
+];
+const PACKAGE_KEYS = [
+  "package",
+  "plan",
+  "pricing",
+  "بكج",
+  "باقة",
+  "باقات",
+  "عرض",
+  "تسعير",
+  "أسعار",
+];
+const SETTINGS_KEYS = [
+  "setting",
+  "config",
+  "business hours",
+  "seo",
+  "إعدادات",
+  "اعدادات",
+  "نظام",
+  "ساعات",
+  "هاتف",
+  "ايميل",
+  "عنوان",
+];
+const INQUIRY_KEYS = [
+  "inquiry",
+  "inquiries",
+  "lead",
+  "استفسار",
+  "استفسارات",
+  "طلب",
+  "طلبات",
+];
+const REVENUE_KEYS = [
+  "revenue",
+  "income",
+  "sales",
+  "earnings",
+  "total",
+  "إيرادات",
+  "دخل",
+  "مبيعات",
+  "ارباح",
+];
+const STATS_KEYS = [
+  "stats",
+  "summary",
+  "overview",
+  "report",
+  "dashboard",
+  "إحصائيات",
+  "ملخص",
+  "تقرير",
+  "نظرة عامة",
+];
 
 function matches(text: string, keys: string[]) {
-  return keys.some(k => text.includes(k));
+  return keys.some((k) => text.includes(k));
 }
 
 // ─── System Prompt ────────────────────────────────────────────────────────────
@@ -43,39 +121,70 @@ export async function POST(req: NextRequest) {
     }
 
     // ─── Build full conversation context for keyword detection ──────────────
-    const fullContext = messages.map((m: any) => m.content).join(" ").toLowerCase();
+    const fullContext = messages
+      .map((m: any) => m.content)
+      .join(" ")
+      .toLowerCase();
 
     // ─── Fetch relevant DB data based on conversation ───────────────────────
     const now = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+    const todayStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    const todayEnd = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1,
+    );
+    const weekStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - now.getDay(),
+    );
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
     let dbContext = "";
 
     try {
       // ── Bookings ───────────────────────────────────────────────────────────
-      if (matches(fullContext, BOOKING_KEYS) || matches(fullContext, REVENUE_KEYS) || matches(fullContext, STATS_KEYS)) {
+      if (
+        matches(fullContext, BOOKING_KEYS) ||
+        matches(fullContext, REVENUE_KEYS) ||
+        matches(fullContext, STATS_KEYS)
+      ) {
         // Today's bookings
         const todayBookings = await prisma.booking.findMany({
           where: { eventDate: { gte: todayStart, lt: todayEnd } },
           include: {
-            customer: { select: { firstName: true, lastName: true, email: true, phone: true } },
+            customer: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+                phone: true,
+              },
+            },
             package: { select: { name: true, price: true } },
           },
           orderBy: { eventDate: "asc" },
         });
 
         // This week's bookings count
-        const weekCount = await prisma.booking.count({ where: { eventDate: { gte: weekStart } } });
+        const weekCount = await prisma.booking.count({
+          where: { eventDate: { gte: weekStart } },
+        });
 
         // This month's bookings + revenue
         const monthBookings = await prisma.booking.findMany({
           where: { createdAt: { gte: monthStart } },
           select: { totalAmount: true, status: true },
         });
-        const monthRevenue = monthBookings.reduce((sum, b) => sum + (b.totalAmount || 0), 0);
+        const monthRevenue = monthBookings.reduce(
+          (sum, b) => sum + (b.totalAmount || 0),
+          0,
+        );
         const monthTotal = monthBookings.length;
 
         // Latest 10 bookings (all time)
@@ -83,42 +192,58 @@ export async function POST(req: NextRequest) {
           take: 10,
           orderBy: { createdAt: "desc" },
           include: {
-            customer: { select: { firstName: true, lastName: true, email: true } },
+            customer: {
+              select: { firstName: true, lastName: true, email: true },
+            },
             package: { select: { name: true } },
           },
         });
 
         dbContext += `\n\n━━━ LIVE BOOKINGS DATA ━━━
 TODAY (${todayStart.toDateString()}): ${todayBookings.length} booking(s)
-${todayBookings.length > 0
-  ? JSON.stringify(todayBookings.map(b => ({
-      bookingNumber: b.bookingNumber,
-      customer: b.customer ? `${b.customer.firstName} ${b.customer.lastName}` : "N/A",
-      email: b.customer?.email,
-      phone: b.customer?.phone,
-      package: b.package?.name || "Custom",
-      status: b.status,
-      eventDate: b.eventDate,
-      startTime: b.startTime,
-      guests: b.guests,
-      address: `${b.address}, ${b.city}, ${b.zip}`,
-      totalAmount: b.totalAmount,
-    })), null, 2)
-  : "No bookings today."}
+${
+  todayBookings.length > 0
+    ? JSON.stringify(
+        todayBookings.map((b) => ({
+          bookingNumber: b.bookingNumber,
+          customer: b.customer
+            ? `${b.customer.firstName} ${b.customer.lastName}`
+            : "N/A",
+          email: b.customer?.email,
+          phone: b.customer?.phone,
+          package: b.package?.name || "Custom",
+          status: b.status,
+          eventDate: b.eventDate,
+          startTime: b.startTime,
+          guests: b.guests,
+          address: `${b.address}, ${b.city}, ${b.zip}`,
+          totalAmount: b.totalAmount,
+        })),
+        null,
+        2,
+      )
+    : "No bookings today."
+}
 
 THIS WEEK: ${weekCount} bookings total
 THIS MONTH: ${monthTotal} bookings | Revenue: $${monthRevenue.toFixed(2)}
 
 LATEST 10 BOOKINGS (all time):
-${JSON.stringify(latestBookings.map(b => ({
-  bookingNumber: b.bookingNumber,
-  customer: b.customer ? `${b.customer.firstName} ${b.customer.lastName}` : "N/A",
-  status: b.status,
-  eventDate: b.eventDate,
-  guests: b.guests,
-  totalAmount: b.totalAmount,
-  createdAt: b.createdAt,
-})), null, 2)}`;
+${JSON.stringify(
+  latestBookings.map((b) => ({
+    bookingNumber: b.bookingNumber,
+    customer: b.customer
+      ? `${b.customer.firstName} ${b.customer.lastName}`
+      : "N/A",
+    status: b.status,
+    eventDate: b.eventDate,
+    guests: b.guests,
+    totalAmount: b.totalAmount,
+    createdAt: b.createdAt,
+  })),
+  null,
+  2,
+)}`;
       }
 
       // ── Customers ──────────────────────────────────────────────────────────
@@ -127,7 +252,15 @@ ${JSON.stringify(latestBookings.map(b => ({
         const latestCustomers = await prisma.customer.findMany({
           take: 10,
           orderBy: { createdAt: "desc" },
-          select: { id: true, firstName: true, lastName: true, email: true, phone: true, city: true, createdAt: true },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            city: true,
+            createdAt: true,
+          },
         });
         dbContext += `\n\n━━━ LIVE CUSTOMERS DATA ━━━
 TOTAL CUSTOMERS: ${totalCustomers}
@@ -139,7 +272,16 @@ ${JSON.stringify(latestCustomers, null, 2)}`;
       if (matches(fullContext, PACKAGE_KEYS)) {
         const packages = await prisma.package.findMany({
           orderBy: { sortOrder: "asc" },
-          select: { name: true, slug: true, serviceType: true, price: true, servings: true, durationMins: true, isActive: true, badge: true },
+          select: {
+            name: true,
+            slug: true,
+            serviceType: true,
+            price: true,
+            servings: true,
+            durationMins: true,
+            isActive: true,
+            badge: true,
+          },
         });
         dbContext += `\n\n━━━ LIVE PACKAGES DATA ━━━\n${JSON.stringify(packages, null, 2)}`;
       }
@@ -147,7 +289,10 @@ ${JSON.stringify(latestCustomers, null, 2)}`;
       // ── Settings ───────────────────────────────────────────────────────────
       if (matches(fullContext, SETTINGS_KEYS)) {
         const settings = await prisma.setting.findMany();
-        const dict = settings.reduce((acc: any, s) => { acc[s.key] = s.value; return acc; }, {});
+        const dict = settings.reduce((acc: any, s) => {
+          acc[s.key] = s.value;
+          return acc;
+        }, {});
         dbContext += `\n\n━━━ LIVE SETTINGS DATA ━━━\n${JSON.stringify(dict, null, 2)}`;
       }
 
@@ -156,21 +301,35 @@ ${JSON.stringify(latestCustomers, null, 2)}`;
         const inquiries = await prisma.inquiry.findMany({
           take: 10,
           orderBy: { createdAt: "desc" },
-          select: { id: true, name: true, email: true, eventType: true, status: true, createdAt: true, source: true },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            eventType: true,
+            status: true,
+            createdAt: true,
+            source: true,
+          },
         });
         dbContext += `\n\n━━━ LIVE INQUIRIES DATA (latest 10) ━━━\n${JSON.stringify(inquiries, null, 2)}`;
       }
 
       // ── Dashboard Overview ────────────────────────────────────────────────
       if (matches(fullContext, STATS_KEYS)) {
-        const [totalBookings, totalCustomers, pendingCount, confirmedCount] = await Promise.all([
-          prisma.booking.count(),
-          prisma.customer.count(),
-          prisma.booking.count({ where: { status: "PENDING" } }),
-          prisma.booking.count({ where: { status: "CONFIRMED" } }),
-        ]);
-        const allBookings = await prisma.booking.findMany({ select: { totalAmount: true } });
-        const totalRevenue = allBookings.reduce((s, b) => s + (b.totalAmount || 0), 0);
+        const [totalBookings, totalCustomers, pendingCount, confirmedCount] =
+          await Promise.all([
+            prisma.booking.count(),
+            prisma.customer.count(),
+            prisma.booking.count({ where: { status: "PENDING" } }),
+            prisma.booking.count({ where: { status: "CONFIRMED" } }),
+          ]);
+        const allBookings = await prisma.booking.findMany({
+          select: { totalAmount: true },
+        });
+        const totalRevenue = allBookings.reduce(
+          (s, b) => s + (b.totalAmount || 0),
+          0,
+        );
         dbContext += `\n\n━━━ DASHBOARD OVERVIEW ━━━
 Total Bookings (all time): ${totalBookings}
 Total Customers: ${totalCustomers}
@@ -178,20 +337,25 @@ Pending Bookings: ${pendingCount}
 Confirmed Bookings: ${confirmedCount}
 Total Revenue (all time): $${totalRevenue.toFixed(2)}`;
       }
-
     } catch (dbErr) {
       console.warn("DB context fetch error:", dbErr);
-      dbContext = "\n\n[Note: Could not fetch live DB data at this time. Please check the database connection.]";
+      dbContext =
+        "\n\n[Note: Could not fetch live DB data at this time. Please check the database connection.]";
     }
 
-    const systemPrompt = BASE_SYSTEM_PROMPT.replace("{{TODAY}}", now.toLocaleString("en-US", { timeZone: "America/New_York" })) + dbContext;
+    const systemPrompt =
+      BASE_SYSTEM_PROMPT.replace(
+        "{{TODAY}}",
+        now.toLocaleString("en-US", { timeZone: "America/New_York" }),
+      ) + dbContext;
 
     let apiUrl = "";
     let apiKey = "";
     let apiModel = "";
 
     if (process.env.GOOGLE_AI_KEY) {
-      apiUrl = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
+      apiUrl =
+        "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
       apiKey = process.env.GOOGLE_AI_KEY;
       apiModel = "gemini-3.6-flash";
     } else if (process.env.GROQ_API_KEY) {
@@ -222,10 +386,7 @@ Total Revenue (all time): $${totalRevenue.toFixed(2)}`;
       },
       body: JSON.stringify({
         model: apiModel,
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages,
-        ],
+        messages: [{ role: "system", content: systemPrompt }, ...messages],
         temperature: 0.1, // Very low — precision over creativity
         max_tokens: 1000,
       }),
@@ -262,6 +423,8 @@ Total Revenue (all time): $${totalRevenue.toFixed(2)}`;
     return Response.json({ reply });
   } catch (error) {
     console.error("Admin AI Chat API Error:", error);
-    return new Response("An error occurred processing your request.", { status: 500 });
+    return new Response("An error occurred processing your request.", {
+      status: 500,
+    });
   }
 }

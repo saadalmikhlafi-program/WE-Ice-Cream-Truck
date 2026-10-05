@@ -10,14 +10,14 @@ if (vapidPublicKey && vapidPrivateKey) {
   webpush.setVapidDetails(
     "mailto:hello@weicecreamtruck.com",
     vapidPublicKey,
-    vapidPrivateKey
+    vapidPrivateKey,
   );
 }
 
 export async function sendPushNotification(
   payload: { title: string; body: string; url?: string },
   targetRoles: string[] = ["OWNER", "ADMIN"],
-  targetUserIds: string[] = []
+  targetUserIds: string[] = [],
 ) {
   if (!vapidPublicKey || !vapidPrivateKey) {
     console.warn("VAPID keys not configured, skipping push notification.");
@@ -29,13 +29,10 @@ export async function sendPushNotification(
     const subscriptions = await prisma.pushSubscription.findMany({
       where: {
         user: {
-          OR: [
-            { role: { in: targetRoles } },
-            { id: { in: targetUserIds } }
-          ]
-        }
+          OR: [{ role: { in: targetRoles } }, { id: { in: targetUserIds } }],
+        },
       },
-      include: { user: true }
+      include: { user: true },
     });
 
     if (subscriptions.length === 0) return;
@@ -45,7 +42,7 @@ export async function sendPushNotification(
       body: payload.body,
       url: payload.url || "/admin",
       icon: "/icon-192x192.png", // Ensure you have this icon
-      badge: "/badge-72x72.png" // Ensure you have this badge
+      badge: "/badge-72x72.png", // Ensure you have this badge
     });
 
     const sendPromises = subscriptions.map(async (sub) => {
@@ -55,10 +52,10 @@ export async function sendPushNotification(
             endpoint: sub.endpoint,
             keys: {
               p256dh: sub.p256dh,
-              auth: sub.auth
-            }
+              auth: sub.auth,
+            },
           },
-          notificationPayload
+          notificationPayload,
         );
       } catch (error: any) {
         // If subscription is invalid/expired (410), delete it

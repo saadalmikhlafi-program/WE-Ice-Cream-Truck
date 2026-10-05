@@ -33,11 +33,17 @@ export async function POST(req: NextRequest) {
   const { zip, city, county, isActive, notes } = body;
 
   if (!zip || !city) {
-    return NextResponse.json({ error: "zip and city are required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "zip and city are required" },
+      { status: 400 },
+    );
   }
 
   if (!/^\d{5}$/.test(zip.trim())) {
-    return NextResponse.json({ error: "ZIP must be exactly 5 digits" }, { status: 400 });
+    return NextResponse.json(
+      { error: "ZIP must be exactly 5 digits" },
+      { status: 400 },
+    );
   }
 
   try {
@@ -53,9 +59,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(record, { status: 201 });
   } catch (e: any) {
     if (e.code === "P2002") {
-      return NextResponse.json({ error: `ZIP code ${zip} already exists` }, { status: 409 });
+      return NextResponse.json(
+        { error: `ZIP code ${zip} already exists` },
+        { status: 409 },
+      );
     }
-    return NextResponse.json({ error: "Failed to create ZIP code" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create ZIP code" },
+      { status: 500 },
+    );
   }
 }
 

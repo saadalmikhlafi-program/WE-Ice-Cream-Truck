@@ -4,60 +4,125 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
-  DollarSign, Users, CalendarDays, AlertCircle, Truck, Inbox,
-  TrendingUp, ArrowUpRight, ArrowRight, Package, Clock,
-  CheckCircle2, Activity, Bot, MapPin, Star, Zap, Plus,
-  BarChart3, Loader2, Navigation, Phone, Calendar, Map,
-  BookCheck, XCircle, RefreshCw
+  DollarSign,
+  Users,
+  CalendarDays,
+  AlertCircle,
+  Truck,
+  Inbox,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowRight,
+  Package,
+  Clock,
+  CheckCircle2,
+  Activity,
+  Bot,
+  MapPin,
+  Star,
+  Zap,
+  Plus,
+  BarChart3,
+  Loader2,
+  Navigation,
+  Phone,
+  Calendar,
+  Map,
+  BookCheck,
+  XCircle,
+  RefreshCw,
 } from "lucide-react";
 
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
 // STATUS helpers
 const STATUS_DRIVER = [
-  { value: "PENDING",    label: "Pending",    color: "#9CA3AF", bg: "#F3F4F6" },
+  { value: "PENDING", label: "Pending", color: "#9CA3AF", bg: "#F3F4F6" },
   { value: "ON_THE_WAY", label: "On the Way", color: "#3B82F6", bg: "#EFF6FF" },
-  { value: "ARRIVED",    label: "Arrived",    color: "#F59E0B", bg: "#FFFBEB" },
-  { value: "COMPLETED",  label: "Completed",  color: "#10B981", bg: "#ECFDF5" },
+  { value: "ARRIVED", label: "Arrived", color: "#F59E0B", bg: "#FFFBEB" },
+  { value: "COMPLETED", label: "Completed", color: "#10B981", bg: "#ECFDF5" },
 ];
 
-const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  CONFIRMED:      { bg: "#ECFDF5", text: "#059669", border: "#A7F3D0" },
-  PENDING:        { bg: "#FFFBEB", text: "#D97706", border: "#FDE68A" },
+const STATUS_COLORS: Record<
+  string,
+  { bg: string; text: string; border: string }
+> = {
+  CONFIRMED: { bg: "#ECFDF5", text: "#059669", border: "#A7F3D0" },
+  PENDING: { bg: "#FFFBEB", text: "#D97706", border: "#FDE68A" },
   PENDING_REVIEW: { bg: "#FFF7ED", text: "#C2410C", border: "#FED7AA" },
-  APPROVED:       { bg: "#EFF6FF", text: "#2563EB", border: "#BFDBFE" },
-  ASSIGNED:       { bg: "#EFF6FF", text: "#2563EB", border: "#BFDBFE" },
-  IN_PROGRESS:    { bg: "#F5F3FF", text: "#7C3AED", border: "#DDD6FE" },
-  COMPLETED:      { bg: "#F0FDF4", text: "#16A34A", border: "#BBF7D0" },
-  CANCELLED:      { bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
+  APPROVED: { bg: "#EFF6FF", text: "#2563EB", border: "#BFDBFE" },
+  ASSIGNED: { bg: "#EFF6FF", text: "#2563EB", border: "#BFDBFE" },
+  IN_PROGRESS: { bg: "#F5F3FF", text: "#7C3AED", border: "#DDD6FE" },
+  COMPLETED: { bg: "#F0FDF4", text: "#16A34A", border: "#BBF7D0" },
+  CANCELLED: { bg: "#FEF2F2", text: "#DC2626", border: "#FECACA" },
 };
 
 // --- KPI Card ---
 function KpiCard({
-  label, value, sub, icon: Icon, iconBg, iconColor, trend, href, highlight
+  label,
+  value,
+  sub,
+  icon: Icon,
+  iconBg,
+  iconColor,
+  trend,
+  href,
+  highlight,
 }: {
-  label: string; value: string; sub?: string;
-  icon: any; iconBg: string; iconColor: string;
-  trend?: { value: string; up: boolean }; href: string; highlight?: boolean;
+  label: string;
+  value: string;
+  sub?: string;
+  icon: any;
+  iconBg: string;
+  iconColor: string;
+  trend?: { value: string; up: boolean };
+  href: string;
+  highlight?: boolean;
 }) {
   return (
-    <Link href={href} className={`group bg-white rounded-2xl border shadow-sm hover:shadow-md transition-all duration-200 p-5 flex flex-col justify-between gap-4 relative overflow-hidden
-      ${highlight ? "border-coral/30 bg-gradient-to-br from-white to-coral/5" : "border-gray-100 hover:border-gray-200"}`}>
+    <Link
+      href={href}
+      className={`group bg-white rounded-2xl border shadow-sm hover:shadow-md transition-all duration-200 p-5 flex flex-col justify-between gap-4 relative overflow-hidden
+      ${highlight ? "border-coral/30 bg-gradient-to-br from-white to-coral/5" : "border-gray-100 hover:border-gray-200"}`}
+    >
       <div className="flex items-start justify-between">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBg}`}>
+        <div
+          className={`w-10 h-10 rounded-xl flex items-center justify-center ${iconBg}`}
+        >
           <Icon className={`w-5 h-5 ${iconColor}`} />
         </div>
         {trend && (
-          <div className={`flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-full ${trend.up ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"}`}>
+          <div
+            className={`flex items-center gap-1 text-[11px] font-bold px-2 py-1 rounded-full ${trend.up ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"}`}
+          >
             <TrendingUp className={`w-3 h-3 ${!trend.up && "rotate-180"}`} />
             {trend.value}
           </div>
         )}
       </div>
       <div>
-        <div className="text-2xl font-black text-navy tracking-tight">{value}</div>
-        <div className="text-[12.5px] font-semibold text-gray-500 mt-0.5">{label}</div>
-        {sub && <div className="text-[11px] font-medium text-gray-400 mt-0.5">{sub}</div>}
+        <div className="text-2xl font-black text-navy tracking-tight">
+          {value}
+        </div>
+        <div className="text-[12.5px] font-semibold text-gray-500 mt-0.5">
+          {label}
+        </div>
+        {sub && (
+          <div className="text-[11px] font-medium text-gray-400 mt-0.5">
+            {sub}
+          </div>
+        )}
       </div>
       <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
         <ArrowUpRight className="w-4 h-4 text-gray-300" />
@@ -67,15 +132,30 @@ function KpiCard({
 }
 
 // --- Section Header ---
-function SectionHeader({ title, sub, href, linkLabel }: { title: string; sub?: string; href?: string; linkLabel?: string }) {
+function SectionHeader({
+  title,
+  sub,
+  href,
+  linkLabel,
+}: {
+  title: string;
+  sub?: string;
+  href?: string;
+  linkLabel?: string;
+}) {
   return (
     <div className="flex items-center justify-between mb-4">
       <div>
         <h2 className="text-base font-black text-navy">{title}</h2>
-        {sub && <p className="text-[12px] font-medium text-gray-400 mt-0.5">{sub}</p>}
+        {sub && (
+          <p className="text-[12px] font-medium text-gray-400 mt-0.5">{sub}</p>
+        )}
       </div>
       {href && linkLabel && (
-        <Link href={href} className="flex items-center gap-1 text-xs font-bold text-coral hover:text-coral-dark transition-colors">
+        <Link
+          href={href}
+          className="flex items-center gap-1 text-xs font-bold text-coral hover:text-coral-dark transition-colors"
+        >
           {linkLabel} <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       )}
@@ -87,19 +167,26 @@ function SectionHeader({ title, sub, href, linkLabel }: { title: string; sub?: s
 function DriverView() {
   const { data: session } = useSession();
   const [assignments, setAssignments] = useState<any[]>([]);
-  const [loading, setLoading]         = useState(true);
-  const [updating, setUpdating]       = useState<string | null>(null);
-  const [selected, setSelected]       = useState<any | null>(null);
-  const [note, setNote]               = useState("");
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState<string | null>(null);
+  const [selected, setSelected] = useState<any | null>(null);
+  const [note, setNote] = useState("");
 
   const fetchJobs = useCallback(async () => {
     try {
       const r = await fetch("/api/driver/jobs");
       if (r.ok) setAssignments(await r.json());
-    } catch {} finally { setLoading(false); }
+    } catch {
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  useEffect(() => { fetchJobs(); const t = setInterval(fetchJobs, 30000); return () => clearInterval(t); }, [fetchJobs]);
+  useEffect(() => {
+    fetchJobs();
+    const t = setInterval(fetchJobs, 30000);
+    return () => clearInterval(t);
+  }, [fetchJobs]);
 
   const updateStatus = async (id: string, jobStatus: string) => {
     setUpdating(id);
@@ -110,39 +197,61 @@ function DriverView() {
     });
     await fetchJobs();
     setUpdating(null);
-    if (selected?.id === id) setSelected((prev: any) => prev ? { ...prev, jobStatus } : null);
+    if (selected?.id === id)
+      setSelected((prev: any) => (prev ? { ...prev, jobStatus } : null));
   };
 
-  const todayStr  = new Date().toISOString().split("T")[0];
-  const todayJobs = assignments.filter(a => a.booking.eventDate.startsWith(todayStr));
-  const upcoming  = assignments.filter(a => !a.booking.eventDate.startsWith(todayStr));
-  const mapsUrl   = (a: any) =>
+  const todayStr = new Date().toISOString().split("T")[0];
+  const todayJobs = assignments.filter((a) =>
+    a.booking.eventDate.startsWith(todayStr),
+  );
+  const upcoming = assignments.filter(
+    (a) => !a.booking.eventDate.startsWith(todayStr),
+  );
+  const mapsUrl = (a: any) =>
     `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${a.booking.address},${a.booking.city},MA ${a.booking.zip}`)}`;
 
-  if (loading) return (
-    <div className="flex items-center justify-center py-20">
-      <Loader2 className="w-8 h-8 animate-spin text-coral" />
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="w-8 h-8 animate-spin text-coral" />
+      </div>
+    );
 
   const firstName = session?.user?.name?.split(" ")[0] || "Driver";
-  const statusOpt = (s: string) => STATUS_DRIVER.find(o => o.value === s) ?? STATUS_DRIVER[0];
+  const statusOpt = (s: string) =>
+    STATUS_DRIVER.find((o) => o.value === s) ?? STATUS_DRIVER[0];
 
   const renderCard = (a: any) => {
-    const s   = statusOpt(a.jobStatus);
+    const s = statusOpt(a.jobStatus);
     const date = new Date(a.booking.eventDate);
-    const dateStr = date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+    const dateStr = date.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
     return (
-      <div key={a.id}
-        onClick={() => { setSelected(a); setNote(a.driverNote || ""); }}
+      <div
+        key={a.id}
+        onClick={() => {
+          setSelected(a);
+          setNote(a.driverNote || "");
+        }}
         className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 cursor-pointer hover:shadow-md hover:border-coral/20 transition-all"
       >
         <div className="flex items-start justify-between mb-4">
           <div>
-            <div className="text-sm font-black text-navy">{a.booking.customer?.firstName} {a.booking.customer?.lastName}</div>
-            <div className="text-xs text-gray-500 mt-0.5">{dateStr} · {a.booking.startTime}</div>
+            <div className="text-sm font-black text-navy">
+              {a.booking.customer?.firstName} {a.booking.customer?.lastName}
+            </div>
+            <div className="text-xs text-gray-500 mt-0.5">
+              {dateStr} · {a.booking.startTime}
+            </div>
           </div>
-          <span className="text-[10px] font-black px-2.5 py-1 rounded-full" style={{ background: s.bg, color: s.color }}>
+          <span
+            className="text-[10px] font-black px-2.5 py-1 rounded-full"
+            style={{ background: s.bg, color: s.color }}
+          >
             {s.label}
           </span>
         </div>
@@ -151,17 +260,31 @@ function DriverView() {
           {a.booking.address}, {a.booking.city}
         </div>
         <div className="flex gap-2">
-          <a href={mapsUrl(a)} target="_blank" rel="noopener noreferrer"
+          <a
+            href={mapsUrl(a)}
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex-1 flex items-center justify-center gap-1 py-2 bg-navy text-white rounded-xl text-xs font-bold"
-            onClick={e => e.stopPropagation()}>
+            onClick={(e) => e.stopPropagation()}
+          >
             <Map className="w-3.5 h-3.5" /> Navigate
           </a>
-          {STATUS_DRIVER.filter(o => o.value !== a.jobStatus).map(opt => (
-            <button key={opt.value} onClick={e => { e.stopPropagation(); updateStatus(a.id, opt.value); }}
+          {STATUS_DRIVER.filter((o) => o.value !== a.jobStatus).map((opt) => (
+            <button
+              key={opt.value}
+              onClick={(e) => {
+                e.stopPropagation();
+                updateStatus(a.id, opt.value);
+              }}
               disabled={updating === a.id}
               className="flex-1 py-2 rounded-xl text-xs font-bold border border-gray-200 hover:border-coral/30 transition-colors"
-              style={{ color: opt.color }}>
-              {updating === a.id ? <Loader2 className="w-3 h-3 animate-spin mx-auto" /> : opt.label}
+              style={{ color: opt.color }}
+            >
+              {updating === a.id ? (
+                <Loader2 className="w-3 h-3 animate-spin mx-auto" />
+              ) : (
+                opt.label
+              )}
             </button>
           ))}
         </div>
@@ -173,7 +296,9 @@ function DriverView() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-black text-navy">Hi, {firstName} 👋</h1>
-        <p className="text-sm text-gray-500 font-medium mt-1">Here are your assignments</p>
+        <p className="text-sm text-gray-500 font-medium mt-1">
+          Here are your assignments
+        </p>
       </div>
       {todayJobs.length > 0 && (
         <div>
@@ -200,26 +325,37 @@ function DriverView() {
 // ─── Main Dashboard ─────────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const { data: session } = useSession();
-  const userRole = session?.user?.email === "saadmoad2004@gmail.com" ? "OWNER" : ((session?.user as any)?.role || "OWNER");
-  const userName = session?.user?.name || session?.user?.email?.split("@")[0] || "Admin";
-  const [data, setData]       = useState<any>(null);
+  const userRole =
+    session?.user?.email === "saadmoad2004@gmail.com"
+      ? "OWNER"
+      : (session?.user as any)?.role || "OWNER";
+  const userName =
+    session?.user?.name || session?.user?.email?.split("@")[0] || "Admin";
+  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
-    if (userRole === "DRIVER") { setLoading(false); return; }
+    if (userRole === "DRIVER") {
+      setLoading(false);
+      return;
+    }
     try {
-      const res  = await fetch("/api/admin/dashboard", { cache: "no-store" });
+      const res = await fetch("/api/admin/dashboard", { cache: "no-store" });
       const text = await res.text();
       const json = text ? JSON.parse(text) : null;
       if (!res.ok) throw new Error(json?.error || `API error ${res.status}`);
       setData(json?.data ?? json);
     } catch (err: any) {
       setError(err.message || "Failed to load dashboard");
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }, [userRole]);
 
-  useEffect(() => { loadData(); }, [loadData]);
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   if (userRole === "DRIVER") return <DriverView />;
 
@@ -228,47 +364,69 @@ export default function AdminDashboard() {
     return h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
   };
 
-  if (loading) return (
-    <div className="space-y-6 animate-pulse">
-      <div className="h-8 w-64 bg-gray-200 rounded-xl mb-2" />
-      <div className="h-4 w-40 bg-gray-100 rounded-lg" />
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
-        {[...Array(6)].map((_,i) => <div key={i} className="h-32 bg-white rounded-2xl border border-gray-100" />)}
+  if (loading)
+    return (
+      <div className="space-y-6 animate-pulse">
+        <div className="h-8 w-64 bg-gray-200 rounded-xl mb-2" />
+        <div className="h-4 w-40 bg-gray-100 rounded-lg" />
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="h-32 bg-white rounded-2xl border border-gray-100"
+            />
+          ))}
+        </div>
+        <div className="grid xl:grid-cols-3 gap-6">
+          <div className="xl:col-span-2 h-80 bg-white rounded-2xl border border-gray-100" />
+          <div className="h-80 bg-white rounded-2xl border border-gray-100" />
+        </div>
       </div>
-      <div className="grid xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 h-80 bg-white rounded-2xl border border-gray-100" />
-        <div className="h-80 bg-white rounded-2xl border border-gray-100" />
-      </div>
-    </div>
-  );
+    );
 
-  if (error) return (
-    <div className="flex flex-col items-center justify-center py-20 text-center">
-      <div className="w-14 h-14 rounded-full bg-red-50 border border-red-100 flex items-center justify-center mb-4">
-        <AlertCircle className="w-6 h-6 text-red-400" />
+  if (error)
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <div className="w-14 h-14 rounded-full bg-red-50 border border-red-100 flex items-center justify-center mb-4">
+          <AlertCircle className="w-6 h-6 text-red-400" />
+        </div>
+        <h2 className="text-lg font-black text-navy mb-2">Dashboard Error</h2>
+        <p className="text-sm text-gray-500 font-medium">{error}</p>
+        <button
+          onClick={() => {
+            setLoading(true);
+            setError(null);
+            loadData();
+          }}
+          className="mt-4 px-4 py-2 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors flex items-center gap-2"
+        >
+          <RefreshCw className="w-4 h-4" /> Retry
+        </button>
       </div>
-      <h2 className="text-lg font-black text-navy mb-2">Dashboard Error</h2>
-      <p className="text-sm text-gray-500 font-medium">{error}</p>
-      <button onClick={() => { setLoading(true); setError(null); loadData(); }}
-        className="mt-4 px-4 py-2 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors flex items-center gap-2">
-        <RefreshCw className="w-4 h-4" /> Retry
-      </button>
-    </div>
-  );
+    );
 
   if (!data) return null;
 
-  const { stats, todayBookings = [], pendingBookings = [], recentBookings = [], upcomingBookings = [], vehicles = [], revenueChart = [] } = data;
+  const {
+    stats,
+    todayBookings = [],
+    pendingBookings = [],
+    recentBookings = [],
+    upcomingBookings = [],
+    vehicles = [],
+    revenueChart = [],
+  } = data;
 
   // Colors are embedded in data so .filter() doesn't break color-index alignment
   const bookingsByStatus = [
-    { name: "Confirmed",  value: stats?.confirmed ?? 0, color: "#10B981" },
-    { name: "Cancelled",  value: stats?.cancelled ?? 0, color: "#FF6B6B" },
-    { name: "Pending",    value: stats?.pending   ?? 0, color: "#F59E0B" },
-    { name: "Completed",  value: stats?.completed ?? 0, color: "#6B7280" },
-  ].filter(b => b.value > 0);
+    { name: "Confirmed", value: stats?.confirmed ?? 0, color: "#10B981" },
+    { name: "Cancelled", value: stats?.cancelled ?? 0, color: "#FF6B6B" },
+    { name: "Pending", value: stats?.pending ?? 0, color: "#F59E0B" },
+    { name: "Completed", value: stats?.completed ?? 0, color: "#6B7280" },
+  ].filter((b) => b.value > 0);
 
-  const formatCurrency = (v: number) => v >= 1000 ? `$${(v/1000).toFixed(1)}k` : `$${v.toFixed(0)}`;
+  const formatCurrency = (v: number) =>
+    v >= 1000 ? `$${(v / 1000).toFixed(1)}k` : `$${v.toFixed(0)}`;
 
   return (
     <div className="space-y-8">
@@ -279,23 +437,37 @@ export default function AdminDashboard() {
             {greeting()}, {userName.split(" ")[0]} 👋
           </h1>
           <p className="text-sm font-medium text-gray-400 mt-1">
-            {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={() => { setLoading(true); loadData(); }}
-            className="flex items-center gap-2 px-3 py-2.5 bg-white rounded-xl border border-gray-200 text-sm font-bold text-gray-500 hover:border-gray-300 transition-all shadow-sm">
+          <button
+            onClick={() => {
+              setLoading(true);
+              loadData();
+            }}
+            className="flex items-center gap-2 px-3 py-2.5 bg-white rounded-xl border border-gray-200 text-sm font-bold text-gray-500 hover:border-gray-300 transition-all shadow-sm"
+          >
             <RefreshCw className="w-4 h-4" />
           </button>
           {stats?.pending > 0 && (
-            <Link href="/admin/bookings?status=PENDING_REVIEW"
-              className="flex items-center gap-2 px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-xl text-sm font-bold text-amber-700 hover:bg-amber-100 transition-all shadow-sm">
+            <Link
+              href="/admin/bookings?status=PENDING_REVIEW"
+              className="flex items-center gap-2 px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-xl text-sm font-bold text-amber-700 hover:bg-amber-100 transition-all shadow-sm"
+            >
               <AlertCircle className="w-4 h-4" />
               {stats.pending} Pending Review
             </Link>
           )}
-          <Link href="/packages" target="_blank"
-            className="flex items-center gap-2 px-4 py-2.5 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors shadow-sm">
+          <Link
+            href="/packages"
+            target="_blank"
+            className="flex items-center gap-2 px-4 py-2.5 bg-coral text-white rounded-xl text-sm font-bold hover:bg-coral-dark transition-colors shadow-sm"
+          >
             <Plus className="w-4 h-4" />
             New Booking
           </Link>
@@ -304,60 +476,144 @@ export default function AdminDashboard() {
 
       {/* ── KPI Cards ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
-        <KpiCard label="Total Bookings" value={String(stats?.totalBookings ?? 0)}
-          icon={CalendarDays} iconBg="bg-blue-50" iconColor="text-blue-500"
-          href="/admin/bookings" />
+        <KpiCard
+          label="Total Bookings"
+          value={String(stats?.totalBookings ?? 0)}
+          icon={CalendarDays}
+          iconBg="bg-blue-50"
+          iconColor="text-blue-500"
+          href="/admin/bookings"
+        />
         {userRole !== "SUPPORT" && (
-          <KpiCard label="Monthly Revenue" value={formatCurrency(stats?.monthRevenue ?? 0)}
-            icon={DollarSign} iconBg="bg-green-50" iconColor="text-green-500"
-            href="/admin/bookings" highlight />
+          <KpiCard
+            label="Monthly Revenue"
+            value={formatCurrency(stats?.monthRevenue ?? 0)}
+            icon={DollarSign}
+            iconBg="bg-green-50"
+            iconColor="text-green-500"
+            href="/admin/bookings"
+            highlight
+          />
         )}
-        <KpiCard label="Confirmed" value={String(stats?.confirmed ?? 0)}
-          icon={CheckCircle2} iconBg="bg-emerald-50" iconColor="text-emerald-500"
-          href="/admin/bookings?status=CONFIRMED" />
-        <KpiCard label="Pending Review" value={String(stats?.pending ?? 0)}
-          icon={AlertCircle} iconBg="bg-amber-50" iconColor="text-amber-500"
+        <KpiCard
+          label="Confirmed"
+          value={String(stats?.confirmed ?? 0)}
+          icon={CheckCircle2}
+          iconBg="bg-emerald-50"
+          iconColor="text-emerald-500"
+          href="/admin/bookings?status=CONFIRMED"
+        />
+        <KpiCard
+          label="Pending Review"
+          value={String(stats?.pending ?? 0)}
+          icon={AlertCircle}
+          iconBg="bg-amber-50"
+          iconColor="text-amber-500"
           href="/admin/bookings?status=PENDING_REVIEW"
-          sub={stats?.pending > 0 ? "Needs attention" : "All clear"} />
-        <KpiCard label="Customers" value={String(stats?.totalCustomers ?? 0)}
-          icon={Users} iconBg="bg-purple-50" iconColor="text-purple-500"
-          href="/admin/customers" />
-        <KpiCard label="Today's Jobs" value={String(stats?.todayJobs ?? 0)}
-          icon={Activity} iconBg="bg-indigo-50" iconColor="text-indigo-500"
+          sub={stats?.pending > 0 ? "Needs attention" : "All clear"}
+        />
+        <KpiCard
+          label="Customers"
+          value={String(stats?.totalCustomers ?? 0)}
+          icon={Users}
+          iconBg="bg-purple-50"
+          iconColor="text-purple-500"
+          href="/admin/customers"
+        />
+        <KpiCard
+          label="Today's Jobs"
+          value={String(stats?.todayJobs ?? 0)}
+          icon={Activity}
+          iconBg="bg-indigo-50"
+          iconColor="text-indigo-500"
           href="/admin/calendar"
-          sub={new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })} />
+          sub={new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })}
+        />
       </div>
 
       {/* ── Revenue Chart + Pie ── */}
       <div className="grid xl:grid-cols-3 gap-6">
         {/* Revenue Chart */}
         <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-          <SectionHeader title="Revenue Overview" sub="Last 7 days (confirmed & completed bookings)" />
+          <SectionHeader
+            title="Revenue Overview"
+            sub="Last 7 days (confirmed & completed bookings)"
+          />
           <div className="flex items-end gap-3 mb-6">
-            <span className="text-3xl font-black text-navy">{formatCurrency(stats?.weekRevenue ?? 0)}</span>
-            <span className="text-xs font-bold text-gray-400 mb-1">this week</span>
+            <span className="text-3xl font-black text-navy">
+              {formatCurrency(stats?.weekRevenue ?? 0)}
+            </span>
+            <span className="text-xs font-bold text-gray-400 mb-1">
+              this week
+            </span>
             {userRole !== "SUPPORT" && (
               <span className="ml-auto text-xs font-semibold text-gray-500">
-                All time: <span className="font-black text-navy">{formatCurrency(stats?.allTimeRevenue ?? 0)}</span>
+                All time:{" "}
+                <span className="font-black text-navy">
+                  {formatCurrency(stats?.allTimeRevenue ?? 0)}
+                </span>
               </span>
             )}
           </div>
           <div className="h-56 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueChart} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+              <AreaChart
+                data={revenueChart}
+                margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
+              >
                 <defs>
                   <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%"   stopColor="#FF6B6B" stopOpacity={0.25} />
+                    <stop offset="0%" stopColor="#FF6B6B" stopOpacity={0.25} />
                     <stop offset="100%" stopColor="#FF6B6B" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#F1F5F9" />
-                <XAxis dataKey="day" tick={{ fontSize: 11, fontWeight: 600, fill: "#94A3B8" }} axisLine={false} tickLine={false} dy={10} />
-                <YAxis tick={{ fontSize: 11, fontWeight: 600, fill: "#94A3B8" }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
-                <Tooltip formatter={(v: any) => [`$${Number(v).toFixed(2)}`, "Revenue"]}
-                  contentStyle={{ borderRadius: 12, border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.10)", fontWeight: 600, fontSize: 13 }} />
-                <Area type="monotone" dataKey="revenue" stroke="#FF6B6B" strokeWidth={2.5} fill="url(#revGrad)"
-                  activeDot={{ r: 5, fill: "#0A1128", stroke: "#FF6B6B", strokeWidth: 2.5 }} />
+                <CartesianGrid
+                  strokeDasharray="4 4"
+                  vertical={false}
+                  stroke="#F1F5F9"
+                />
+                <XAxis
+                  dataKey="day"
+                  tick={{ fontSize: 11, fontWeight: 600, fill: "#94A3B8" }}
+                  axisLine={false}
+                  tickLine={false}
+                  dy={10}
+                />
+                <YAxis
+                  tick={{ fontSize: 11, fontWeight: 600, fill: "#94A3B8" }}
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(v) => `$${v}`}
+                />
+                <Tooltip
+                  formatter={(v: any) => [
+                    `$${Number(v).toFixed(2)}`,
+                    "Revenue",
+                  ]}
+                  contentStyle={{
+                    borderRadius: 12,
+                    border: "none",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.10)",
+                    fontWeight: 600,
+                    fontSize: 13,
+                  }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#FF6B6B"
+                  strokeWidth={2.5}
+                  fill="url(#revGrad)"
+                  activeDot={{
+                    r: 5,
+                    fill: "#0A1128",
+                    stroke: "#FF6B6B",
+                    strokeWidth: 2.5,
+                  }}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -371,19 +627,45 @@ export default function AdminDashboard() {
               <div className="h-44 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={bookingsByStatus} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={3} dataKey="value">
-                      {bookingsByStatus.map((entry, idx) => <Cell key={idx} fill={entry.color} />)}
+                    <Pie
+                      data={bookingsByStatus}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={75}
+                      paddingAngle={3}
+                      dataKey="value"
+                    >
+                      {bookingsByStatus.map((entry, idx) => (
+                        <Cell key={idx} fill={entry.color} />
+                      ))}
                     </Pie>
-                    <Tooltip contentStyle={{ borderRadius: 12, border: "none", boxShadow: "0 8px 24px rgba(0,0,0,0.10)", fontWeight: 600, fontSize: 13 }} />
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: 12,
+                        border: "none",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.10)",
+                        fontWeight: 600,
+                        fontSize: 13,
+                      }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
               <div className="space-y-2 mt-2">
                 {bookingsByStatus.map((item, idx) => (
-                  <div key={item.name} className="flex items-center justify-between text-sm">
+                  <div
+                    key={item.name}
+                    className="flex items-center justify-between text-sm"
+                  >
                     <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: item.color }} />
-                      <span className="font-semibold text-gray-600">{item.name}</span>
+                      <div
+                        className="w-2.5 h-2.5 rounded-full"
+                        style={{ background: item.color }}
+                      />
+                      <span className="font-semibold text-gray-600">
+                        {item.name}
+                      </span>
                     </div>
                     <span className="font-bold text-navy">{item.value}</span>
                   </div>
@@ -393,7 +675,9 @@ export default function AdminDashboard() {
           ) : (
             <div className="py-12 text-center">
               <BarChart3 className="w-10 h-10 text-gray-200 mx-auto mb-2" />
-              <p className="text-sm text-gray-400 font-medium">No bookings yet</p>
+              <p className="text-sm text-gray-400 font-medium">
+                No bookings yet
+              </p>
             </div>
           )}
         </div>
@@ -406,9 +690,14 @@ export default function AdminDashboard() {
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <div>
               <h2 className="text-sm font-black text-navy">Recent Bookings</h2>
-              <p className="text-xs text-gray-400 font-medium mt-0.5">Latest booking activity</p>
+              <p className="text-xs text-gray-400 font-medium mt-0.5">
+                Latest booking activity
+              </p>
             </div>
-            <Link href="/admin/bookings" className="text-xs font-bold text-coral hover:text-coral-dark flex items-center gap-1 transition-colors">
+            <Link
+              href="/admin/bookings"
+              className="text-xs font-bold text-coral hover:text-coral-dark flex items-center gap-1 transition-colors"
+            >
               View all <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -418,39 +707,75 @@ export default function AdminDashboard() {
                 <CalendarDays className="w-5 h-5 text-gray-300" />
               </div>
               <p className="font-bold text-gray-500 text-sm">No bookings yet</p>
-              <p className="text-xs text-gray-400 mt-1">Bookings will appear here once created 🍦</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Bookings will appear here once created 🍦
+              </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px]">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/50">
-                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Ref</th>
-                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Client</th>
-                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Package</th>
-                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">Amount</th>
-                    <th className="px-5 py-3 text-right text-[11px] font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                      Ref
+                    </th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                      Client
+                    </th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                      Package
+                    </th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                      Amount
+                    </th>
+                    <th className="px-5 py-3 text-right text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                      Status
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {recentBookings.map((b: any) => {
-                    const sc = STATUS_COLORS[b.status] ?? { bg: "#F8FAFC", text: "#475569", border: "#CBD5E1" };
+                    const sc = STATUS_COLORS[b.status] ?? {
+                      bg: "#F8FAFC",
+                      text: "#475569",
+                      border: "#CBD5E1",
+                    };
                     return (
-                      <tr key={b.id} className="hover:bg-gray-50/50 transition-colors">
+                      <tr
+                        key={b.id}
+                        className="hover:bg-gray-50/50 transition-colors"
+                      >
                         <td className="px-5 py-3.5">
-                          <Link href={`/admin/bookings/${b.id}`} className="text-xs font-black text-coral hover:underline">
+                          <Link
+                            href={`/admin/bookings/${b.id}`}
+                            className="text-xs font-black text-coral hover:underline"
+                          >
                             #{b.bookingNumber}
                           </Link>
                         </td>
                         <td className="px-5 py-3.5">
-                          <div className="font-bold text-navy text-sm">{b.customer.firstName} {b.customer.lastName}</div>
-                          <div className="text-[11px] text-gray-400 font-medium">{b.city} · {b.eventType}</div>
+                          <div className="font-bold text-navy text-sm">
+                            {b.customer.firstName} {b.customer.lastName}
+                          </div>
+                          <div className="text-[11px] text-gray-400 font-medium">
+                            {b.city} · {b.eventType}
+                          </div>
                         </td>
-                        <td className="px-5 py-3.5 text-sm text-gray-600 font-medium">{b.package?.name || "—"}</td>
-                        <td className="px-5 py-3.5 text-sm font-black text-navy">${(b.totalAmount || 0).toFixed(0)}</td>
+                        <td className="px-5 py-3.5 text-sm text-gray-600 font-medium">
+                          {b.package?.name || "—"}
+                        </td>
+                        <td className="px-5 py-3.5 text-sm font-black text-navy">
+                          ${(b.totalAmount || 0).toFixed(0)}
+                        </td>
                         <td className="px-5 py-3.5 text-right whitespace-nowrap">
-                          <span className="inline-flex px-2.5 py-1 rounded-full text-[10.5px] font-bold border"
-                            style={{ background: sc.bg, color: sc.text, borderColor: sc.border }}>
+                          <span
+                            className="inline-flex px-2.5 py-1 rounded-full text-[10.5px] font-bold border"
+                            style={{
+                              background: sc.bg,
+                              color: sc.text,
+                              borderColor: sc.border,
+                            }}
+                          >
                             {b.status.replace(/_/g, " ")}
                           </span>
                         </td>
@@ -469,7 +794,9 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-amber-500" />
-              <span className="text-sm font-black text-navy">Needs Approval</span>
+              <span className="text-sm font-black text-navy">
+                Needs Approval
+              </span>
               {pendingBookings.length > 0 && (
                 <span className="ml-auto text-[10px] font-black bg-amber-50 text-amber-600 border border-amber-200 px-2 py-0.5 rounded-full">
                   {pendingBookings.length}
@@ -479,20 +806,31 @@ export default function AdminDashboard() {
             {pendingBookings.length === 0 ? (
               <div className="py-8 flex flex-col items-center text-center">
                 <CheckCircle2 className="w-8 h-8 text-green-400 mb-2" />
-                <p className="text-sm font-bold text-gray-500">All caught up!</p>
-                <p className="text-xs text-gray-400 mt-0.5">No pending approvals.</p>
+                <p className="text-sm font-bold text-gray-500">
+                  All caught up!
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  No pending approvals.
+                </p>
               </div>
             ) : (
               <div className="divide-y divide-gray-50 max-h-60 overflow-y-auto">
                 {pendingBookings.map((b: any) => (
-                  <Link key={b.id} href={`/admin/bookings/${b.id}`}
-                    className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors group">
+                  <Link
+                    key={b.id}
+                    href={`/admin/bookings/${b.id}`}
+                    className="flex items-center gap-3 p-4 hover:bg-gray-50 transition-colors group"
+                  >
                     <div className="w-9 h-9 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center font-black text-amber-700 text-sm flex-shrink-0">
                       {b.customer.firstName.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-bold text-navy text-sm truncate">{b.customer.firstName} {b.customer.lastName}</div>
-                      <div className="text-xs text-gray-400 font-medium mt-0.5">${(b.totalAmount||0).toFixed(0)} · {b.eventType}</div>
+                      <div className="font-bold text-navy text-sm truncate">
+                        {b.customer.firstName} {b.customer.lastName}
+                      </div>
+                      <div className="text-xs text-gray-400 font-medium mt-0.5">
+                        ${(b.totalAmount || 0).toFixed(0)} · {b.eventType}
+                      </div>
                     </div>
                     <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-coral transition-colors" />
                   </Link>
@@ -506,34 +844,58 @@ export default function AdminDashboard() {
             <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-indigo-500" />
-                <span className="text-sm font-black text-navy">Upcoming Events</span>
+                <span className="text-sm font-black text-navy">
+                  Upcoming Events
+                </span>
               </div>
-              <Link href="/admin/calendar" className="text-xs font-bold text-coral hover:text-coral-dark transition-colors">View</Link>
+              <Link
+                href="/admin/calendar"
+                className="text-xs font-bold text-coral hover:text-coral-dark transition-colors"
+              >
+                View
+              </Link>
             </div>
             {upcomingBookings.length === 0 ? (
               <div className="py-8 text-center">
-                <p className="text-sm text-gray-400 font-medium">No upcoming events</p>
+                <p className="text-sm text-gray-400 font-medium">
+                  No upcoming events
+                </p>
               </div>
             ) : (
               <div className="divide-y divide-gray-50">
                 {upcomingBookings.map((b: any) => {
-                  const sc = STATUS_COLORS[b.status] ?? { bg: "#F8FAFC", text: "#475569", border: "#CBD5E1" };
+                  const sc = STATUS_COLORS[b.status] ?? {
+                    bg: "#F8FAFC",
+                    text: "#475569",
+                    border: "#CBD5E1",
+                  };
                   const d = new Date(b.eventDate);
                   return (
-                    <Link key={b.id} href={`/admin/bookings/${b.id}`}
-                      className="flex items-center gap-3 p-3.5 hover:bg-gray-50 transition-colors group">
+                    <Link
+                      key={b.id}
+                      href={`/admin/bookings/${b.id}`}
+                      className="flex items-center gap-3 p-3.5 hover:bg-gray-50 transition-colors group"
+                    >
                       <div className="w-10 h-10 bg-indigo-50 rounded-xl flex flex-col items-center justify-center flex-shrink-0">
                         <span className="text-[10px] font-bold text-indigo-500 uppercase leading-none">
                           {d.toLocaleDateString("en-US", { month: "short" })}
                         </span>
-                        <span className="text-sm font-black text-indigo-700 leading-none">{d.getDate()}</span>
+                        <span className="text-sm font-black text-indigo-700 leading-none">
+                          {d.getDate()}
+                        </span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="font-bold text-navy text-xs truncate">{b.customer.firstName} {b.customer.lastName}</div>
-                        <div className="text-[11px] text-gray-400 font-medium">{b.startTime} · {b.city}</div>
+                        <div className="font-bold text-navy text-xs truncate">
+                          {b.customer.firstName} {b.customer.lastName}
+                        </div>
+                        <div className="text-[11px] text-gray-400 font-medium">
+                          {b.startTime} · {b.city}
+                        </div>
                       </div>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0"
-                        style={{ background: sc.bg, color: sc.text }}>
+                      <span
+                        className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0"
+                        style={{ background: sc.bg, color: sc.text }}
+                      >
                         {b.status.replace(/_/g, " ")}
                       </span>
                     </Link>
@@ -549,30 +911,53 @@ export default function AdminDashboard() {
               <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Truck className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm font-black text-navy">Fleet Status</span>
+                  <span className="text-sm font-black text-navy">
+                    Fleet Status
+                  </span>
                 </div>
-                <Link href="/admin/vehicles" className="text-xs font-bold text-coral hover:text-coral-dark transition-colors">Manage</Link>
+                <Link
+                  href="/admin/vehicles"
+                  className="text-xs font-bold text-coral hover:text-coral-dark transition-colors"
+                >
+                  Manage
+                </Link>
               </div>
               <div className="p-2">
                 {vehicles.slice(0, 5).map((v: any) => {
-                  const statusColors: Record<string, { bg: string; text: string }> = {
-                    AVAILABLE:   { bg: "#ECFDF5", text: "#059669" },
-                    ON_JOB:      { bg: "#EFF6FF", text: "#2563EB" },
+                  const statusColors: Record<
+                    string,
+                    { bg: string; text: string }
+                  > = {
+                    AVAILABLE: { bg: "#ECFDF5", text: "#059669" },
+                    ON_JOB: { bg: "#EFF6FF", text: "#2563EB" },
                     MAINTENANCE: { bg: "#FEF2F2", text: "#DC2626" },
                   };
-                  const c = statusColors[v.status] ?? { bg: "#F8FAFC", text: "#475569" };
+                  const c = statusColors[v.status] ?? {
+                    bg: "#F8FAFC",
+                    text: "#475569",
+                  };
                   return (
-                    <div key={v.code} className="flex items-center justify-between p-2.5 hover:bg-gray-50 rounded-xl transition-colors">
+                    <div
+                      key={v.code}
+                      className="flex items-center justify-between p-2.5 hover:bg-gray-50 rounded-xl transition-colors"
+                    >
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-lg bg-gray-100 border border-gray-200 flex items-center justify-center text-sm">
                           {v.code.startsWith("VAN") ? "🚐" : "🚌"}
                         </div>
                         <div>
-                          <div className="text-xs font-bold text-navy">{v.code}</div>
-                          <div className="text-[10px] text-gray-400 font-medium">{v.type}</div>
+                          <div className="text-xs font-bold text-navy">
+                            {v.code}
+                          </div>
+                          <div className="text-[10px] text-gray-400 font-medium">
+                            {v.type}
+                          </div>
                         </div>
                       </div>
-                      <span className="text-[10px] font-black px-2 py-0.5 rounded-full" style={{ background: c.bg, color: c.text }}>
+                      <span
+                        className="text-[10px] font-black px-2 py-0.5 rounded-full"
+                        style={{ background: c.bg, color: c.text }}
+                      >
                         {v.status.replace("_", " ")}
                       </span>
                     </div>
@@ -588,19 +973,27 @@ export default function AdminDashboard() {
               <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Activity className="w-4 h-4 text-emerald-500" />
-                  <span className="text-sm font-black text-navy">Live Activity</span>
+                  <span className="text-sm font-black text-navy">
+                    Live Activity
+                  </span>
                 </div>
               </div>
               <div className="divide-y divide-gray-50 max-h-80 overflow-y-auto">
                 {data.activityFeed.map((log: any) => (
-                  <div key={log.id} className="p-3.5 hover:bg-gray-50 transition-colors flex gap-3 items-start">
+                  <div
+                    key={log.id}
+                    className="p-3.5 hover:bg-gray-50 transition-colors flex gap-3 items-start"
+                  >
                     <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-[10px] font-bold text-emerald-600 flex-shrink-0">
                       {log.actorName?.charAt(0)?.toUpperCase() ?? "S"}
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-navy">{log.action.replace(/_/g, " ")}</p>
+                      <p className="text-xs font-bold text-navy">
+                        {log.action.replace(/_/g, " ")}
+                      </p>
                       <p className="text-[10px] text-gray-400 mt-0.5">
-                        {log.actorName} · {new Date(log.createdAt).toLocaleString()}
+                        {log.actorName} ·{" "}
+                        {new Date(log.createdAt).toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -616,14 +1009,41 @@ export default function AdminDashboard() {
         <SectionHeader title="Quick Actions" sub="Common admin tasks" />
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { href: "/packages", label: "New Booking", icon: Plus, color: "bg-coral/10 text-coral", external: true },
-            { href: "/admin/inquiries", label: "View Inquiries", icon: Inbox, color: "bg-blue-50 text-blue-500" },
-            { href: "/admin/customers", label: "Customers", icon: Users, color: "bg-purple-50 text-purple-500" },
-            { href: "/admin/packages", label: "Packages", icon: Package, color: "bg-amber-50 text-amber-500" },
+            {
+              href: "/packages",
+              label: "New Booking",
+              icon: Plus,
+              color: "bg-coral/10 text-coral",
+              external: true,
+            },
+            {
+              href: "/admin/inquiries",
+              label: "View Inquiries",
+              icon: Inbox,
+              color: "bg-blue-50 text-blue-500",
+            },
+            {
+              href: "/admin/customers",
+              label: "Customers",
+              icon: Users,
+              color: "bg-purple-50 text-purple-500",
+            },
+            {
+              href: "/admin/packages",
+              label: "Packages",
+              icon: Package,
+              color: "bg-amber-50 text-amber-500",
+            },
           ].map(({ href, label, icon: Icon, color, external }) => (
-            <Link key={href} href={href} target={external ? "_blank" : undefined}
-              className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-4 hover:border-gray-200 hover:shadow-sm transition-all font-semibold text-sm text-gray-700 group">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}>
+            <Link
+              key={href}
+              href={href}
+              target={external ? "_blank" : undefined}
+              className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 p-4 hover:border-gray-200 hover:shadow-sm transition-all font-semibold text-sm text-gray-700 group"
+            >
+              <div
+                className={`w-9 h-9 rounded-xl flex items-center justify-center ${color}`}
+              >
                 <Icon className="w-4 h-4" />
               </div>
               {label}

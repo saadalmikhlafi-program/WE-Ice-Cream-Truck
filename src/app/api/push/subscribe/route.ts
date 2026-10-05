@@ -15,7 +15,10 @@ export async function POST(req: NextRequest) {
 
     const { endpoint, keys } = await req.json();
     if (!endpoint || !keys?.p256dh || !keys?.auth) {
-      return NextResponse.json({ error: "Invalid subscription object" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid subscription object" },
+        { status: 400 },
+      );
     }
 
     // Upsert subscription
@@ -24,14 +27,14 @@ export async function POST(req: NextRequest) {
       update: {
         userId: user.id,
         p256dh: keys.p256dh,
-        auth: keys.auth
+        auth: keys.auth,
       },
       create: {
         userId: user.id,
         endpoint,
         p256dh: keys.p256dh,
-        auth: keys.auth
-      }
+        auth: keys.auth,
+      },
     });
 
     return NextResponse.json({ success: true });

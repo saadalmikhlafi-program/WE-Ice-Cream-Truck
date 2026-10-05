@@ -6,7 +6,11 @@ import { requirePermission } from "@/lib/rbac";
 // GET /api/admin/conversations — list conversations for current user
 export async function GET(req: NextRequest) {
   const auth = await requirePermission(req, "ai.view");
-  if (!auth.success) return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+  if (!auth.success)
+    return NextResponse.json(
+      { success: false, error: auth.error },
+      { status: auth.status },
+    );
 
   try {
     const conversations = await prisma.conversation.findMany({
@@ -22,14 +26,21 @@ export async function GET(req: NextRequest) {
     });
     return NextResponse.json({ success: true, data: conversations });
   } catch (e: any) {
-    return NextResponse.json({ success: false, error: e.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: e.message },
+      { status: 500 },
+    );
   }
 }
 
 // POST /api/admin/conversations — create new conversation
 export async function POST(req: NextRequest) {
   const auth = await requirePermission(req, "ai.use");
-  if (!auth.success) return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+  if (!auth.success)
+    return NextResponse.json(
+      { success: false, error: auth.error },
+      { status: auth.status },
+    );
 
   try {
     const { title } = await req.json();
@@ -42,6 +53,9 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ success: true, data: conv });
   } catch (e: any) {
-    return NextResponse.json({ success: false, error: e.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: e.message },
+      { status: 500 },
+    );
   }
 }

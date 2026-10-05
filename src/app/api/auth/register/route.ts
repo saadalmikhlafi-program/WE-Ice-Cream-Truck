@@ -9,15 +9,23 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { action, email, password, firstName, lastName, phone, otp } = body;
 
-    if (!email) return NextResponse.json({ error: "Email is required" }, { status: 400 });
+    if (!email)
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
 
     if (action === "SEND_OTP") {
       // 1. Check if user already exists
-      const existingCustomer = await prisma.customer.findUnique({ where: { email: email.toLowerCase() } });
-      const existingUser = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
-      
+      const existingCustomer = await prisma.customer.findUnique({
+        where: { email: email.toLowerCase() },
+      });
+      const existingUser = await prisma.user.findUnique({
+        where: { email: email.toLowerCase() },
+      });
+
       if (existingCustomer || existingUser) {
-        return NextResponse.json({ error: "An account with this email already exists." }, { status: 400 });
+        return NextResponse.json(
+          { error: "An account with this email already exists." },
+          { status: 400 },
+        );
       }
 
       // 2. Generate and store OTP
@@ -30,18 +38,21 @@ export async function POST(req: Request) {
           code,
           expiresAt,
           purpose: "REGISTRATION",
-        }
+        },
       });
 
       // 3. Send email
       await sendOtpEmail(email, code, firstName, "GENERAL"); // Using GENERAL or PORTAL
-      
+
       return NextResponse.json({ success: true, message: "OTP sent to email" });
     }
 
     if (action === "VERIFY_AND_CREATE") {
       if (!otp || !password || !firstName || !lastName || !phone) {
-        return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        return NextResponse.json(
+          { error: "Missing required fields" },
+          { status: 400 },
+        );
       }
 
       // 1. Verify OTP
@@ -51,19 +62,22 @@ export async function POST(req: Request) {
           code: otp,
           purpose: "REGISTRATION",
           expiresAt: { gt: new Date() },
-          verified: false
+          verified: false,
         },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: "desc" },
       });
 
       if (!validOtp) {
-        return NextResponse.json({ error: "Invalid or expired verification code." }, { status: 400 });
+        return NextResponse.json(
+          { error: "Invalid or expired verification code." },
+          { status: 400 },
+        );
       }
 
       // Mark verified
       await prisma.otpCode.update({
         where: { id: validOtp.id },
-        data: { verified: true }
+        data: { verified: true },
       });
 
       // 2. Hash Password and Create Customer
@@ -76,20 +90,26 @@ export async function POST(req: Request) {
           lastName,
           email: email.toLowerCase(),
           phone,
-          passwordHash
-        }
+          passwordHash,
+        },
       });
 
       // 3. Send Welcome Email
       // Run in background so it doesn't block response
       sendWelcomeEmail(email, firstName).catch(console.error);
 
-      return NextResponse.json({ success: true, message: "Account created successfully" });
+      return NextResponse.json({
+        success: true,
+        message: "Account created successfully",
+      });
     }
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
   } catch (error: any) {
     console.error("Register API error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

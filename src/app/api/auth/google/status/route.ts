@@ -36,5 +36,8 @@ export async function DELETE() {
     },
   });
 
-  return NextResponse.json({ success: true, message: "Google Calendar disconnected" });
+  return NextResponse.json({
+    success: true,
+    message: "Google Calendar disconnected",
+  });
 }

@@ -32,13 +32,17 @@ export const AuditService = {
           aiType: params.aiType,
           aiProvider: params.aiProvider,
           aiModel: params.aiModel,
-          previousValue: params.previousValue ? JSON.stringify(params.previousValue) : null,
+          previousValue: params.previousValue
+            ? JSON.stringify(params.previousValue)
+            : null,
           newValue: params.newValue ? JSON.stringify(params.newValue) : null,
           result: params.result,
           errors: params.errors ? JSON.stringify(params.errors) : null,
           requestId: params.requestId,
           sessionId: params.sessionId,
-          metadataJson: params.metadataJson ? JSON.stringify(params.metadataJson) : null,
+          metadataJson: params.metadataJson
+            ? JSON.stringify(params.metadataJson)
+            : null,
           bookingId: params.bookingId,
         },
       });

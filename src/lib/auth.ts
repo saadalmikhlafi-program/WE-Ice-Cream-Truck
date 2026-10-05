@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
 
         try {
           const { prisma } = await import("@/lib/prisma");
-          
+
           // 1. Check Admin/Driver User table
           const user = await prisma.user.findUnique({
             where: { email: credentials.email.toLowerCase() },
@@ -26,15 +26,16 @@ export const authOptions: NextAuthOptions = {
           if (user && user.active) {
             const isPasswordValid = await bcrypt.compare(
               credentials.password,
-              user.passwordHash
+              user.passwordHash,
             );
 
             if (isPasswordValid) {
               let parsedPermissions: string[] = [];
               try {
-                parsedPermissions = typeof user.permissions === "string"
-                  ? JSON.parse(user.permissions)
-                  : (user.permissions as unknown as string[]);
+                parsedPermissions =
+                  typeof user.permissions === "string"
+                    ? JSON.parse(user.permissions)
+                    : (user.permissions as unknown as string[]);
               } catch {
                 parsedPermissions = [];
               }
@@ -57,7 +58,7 @@ export const authOptions: NextAuthOptions = {
           if (customer && customer.passwordHash) {
             const isCustomerPasswordValid = await bcrypt.compare(
               credentials.password,
-              customer.passwordHash
+              customer.passwordHash,
             );
 
             if (isCustomerPasswordValid) {

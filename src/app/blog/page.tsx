@@ -6,19 +6,45 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Our Stories | WE Ice Cream Truck Boston",
-  description: "Real events. Real smiles. Explore stories from birthday parties, corporate events, weddings, and more across Greater Boston with WE Ice Cream Truck.",
+  description:
+    "Real events. Real smiles. Explore stories from birthday parties, corporate events, weddings, and more across Greater Boston with WE Ice Cream Truck.",
 };
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string; dot: string }> = {
-  "Birthday Parties":   { bg: "bg-pink-50",   text: "text-pink-700",   dot: "bg-pink-400" },
-  "Corporate Events":   { bg: "bg-blue-50",   text: "text-blue-700",   dot: "bg-blue-400" },
-  "Weddings":           { bg: "bg-purple-50", text: "text-purple-700", dot: "bg-purple-400" },
-  "Community Events":   { bg: "bg-green-50",  text: "text-green-700",  dot: "bg-green-400" },
+const CATEGORY_COLORS: Record<
+  string,
+  { bg: string; text: string; dot: string }
+> = {
+  "Birthday Parties": {
+    bg: "bg-pink-50",
+    text: "text-pink-700",
+    dot: "bg-pink-400",
+  },
+  "Corporate Events": {
+    bg: "bg-blue-50",
+    text: "text-blue-700",
+    dot: "bg-blue-400",
+  },
+  Weddings: {
+    bg: "bg-purple-50",
+    text: "text-purple-700",
+    dot: "bg-purple-400",
+  },
+  "Community Events": {
+    bg: "bg-green-50",
+    text: "text-green-700",
+    dot: "bg-green-400",
+  },
 };
 
 function getCategoryStyle(name?: string | null) {
   if (!name) return { bg: "bg-coral/10", text: "text-coral", dot: "bg-coral" };
-  return CATEGORY_COLORS[name] || { bg: "bg-coral/10", text: "text-coral", dot: "bg-coral" };
+  return (
+    CATEGORY_COLORS[name] || {
+      bg: "bg-coral/10",
+      text: "text-coral",
+      dot: "bg-coral",
+    }
+  );
 }
 
 export default async function BlogPage() {
@@ -48,26 +74,31 @@ export default async function BlogPage() {
         <div className="relative max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-navy/5 backdrop-blur-sm border border-navy/10 rounded-full px-4 py-1.5 mb-6">
             <span className="w-2 h-2 rounded-full bg-coral animate-pulse" />
-            <span className="text-navy/80 text-sm font-semibold tracking-wide uppercase">Real Stories</span>
+            <span className="text-navy/80 text-sm font-semibold tracking-wide uppercase">
+              Real Stories
+            </span>
           </div>
           <h1 className="text-5xl md:text-6xl font-black text-navy mb-6 leading-tight">
             Moments That
             <span className="text-coral"> Matter</span>
           </h1>
           <p className="text-xl text-navy/70 max-w-2xl mx-auto leading-relaxed font-medium">
-            From backyard birthday parties to corporate summits and wedding receptions — 
-            real events, real smiles, all across Greater Boston.
+            From backyard birthday parties to corporate summits and wedding
+            receptions — real events, real smiles, all across Greater Boston.
           </p>
         </div>
       </section>
 
       <div className="max-w-7xl mx-auto px-6 py-16">
-
         {posts.length === 0 ? (
           <div className="text-center py-32">
             <div className="text-6xl mb-4">🍦</div>
-            <h2 className="text-2xl font-black text-navy mb-2">Stories Coming Soon</h2>
-            <p className="text-gray-500">We're out making memories — check back shortly!</p>
+            <h2 className="text-2xl font-black text-navy mb-2">
+              Stories Coming Soon
+            </h2>
+            <p className="text-gray-500">
+              We're out making memories — check back shortly!
+            </p>
           </div>
         ) : (
           <>
@@ -76,7 +107,9 @@ export default async function BlogPage() {
               <div className="mb-16">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-8 h-0.5 bg-coral" />
-                  <span className="text-coral font-bold text-sm uppercase tracking-widest">Featured Story</span>
+                  <span className="text-coral font-bold text-sm uppercase tracking-widest">
+                    Featured Story
+                  </span>
                 </div>
                 <Link href={`/blog/${featured.slug}`} className="group block">
                   <div className="grid md:grid-cols-2 gap-0 bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500">
@@ -93,23 +126,37 @@ export default async function BlogPage() {
                           <span className="text-6xl">🍦</span>
                         </div>
                       )}
-                      {featured.category && (() => {
-                        const style = getCategoryStyle(featured.category.name);
-                        return (
-                          <div className="absolute top-5 left-5">
-                            <span className={`inline-flex items-center gap-1.5 ${style.bg} ${style.text} px-3 py-1.5 rounded-full text-xs font-bold shadow-sm`}>
-                              <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
-                              {featured.category.name}
-                            </span>
-                          </div>
-                        );
-                      })()}
+                      {featured.category &&
+                        (() => {
+                          const style = getCategoryStyle(
+                            featured.category.name,
+                          );
+                          return (
+                            <div className="absolute top-5 left-5">
+                              <span
+                                className={`inline-flex items-center gap-1.5 ${style.bg} ${style.text} px-3 py-1.5 rounded-full text-xs font-bold shadow-sm`}
+                              >
+                                <span
+                                  className={`w-1.5 h-1.5 rounded-full ${style.dot}`}
+                                />
+                                {featured.category.name}
+                              </span>
+                            </div>
+                          );
+                        })()}
                     </div>
                     {/* Content */}
                     <div className="p-10 flex flex-col justify-center">
                       <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
                         {featured.publishedAt
-                          ? new Date(featured.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+                          ? new Date(featured.publishedAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "long",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )
                           : ""}
                       </div>
                       <h2 className="text-3xl md:text-4xl font-black text-navy mb-4 leading-tight group-hover:text-coral transition-colors duration-300">
@@ -135,7 +182,9 @@ export default async function BlogPage() {
               <>
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-8 h-0.5 bg-coral" />
-                  <span className="text-coral font-bold text-sm uppercase tracking-widest">All Stories</span>
+                  <span className="text-coral font-bold text-sm uppercase tracking-widest">
+                    All Stories
+                  </span>
                 </div>
 
                 {/* ── Grid ── */}
@@ -163,8 +212,12 @@ export default async function BlogPage() {
                           )}
                           {post.category && (
                             <div className="absolute top-3 left-3">
-                              <span className={`inline-flex items-center gap-1.5 ${style.bg} ${style.text} px-2.5 py-1 rounded-full text-[11px] font-bold shadow-sm`}>
-                                <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`} />
+                              <span
+                                className={`inline-flex items-center gap-1.5 ${style.bg} ${style.text} px-2.5 py-1 rounded-full text-[11px] font-bold shadow-sm`}
+                              >
+                                <span
+                                  className={`w-1.5 h-1.5 rounded-full ${style.dot}`}
+                                />
                                 {post.category.name}
                               </span>
                             </div>
@@ -175,7 +228,14 @@ export default async function BlogPage() {
                         <div className="flex flex-col flex-1 p-6">
                           <div className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">
                             {post.publishedAt
-                              ? new Date(post.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+                              ? new Date(post.publishedAt).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    month: "short",
+                                    day: "numeric",
+                                    year: "numeric",
+                                  },
+                                )
                               : ""}
                           </div>
                           <h3 className="text-lg font-black text-navy mb-3 leading-snug group-hover:text-coral transition-colors duration-200 line-clamp-2">
@@ -206,7 +266,8 @@ export default async function BlogPage() {
           Ready to Create Your Own Story?
         </h2>
         <p className="text-white/60 text-lg mb-8 max-w-xl mx-auto">
-          Book WE Ice Cream Truck for your next birthday, corporate event, or wedding and let us bring the joy.
+          Book WE Ice Cream Truck for your next birthday, corporate event, or
+          wedding and let us bring the joy.
         </p>
         <Link
           href="/packages"

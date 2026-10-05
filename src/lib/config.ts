@@ -248,12 +248,7 @@ export const BUSINESS_CONFIG = {
   languages: ["English", "Spanish", "Arabic"],
 
   // Payment methods
-  paymentMethods: [
-    "Cash",
-    "Credit Card",
-    "Debit Card",
-    "Check"
-  ],
+  paymentMethods: ["Cash", "Credit Card", "Debit Card", "Check"],
 
   // Cuisine types (for schema)
   cuisine: ["Ice Cream", "Frozen Desserts", "Soft Serve", "Novelties"],

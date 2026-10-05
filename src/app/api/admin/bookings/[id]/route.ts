@@ -1,16 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, hasPermission, unauthenticated, unauthorized } from "@/lib/rbac";
+import {
+  getSessionUser,
+  hasPermission,
+  unauthenticated,
+  unauthorized,
+} from "@/lib/rbac";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const user = await getSessionUser(req);
     if (!user) return unauthenticated();
 
     const canViewAll = hasPermission(user.role, "bookings.view");
-    const canViewAssigned = hasPermission(user.role, "bookings.view.assignedOnly");
+    const canViewAssigned = hasPermission(
+      user.role,
+      "bookings.view.assignedOnly",
+    );
 
     if (!canViewAll && !canViewAssigned) {
       return unauthorized();
@@ -23,13 +34,18 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         package: true,
         vehicle: true,
         quote: true,
-        stops: { orderBy: { stopOrder: 'asc' } },
-        assignment: { include: { vehicle: true, driver: { include: { user: true } } } }
-      }
+        stops: { orderBy: { stopOrder: "asc" } },
+        assignment: {
+          include: { vehicle: true, driver: { include: { user: true } } },
+        },
+      },
     });
 
     if (!booking) {
-      return NextResponse.json({ success: false, error: "Booking not found" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: "Booking not found" },
+        { status: 404 },
+      );
     }
 
     // If driver, check that they are actually assigned to this booking
@@ -43,11 +59,17 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ success: true, data: booking });
   } catch (error) {
     console.error("Booking fetch error:", error);
-    return NextResponse.json({ success: false, error: "Failed to fetch booking" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch booking" },
+      { status: 500 },
+    );
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const user = await getSessionUser(req);
     if (!user) return unauthenticated();
@@ -57,13 +79,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     const updates = await req.json();
-    
+
     // Validate only allowed fields
     const allowedFields = [
-      "eventDate", "startTime", "guests", "address", 
-      "city", "zip", "notes", "durationMins"
+      "eventDate",
+      "startTime",
+      "guests",
+      "address",
+      "city",
+      "zip",
+      "notes",
+      "durationMins",
     ];
-    
+
     const dataToUpdate: any = {};
     for (const field of allowedFields) {
       if (updates[field] !== undefined) {
@@ -78,12 +106,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     }
 
     if (Object.keys(dataToUpdate).length === 0) {
-      return NextResponse.json({ success: false, error: "No valid fields to update" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: "No valid fields to update" },
+        { status: 400 },
+      );
     }
 
     const updatedBooking = await prisma.booking.update({
       where: { id: (await params).id },
-      data: dataToUpdate
+      data: dataToUpdate,
     });
 
     await prisma.auditLog.create({
@@ -93,14 +124,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         bookingId: updatedBooking.id,
         action: "BOOKING_DETAILS_UPDATED",
         metadataJson: JSON.stringify(dataToUpdate),
-        actorId: user.id
-      }
+        actorId: user.id,
+      },
     });
 
     return NextResponse.json({ success: true, data: updatedBooking });
   } catch (error) {
     console.error("Booking update error:", error);
-    return NextResponse.json({ success: false, error: "Failed to update booking details" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to update booking details" },
+      { status: 500 },
+    );
   }
 }
-

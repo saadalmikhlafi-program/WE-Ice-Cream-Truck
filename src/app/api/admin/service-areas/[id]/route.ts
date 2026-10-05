@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 // PATCH — update a ZIP code record
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const auth = await requirePermission(req, "serviceAreas.update");
   if (!auth.success) {
@@ -29,14 +29,17 @@ export async function PATCH(
     });
     return NextResponse.json(record);
   } catch {
-    return NextResponse.json({ error: "Not found or failed to update" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Not found or failed to update" },
+      { status: 404 },
+    );
   }
 }
 
 // DELETE — delete a single ZIP code
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const auth = await requirePermission(req, "serviceAreas.delete");
   if (!auth.success) {

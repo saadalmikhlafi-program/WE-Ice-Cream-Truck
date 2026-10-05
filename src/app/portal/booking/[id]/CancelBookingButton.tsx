@@ -4,7 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { XCircle, Loader2 } from "lucide-react";
 
-export default function CancelBookingButton({ bookingId }: { bookingId: string }) {
+export default function CancelBookingButton({
+  bookingId,
+}: {
+  bookingId: string;
+}) {
   const [loading, setLoading] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const router = useRouter();
@@ -12,7 +16,9 @@ export default function CancelBookingButton({ bookingId }: { bookingId: string }
   const handleCancel = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/portal/booking/${bookingId}/cancel`, { method: "POST" });
+      const res = await fetch(`/api/portal/booking/${bookingId}/cancel`, {
+        method: "POST",
+      });
       if (res.ok) {
         router.refresh();
         router.push("/portal");
@@ -57,7 +63,11 @@ export default function CancelBookingButton({ bookingId }: { bookingId: string }
           disabled={loading}
           className="flex-1 px-4 py-2.5 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-all text-sm flex items-center justify-center gap-1"
         >
-          {loading ? <Loader2 size={14} className="animate-spin" /> : <XCircle size={14} />}
+          {loading ? (
+            <Loader2 size={14} className="animate-spin" />
+          ) : (
+            <XCircle size={14} />
+          )}
           {loading ? "Cancelling..." : "Yes, Cancel"}
         </button>
       </div>

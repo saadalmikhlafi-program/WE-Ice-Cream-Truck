@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-import { sendContactMessageNotification } from '@/lib/email';
-import { isHuman } from '@/lib/recaptcha';
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+import { sendContactMessageNotification } from "@/lib/email";
+import { isHuman } from "@/lib/recaptcha";
 
 // Simple name sanity check — rejects obvious bot-generated strings
 // (all-consonants, random char sequences, etc.)
@@ -22,29 +22,41 @@ export async function POST(request: Request) {
     // ── Honeypot check ──────────────────────────────────────────
     // Bots fill every field; real users never see/fill this hidden field.
     if (body._gotcha) {
-      console.warn('[Contact] Honeypot triggered — rejecting bot submission');
+      console.warn("[Contact] Honeypot triggered — rejecting bot submission");
       // Return 200 so bots think it worked
-      return NextResponse.json({ success: true, messageId: 'msg-' + Date.now() });
+      return NextResponse.json({
+        success: true,
+        messageId: "msg-" + Date.now(),
+      });
     }
 
     // ── reCAPTCHA Enterprise verification ───────────────────────
     const recaptchaToken = body.recaptchaToken;
-    const human = await isHuman(recaptchaToken || '', 'CONTACT_FORM');
+    const human = await isHuman(recaptchaToken || "", "CONTACT_FORM");
     if (!human) {
-      console.warn('[Contact] reCAPTCHA score too low — rejected');
-      return NextResponse.json({ error: 'Security check failed. Please try again.' }, { status: 400 });
+      console.warn("[Contact] reCAPTCHA score too low — rejected");
+      return NextResponse.json(
+        { error: "Security check failed. Please try again." },
+        { status: 400 },
+      );
     }
 
     // ── Field validation ────────────────────────────────────────
     if (!body.firstName || !body.email || !body.message) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 },
+      );
     }
 
     // Reject suspiciously bot-like names
-    const fullName = `${body.firstName} ${body.lastName || ''}`.trim();
+    const fullName = `${body.firstName} ${body.lastName || ""}`.trim();
     if (!looksLikeRealName(body.firstName)) {
       console.warn(`[Contact] Suspicious name rejected: "${body.firstName}"`);
-      return NextResponse.json({ success: true, messageId: 'msg-' + Date.now() }); // Silent reject
+      return NextResponse.json({
+        success: true,
+        messageId: "msg-" + Date.now(),
+      }); // Silent reject
     }
 
     // ── Rate limit: max 3 messages per email per hour ────────────
@@ -53,12 +65,15 @@ export async function POST(request: Request) {
       where: {
         email: body.email,
         createdAt: { gte: oneHourAgo },
-        source: 'CONTACT_FORM',
+        source: "CONTACT_FORM",
       },
     });
     if (recentCount >= 3) {
       console.warn(`[Contact] Rate limit hit for ${body.email}`);
-      return NextResponse.json({ error: 'Too many messages. Please try again later.' }, { status: 429 });
+      return NextResponse.json(
+        { error: "Too many messages. Please try again later." },
+        { status: 429 },
+      );
     }
 
     // ── Save to database ────────────────────────────────────────
@@ -67,10 +82,10 @@ export async function POST(request: Request) {
         name: fullName,
         email: body.email,
         phone: body.phone || null,
-        eventType: 'General Inquiry',
+        eventType: "General Inquiry",
         notes: body.message,
-        source: 'CONTACT_FORM',
-        status: 'OPEN',
+        source: "CONTACT_FORM",
+        status: "OPEN",
       },
     });
 
@@ -81,9 +96,12 @@ export async function POST(request: Request) {
       message: body.message,
     });
 
-    return NextResponse.json({ success: true, messageId: 'msg-' + Date.now() });
+    return NextResponse.json({ success: true, messageId: "msg-" + Date.now() });
   } catch (error) {
-    console.error('Error processing contact message:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error("Error processing contact message:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
   }
 }

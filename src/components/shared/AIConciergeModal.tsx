@@ -16,7 +16,10 @@ interface Message {
   text: string;
 }
 
-export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalProps) {
+export default function AIConciergeModal({
+  isOpen,
+  onClose,
+}: AIConciergeModalProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -30,8 +33,8 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
           {
             id: "1",
             sender: "ai",
-            text: "Hi there! I'm the WE Ice Cream Truck Concierge. ✨ Tell me a bit about your upcoming event, and I'll recommend the perfect package for you."
-          }
+            text: "Hi there! I'm the WE Ice Cream Truck Concierge. ✨ Tell me a bit about your upcoming event, and I'll recommend the perfect package for you.",
+          },
         ]);
         setIsTyping(false);
       }, 1000);
@@ -55,7 +58,11 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
     if (!inputValue.trim() || isTyping) return;
 
     const userText = inputValue.trim();
-    const userMsg: Message = { id: Date.now().toString(), sender: "user", text: userText };
+    const userMsg: Message = {
+      id: Date.now().toString(),
+      sender: "user",
+      text: userText,
+    };
     const updatedMessages = [...messages, userMsg];
 
     setMessages(updatedMessages);
@@ -78,7 +85,9 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: "ai",
-        text: data.message || "I'm having trouble responding right now. Please call us at 781-824-7000!",
+        text:
+          data.message ||
+          "I'm having trouble responding right now. Please call us at 781-824-7000!",
       };
       setMessages((prev) => [...prev, aiMsg]);
     } catch {
@@ -123,11 +132,15 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
                   <Sparkles size={20} className="text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg leading-tight">AI Concierge</h3>
-                  <p className="text-white/70 text-xs font-medium">WE Ice Cream Truck</p>
+                  <h3 className="font-bold text-lg leading-tight">
+                    AI Concierge
+                  </h3>
+                  <p className="text-white/70 text-xs font-medium">
+                    WE Ice Cream Truck
+                  </p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
               >
@@ -144,21 +157,33 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
                   key={msg.id}
                   className={cn(
                     "flex gap-3 max-w-[85%]",
-                    msg.sender === "user" ? "self-end flex-row-reverse" : "self-start"
+                    msg.sender === "user"
+                      ? "self-end flex-row-reverse"
+                      : "self-start",
                   )}
                 >
-                  <div className={cn(
-                    "w-8 h-8 rounded-full flex flex-shrink-0 items-center justify-center shadow-sm",
-                    msg.sender === "user" ? "bg-navy text-white" : "bg-coral text-white"
-                  )}>
-                    {msg.sender === "user" ? <User size={14} /> : <Truck size={14} />}
+                  <div
+                    className={cn(
+                      "w-8 h-8 rounded-full flex flex-shrink-0 items-center justify-center shadow-sm",
+                      msg.sender === "user"
+                        ? "bg-navy text-white"
+                        : "bg-coral text-white",
+                    )}
+                  >
+                    {msg.sender === "user" ? (
+                      <User size={14} />
+                    ) : (
+                      <Truck size={14} />
+                    )}
                   </div>
-                  <div className={cn(
-                    "p-4 rounded-2xl text-sm shadow-sm",
-                    msg.sender === "user" 
-                      ? "bg-navy text-white rounded-tr-none" 
-                      : "bg-white text-charcoal border border-gray-100 rounded-tl-none"
-                  )}>
+                  <div
+                    className={cn(
+                      "p-4 rounded-2xl text-sm shadow-sm",
+                      msg.sender === "user"
+                        ? "bg-navy text-white rounded-tr-none"
+                        : "bg-white text-charcoal border border-gray-100 rounded-tl-none",
+                    )}
+                  >
                     {msg.text}
                   </div>
                 </motion.div>
@@ -184,7 +209,10 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
 
             {/* Input Area */}
             <div className="shrink-0 p-4 bg-white border-t border-gray-100 z-10">
-              <form onSubmit={handleSend} className="relative flex items-center">
+              <form
+                onSubmit={handleSend}
+                className="relative flex items-center"
+              >
                 <input
                   type="text"
                   value={inputValue}
@@ -197,7 +225,10 @@ export default function AIConciergeModal({ isOpen, onClose }: AIConciergeModalPr
                   disabled={!inputValue.trim() || isTyping}
                   className="absolute right-2 w-10 h-10 flex items-center justify-center bg-coral text-white rounded-full hover:bg-coral-dark disabled:opacity-50 disabled:hover:bg-coral transition-colors"
                 >
-                  <Send size={16} className="translate-x-[-1px] translate-y-[1px]" />
+                  <Send
+                    size={16}
+                    className="translate-x-[-1px] translate-y-[1px]"
+                  />
                 </button>
               </form>
             </div>

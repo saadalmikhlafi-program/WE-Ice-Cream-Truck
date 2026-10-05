@@ -3,10 +3,13 @@ import { prisma } from "@/lib/prisma";
 export async function getRevenueStats() {
   const allBookings = await prisma.booking.findMany({
     where: { status: "CONFIRMED" },
-    include: { quote: true }
+    include: { quote: true },
   });
-  
-  const totalRevenue = allBookings.reduce((sum, b) => sum + (b.quote?.totalAmount || 0), 0);
+
+  const totalRevenue = allBookings.reduce(
+    (sum, b) => sum + (b.quote?.totalAmount || 0),
+    0,
+  );
   return { totalRevenue, totalConfirmedBookings: allBookings.length };
 }
 
@@ -17,10 +20,10 @@ export async function getCustomerStats() {
 
 export async function getEventAnalytics() {
   const stats = await prisma.booking.groupBy({
-    by: ['eventType'],
+    by: ["eventType"],
     _count: {
-      id: true
-    }
+      id: true,
+    },
   });
   return stats;
 }

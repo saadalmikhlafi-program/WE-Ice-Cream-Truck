@@ -32,7 +32,7 @@ export default function FloatingQuoteButton() {
         // Mobile layout adjustment so it doesn't overlap with bottom nav
         isVisible
           ? "translate-y-0 opacity-100"
-          : "translate-y-12 opacity-0 pointer-events-none"
+          : "translate-y-12 opacity-0 pointer-events-none",
       )}
     >
       Get a Quote &rarr;

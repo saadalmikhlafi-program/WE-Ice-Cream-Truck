@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSessionUser, unauthenticated, unauthorized, hasPermission } from "@/lib/rbac";
+import {
+  getSessionUser,
+  unauthenticated,
+  unauthorized,
+  hasPermission,
+} from "@/lib/rbac";
 
 export const dynamic = "force-dynamic";
 
@@ -19,19 +24,21 @@ export async function GET(req: NextRequest) {
     const endStr = searchParams.get("end");
 
     const whereClause: any = {
-      status: { in: ["CONFIRMED", "PENDING_PAYMENT", "PENDING", "PENDING_REVIEW"] }
+      status: {
+        in: ["CONFIRMED", "PENDING_PAYMENT", "PENDING", "PENDING_REVIEW"],
+      },
     };
 
     if (startStr && endStr) {
       const startDate = new Date(startStr);
       startDate.setDate(startDate.getDate() - 1);
-      
+
       const endDate = new Date(endStr);
       endDate.setDate(endDate.getDate() + 1);
 
       whereClause.eventDate = {
         gte: startDate,
-        lte: endDate
+        lte: endDate,
       };
     }
 
@@ -46,16 +53,18 @@ export async function GET(req: NextRequest) {
     const events = bookings.map((b: any) => {
       const eventDate = new Date(b.eventDate);
       const [hours, minutes] = (b.startTime || "12:00").split(":");
-      
+
       const startDateTime = new Date(eventDate);
       startDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
-      
+
       const endDateTime = new Date(startDateTime);
       endDateTime.setMinutes(endDateTime.getMinutes() + (b.durationMins || 60));
 
       let color = "#3B82F6"; // default blue
-      if (b.status === "CONFIRMED") color = "#10B981"; // emerald
-      else if (b.status === "PENDING" || b.status === "PENDING_REVIEW") color = "#F59E0B"; // amber
+      if (b.status === "CONFIRMED")
+        color = "#10B981"; // emerald
+      else if (b.status === "PENDING" || b.status === "PENDING_REVIEW")
+        color = "#F59E0B"; // amber
       else if (b.status === "PENDING_PAYMENT") color = "#6366F1"; // indigo
 
       return {
@@ -73,13 +82,16 @@ export async function GET(req: NextRequest) {
           email: b.customer.email,
           address: `${b.address}, ${b.city}, MA ${b.zip}`,
           packageName: b.package?.name || "Custom",
-        }
+        },
       };
     });
 
     return NextResponse.json({ success: true, data: events });
   } catch (error) {
     console.error("Calendar API Error:", error);
-    return NextResponse.json({ success: false, error: "Failed to load calendar events" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to load calendar events" },
+      { status: 500 },
+    );
   }
 }

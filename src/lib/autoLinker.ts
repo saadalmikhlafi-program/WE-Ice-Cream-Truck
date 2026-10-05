@@ -2,14 +2,16 @@ import { prisma } from "./prisma";
 
 export async function autoLinkInquiry(inquiryId: string) {
   try {
-    const inquiry = await prisma.inquiry.findUnique({ where: { id: inquiryId } });
+    const inquiry = await prisma.inquiry.findUnique({
+      where: { id: inquiryId },
+    });
     if (!inquiry) return null;
 
     let customerId = inquiry.customerId;
     let bookingId = inquiry.bookingId;
 
     const email = inquiry.email?.trim().toLowerCase();
-    const phone = inquiry.phone?.replace(/\D/g, '');
+    const phone = inquiry.phone?.replace(/\D/g, "");
 
     // 1. Try to find a matching Customer
     if (!customerId && (email || phone)) {
@@ -17,10 +19,10 @@ export async function autoLinkInquiry(inquiryId: string) {
         where: {
           OR: [
             ...(email ? [{ email }] : []),
-            ...(phone ? [{ phone: { contains: phone } }] : [])
-          ]
+            ...(phone ? [{ phone: { contains: phone } }] : []),
+          ],
         },
-        orderBy: { createdAt: "desc" }
+        orderBy: { createdAt: "desc" },
       });
       if (customer) customerId = customer.id;
     }
@@ -30,10 +32,10 @@ export async function autoLinkInquiry(inquiryId: string) {
       // First, try extracting a booking number from notes
       const notes = inquiry.notes || "";
       const bookingNumMatch = notes.match(/BL-\d{5}/i);
-      
+
       if (bookingNumMatch) {
         const booking = await prisma.booking.findUnique({
-          where: { bookingNumber: bookingNumMatch[0].toUpperCase() }
+          where: { bookingNumber: bookingNumMatch[0].toUpperCase() },
         });
         if (booking) bookingId = booking.id;
       }
@@ -42,7 +44,7 @@ export async function autoLinkInquiry(inquiryId: string) {
       if (!bookingId && customerId) {
         const recentBooking = await prisma.booking.findFirst({
           where: { customerId },
-          orderBy: { createdAt: "desc" }
+          orderBy: { createdAt: "desc" },
         });
         if (recentBooking) bookingId = recentBooking.id;
       }
@@ -52,7 +54,7 @@ export async function autoLinkInquiry(inquiryId: string) {
     if (customerId !== inquiry.customerId || bookingId !== inquiry.bookingId) {
       return await prisma.inquiry.update({
         where: { id: inquiry.id },
-        data: { customerId, bookingId }
+        data: { customerId, bookingId },
       });
     }
 

@@ -5,10 +5,16 @@ import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const auth = await requirePermission(req, "drivers.assign");
   if (!auth.success) {
-    return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+    return NextResponse.json(
+      { success: false, error: auth.error },
+      { status: auth.status },
+    );
   }
 
   const { name, email, password, phone, active } = await req.json();
@@ -18,7 +24,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (name) userUpdate.name = name;
   if (password) userUpdate.passwordHash = await bcrypt.hash(password, 12);
   if (Object.keys(userUpdate).length > 0) {
-    await prisma.user.update({ where: { id: (await params).id }, data: userUpdate });
+    await prisma.user.update({
+      where: { id: (await params).id },
+      data: userUpdate,
+    });
   }
 
   const driverUpdate: Record<string, unknown> = {};
@@ -35,10 +44,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   return NextResponse.json({ success: true });
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const auth = await requirePermission(req, "drivers.assign");
   if (!auth.success) {
-    return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+    return NextResponse.json(
+      { success: false, error: auth.error },
+      { status: auth.status },
+    );
   }
 
   await prisma.driver.deleteMany({ where: { userId: (await params).id } });

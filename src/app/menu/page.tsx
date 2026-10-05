@@ -78,11 +78,14 @@ export default function MenuPage() {
                   <h3 className="font-sans font-bold text-xs sm:text-sm md:text-base text-navy leading-tight group-hover:text-coral transition-colors flex-grow">
                     {item.name}
                   </h3>
-                  
+
                   {/* Tags */}
                   <div className="mt-3 flex flex-wrap gap-1">
                     {item.dietary.map((diet, i) => (
-                      <span key={i} className="text-[10px] font-bold px-2 py-0.5 bg-mint/10 text-mint-dark rounded-full">
+                      <span
+                        key={i}
+                        className="text-[10px] font-bold px-2 py-0.5 bg-mint/10 text-mint-dark rounded-full"
+                      >
                         {diet}
                       </span>
                     ))}

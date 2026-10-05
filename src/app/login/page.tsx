@@ -3,31 +3,43 @@
 import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff, IceCream } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  Loader2,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  IceCream,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 function LoginForm() {
-  const [email, setEmail]       = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState("");
-  const router       = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl  = searchParams.get("callbackUrl") || "/portal";
+  const callbackUrl = searchParams.get("callbackUrl") || "/portal";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     try {
-      const res = await signIn("credentials", { redirect: false, email, password });
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
       if (res?.error) {
         setError("Invalid email or password. Please try again.");
         setLoading(false);
       } else {
-        const sessionRes  = await fetch("/api/auth/session");
+        const sessionRes = await fetch("/api/auth/session");
         const sessionData = await sessionRes.json();
         if (sessionData?.user?.role === "CUSTOMER") {
           router.push(callbackUrl);
@@ -45,16 +57,23 @@ function LoginForm() {
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
         <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-sm font-semibold">
-          <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 text-xs">!</span>
+          <span className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 text-xs">
+            !
+          </span>
           {error}
         </div>
       )}
 
       {/* Email */}
       <div className="space-y-1.5">
-        <label className="text-sm font-bold text-slate-700 block">Email Address</label>
+        <label className="text-sm font-bold text-slate-700 block">
+          Email Address
+        </label>
         <div className="relative">
-          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <Mail
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+            size={18}
+          />
           <input
             type="email"
             value={email}
@@ -70,12 +89,18 @@ function LoginForm() {
       <div className="space-y-1.5">
         <div className="flex justify-between items-center">
           <label className="text-sm font-bold text-slate-700">Password</label>
-          <Link href="/forgot-password" className="text-xs text-coral font-semibold hover:underline underline-offset-2">
+          <Link
+            href="/forgot-password"
+            className="text-xs text-coral font-semibold hover:underline underline-offset-2"
+          >
             Forgot password?
           </Link>
         </div>
         <div className="relative">
-          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <Lock
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+            size={18}
+          />
           <input
             type={showPass ? "text" : "password"}
             value={password}
@@ -106,14 +131,20 @@ function LoginForm() {
         ) : (
           <>
             Sign In
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight
+              size={18}
+              className="group-hover:translate-x-1 transition-transform"
+            />
           </>
         )}
       </button>
 
       <p className="text-center text-slate-500 text-sm mt-2">
         Don't have an account?{" "}
-        <Link href="/register" className="text-navy font-bold hover:text-coral transition-colors">
+        <Link
+          href="/register"
+          className="text-navy font-bold hover:text-coral transition-colors"
+        >
           Create Account
         </Link>
       </p>
@@ -127,10 +158,13 @@ export default function LoginPage() {
       {/* ── Left Panel: Branding ── */}
       <div className="hidden lg:flex lg:w-[52%] relative flex-col items-center justify-center overflow-hidden bg-navy p-12">
         {/* Background pattern */}
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
-          backgroundSize: "32px 32px"
-        }} />
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, white 1px, transparent 0)`,
+            backgroundSize: "32px 32px",
+          }}
+        />
         {/* Glowing orbs */}
         <div className="absolute top-[15%] left-[10%] w-72 h-72 rounded-full bg-coral/20 blur-[80px]" />
         <div className="absolute bottom-[15%] right-[10%] w-64 h-64 rounded-full bg-coral/15 blur-[80px]" />
@@ -148,18 +182,30 @@ export default function LoginPage() {
             />
           </div>
 
-          <p className="text-coral font-black text-xs tracking-[0.4em] uppercase mb-3">Welcome Back</p>
+          <p className="text-coral font-black text-xs tracking-[0.4em] uppercase mb-3">
+            Welcome Back
+          </p>
           <h1 className="font-display font-black text-4xl text-white leading-tight mb-4">
-            WE<span className="text-coral">.</span> Ice Cream<br />Truck
+            WE<span className="text-coral">.</span> Ice Cream
+            <br />
+            Truck
           </h1>
           <p className="text-white/60 font-medium text-sm leading-relaxed max-w-xs">
-            Greater Boston's premium mobile ice cream truck service. Sign in to manage your bookings.
+            Greater Boston's premium mobile ice cream truck service. Sign in to
+            manage your bookings.
           </p>
 
           {/* Feature pills */}
           <div className="flex flex-wrap gap-2 justify-center mt-8">
-            {["🍦 Premium Service", "📍 Greater Boston", "⚡ Instant Booking"].map(f => (
-              <span key={f} className="px-3 py-1.5 bg-white/10 rounded-full text-white/80 text-xs font-semibold border border-white/10">
+            {[
+              "🍦 Premium Service",
+              "📍 Greater Boston",
+              "⚡ Instant Booking",
+            ].map((f) => (
+              <span
+                key={f}
+                className="px-3 py-1.5 bg-white/10 rounded-full text-white/80 text-xs font-semibold border border-white/10"
+              >
                 {f}
               </span>
             ))}
@@ -180,25 +226,38 @@ export default function LoginPage() {
               className="w-full h-full object-cover"
             />
           </div>
-          <p className="font-display font-black text-2xl text-navy">WE<span className="text-coral">.</span> Ice Cream Truck</p>
+          <p className="font-display font-black text-2xl text-navy">
+            WE<span className="text-coral">.</span> Ice Cream Truck
+          </p>
         </div>
 
         <div className="w-full max-w-sm">
           {/* Form header */}
           <div className="mb-8">
-            <h2 className="text-2xl font-black text-navy tracking-tight">Sign in to your account</h2>
-            <p className="text-slate-500 font-medium text-sm mt-1">Enter your credentials to continue</p>
+            <h2 className="text-2xl font-black text-navy tracking-tight">
+              Sign in to your account
+            </h2>
+            <p className="text-slate-500 font-medium text-sm mt-1">
+              Enter your credentials to continue
+            </p>
           </div>
 
           {/* Card */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-            <Suspense fallback={<div className="flex justify-center p-6"><Loader2 className="animate-spin text-coral" size={28} /></div>}>
+            <Suspense
+              fallback={
+                <div className="flex justify-center p-6">
+                  <Loader2 className="animate-spin text-coral" size={28} />
+                </div>
+              }
+            >
               <LoginForm />
             </Suspense>
           </div>
 
           <p className="text-center text-xs text-slate-400 mt-6">
-            &copy; {new Date().getFullYear()} WE Ice Cream Truck LLC. All rights reserved.
+            &copy; {new Date().getFullYear()} WE Ice Cream Truck LLC. All rights
+            reserved.
           </p>
         </div>
       </div>

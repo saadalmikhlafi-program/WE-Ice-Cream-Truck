@@ -21,13 +21,20 @@ export const PricingService = {
       const settingRecords = await prisma.setting.findMany({
         where: { key: { in: ["serviceRadius", "travelFeePerMile"] } },
       });
-      const settingsMap = settingRecords.reduce((acc, r) => {
-        acc[r.key] = r.value;
-        return acc;
-      }, {} as Record<string, string>);
+      const settingsMap = settingRecords.reduce(
+        (acc, r) => {
+          acc[r.key] = r.value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
 
-      const FREE_MILES = parseFloat(settingsMap["serviceRadius"] ?? DEFAULT_SETTINGS.serviceRadius);
-      const COST_PER_MILE = parseFloat(settingsMap["travelFeePerMile"] ?? DEFAULT_SETTINGS.travelFeePerMile);
+      const FREE_MILES = parseFloat(
+        settingsMap["serviceRadius"] ?? DEFAULT_SETTINGS.serviceRadius,
+      );
+      const COST_PER_MILE = parseFloat(
+        settingsMap["travelFeePerMile"] ?? DEFAULT_SETTINGS.travelFeePerMile,
+      );
 
       // 3. Fetch Company ZIP Code from settings
       const companyZipSetting = await prisma.setting.findUnique({
@@ -55,11 +62,12 @@ export const PricingService = {
 
       // 5. Calculate Costs
       const basePrice = pkg.price;
-      
+
       // Extra guests cost
       let extraGuestsCost = 0;
       if (params.guestCount > pkg.servings) {
-        extraGuestsCost = (params.guestCount - pkg.servings) * pkg.extraGuestPrice;
+        extraGuestsCost =
+          (params.guestCount - pkg.servings) * pkg.extraGuestPrice;
       }
 
       // Distance cost: First FREE_MILES are free, then COST_PER_MILE per mile
@@ -73,7 +81,7 @@ export const PricingService = {
 
       // No tax applied (taxRate = 0)
       const subtotal = basePrice + extraGuestsCost + travelFee + overtimeFee;
-      
+
       return {
         success: true,
         breakdown: {
@@ -85,12 +93,11 @@ export const PricingService = {
           distanceMiles: Math.round(distanceMiles * 10) / 10,
           freeMiles: FREE_MILES,
           costPerMile: COST_PER_MILE,
-        }
+        },
       };
-
     } catch (error: any) {
       console.error("[PricingService] Error:", error);
       return { success: false, error: error.message };
     }
-  }
+  },
 };

@@ -13,12 +13,14 @@ export const DEFAULT_SETTINGS = {
   travelFeePerMile: "2.50",
   taxRate: "0",
   seoTitle: "WE Ice Cream Truck - Premium Events",
-  seoDescription: "Massachusetts' most trusted premium ice cream truck catering service.",
+  seoDescription:
+    "Massachusetts' most trusted premium ice cream truck catering service.",
   facebookUrl: "",
   instagramUrl: "",
   bookingAutoApprove: "false",
   aiAssistantName: "WE Ice Cream Truck AI Concierge",
-  aiAssistantSystemPrompt: "You are the highly professional AI Concierge for WE Ice Cream Truck. You help customers book packages and answer their questions."
+  aiAssistantSystemPrompt:
+    "You are the highly professional AI Concierge for WE Ice Cream Truck. You help customers book packages and answer their questions.",
 };
 
 /**
@@ -28,10 +30,13 @@ export const getSettings = unstable_cache(
   async (): Promise<typeof DEFAULT_SETTINGS> => {
     try {
       const records = await prisma.setting.findMany();
-      const dict = records.reduce((acc, curr) => {
-        acc[curr.key] = curr.value;
-        return acc;
-      }, {} as Record<string, string>);
+      const dict = records.reduce(
+        (acc, curr) => {
+          acc[curr.key] = curr.value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      );
 
       return {
         ...DEFAULT_SETTINGS,
@@ -43,14 +48,14 @@ export const getSettings = unstable_cache(
     }
   },
   ["site-settings"],
-  { revalidate: 3600, tags: ["settings"] }
+  { revalidate: 3600, tags: ["settings"] },
 );
 
 /**
  * Get a specific setting value by key.
  */
 export async function getSetting<K extends keyof typeof DEFAULT_SETTINGS>(
-  key: K
+  key: K,
 ): Promise<string> {
   try {
     const record = await prisma.setting.findUnique({

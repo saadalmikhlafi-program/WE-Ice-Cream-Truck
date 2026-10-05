@@ -30,27 +30,40 @@ You are part of the WE Ice Cream Truck platform.
 
 export const adminToolDefs = {
   getRevenueStats: {
-    description: "Get the total confirmed revenue and total confirmed bookings count.",
-    parameters: z.object({ confirm: z.literal("yes").describe("Pass 'yes' to confirm") }),
+    description:
+      "Get the total confirmed revenue and total confirmed bookings count.",
+    parameters: z.object({
+      confirm: z.literal("yes").describe("Pass 'yes' to confirm"),
+    }),
     execute: getRevenueStats,
   },
   getCustomerStats: {
     description: "Get statistics about the customer base.",
-    parameters: z.object({ confirm: z.literal("yes").describe("Pass 'yes' to confirm") }),
+    parameters: z.object({
+      confirm: z.literal("yes").describe("Pass 'yes' to confirm"),
+    }),
     execute: getCustomerStats,
   },
   getBookings: {
     description: "Get a list of bookings, optionally filtered by status.",
     parameters: z.object({
-      status: z.enum(["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"]).optional().describe("The status to filter bookings by."),
+      status: z
+        .enum(["PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"])
+        .optional()
+        .describe("The status to filter bookings by."),
     }),
-    execute: ({ status }: { status?: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED" }) =>
-      getBookings(status),
+    execute: ({
+      status,
+    }: {
+      status?: "PENDING" | "CONFIRMED" | "COMPLETED" | "CANCELLED";
+    }) => getBookings(status),
   },
   detectScheduleConflicts: {
     description: "Check for schedule conflicts on a specific date.",
     parameters: z.object({
-      date: z.string().describe("The date to check conflicts for, in YYYY-MM-DD format."),
+      date: z
+        .string()
+        .describe("The date to check conflicts for, in YYYY-MM-DD format."),
     }),
     execute: ({ date }: { date: string }) => detectScheduleConflicts(date),
   },

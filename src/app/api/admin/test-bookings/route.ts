@@ -10,12 +10,19 @@ import {
 export async function GET(req: NextRequest) {
   try {
     const emailToUse = "saadalmikhlafi53@gmail.com";
-    
+
     // Find or create customer
-    let customer = await prisma.customer.findFirst({ where: { email: emailToUse } });
+    let customer = await prisma.customer.findFirst({
+      where: { email: emailToUse },
+    });
     if (!customer) {
       customer = await prisma.customer.create({
-        data: { firstName: "Saad", lastName: "Al-Mikhlafi", email: emailToUse, phone: "123456789" }
+        data: {
+          firstName: "Saad",
+          lastName: "Al-Mikhlafi",
+          email: emailToUse,
+          phone: "123456789",
+        },
       });
     }
 
@@ -31,7 +38,7 @@ export async function GET(req: NextRequest) {
 
     for (const sc of scenarios) {
       const bookingNumber = `TEST-${Math.floor(100000 + Math.random() * 900000)}`;
-      
+
       let bookingStatus = "APPROVED";
       let pendingReason = "";
       if (sc.amount < 500 && sc.dist > 30) {
@@ -59,9 +66,22 @@ export async function GET(req: NextRequest) {
 
       // Send to Customer
       if (bookingStatus === "APPROVED") {
-        await sendBookingApprovedEmail(emailToUse, "Saad", bookingNumber, "", sc.amount.toString(), booking.id);
+        await sendBookingApprovedEmail(
+          emailToUse,
+          "Saad",
+          bookingNumber,
+          "",
+          sc.amount.toString(),
+          booking.id,
+        );
       } else {
-        await sendBookingPendingReviewEmail(emailToUse, "Saad", bookingNumber, pendingReason, booking.id);
+        await sendBookingPendingReviewEmail(
+          emailToUse,
+          "Saad",
+          bookingNumber,
+          pendingReason,
+          booking.id,
+        );
       }
 
       // Send to Owner
@@ -77,11 +97,18 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      results.push({ name: sc.name, status: bookingStatus, number: bookingNumber });
+      results.push({
+        name: sc.name,
+        status: bookingStatus,
+        number: bookingNumber,
+      });
     }
 
     return NextResponse.json({ success: true, results });
   } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: err.message },
+      { status: 500 },
+    );
   }
 }

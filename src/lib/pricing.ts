@@ -1,13 +1,13 @@
 export interface PricingParams {
   packagePrice: number;
   servings: number;
-  extraGuestPrice: number;   // per-extra-guest fee from the package
-  extraPiecePrice?: number;  // legacy alias, ignored if extraGuestPrice is set
+  extraGuestPrice: number; // per-extra-guest fee from the package
+  extraPiecePrice?: number; // legacy alias, ignored if extraGuestPrice is set
   durationMins: number;
   packageDurationMins?: number; // the package's included minutes (from pkg.durationMins)
   distanceMiles: number;
   guests: number;
-  additionalStops?: number;  // number of additional locations (0 = single stop)
+  additionalStops?: number; // number of additional locations (0 = single stop)
   extraServiceMins?: number; // additional service time requested by customer (multiples of 30)
   freeMiles?: number;
   ratePerMile?: number;
@@ -16,15 +16,18 @@ export interface PricingParams {
   vehiclesRequired?: number;
 }
 
-const ADDITIONAL_STOP_FEE = 50;          // $50 per extra location
-const EXTRA_SERVICE_RATE_PER_30 = 35;   // $35 per additional 30-minute block
+const ADDITIONAL_STOP_FEE = 50; // $50 per extra location
+const EXTRA_SERVICE_RATE_PER_30 = 35; // $35 per additional 30-minute block
 
 export function isWeekend(dateInput: string | Date | undefined): boolean {
   if (!dateInput) return false;
   try {
-    const date = typeof dateInput === 'string'
-      ? new Date(dateInput.includes('T') ? dateInput : `${dateInput}T12:00:00`)
-      : new Date(dateInput);
+    const date =
+      typeof dateInput === "string"
+        ? new Date(
+            dateInput.includes("T") ? dateInput : `${dateInput}T12:00:00`,
+          )
+        : new Date(dateInput);
     const day = date.getDay();
     return day === 0 || day === 6; // Sunday = 0, Saturday = 6
   } catch {
@@ -44,7 +47,7 @@ export function calculateQuote(params: PricingParams) {
     additionalStops = 0,
     extraServiceMins = 0,
     freeMiles = 0,
-    ratePerMile = 2.50,
+    ratePerMile = 2.5,
     locationMode = "SINGLE_LOCATION",
     eventDate,
     vehiclesRequired,
@@ -67,7 +70,7 @@ export function calculateQuote(params: PricingParams) {
     total += travelFee;
   }
 
-  // Overtime Fee — legacy (from package duration being exceeded). 
+  // Overtime Fee — legacy (from package duration being exceeded).
   // Now we use extraServiceMins instead, so this should be 0 in normal flow.
   let overtimeFee = 0;
   if (durationMins > packageDurationMins) {
@@ -87,23 +90,26 @@ export function calculateQuote(params: PricingParams) {
 
   // Multi-Stop Fee / Additional Location Service Fee
   const stopsCount = Math.max(0, additionalStops);
-  const additionalLocationServiceFee = locationMode !== "SINGLE_LOCATION"
-    ? stopsCount * ADDITIONAL_STOP_FEE
-    : 0;
+  const additionalLocationServiceFee =
+    locationMode !== "SINGLE_LOCATION" ? stopsCount * ADDITIONAL_STOP_FEE : 0;
   total += additionalLocationServiceFee;
 
   // Vehicles Required
   let resolvedVehicles = vehiclesRequired ?? 1;
-  if (vehiclesRequired === undefined && locationMode === "SIMULTANEOUS_MULTI_VEHICLE") {
+  if (
+    vehiclesRequired === undefined &&
+    locationMode === "SIMULTANEOUS_MULTI_VEHICLE"
+  ) {
     resolvedVehicles = stopsCount + 1;
   } else if (locationMode !== "SIMULTANEOUS_MULTI_VEHICLE") {
     resolvedVehicles = 1;
   }
 
   // Additional Vehicle Setup Fee
-  const additionalVehicleSetupFee = locationMode === "SIMULTANEOUS_MULTI_VEHICLE"
-    ? Math.max(0, resolvedVehicles - 1) * 200
-    : 0;
+  const additionalVehicleSetupFee =
+    locationMode === "SIMULTANEOUS_MULTI_VEHICLE"
+      ? Math.max(0, resolvedVehicles - 1) * 200
+      : 0;
   total += additionalVehicleSetupFee;
 
   // Weekend Event Fee
@@ -134,4 +140,3 @@ export function calculateQuote(params: PricingParams) {
     extraPiecePrice: extraGuestPrice, // backwards-compat alias
   };
 }
-

@@ -11,11 +11,11 @@ import ScrollToTop from "@/components/shared/ScrollToTop";
 /** Routes where the public site chrome (header, footer, blobs) are hidden */
 const ADMIN_PREFIXES = ["/admin", "/login", "/book", "/get-a-quote"];
 
-export default function PublicLayout({ 
+export default function PublicLayout({
   children,
-  footerConfig
-}: { 
-  children: React.ReactNode,
+  footerConfig,
+}: {
+  children: React.ReactNode;
   footerConfig?: {
     companyName?: string;
     companyPhone?: string;
@@ -23,10 +23,10 @@ export default function PublicLayout({
     companyAddress?: string;
     facebookUrl?: string;
     instagramUrl?: string;
-  }
+  };
 }) {
   const pathname = usePathname();
-  const isAdminRoute = ADMIN_PREFIXES.some(p => pathname.startsWith(p));
+  const isAdminRoute = ADMIN_PREFIXES.some((p) => pathname.startsWith(p));
 
   if (isAdminRoute) {
     // Admin pages get NO public chrome — just children
@@ -49,4 +49,3 @@ export default function PublicLayout({
     </>
   );
 }
-

@@ -10,7 +10,8 @@ import prisma from "@/lib/prisma";
 
 export const metadata: Metadata = constructMetadata({
   title: "Book Your Event | WE Ice Cream Truck",
-  description: "Book your ice cream truck or van experience for any event in Massachusetts. Easy online booking in just a few steps.",
+  description:
+    "Book your ice cream truck or van experience for any event in Massachusetts. Easy online booking in just a few steps.",
   url: "/book",
 });
 
@@ -19,7 +20,9 @@ function BookingLoading() {
     <div className="w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 p-12 flex items-center justify-center min-h-[600px]">
       <div className="text-center">
         <div className="w-12 h-12 border-4 border-coral border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-gray-500 font-medium">Loading your booking form...</p>
+        <p className="text-gray-500 font-medium">
+          Loading your booking form...
+        </p>
       </div>
     </div>
   );
@@ -31,7 +34,7 @@ export default async function BookPage() {
   let dbPackages: any[] = [];
   try {
     const timeout = new Promise<any[]>((_, reject) =>
-      setTimeout(() => reject(new Error("DB timeout")), 3000)
+      setTimeout(() => reject(new Error("DB timeout")), 3000),
     );
     dbPackages = await Promise.race([
       prisma.package.findMany({
@@ -41,7 +44,10 @@ export default async function BookPage() {
       timeout,
     ]);
   } catch (err) {
-    console.error("[Book] Failed to fetch packages (using static fallback):", err);
+    console.error(
+      "[Book] Failed to fetch packages (using static fallback):",
+      err,
+    );
   }
 
   return (
@@ -58,8 +64,12 @@ export default async function BookPage() {
         <Link href="/" className="flex items-center gap-3">
           <Logo className="w-10 h-10 md:w-12 md:h-12 scale-[0.85]" />
           <div className="hidden md:block">
-            <div className="text-[14px] font-black text-navy leading-none">WE Ice Cream</div>
-            <div className="text-[10px] font-bold text-coral tracking-wide uppercase">Book Your Event</div>
+            <div className="text-[14px] font-black text-navy leading-none">
+              WE Ice Cream
+            </div>
+            <div className="text-[10px] font-bold text-coral tracking-wide uppercase">
+              Book Your Event
+            </div>
           </div>
         </Link>
         <div className="hidden md:flex items-center gap-2 text-sm text-gray-500 font-medium">
@@ -77,7 +87,8 @@ export default async function BookPage() {
               Book Your <span className="text-coral">Sweet</span> Experience
             </h1>
             <p className="text-gray-500 text-lg max-w-xl mx-auto font-medium">
-              Fill out this quick form to check availability and get a customized quote for your celebration.
+              Fill out this quick form to check availability and get a
+              customized quote for your celebration.
             </p>
           </div>
 

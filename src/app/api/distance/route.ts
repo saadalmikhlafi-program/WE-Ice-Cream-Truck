@@ -4,20 +4,23 @@ import prisma from "@/lib/prisma";
 import { routingProvider, BASE_LOCATION } from "@/lib/maps";
 
 const FREE_MILES = 0;
-const COST_PER_MILE = 2.00;
+const COST_PER_MILE = 2.0;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const zip = searchParams.get("zip");
   const latParam = searchParams.get("lat");
   const lngParam = searchParams.get("lng");
-  
+
   const originLatParam = searchParams.get("originLat");
   const originLngParam = searchParams.get("originLng");
   const freeMilesParam = searchParams.get("freeMiles");
 
   if (!zip && (!latParam || !lngParam)) {
-    return NextResponse.json({ error: "Missing ZIP code or coordinates" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing ZIP code or coordinates" },
+      { status: 400 },
+    );
   }
 
   let destLat = latParam ? parseFloat(latParam) : null;
@@ -26,13 +29,18 @@ export async function GET(request: Request) {
   let destState = "MA";
   const destZip = zip || "";
 
-  const effectiveOriginLat = originLatParam ? parseFloat(originLatParam) : BASE_LOCATION.lat;
-  const effectiveOriginLng = originLngParam ? parseFloat(originLngParam) : BASE_LOCATION.lng;
-  const effectiveFreeMiles = freeMilesParam !== null ? parseFloat(freeMilesParam) : FREE_MILES;
+  const effectiveOriginLat = originLatParam
+    ? parseFloat(originLatParam)
+    : BASE_LOCATION.lat;
+  const effectiveOriginLng = originLngParam
+    ? parseFloat(originLngParam)
+    : BASE_LOCATION.lng;
+  const effectiveFreeMiles =
+    freeMilesParam !== null ? parseFloat(freeMilesParam) : FREE_MILES;
 
   if (zip) {
     const lookup = zipcodes.lookup(zip);
-    
+
     // Removed strict DB check per user request: all of MA is served.
     // If needed in the future, we can still query the DB for specific active zips.
 
@@ -44,21 +52,34 @@ export async function GET(request: Request) {
       destCity = lookup.city;
       destState = lookup.state;
     } else if (!destLat || !destLng) {
-      return NextResponse.json({ error: "Invalid ZIP code and no coordinates provided" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Invalid ZIP code and no coordinates provided" },
+        { status: 404 },
+      );
     }
   }
 
   let distanceMiles = 0;
 
   if (destLat && destLng) {
-    distanceMiles = await routingProvider.getDrivingDistanceMiles(effectiveOriginLat, effectiveOriginLng, destLat, destLng);
+    distanceMiles = await routingProvider.getDrivingDistanceMiles(
+      effectiveOriginLat,
+      effectiveOriginLng,
+      destLat,
+      destLng,
+    );
   } else if (zip) {
     const lookup = zipcodes.lookup(zip);
     if (lookup) {
-       distanceMiles = await routingProvider.getDrivingDistanceMiles(effectiveOriginLat, effectiveOriginLng, lookup.latitude, lookup.longitude);
+      distanceMiles = await routingProvider.getDrivingDistanceMiles(
+        effectiveOriginLat,
+        effectiveOriginLng,
+        lookup.latitude,
+        lookup.longitude,
+      );
     }
   }
-  
+
   distanceMiles = Math.round(distanceMiles * 10) / 10;
 
   let fee = 0;
@@ -74,6 +95,6 @@ export async function GET(request: Request) {
     fee: Number(fee.toFixed(2)),
     freeMiles: effectiveFreeMiles,
     costPerMile: COST_PER_MILE,
-    method: "routing-provider"
+    method: "routing-provider",
   });
 }

@@ -2,8 +2,16 @@ import { createGroq } from "@ai-sdk/groq";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText, tool } from "ai";
 import { z } from "zod";
-import { getPackages, estimatePrice, checkAvailability } from "./tools/businessLogic";
-import { getRevenueStats, getCustomerStats, getEventAnalytics } from "./tools/analytics";
+import {
+  getPackages,
+  estimatePrice,
+  checkAvailability,
+} from "./tools/businessLogic";
+import {
+  getRevenueStats,
+  getCustomerStats,
+  getEventAnalytics,
+} from "./tools/analytics";
 import { getBookings } from "./tools/bookings";
 
 // Initialize Groq provider with Next.js fetch caching disabled
@@ -13,9 +21,9 @@ const groq = createGroq({
     return fetch(url, {
       ...init,
       cache: "no-store",
-      next: { revalidate: 0 }
+      next: { revalidate: 0 },
     } as any);
-  }
+  },
 });
 
 // Initialize Google Gemini provider with Next.js fetch caching disabled
@@ -25,15 +33,16 @@ const google = createGoogleGenerativeAI({
     return fetch(url, {
       ...init,
       cache: "no-store",
-      next: { revalidate: 0 }
+      next: { revalidate: 0 },
     } as any);
-  }
+  },
 });
 
 // ── Tool Registry ─────────────────────────────────────────────────
 const CUSTOMER_TOOLS = {
   getPackages: tool({
-    description: "Get all available WE Ice Cream Truck packages, pricing, and descriptions.",
+    description:
+      "Get all available WE Ice Cream Truck packages, pricing, and descriptions.",
     parameters: z.object({ dummy: z.string().optional() }),
     execute: async (args: any) => {
       const res = await getPackages();
@@ -52,7 +61,8 @@ const CUSTOMER_TOOLS = {
     },
   } as any),
   estimatePrice: tool({
-    description: "Estimate the price for a booking given guest count and package ID.",
+    description:
+      "Estimate the price for a booking given guest count and package ID.",
     parameters: z.object({
       guests: z.number().describe("Number of guests"),
       packageId: z.string().describe("Package ID"),
@@ -83,15 +93,18 @@ const ADMIN_TOOLS = {
     },
   } as any),
   getBookings: tool({
-    description: "Get a list of bookings filtered by status. Use 'ALL' for no filter.",
+    description:
+      "Get a list of bookings filtered by status. Use 'ALL' for no filter.",
     parameters: z.object({
-      status: z.enum(["ALL", "PENDING_REVIEW", "CONFIRMED", "COMPLETED", "CANCELLED"]).describe("Booking status filter"),
+      status: z
+        .enum(["ALL", "PENDING_REVIEW", "CONFIRMED", "COMPLETED", "CANCELLED"])
+        .describe("Booking status filter"),
     }),
     execute: async (args: any) => {
       const { status } = args || {};
       const res = await getBookings(status === "ALL" ? undefined : status);
       return JSON.parse(JSON.stringify(res));
-    }
+    },
   } as any),
   getEventAnalytics: tool({
     description: "Get a breakdown of bookings grouped by event type.",
@@ -102,28 +115,42 @@ const ADMIN_TOOLS = {
     },
   } as any),
   getInquiries: tool({
-    description: "Get a list of AI leads and customer inquiries filtered by status. Use 'ALL' for no filter.",
+    description:
+      "Get a list of AI leads and customer inquiries filtered by status. Use 'ALL' for no filter.",
     parameters: z.object({
-      status: z.enum(["ALL", "NEW", "IN_PROGRESS", "RESOLVED", "CLOSED"]).describe("Filter inquiries by status"),
+      status: z
+        .enum(["ALL", "NEW", "IN_PROGRESS", "RESOLVED", "CLOSED"])
+        .describe("Filter inquiries by status"),
     }),
     execute: async (args: any) => {
       const { status } = args || {};
       const { prisma } = await import("@/lib/prisma");
-      const res = await prisma.inquiry.findMany({ where: status && status !== "ALL" ? { status } : {}, orderBy: { createdAt: "desc" }, take: 10 });
+      const res = await prisma.inquiry.findMany({
+        where: status && status !== "ALL" ? { status } : {},
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      });
       return JSON.parse(JSON.stringify(res));
-    }
+    },
   } as any),
   getTasks: tool({
-    description: "Get a list of operational tasks filtered by status. Use 'ALL' for no filter.",
+    description:
+      "Get a list of operational tasks filtered by status. Use 'ALL' for no filter.",
     parameters: z.object({
-      status: z.enum(["ALL", "TODO", "IN_PROGRESS", "DONE", "BLOCKED"]).describe("Filter tasks by status"),
+      status: z
+        .enum(["ALL", "TODO", "IN_PROGRESS", "DONE", "BLOCKED"])
+        .describe("Filter tasks by status"),
     }),
     execute: async (args: any) => {
       const { status } = args || {};
       const { prisma } = await import("@/lib/prisma");
-      const res = await prisma.task.findMany({ where: status && status !== "ALL" ? { status } : {}, orderBy: { createdAt: "desc" }, take: 10 });
+      const res = await prisma.task.findMany({
+        where: status && status !== "ALL" ? { status } : {},
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      });
       return JSON.parse(JSON.stringify(res));
-    }
+    },
   } as any),
   getTodayBookings: tool({
     description: "Get bookings scheduled for today.",
@@ -138,29 +165,31 @@ const ADMIN_TOOLS = {
         where: {
           eventDate: {
             gte: startOfDay,
-            lte: endOfDay
-          }
+            lte: endOfDay,
+          },
         },
         include: { customer: true },
-        orderBy: { startTime: "asc" }
+        orderBy: { startTime: "asc" },
       });
       return JSON.parse(JSON.stringify(res));
-    }
+    },
   } as any),
   getFleetStatus: tool({
-    description: "Get the current list of all vehicles in the fleet and their operational status.",
+    description:
+      "Get the current list of all vehicles in the fleet and their operational status.",
     parameters: z.object({ dummy: z.string().optional() }),
     execute: async () => {
       const { prisma } = await import("@/lib/prisma");
       const res = await prisma.vehicle.findMany({
-        orderBy: { code: "asc" }
+        orderBy: { code: "asc" },
       });
       return JSON.parse(JSON.stringify(res));
-    }
+    },
   } as any),
 
   getWeeklyRevenue: tool({
-    description: "Get revenue stats grouped by day for the last 7 days to analyze weekly revenue.",
+    description:
+      "Get revenue stats grouped by day for the last 7 days to analyze weekly revenue.",
     parameters: z.object({ dummy: z.string().optional() }),
     execute: async () => {
       const { prisma } = await import("@/lib/prisma");
@@ -171,23 +200,26 @@ const ADMIN_TOOLS = {
       const bookings = await prisma.booking.findMany({
         where: {
           status: "CONFIRMED",
-          eventDate: { gte: sevenDaysAgo }
+          eventDate: { gte: sevenDaysAgo },
         },
-        include: { quote: true }
+        include: { quote: true },
       });
 
-      const totalRevenue = bookings.reduce((sum, b) => sum + (b.quote?.totalAmount || 0), 0);
+      const totalRevenue = bookings.reduce(
+        (sum, b) => sum + (b.quote?.totalAmount || 0),
+        0,
+      );
       return {
         totalRevenueThisWeek: totalRevenue,
         confirmedCount: bookings.length,
-        bookings: bookings.map(b => ({
+        bookings: bookings.map((b) => ({
           bookingNumber: b.bookingNumber,
           amount: b.quote?.totalAmount || 0,
-          date: b.eventDate.toISOString().split("T")[0]
-        }))
+          date: b.eventDate.toISOString().split("T")[0],
+        })),
       };
-    }
-  } as any)
+    },
+  } as any),
 };
 
 // ── System Prompts ────────────────────────────────────────────────
@@ -267,10 +299,13 @@ RULES:
 // ── Orchestrator ──────────────────────────────────────────────────
 type ChatMessage = { role: "user" | "assistant" | "system"; content: string };
 
-export async function orchestrateAI(role: "customer" | "admin", messages: ChatMessage[]) {
+export async function orchestrateAI(
+  role: "customer" | "admin",
+  messages: ChatMessage[],
+) {
   const tools = role === "customer" ? CUSTOMER_TOOLS : ADMIN_TOOLS;
   const systemPrompt = role === "customer" ? CUSTOMER_PROMPT : ADMIN_PROMPT;
-  
+
   const useGemini = !!process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   const useGroq = !!process.env.GROQ_API_KEY;
 
@@ -304,11 +339,14 @@ export async function orchestrateAI(role: "customer" | "admin", messages: ChatMe
         .filter((c: any) => c.type === "tool-result")
         .map((c: any) => ({
           toolName: c.toolName,
-          result: c.output?.value ?? c.output ?? {}
+          result: c.output?.value ?? c.output ?? {},
         }));
 
       const dataContext = toolResults
-        .map(tr => `[${tr.toolName} LIVE DATA]\n${JSON.stringify(tr.result, null, 2)}`)
+        .map(
+          (tr) =>
+            `[${tr.toolName} LIVE DATA]\n${JSON.stringify(tr.result, null, 2)}`,
+        )
         .join("\n\n");
 
       const step2System = `${systemPrompt}
@@ -326,17 +364,18 @@ ${dataContext}`;
             content: Array.isArray(m.content)
               ? m.content.map((c: any) => {
                   if (c.type === "tool-result") {
-                    const rawVal = c.output?.value ?? c.output ?? c.result ?? {};
+                    const rawVal =
+                      c.output?.value ?? c.output ?? c.result ?? {};
                     return {
                       type: "tool-result",
                       toolCallId: c.toolCallId,
                       toolName: c.toolName,
-                      output: { type: "json", value: rawVal }
+                      output: { type: "json", value: rawVal },
                     };
                   }
                   return c;
                 })
-              : m.content
+              : m.content,
           };
         }
         if (m.role === "assistant") {
@@ -354,16 +393,15 @@ ${dataContext}`;
                   }
                   return c;
                 })
-              : m.content
+              : m.content,
           };
         }
         return m;
       });
 
-      const updatedMessages = [
-        ...messages,
-        ...formattedGenerated
-      ].filter((m: any) => m.role !== "system");
+      const updatedMessages = [...messages, ...formattedGenerated].filter(
+        (m: any) => m.role !== "system",
+      );
 
       const step2 = await generateText({
         model: selectedModel,
@@ -371,7 +409,8 @@ ${dataContext}`;
         messages: updatedMessages as any,
       });
 
-      const toolCalls = firstStep.content.filter((c: any) => c.type === "tool-call") || [];
+      const toolCalls =
+        firstStep.content.filter((c: any) => c.type === "tool-call") || [];
 
       return {
         intent: "TOOL_EXECUTION",
@@ -393,25 +432,32 @@ ${dataContext}`;
     try {
       return await executeCall(model);
     } catch (error: any) {
-      console.warn(`[AI Orchestrator] Primary provider (${providerUsed}) failed, trying fallback:`, error.message || error);
-      
+      console.warn(
+        `[AI Orchestrator] Primary provider (${providerUsed}) failed, trying fallback:`,
+        error.message || error,
+      );
+
       if (providerUsed === "google" && useGroq) {
         return await executeCall(groq("openai/gpt-oss-20b"));
       } else if (providerUsed === "groq" && useGemini) {
         return await executeCall(google("gemini-3.6-flash"));
       }
-      
+
       throw error;
     }
   } catch (error: any) {
-    console.error("[AI Orchestrator] Execution Error (all providers failed):", error);
+    console.error(
+      "[AI Orchestrator] Execution Error (all providers failed):",
+      error,
+    );
     return {
       intent: "ERROR",
       tool_calls: [],
       data: [],
-      final_response: role === "customer"
-        ? "I apologize, but I am experiencing a temporary connection issue. Please call 781-824-7000."
-        : "Copilot Error: I am having trouble connecting to the database. Please try again.",
+      final_response:
+        role === "customer"
+          ? "I apologize, but I am experiencing a temporary connection issue. Please call 781-824-7000."
+          : "Copilot Error: I am having trouble connecting to the database. Please try again.",
     };
   }
 }

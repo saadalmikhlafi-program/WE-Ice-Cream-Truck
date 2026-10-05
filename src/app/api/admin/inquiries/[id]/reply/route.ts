@@ -4,29 +4,47 @@ import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/rbac";
 import { sendEmail } from "@/lib/email";
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const auth = await requirePermission(req, "bookings.update");
     if (!auth.success) {
-      return NextResponse.json({ success: false, error: auth.error }, { status: auth.status });
+      return NextResponse.json(
+        { success: false, error: auth.error },
+        { status: auth.status },
+      );
     }
 
     const { subject, body } = await req.json();
 
-    const inquiry = await prisma.inquiry.findUnique({ where: { id: (await params).id } });
-    if (!inquiry) return NextResponse.json({ success: false, error: "Inquiry not found" }, { status: 404 });
+    const inquiry = await prisma.inquiry.findUnique({
+      where: { id: (await params).id },
+    });
+    if (!inquiry)
+      return NextResponse.json(
+        { success: false, error: "Inquiry not found" },
+        { status: 404 },
+      );
 
     // Ensure we have a real email address
     if (!inquiry.email || inquiry.email === "Not provided") {
-      return NextResponse.json({ 
-        success: false, 
-        error: "No valid email address found for this inquiry. The customer did not provide an email." 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "No valid email address found for this inquiry. The customer did not provide an email.",
+        },
+        { status: 400 },
+      );
     }
 
     const replySubject = subject || "WE Ice Cream Truck Support Response";
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.bostonlegendicecreamtruck.com";
-    
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      "https://www.bostonlegendicecreamtruck.com";
+
     const emailSent = await sendEmail({
       to: inquiry.email,
       subject: replySubject,
@@ -63,7 +81,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     });
 
     if (!emailSent) {
-      return NextResponse.json({ success: false, error: "Failed to send email. SMTP transporter returned failure." }, { status: 500 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Failed to send email. SMTP transporter returned failure.",
+        },
+        { status: 500 },
+      );
     }
 
     // Audit log
@@ -72,8 +96,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         entityType: "INQUIRY",
         entityId: inquiry.id,
         action: "REPLY_SENT_VIA_EMAIL",
-        metadataJson: JSON.stringify({ subject: replySubject, bodyLength: body.length }),
-      }
+        metadataJson: JSON.stringify({
+          subject: replySubject,
+          bodyLength: body.length,
+        }),
+      },
     });
 
     // Update status to IN_PROGRESS after reply
@@ -82,10 +109,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       data: { status: "IN_PROGRESS" },
     });
 
-    return NextResponse.json({ success: true, message: "Email sent successfully", data: updatedInquiry });
+    return NextResponse.json({
+      success: true,
+      message: "Email sent successfully",
+      data: updatedInquiry,
+    });
   } catch (error) {
     console.error("Failed to send email reply", error);
-    return NextResponse.json({ success: false, error: "Failed to send email" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Failed to send email" },
+      { status: 500 },
+    );
   }
 }
-

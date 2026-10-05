@@ -26,7 +26,10 @@ export default function SplashScreen() {
           exit={{ opacity: 0, scale: 1.05 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-          style={{ background: "linear-gradient(135deg, #0A1128 0%, #001a4c 50%, #0A1128 100%)" }}
+          style={{
+            background:
+              "linear-gradient(135deg, #0A1128 0%, #001a4c 50%, #0A1128 100%)",
+          }}
           onClick={() => setVisible(false)}
         >
           {/* Animated background rings — gold themed */}
@@ -57,10 +60,19 @@ export default function SplashScreen() {
             className="relative z-10 flex flex-col items-center gap-8"
             initial={{ opacity: 0, scale: 0.7, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1], delay: 0.15 }}
+            transition={{
+              duration: 0.7,
+              ease: [0.34, 1.56, 0.64, 1],
+              delay: 0.15,
+            }}
           >
-            <div className="relative w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden shadow-2xl"
-              style={{ boxShadow: "0 0 60px rgba(212,175,55,0.25), 0 20px 40px rgba(0,0,0,0.3)", border: "3px solid rgba(212,175,55,0.4)" }}
+            <div
+              className="relative w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden shadow-2xl"
+              style={{
+                boxShadow:
+                  "0 0 60px rgba(212,175,55,0.25), 0 20px 40px rgba(0,0,0,0.3)",
+                border: "3px solid rgba(212,175,55,0.4)",
+              }}
             >
               <Image
                 src="/images/we-icecream.jpg"
@@ -81,7 +93,8 @@ export default function SplashScreen() {
               <p className="font-display font-black text-5xl md:text-6xl text-white tracking-tight">
                 WE<span style={{ color: "#D4AF37" }}>.</span>
               </p>
-              <p className="font-sans font-bold text-sm tracking-[0.35em] uppercase mt-2"
+              <p
+                className="font-sans font-bold text-sm tracking-[0.35em] uppercase mt-2"
                 style={{ color: "rgba(212,175,55,0.7)" }}
               >
                 Ice Cream Truck

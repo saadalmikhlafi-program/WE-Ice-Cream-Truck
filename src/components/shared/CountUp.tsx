@@ -22,7 +22,7 @@ export default function CountUp({
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
+
   const motionValue = useMotionValue(0);
   const springValue = useSpring(motionValue, {
     duration: duration * 1000,
@@ -43,5 +43,9 @@ export default function CountUp({
     });
   }, [springValue, prefix, suffix, decimals]);
 
-  return <span className={className} ref={ref}>{prefix}0{suffix}</span>;
+  return (
+    <span className={className} ref={ref}>
+      {prefix}0{suffix}
+    </span>
+  );
 }

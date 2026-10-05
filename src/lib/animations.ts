@@ -10,7 +10,11 @@ import type { Variants, Transition } from "framer-motion";
 export const transitions = {
   smooth: { duration: 0.4, ease: [0.4, 0, 0.2, 1] } satisfies Transition,
   spring: { type: "spring", stiffness: 300, damping: 30 } satisfies Transition,
-  springBounce: { type: "spring", stiffness: 400, damping: 20 } satisfies Transition,
+  springBounce: {
+    type: "spring",
+    stiffness: 400,
+    damping: 20,
+  } satisfies Transition,
   slow: { duration: 0.7, ease: [0.4, 0, 0.2, 1] } satisfies Transition,
   fast: { duration: 0.2, ease: [0.4, 0, 0.2, 1] } satisfies Transition,
 } as const;
@@ -124,7 +128,10 @@ export const buttonHover = {
   hover: {
     y: -2,
     scale: 1.02,
-    transition: { duration: 0.15, ease: [0, 0, 0.2, 1] as [number, number, number, number] },
+    transition: {
+      duration: 0.15,
+      ease: [0, 0, 0.2, 1] as [number, number, number, number],
+    },
   },
   tap: { scale: 0.97 },
 };

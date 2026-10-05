@@ -1,6 +1,6 @@
 /**
  * Sensitive Action OTP Utility
- * 
+ *
  * Wraps the OTP send/verify flow for high-risk admin actions:
  * - Permission changes
  * - User deletion / deactivation
@@ -47,8 +47,13 @@ export const SENSITIVE_ACTIONS: Record<string, string> = {
  */
 export async function requireSensitiveActionOtp(
   action: keyof typeof SENSITIVE_ACTIONS,
-  req: NextRequest
-): Promise<{ verified: boolean; otpRequired?: boolean; error?: string; sent?: boolean }> {
+  req: NextRequest,
+): Promise<{
+  verified: boolean;
+  otpRequired?: boolean;
+  error?: string;
+  sent?: boolean;
+}> {
   const user = await getSessionUser(req);
   if (!user) return { verified: false, error: "Unauthenticated" };
 
@@ -63,20 +68,40 @@ export async function requireSensitiveActionOtp(
 
     // Respect cooldown
     if (existing && Date.now() - existing.createdAt.getTime() < 60000) {
-      return { verified: false, otpRequired: true, error: "OTP already sent. Please check your email." };
+      return {
+        verified: false,
+        otpRequired: true,
+        error: "OTP already sent. Please check your email.",
+      };
     }
 
     // Clean old codes
-    await prisma.otpCode.deleteMany({ where: { email: user.email, purpose: "SETTINGS", verified: false } });
+    await prisma.otpCode.deleteMany({
+      where: { email: user.email, purpose: "SETTINGS", verified: false },
+    });
 
     const code = generateOtp();
     const expiresAt = new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000);
-    await prisma.otpCode.create({ data: { email: user.email, code, expiresAt, verified: false, purpose: "SETTINGS" } });
+    await prisma.otpCode.create({
+      data: {
+        email: user.email,
+        code,
+        expiresAt,
+        verified: false,
+        purpose: "SETTINGS",
+      },
+    });
 
     const actionLabel = SENSITIVE_ACTIONS[action] || action;
     await sendSensitiveActionOtpEmail(user.email, code, actionLabel);
 
-    return { verified: false, otpRequired: true, sent: true, error: "Verification required. A one-time code has been sent to your email." };
+    return {
+      verified: false,
+      otpRequired: true,
+      sent: true,
+      error:
+        "Verification required. A one-time code has been sent to your email.",
+    };
   }
 
   // OTP provided — verify it
@@ -85,15 +110,27 @@ export async function requireSensitiveActionOtp(
     orderBy: { createdAt: "desc" },
   });
 
-  if (!otpRecord) return { verified: false, error: "No active verification code. Please request a new one." };
+  if (!otpRecord)
+    return {
+      verified: false,
+      error: "No active verification code. Please request a new one.",
+    };
 
   if (otpRecord.lockedUntil && otpRecord.lockedUntil > new Date()) {
-    const mins = Math.ceil((otpRecord.lockedUntil.getTime() - Date.now()) / 60000);
-    return { verified: false, error: `Too many attempts. Locked for ${mins} minutes.` };
+    const mins = Math.ceil(
+      (otpRecord.lockedUntil.getTime() - Date.now()) / 60000,
+    );
+    return {
+      verified: false,
+      error: `Too many attempts. Locked for ${mins} minutes.`,
+    };
   }
 
   if (otpRecord.expiresAt < new Date()) {
-    return { verified: false, error: "Code expired. Please request a new one." };
+    return {
+      verified: false,
+      error: "Code expired. Please request a new one.",
+    };
   }
 
   if (otpRecord.code !== otpHeader.trim()) {
@@ -101,11 +138,20 @@ export async function requireSensitiveActionOtp(
     const updates: any = { attempts };
     if (attempts >= MAX_ATTEMPTS) {
       updates.lockedUntil = new Date(Date.now() + LOCK_MINUTES * 60000);
-      await prisma.otpCode.update({ where: { id: otpRecord.id }, data: updates });
-      return { verified: false, error: `Too many invalid attempts. Locked for ${LOCK_MINUTES} minutes.` };
+      await prisma.otpCode.update({
+        where: { id: otpRecord.id },
+        data: updates,
+      });
+      return {
+        verified: false,
+        error: `Too many invalid attempts. Locked for ${LOCK_MINUTES} minutes.`,
+      };
     }
     await prisma.otpCode.update({ where: { id: otpRecord.id }, data: updates });
-    return { verified: false, error: `Invalid code. ${MAX_ATTEMPTS - attempts} attempts remaining.` };
+    return {
+      verified: false,
+      error: `Invalid code. ${MAX_ATTEMPTS - attempts} attempts remaining.`,
+    };
   }
 
   // ✅ Valid — consume OTP

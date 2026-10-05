@@ -3,17 +3,170 @@
  * Upgrade path: swap implementation to Google Maps API
  */
 
-export const BASE_LOCATION = { lat: 42.3551, lng: -71.0657, label: "Boston, MA 02108" };
+export const BASE_LOCATION = {
+  lat: 42.3551,
+  lng: -71.0657,
+  label: "Boston, MA 02108",
+};
 const NOMINATIM_BASE = "https://nominatim.openstreetmap.org";
 
 const SUPPORTED_REGIONS = [
-  "Abington", "Allston", "Andover", "Arlington", "Avon", "Barnstable", "Bedford", "Belmont", "Billerica", "Boston", "Braintree", "Brewster", "Bridgewater", "Brighton", "Brookline", "Burlington", "Cambridge", "Cape Cod", "Carver", "Charlestown", "Chatham", "Chelmsford", "Clinton", "Cohasset", "Concord", "Danvers", "Dedham", "Dennis", "Dorchester", "Dover", "Dracut", "Duxbury", "East Boston", "Erving", "Essex", "Everett", "Falmouth", "Foxborough", "Framingham", "Franklin", "Freetown", "Georgetown", "Gloucester", "Greater Boston area", "Groton", "Halifax", "Hamilton", "Hancock", "Hanover", "Hanson", "Harwich", "Haverhill", "Hingham", "Holbrook", "Holliston", "Hopkinton", "Hudson", "Hull", "Ipswich", "Jamaica Plain", "Kingston", "Lancaster", "Lawrence", "Leominster", "Lexington", "Lincoln", "Littleton", "Lowell", "Lynn", "Lynnfield", "Malden", "Manchester-by-the-Sea", "Mansfield", "Marblehead", "Marlborough", "Marshfield", "Mashpee", "Maynard", "Medford", "Melrose", "Merrimac", "Middleborough", "Milford", "Millis", "Milton", "Nahant", "Natick", "Needham", "Newbury", "Newburyport", "Newton", "Norfolk", "North Andover", "North Attleboro", "Northborough", "North Reading", "North Shore", "Norwell", "Norwood", "Peabody", "Pembroke", "Pepperell", "Plymouth", "Quincy", "Randolph", "Raynham", "Reading", "Revere", "Rockland", "Rockport", "Rowley", "Salem", "Salisbury", "Sandwich", "Saugus", "Scituate", "Sharon", "Sherborn", "Shirley", "Shrewsbury", "Somerville", "Southborough", "South Boston", "South End", "South Shore", "Stoneham", "Stoughton", "Sudbury", "Swampscott", "Taunton", "Tewksbury", "Topsfield", "Wakefield", "Waltham", "Watertown", "Wayland", "Wellesley", "Westfield", "Westford", "Weston", "West Roxbury", "Westwood", "Weymouth", "Wilmington", "Woburn", "Yarmouth"
+  "Abington",
+  "Allston",
+  "Andover",
+  "Arlington",
+  "Avon",
+  "Barnstable",
+  "Bedford",
+  "Belmont",
+  "Billerica",
+  "Boston",
+  "Braintree",
+  "Brewster",
+  "Bridgewater",
+  "Brighton",
+  "Brookline",
+  "Burlington",
+  "Cambridge",
+  "Cape Cod",
+  "Carver",
+  "Charlestown",
+  "Chatham",
+  "Chelmsford",
+  "Clinton",
+  "Cohasset",
+  "Concord",
+  "Danvers",
+  "Dedham",
+  "Dennis",
+  "Dorchester",
+  "Dover",
+  "Dracut",
+  "Duxbury",
+  "East Boston",
+  "Erving",
+  "Essex",
+  "Everett",
+  "Falmouth",
+  "Foxborough",
+  "Framingham",
+  "Franklin",
+  "Freetown",
+  "Georgetown",
+  "Gloucester",
+  "Greater Boston area",
+  "Groton",
+  "Halifax",
+  "Hamilton",
+  "Hancock",
+  "Hanover",
+  "Hanson",
+  "Harwich",
+  "Haverhill",
+  "Hingham",
+  "Holbrook",
+  "Holliston",
+  "Hopkinton",
+  "Hudson",
+  "Hull",
+  "Ipswich",
+  "Jamaica Plain",
+  "Kingston",
+  "Lancaster",
+  "Lawrence",
+  "Leominster",
+  "Lexington",
+  "Lincoln",
+  "Littleton",
+  "Lowell",
+  "Lynn",
+  "Lynnfield",
+  "Malden",
+  "Manchester-by-the-Sea",
+  "Mansfield",
+  "Marblehead",
+  "Marlborough",
+  "Marshfield",
+  "Mashpee",
+  "Maynard",
+  "Medford",
+  "Melrose",
+  "Merrimac",
+  "Middleborough",
+  "Milford",
+  "Millis",
+  "Milton",
+  "Nahant",
+  "Natick",
+  "Needham",
+  "Newbury",
+  "Newburyport",
+  "Newton",
+  "Norfolk",
+  "North Andover",
+  "North Attleboro",
+  "Northborough",
+  "North Reading",
+  "North Shore",
+  "Norwell",
+  "Norwood",
+  "Peabody",
+  "Pembroke",
+  "Pepperell",
+  "Plymouth",
+  "Quincy",
+  "Randolph",
+  "Raynham",
+  "Reading",
+  "Revere",
+  "Rockland",
+  "Rockport",
+  "Rowley",
+  "Salem",
+  "Salisbury",
+  "Sandwich",
+  "Saugus",
+  "Scituate",
+  "Sharon",
+  "Sherborn",
+  "Shirley",
+  "Shrewsbury",
+  "Somerville",
+  "Southborough",
+  "South Boston",
+  "South End",
+  "South Shore",
+  "Stoneham",
+  "Stoughton",
+  "Sudbury",
+  "Swampscott",
+  "Taunton",
+  "Tewksbury",
+  "Topsfield",
+  "Wakefield",
+  "Waltham",
+  "Watertown",
+  "Wayland",
+  "Wellesley",
+  "Westfield",
+  "Westford",
+  "Weston",
+  "West Roxbury",
+  "Westwood",
+  "Weymouth",
+  "Wilmington",
+  "Woburn",
+  "Yarmouth",
 ];
 
 export function isServiceableRegion(city: string): boolean {
   if (!city) return false;
   const normalized = city.toLowerCase().trim();
-  return SUPPORTED_REGIONS.some(r => normalized.includes(r.toLowerCase()) || r.toLowerCase().includes(normalized));
+  return SUPPORTED_REGIONS.some(
+    (r) =>
+      normalized.includes(r.toLowerCase()) ||
+      r.toLowerCase().includes(normalized),
+  );
 }
 
 export interface GeoResult {
@@ -28,13 +181,15 @@ export interface GeoResult {
 
 export interface DistanceResult {
   straightMiles: number;
-  drivingMiles: number;   // estimated: straight × 1.35
-  billableMiles: number;  // max(0, drivingMiles - FREE_MILES)
+  drivingMiles: number; // estimated: straight × 1.35
+  billableMiles: number; // max(0, drivingMiles - FREE_MILES)
   travelFee: number;
 }
 
 /** Geocode an address string → coordinates */
-export async function geocodeAddress(address: string): Promise<GeoResult | null> {
+export async function geocodeAddress(
+  address: string,
+): Promise<GeoResult | null> {
   try {
     const params = new URLSearchParams({
       q: address + ", Massachusetts, USA",
@@ -60,11 +215,24 @@ export async function geocodeAddress(address: string): Promise<GeoResult | null>
       zip: addr.postcode ?? "",
       country: addr.country_code ?? "",
     };
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 /** Search suggestions for address autocomplete */
-export async function searchAddresses(query: string): Promise<{ label: string; value: string; lat: number; lng: number; zip: string; city: string }[]> {
+export async function searchAddresses(
+  query: string,
+): Promise<
+  {
+    label: string;
+    value: string;
+    lat: number;
+    lng: number;
+    zip: string;
+    city: string;
+  }[]
+> {
   if (query.length < 3) return [];
   try {
     const params = new URLSearchParams({
@@ -79,28 +247,50 @@ export async function searchAddresses(query: string): Promise<{ label: string; v
     });
     if (!res.ok) return [];
     const data = await res.json();
-    return (data as any[]).map(item => ({
-      label: item.display_name,
-      value: item.display_name,
-      lat: parseFloat(item.lat),
-      lng: parseFloat(item.lon),
-      zip: item.address?.postcode ?? "",
-      city: item.address?.city ?? item.address?.town ?? item.address?.suburb ?? "",
-    })).filter(i => i.lat && i.lng);
-  } catch { return []; }
+    return (data as any[])
+      .map((item) => ({
+        label: item.display_name,
+        value: item.display_name,
+        lat: parseFloat(item.lat),
+        lng: parseFloat(item.lon),
+        zip: item.address?.postcode ?? "",
+        city:
+          item.address?.city ??
+          item.address?.town ??
+          item.address?.suburb ??
+          "",
+      }))
+      .filter((i) => i.lat && i.lng);
+  } catch {
+    return [];
+  }
 }
 
 /** Haversine distance in miles */
-export function haversineDistanceMiles(lat1: number, lng1: number, lat2: number, lng2: number): number {
+export function haversineDistanceMiles(
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number,
+): number {
   const R = 3958.8; // Earth radius in miles
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) * Math.sin(dLng/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
 export interface RoutingProvider {
-  getDrivingDistanceMiles(originLat: number, originLng: number, destLat: number, destLng: number): Promise<number>;
+  getDrivingDistanceMiles(
+    originLat: number,
+    originLng: number,
+    destLat: number,
+    destLng: number,
+  ): Promise<number>;
 }
 
 /**
@@ -119,20 +309,34 @@ function isValidMACoordinate(lat: number, lng: number): boolean {
 }
 
 export class OSRMRoutingProvider implements RoutingProvider {
-  async getDrivingDistanceMiles(originLat: number, originLng: number, destLat: number, destLng: number): Promise<number> {
+  async getDrivingDistanceMiles(
+    originLat: number,
+    originLng: number,
+    destLat: number,
+    destLng: number,
+  ): Promise<number> {
     // Validate coordinates before making the request
-    if (!isValidMACoordinate(originLat, originLng) || !isValidMACoordinate(destLat, destLng)) {
-      console.error(`OSRM: Invalid coordinates — origin=(${originLat},${originLng}), dest=(${destLat},${destLng}). Rejecting.`);
-      throw new Error(`Invalid coordinates: origin=(${originLat},${originLng}), dest=(${destLat},${destLng})`);
+    if (
+      !isValidMACoordinate(originLat, originLng) ||
+      !isValidMACoordinate(destLat, destLng)
+    ) {
+      console.error(
+        `OSRM: Invalid coordinates — origin=(${originLat},${originLng}), dest=(${destLat},${destLng}). Rejecting.`,
+      );
+      throw new Error(
+        `Invalid coordinates: origin=(${originLat},${originLng}), dest=(${destLat},${destLng})`,
+      );
     }
 
     try {
       // Use HTTPS to avoid mixed-content blocking in serverless environments
       const url = `https://router.project-osrm.org/route/v1/driving/${originLng},${originLat};${destLng},${destLat}?overview=false`;
       const res = await fetch(url, {
-        headers: { "User-Agent": "WEIceCreamTruck/1.0 (info@weicecreamtruck.com)" },
+        headers: {
+          "User-Agent": "WEIceCreamTruck/1.0 (info@weicecreamtruck.com)",
+        },
         signal: AbortSignal.timeout(8000), // 8 second timeout
-        cache: "no-store"
+        cache: "no-store",
       });
       if (!res.ok) throw new Error(`OSRM HTTP ${res.status}`);
       const data = await res.json();
@@ -140,9 +344,16 @@ export class OSRMRoutingProvider implements RoutingProvider {
         const meters = data.routes[0].distance;
         const miles = meters * 0.000621371;
         // Sanity check: driving distance should never be more than 3× straight-line
-        const straight = haversineDistanceMiles(originLat, originLng, destLat, destLng);
+        const straight = haversineDistanceMiles(
+          originLat,
+          originLng,
+          destLat,
+          destLng,
+        );
         if (miles > straight * 3 && miles > 100) {
-          console.warn(`OSRM returned suspicious distance: ${miles.toFixed(1)} miles (straight=${straight.toFixed(1)}). Using fallback.`);
+          console.warn(
+            `OSRM returned suspicious distance: ${miles.toFixed(1)} miles (straight=${straight.toFixed(1)}). Using fallback.`,
+          );
           return straight * 1.35;
         }
         return miles;
@@ -151,7 +362,9 @@ export class OSRMRoutingProvider implements RoutingProvider {
     } catch (e) {
       console.warn("OSRM Warning (using fallback):", (e as Error).message);
       // Fallback: use haversine * 1.35 as a rough driving estimate
-      return haversineDistanceMiles(originLat, originLng, destLat, destLng) * 1.35;
+      return (
+        haversineDistanceMiles(originLat, originLng, destLat, destLng) * 1.35
+      );
     }
   }
 }
@@ -160,15 +373,39 @@ export class OSRMRoutingProvider implements RoutingProvider {
 export const routingProvider: RoutingProvider = new OSRMRoutingProvider();
 
 /** Calculate travel distance and fee from base to destination */
-export async function calcDistance(destLat: number, destLng: number, freeMiles = 10, ratePerMile = 2.50, originLat = BASE_LOCATION.lat, originLng = BASE_LOCATION.lng): Promise<DistanceResult> {
+export async function calcDistance(
+  destLat: number,
+  destLng: number,
+  freeMiles = 10,
+  ratePerMile = 2.5,
+  originLat = BASE_LOCATION.lat,
+  originLng = BASE_LOCATION.lng,
+): Promise<DistanceResult> {
   // Guard: reject invalid destination coordinates
   if (!isValidMACoordinate(destLat, destLng)) {
-    console.error(`calcDistance: Invalid destination coordinates (${destLat}, ${destLng}). Returning zero.`);
-    return { straightMiles: 0, drivingMiles: 0, billableMiles: 0, travelFee: 0 };
+    console.error(
+      `calcDistance: Invalid destination coordinates (${destLat}, ${destLng}). Returning zero.`,
+    );
+    return {
+      straightMiles: 0,
+      drivingMiles: 0,
+      billableMiles: 0,
+      travelFee: 0,
+    };
   }
 
-  const straight = haversineDistanceMiles(originLat, originLng, destLat, destLng);
-  const driving  = await routingProvider.getDrivingDistanceMiles(originLat, originLng, destLat, destLng);
+  const straight = haversineDistanceMiles(
+    originLat,
+    originLng,
+    destLat,
+    destLng,
+  );
+  const driving = await routingProvider.getDrivingDistanceMiles(
+    originLat,
+    originLng,
+    destLat,
+    destLng,
+  );
 
   // Final sanity: cap at 200 miles (furthest MA point is ~180 miles from any other MA point)
   const safeDriving = Math.min(driving, 200);
@@ -176,16 +413,24 @@ export async function calcDistance(destLat: number, destLng: number, freeMiles =
 
   return {
     straightMiles: Math.round(straight * 10) / 10,
-    drivingMiles:  Math.round(safeDriving * 10) / 10,
+    drivingMiles: Math.round(safeDriving * 10) / 10,
     billableMiles: Math.round(billable * 10) / 10,
-    travelFee:     Math.round(billable * ratePerMile * 100) / 100,
+    travelFee: Math.round(billable * ratePerMile * 100) / 100,
   };
 }
 
 /** Reverse geocode coordinates → address */
-export async function reverseGeocode(lat: number, lng: number): Promise<GeoResult | null> {
+export async function reverseGeocode(
+  lat: number,
+  lng: number,
+): Promise<GeoResult | null> {
   try {
-    const params = new URLSearchParams({ lat: String(lat), lon: String(lng), format: "json", addressdetails: "1" });
+    const params = new URLSearchParams({
+      lat: String(lat),
+      lon: String(lng),
+      format: "json",
+      addressdetails: "1",
+    });
     const res = await fetch(`${NOMINATIM_BASE}/reverse?${params}`, {
       headers: { "User-Agent": "BostonLegendIceCreamTruck/1.0" },
     });
@@ -193,12 +438,15 @@ export async function reverseGeocode(lat: number, lng: number): Promise<GeoResul
     const item = await res.json();
     const addr = item.address ?? {};
     return {
-      lat, lng,
+      lat,
+      lng,
       displayName: item.display_name,
       city: addr.city ?? addr.town ?? addr.village ?? addr.suburb ?? "",
       state: addr.state ?? "",
       zip: addr.postcode ?? "",
       country: addr.country_code ?? "",
     };
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }

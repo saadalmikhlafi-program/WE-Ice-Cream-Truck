@@ -42,8 +42,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 5,
     durationMins: 45,
     durationLabel: "45 Minute Service",
-    description: "A delightful introduction to our classic ice cream truck experience.",
-    features: ["Up to 30 Premium Servings included", "45 Minute Service", "Premium Ice Cream Selection", "Extra guests at $5 each"],
+    description:
+      "A delightful introduction to our classic ice cream truck experience.",
+    features: [
+      "Up to 30 Premium Servings included",
+      "45 Minute Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $5 each",
+    ],
     badge: "Great Value",
     badgeVariant: "mint",
     isPopular: false,
@@ -64,8 +70,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 5,
     durationMins: 45,
     durationLabel: "45 Minute Service",
-    description: "Our most traditional ice cream truck package for mid-sized parties.",
-    features: ["Up to 50 Premium Servings included", "45 Minute Service", "Premium Ice Cream Selection", "Extra guests at $5 each"],
+    description:
+      "Our most traditional ice cream truck package for mid-sized parties.",
+    features: [
+      "Up to 50 Premium Servings included",
+      "45 Minute Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $5 each",
+    ],
     isPopular: true,
     isCustom: false,
     sortOrder: 2,
@@ -84,8 +96,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 5,
     durationMins: 45,
     durationLabel: "45 Minute Service",
-    description: "A signature experience with plenty of premium treats for everyone.",
-    features: ["Up to 75 Premium Servings included", "45 Minute Service", "Premium Ice Cream Selection", "Extra guests at $5 each"],
+    description:
+      "A signature experience with plenty of premium treats for everyone.",
+    features: [
+      "Up to 75 Premium Servings included",
+      "45 Minute Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $5 each",
+    ],
     badge: "Most Popular",
     badgeVariant: "gold",
     isPopular: true,
@@ -106,8 +124,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 5,
     durationMins: 45,
     durationLabel: "45 Minute Service",
-    description: "A grand scale celebration for school events and large birthdays.",
-    features: ["Up to 100 Premium Servings included", "45 Minute Service", "Premium Ice Cream Selection", "Extra guests at $5 each"],
+    description:
+      "A grand scale celebration for school events and large birthdays.",
+    features: [
+      "Up to 100 Premium Servings included",
+      "45 Minute Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $5 each",
+    ],
     isPopular: false,
     isCustom: false,
     sortOrder: 4,
@@ -126,8 +150,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 5,
     durationMins: 60,
     durationLabel: "1 Hour Service",
-    description: "A full hour of premium service handling substantial volume with ease.",
-    features: ["Up to 150 Premium Servings included", "1 Hour Service", "Premium Ice Cream Selection", "Extra guests at $5 each"],
+    description:
+      "A full hour of premium service handling substantial volume with ease.",
+    features: [
+      "Up to 150 Premium Servings included",
+      "1 Hour Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $5 each",
+    ],
     badge: "Corporate Choice",
     badgeVariant: "coral",
     isPopular: false,
@@ -148,8 +178,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 5,
     durationMins: 90,
     durationLabel: "1h 30m Service",
-    description: "Our largest truck package. Maximum capacity and time for your biggest events.",
-    features: ["Up to 200 Premium Servings included", "1h 30m Service", "Premium Ice Cream Selection", "Extra guests at $5 each"],
+    description:
+      "Our largest truck package. Maximum capacity and time for your biggest events.",
+    features: [
+      "Up to 200 Premium Servings included",
+      "1h 30m Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $5 each",
+    ],
     isPopular: false,
     isCustom: false,
     sortOrder: 6,
@@ -170,8 +206,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 5,
     durationMins: 40,
     durationLabel: "40 Minute Service",
-    description: "A quick and premium treat delivered from our sleek Sprinter Van.",
-    features: ["Up to 30 Premium Servings included", "40 Minute Service", "Premium Ice Cream Selection", "Extra guests at $5 each"],
+    description:
+      "A quick and premium treat delivered from our sleek Sprinter Van.",
+    features: [
+      "Up to 30 Premium Servings included",
+      "40 Minute Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $5 each",
+    ],
     isPopular: false,
     isCustom: false,
     sortOrder: 7,
@@ -190,8 +232,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 5,
     durationMins: 40,
     durationLabel: "40 Minute Service",
-    description: "Perfect for upscale parties that demand a more refined touch.",
-    features: ["Up to 50 Premium Servings included", "40 Minute Service", "Premium Ice Cream Selection", "Extra guests at $5 each"],
+    description:
+      "Perfect for upscale parties that demand a more refined touch.",
+    features: [
+      "Up to 50 Premium Servings included",
+      "40 Minute Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $5 each",
+    ],
     badge: "Best Value",
     badgeVariant: "mint",
     isPopular: true,
@@ -212,8 +260,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 5,
     durationMins: 40,
     durationLabel: "40 Minute Service",
-    description: "A smart choice for local gatherings and corporate team building.",
-    features: ["Up to 75 Premium Servings included", "40 Minute Service", "Premium Ice Cream Selection", "Extra guests at $5 each"],
+    description:
+      "A smart choice for local gatherings and corporate team building.",
+    features: [
+      "Up to 75 Premium Servings included",
+      "40 Minute Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $5 each",
+    ],
     isPopular: true,
     isCustom: false,
     sortOrder: 9,
@@ -232,8 +286,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 5,
     durationMins: 40,
     durationLabel: "40 Minute Service",
-    description: "A high-capacity premium van experience for your lively events.",
-    features: ["Up to 100 Premium Servings included", "40 Minute Service", "Premium Ice Cream Selection", "Extra guests at $5 each"],
+    description:
+      "A high-capacity premium van experience for your lively events.",
+    features: [
+      "Up to 100 Premium Servings included",
+      "40 Minute Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $5 each",
+    ],
     badge: "Highly Rated",
     badgeVariant: "coral",
     isPopular: false,
@@ -254,8 +314,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 4,
     durationMins: 60,
     durationLabel: "1 Hour Service",
-    description: "Impress a massive crowd with our top-tier Sprinter Van service.",
-    features: ["Up to 150 Premium Servings included", "1 Hour Service", "Premium Ice Cream Selection", "Extra guests at $4 each"],
+    description:
+      "Impress a massive crowd with our top-tier Sprinter Van service.",
+    features: [
+      "Up to 150 Premium Servings included",
+      "1 Hour Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $4 each",
+    ],
     isPopular: false,
     isCustom: false,
     sortOrder: 11,
@@ -274,8 +340,14 @@ export const PACKAGES: Package[] = [
     extraGuestPrice: 4,
     durationMins: 60,
     durationLabel: "1 Hour Service",
-    description: "The pinnacle of our Sprinter Van fleet. Maximum luxury for your biggest events.",
-    features: ["Up to 200 Premium Servings included", "1 Hour Service", "Premium Ice Cream Selection", "Extra guests at $4 each"],
+    description:
+      "The pinnacle of our Sprinter Van fleet. Maximum luxury for your biggest events.",
+    features: [
+      "Up to 200 Premium Servings included",
+      "1 Hour Service",
+      "Premium Ice Cream Selection",
+      "Extra guests at $4 each",
+    ],
     badge: "Maximum Luxury",
     badgeVariant: "gold",
     isPopular: false,
@@ -300,7 +372,8 @@ export const PACKAGES: Package[] = [
     durationLabel: "Custom Duration",
     badge: "200+ Guests",
     badgeVariant: "gold",
-    description: "Planning a large-scale event, festival, or something truly unique? Tell us your vision and we'll design a completely custom experience.",
+    description:
+      "Planning a large-scale event, festival, or something truly unique? Tell us your vision and we'll design a completely custom experience.",
     features: [
       "Custom number of servings",
       "Custom duration & logistics",
@@ -318,7 +391,9 @@ export const PACKAGES: Package[] = [
 
 export const TRUCK_PACKAGES = PACKAGES.filter((p) => p.vehicleType === "TRUCK");
 export const VAN_PACKAGES = PACKAGES.filter((p) => p.vehicleType === "VAN");
-export const CUSTOM_PACKAGES = PACKAGES.filter((p) => p.vehicleType === "CUSTOM");
+export const CUSTOM_PACKAGES = PACKAGES.filter(
+  (p) => p.vehicleType === "CUSTOM",
+);
 
 export function getPackageBySlug(slug: string): Package | undefined {
   return PACKAGES.find((p) => p.slug === slug);

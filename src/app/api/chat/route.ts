@@ -20,7 +20,10 @@ async function calculateDistance(zip: string): Promise<number> {
 
   try {
     const distanceMiles = await routingProvider.getDrivingDistanceMiles(
-      BASE_LOCATION.lat, BASE_LOCATION.lng, lookup.latitude, lookup.longitude
+      BASE_LOCATION.lat,
+      BASE_LOCATION.lng,
+      lookup.latitude,
+      lookup.longitude,
     );
     return Math.round(distanceMiles * 10) / 10;
   } catch (e) {
@@ -33,11 +36,15 @@ const DISTANCE_TOOL = {
   type: "function" as const,
   function: {
     name: "calculateDistance",
-    description: "Calculate the exact driving distance in miles from our garage to the event ZIP code. Use this to determine travel fees.",
+    description:
+      "Calculate the exact driving distance in miles from our garage to the event ZIP code. Use this to determine travel fees.",
     parameters: {
       type: "object",
       properties: {
-        zip: { type: "string", description: "The 5-digit ZIP code of the event" }
+        zip: {
+          type: "string",
+          description: "The 5-digit ZIP code of the event",
+        },
       },
       required: ["zip"],
     },
@@ -48,15 +55,22 @@ const BOOKING_TOOL = {
   type: "function" as const,
   function: {
     name: "createBookingRequest",
-    description: "Create a new booking request when the customer has provided all required details AND they are logged in.",
+    description:
+      "Create a new booking request when the customer has provided all required details AND they are logged in.",
     parameters: {
       type: "object",
       properties: {
         name: { type: "string", description: "Customer's full name" },
         email: { type: "string", description: "Customer's email address" },
         phone: { type: "string", description: "Customer's phone number" },
-        eventDate: { type: "string", description: "Event date in YYYY-MM-DD format" },
-        startTime: { type: "string", description: "Event start time in 24-hour format, e.g. '14:00'" },
+        eventDate: {
+          type: "string",
+          description: "Event date in YYYY-MM-DD format",
+        },
+        startTime: {
+          type: "string",
+          description: "Event start time in 24-hour format, e.g. '14:00'",
+        },
         eventType: { type: "string", description: "Type of event" },
         packageId: { type: "string", description: "Package ID from the list" },
         address: { type: "string", description: "Event street address" },
@@ -64,12 +78,27 @@ const BOOKING_TOOL = {
         zip: { type: "string", description: "Event ZIP code" },
         guests: { type: "number", description: "Estimated number of guests" },
       },
-      required: ["name", "email", "phone", "eventDate", "startTime", "eventType", "packageId", "address", "city", "zip", "guests"],
+      required: [
+        "name",
+        "email",
+        "phone",
+        "eventDate",
+        "startTime",
+        "eventType",
+        "packageId",
+        "address",
+        "city",
+        "zip",
+        "guests",
+      ],
     },
   },
 };
 
-async function handleBookingTool(args: any, sessionEmail: string): Promise<{ success: boolean; bookingNumber?: string; error?: string }> {
+async function handleBookingTool(
+  args: any,
+  sessionEmail: string,
+): Promise<{ success: boolean; bookingNumber?: string; error?: string }> {
   try {
     const [firstName, ...lastNames] = args.name.split(" ");
     const lastName = lastNames.join(" ") || "Unknown";
@@ -112,7 +141,9 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
     }
 
     // Safely parse date and guests
-    const dateStr = args.eventDate.includes('T') ? args.eventDate : `${args.eventDate}T00:00:00.000Z`;
+    const dateStr = args.eventDate.includes("T")
+      ? args.eventDate
+      : `${args.eventDate}T00:00:00.000Z`;
     let parsedDate = new Date(dateStr);
     if (isNaN(parsedDate.getTime())) {
       // Fallback: If AI provided something unparseable, just use tomorrow
@@ -143,30 +174,33 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
     // Calculate base price from package
     const basePrice = resolvedPackage?.price || 0;
     const pkgServings = resolvedPackage?.servings || 50;
-    const extraGuestPrice = resolvedPackage?.extraGuestPrice || resolvedPackage?.extraPiecePrice || 5;
+    const extraGuestPrice =
+      resolvedPackage?.extraGuestPrice || resolvedPackage?.extraPiecePrice || 5;
     const extraGuests = Math.max(0, parsedGuests - pkgServings);
     const extraGuestsFee = extraGuests * extraGuestPrice;
 
     // Weekend surcharge
     const dayOfWeek = parsedDate.getDay();
-    const weekendFee = (dayOfWeek === 0 || dayOfWeek === 6) ? 25 : 0;
+    const weekendFee = dayOfWeek === 0 || dayOfWeek === 6 ? 25 : 0;
 
     // Additional stops
     const additionalStopsCount = 0;
     const additionalStopsFee = 0;
 
-    const totalAmount = basePrice + travelFee + extraGuestsFee + weekendFee + additionalStopsFee;
+    const totalAmount =
+      basePrice + travelFee + extraGuestsFee + weekendFee + additionalStopsFee;
 
     // ─── AI Auto-Approval Logic ───
     // APPROVE unless totalAmount < $500 AND distance > 30 miles → then PENDING for human review
     let bookingStatus = "CONFIRMED";
     let pendingReason = "";
-    const isWithin24Hours = (parsedDate.getTime() - new Date().getTime()) <= (24 * 60 * 60 * 1000);
-    
+    const isWithin24Hours =
+      parsedDate.getTime() - new Date().getTime() <= 24 * 60 * 60 * 1000;
+
     if ((totalAmount < 500 && distanceMiles > 30) || isWithin24Hours) {
       bookingStatus = "PENDING_REVIEW";
-      pendingReason = isWithin24Hours 
-        ? "Booking is within 24 hours and requires manual review." 
+      pendingReason = isWithin24Hours
+        ? "Booking is within 24 hours and requires manual review."
         : `Low value booking ($${totalAmount.toFixed(2)}) with long distance (${distanceMiles.toFixed(1)} miles). Requires manual review.`;
     }
 
@@ -226,7 +260,12 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
     // ─── Send Emails ───
     const fullBooking = await prisma.booking.findUnique({
       where: { id: booking.id },
-      include: { customer: true, package: true, quote: true, stops: { orderBy: { stopOrder: "asc" } } },
+      include: {
+        customer: true,
+        package: true,
+        quote: true,
+        stops: { orderBy: { stopOrder: "asc" } },
+      },
     });
 
     // Send to Customer
@@ -237,22 +276,24 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
         bookingNumber,
         "", // paymentUrl not applicable
         totalAmount.toFixed(2),
-        booking.id
-      ).catch(e => console.error("Failed to send approved email:", e));
+        booking.id,
+      ).catch((e) => console.error("Failed to send approved email:", e));
     } else {
       await sendBookingPendingReviewEmail(
         emailToUse,
         firstName,
         bookingNumber,
         pendingReason,
-        booking.id
-      ).catch(e => console.error("Failed to send pending review email:", e));
+        booking.id,
+      ).catch((e) => console.error("Failed to send pending review email:", e));
     }
 
     // --- Google Calendar Sync for Auto-Approved AI Bookings ---
     if (bookingStatus === "CONFIRMED") {
       try {
-        console.log(`[Google Calendar] Creating event for auto-confirmed AI booking ${bookingNumber}`);
+        console.log(
+          `[Google Calendar] Creating event for auto-confirmed AI booking ${bookingNumber}`,
+        );
         // We pass the fullBooking object which has customer and package relations
         if (fullBooking) {
           await googleCalendarService.createBookingEvent(fullBooking as any);
@@ -265,9 +306,13 @@ async function handleBookingTool(args: any, sessionEmail: string): Promise<{ suc
     // Send to Owner
     if (fullBooking) {
       if (bookingStatus === "PENDING_REVIEW") {
-        await sendOwnerRequiresApprovalEmail(fullBooking).catch(e => console.error("Failed to send owner approval email:", e));
+        await sendOwnerRequiresApprovalEmail(fullBooking).catch((e) =>
+          console.error("Failed to send owner approval email:", e),
+        );
       } else {
-        await sendOwnerNewBookingEmail(fullBooking).catch(e => console.error("Failed to send owner notification:", e));
+        await sendOwnerNewBookingEmail(fullBooking).catch((e) =>
+          console.error("Failed to send owner notification:", e),
+        );
       }
     }
 
@@ -282,11 +327,12 @@ export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();
     const session = await getServerSession(authOptions);
-    
-    let userState = "User Status: LOGGED OUT. The user is currently browsing as a guest.";
+
+    let userState =
+      "User Status: LOGGED OUT. The user is currently browsing as a guest.";
     if (session && session.user && session.user.email) {
       userState = `User Status: LOGGED IN. User Name: ${session.user.name}, Email: ${session.user.email}, Role: ${(session.user as any).role}.`;
-      
+
       try {
         const customerRecord = await prisma.customer.findFirst({
           where: { email: session.user.email.toLowerCase() },
@@ -294,15 +340,18 @@ export async function POST(req: NextRequest) {
             bookings: {
               include: { package: true },
               orderBy: { eventDate: "desc" },
-            }
-          }
+            },
+          },
         });
 
         if (customerRecord && customerRecord.bookings.length > 0) {
-          const pastBookings = customerRecord.bookings.map(b => 
-            `- ${b.eventDate.toISOString().split("T")[0]}: ${b.package?.name || "Custom Package"} (${b.status})`
-          ).join("\n");
-          
+          const pastBookings = customerRecord.bookings
+            .map(
+              (b) =>
+                `- ${b.eventDate.toISOString().split("T")[0]}: ${b.package?.name || "Custom Package"} (${b.status})`,
+            )
+            .join("\n");
+
           userState += `\n\nCustomer History:\nThis is a returning customer with ${customerRecord.bookings.length} past/upcoming bookings:\n${pastBookings}\nYou can warmly welcome them back and gently reference their past events if appropriate (e.g. "Welcome back! I see you booked the Silver Package last time...").`;
         } else {
           userState += `\n\nCustomer History:\nThis is a new customer with no past bookings.`;
@@ -317,9 +366,12 @@ export async function POST(req: NextRequest) {
       orderBy: { sortOrder: "asc" },
     });
 
-    const packagesList = activePackages.map((pkg, index) => 
-      `${index + 1}. **${pkg.name}** (ID: ${pkg.slug || pkg.id}) — $${pkg.price}. Up to ${pkg.servings} guests, ${pkg.durationMins} min service. ${pkg.description || ""}`
-    ).join("\n");
+    const packagesList = activePackages
+      .map(
+        (pkg, index) =>
+          `${index + 1}. **${pkg.name}** (ID: ${pkg.slug || pkg.id}) — $${pkg.price}. Up to ${pkg.servings} guests, ${pkg.durationMins} min service. ${pkg.description || ""}`,
+      )
+      .join("\n");
 
     const SYSTEM_PROMPT = `You are the WE Ice Cream Truck AI Concierge — a helpful, warm, and professional assistant for ${BUSINESS_CONFIG.name}.
 
@@ -377,7 +429,8 @@ ${packagesList}
       apiKey = process.env.GROQ_API_KEY;
       apiModel = "openai/gpt-oss-20b";
     } else if (process.env.GOOGLE_AI_KEY) {
-      apiUrl = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
+      apiUrl =
+        "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
       apiKey = process.env.GOOGLE_AI_KEY;
       apiModel = "gemini-3.6-flash";
     } else if (process.env.OPENROUTER_API_KEY) {
@@ -397,7 +450,10 @@ ${packagesList}
       Authorization: `Bearer ${apiKey}`,
     };
 
-    const chatMessages = [{ role: "system", content: SYSTEM_PROMPT }, ...messages];
+    const chatMessages = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...messages,
+    ];
 
     // Build request body
     const requestBody: any = {
@@ -405,16 +461,25 @@ ${packagesList}
       messages: chatMessages,
       temperature: 0.5,
       max_tokens: 1000,
-      tools: (session && session.user) ? [BOOKING_TOOL, DISTANCE_TOOL] : [DISTANCE_TOOL],
+      tools:
+        session && session.user
+          ? [BOOKING_TOOL, DISTANCE_TOOL]
+          : [DISTANCE_TOOL],
       tool_choice: "auto",
     };
 
-    const aiRes = await fetch(apiUrl, { method: "POST", headers, body: JSON.stringify(requestBody) });
+    const aiRes = await fetch(apiUrl, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(requestBody),
+    });
 
     if (!aiRes.ok) {
       const errText = await aiRes.text();
       console.error("AI API ERROR:", errText, "Status:", aiRes.status);
-      return Response.json({ text: `Sorry, I am having trouble responding right now. Error ${aiRes.status}: ${errText.substring(0, 200)}` });
+      return Response.json({
+        text: `Sorry, I am having trouble responding right now. Error ${aiRes.status}: ${errText.substring(0, 200)}`,
+      });
     }
 
     const data = await aiRes.json();
@@ -422,25 +487,31 @@ ${packagesList}
     let message = choice?.message;
 
     if (!message) {
-      return Response.json({ text: "I'm sorry, I couldn't generate a response. Please try again!" });
+      return Response.json({
+        text: "I'm sorry, I couldn't generate a response. Please try again!",
+      });
     }
 
     // Handle Tools Loop (1 depth max for distance)
     if (message.tool_calls && message.tool_calls.length > 0) {
       const toolCall = message.tool_calls[0];
-      
+
       // Handle Distance Calculation Tool
       if (toolCall.function?.name === "calculateDistance") {
         let zip = "";
         try {
           zip = JSON.parse(toolCall.function.arguments).zip;
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
 
         let distanceMiles = 0;
         if (zip) {
           try {
             distanceMiles = await calculateDistance(zip);
-          } catch (e) { console.error("Distance tool error", e); }
+          } catch (e) {
+            console.error("Distance tool error", e);
+          }
         }
 
         chatMessages.push(message);
@@ -448,7 +519,11 @@ ${packagesList}
           role: "tool",
           tool_call_id: toolCall.id,
           name: toolCall.function.name,
-          content: JSON.stringify({ distanceMiles, freeMiles: 10, additionalMileCost: 2.50 })
+          content: JSON.stringify({
+            distanceMiles,
+            freeMiles: 10,
+            additionalMileCost: 2.5,
+          }),
         });
 
         // Call AI again with the distance result
@@ -459,7 +534,7 @@ ${packagesList}
             model: apiModel,
             messages: chatMessages,
             temperature: 0.5,
-            tools: (session && session.user) ? [BOOKING_TOOL] : undefined, // Only booking tool allowed on second pass if logged in
+            tools: session && session.user ? [BOOKING_TOOL] : undefined, // Only booking tool allowed on second pass if logged in
           }),
         });
 
@@ -468,33 +543,49 @@ ${packagesList}
       }
 
       // Handle Booking Tool
-      if (message?.tool_calls && message.tool_calls[0].function?.name === "createBookingRequest") {
+      if (
+        message?.tool_calls &&
+        message.tool_calls[0].function?.name === "createBookingRequest"
+      ) {
         const finalToolCall = message.tool_calls[0];
         let args;
         try {
           args = JSON.parse(finalToolCall.function.arguments);
         } catch {
-          return Response.json({ text: "I had trouble processing the booking details. Could you please repeat them?" });
+          return Response.json({
+            text: "I had trouble processing the booking details. Could you please repeat them?",
+          });
         }
 
         if (!session || !session.user) {
-          return Response.json({ text: "لإتمام الحجز، الرجاء تسجيل الدخول أو إنشاء حساب جديد من الزر أعلى الصفحة. To proceed with booking, please Sign In or Create an Account using the button at the top of the page." });
+          return Response.json({
+            text: "لإتمام الحجز، الرجاء تسجيل الدخول أو إنشاء حساب جديد من الزر أعلى الصفحة. To proceed with booking, please Sign In or Create an Account using the button at the top of the page.",
+          });
         }
 
         // ─── Server-side validation: reject hallucinated/placeholder data ───
-        const fakeName = !args.name || args.name.toLowerCase().includes("john doe") || args.name.toLowerCase() === "unknown" || args.name.length < 3;
-        const fakeDate = !args.eventDate || new Date(args.eventDate) < new Date();
+        const fakeName =
+          !args.name ||
+          args.name.toLowerCase().includes("john doe") ||
+          args.name.toLowerCase() === "unknown" ||
+          args.name.length < 3;
+        const fakeDate =
+          !args.eventDate || new Date(args.eventDate) < new Date();
         const fakeZip = !args.zip || args.zip.length < 5;
         const fakePhone = !args.phone || args.phone.length < 7;
         const fakePkg = !args.packageId;
 
         if (fakeName || fakeDate || fakeZip || fakePhone || fakePkg) {
           console.warn("[Chat] Rejected hallucinated booking args:", args);
-          return Response.json({ text: "I need a few more details before I can create your booking. Could you please share your full name, event date, address (with ZIP code), phone number, and which package you'd like?" });
+          return Response.json({
+            text: "I need a few more details before I can create your booking. Could you please share your full name, event date, address (with ZIP code), phone number, and which package you'd like?",
+          });
         }
 
         return Response.json({
-          text: message.content || "Great! I've gathered all your booking details. Please review the summary below and confirm to complete your reservation! 🍦",
+          text:
+            message.content ||
+            "Great! I've gathered all your booking details. Please review the summary below and confirm to complete your reservation! 🍦",
           bookingRequest: args,
           toolCallId: finalToolCall.id,
         });
@@ -502,11 +593,16 @@ ${packagesList}
     }
 
     // Regular text response
-    const reply = message?.content || "I'm here to help! Could you tell me more about what you're looking for?";
+    const reply =
+      message?.content ||
+      "I'm here to help! Could you tell me more about what you're looking for?";
     return Response.json({ text: reply });
   } catch (error: any) {
     console.error("Chat API Internal Error:", error);
-    return new Response(error.message || "An error occurred processing your request.", { status: 500 });
+    return new Response(
+      error.message || "An error occurred processing your request.",
+      { status: 500 },
+    );
   }
 }
 
@@ -515,28 +611,37 @@ export async function PUT(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user || !session.user.email) {
-      return Response.json({ error: "You must be logged in to confirm a booking." }, { status: 401 });
+      return Response.json(
+        { error: "You must be logged in to confirm a booking." },
+        { status: 401 },
+      );
     }
 
     const { bookingData } = await req.json();
-    
+
     if (!bookingData || !bookingData.name || !bookingData.email) {
       return Response.json({ error: "Missing booking data" }, { status: 400 });
     }
 
     const result = await handleBookingTool(bookingData, session.user.email);
-    
+
     if (result.success) {
-      return Response.json({ 
-        success: true, 
+      return Response.json({
+        success: true,
         bookingNumber: result.bookingNumber,
-        message: `Booking #${result.bookingNumber} has been created! Our team will review it and get back to you shortly.`
+        message: `Booking #${result.bookingNumber} has been created! Our team will review it and get back to you shortly.`,
       });
     } else {
-      return Response.json({ error: result.error || "Failed to create booking" }, { status: 500 });
+      return Response.json(
+        { error: result.error || "Failed to create booking" },
+        { status: 500 },
+      );
     }
   } catch (error: any) {
     console.error("Booking Confirmation Error:", error);
-    return Response.json({ error: "Failed to process booking confirmation" }, { status: 500 });
+    return Response.json(
+      { error: "Failed to process booking confirmation" },
+      { status: 500 },
+    );
   }
 }

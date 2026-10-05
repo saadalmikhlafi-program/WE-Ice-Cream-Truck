@@ -18,7 +18,8 @@ import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = constructMetadata({
   title: "Premium Ice Cream Truck Rental in Massachusetts",
-  description: "Massachusetts' most trusted premium ice cream truck catering. Serving weddings, corporate events, and parties across all of MA. Book your unforgettable sweet moment today.",
+  description:
+    "Massachusetts' most trusted premium ice cream truck catering. Serving weddings, corporate events, and parties across all of MA. Book your unforgettable sweet moment today.",
 });
 
 export const dynamic = "force-dynamic";
@@ -28,7 +29,7 @@ export default async function HomePage() {
   try {
     dbPackages = await prisma.package.findMany({
       where: { isActive: true },
-      orderBy: { sortOrder: 'asc' }
+      orderBy: { sortOrder: "asc" },
     });
   } catch (err) {
     console.error("[Home] Failed to fetch packages:", err);
@@ -42,9 +43,12 @@ export default async function HomePage() {
 
     const durationHrs = Math.floor(pkg.durationMins / 60);
     const durationMinsRem = pkg.durationMins % 60;
-    const durationLabel = pkg.durationMins === 0 
-      ? "Custom Duration" 
-      : (durationHrs > 0 ? `${durationHrs}h ` : "") + (durationMinsRem > 0 ? `${durationMinsRem}m` : "") + " Service";
+    const durationLabel =
+      pkg.durationMins === 0
+        ? "Custom Duration"
+        : (durationHrs > 0 ? `${durationHrs}h ` : "") +
+          (durationMinsRem > 0 ? `${durationMinsRem}m` : "") +
+          " Service";
 
     return {
       id: pkg.id,
@@ -54,14 +58,24 @@ export default async function HomePage() {
       description: pkg.description || "",
       imageUrl: pkg.imageUrl,
       vehicleType: pkg.serviceType,
-      vehicleLabel: pkg.serviceType === "TRUCK" ? "Ice Cream Truck" : pkg.serviceType === "VAN" ? "Premium Van" : "Custom",
+      vehicleLabel:
+        pkg.serviceType === "TRUCK"
+          ? "Ice Cream Truck"
+          : pkg.serviceType === "VAN"
+            ? "Premium Van"
+            : "Custom",
       servings: pkg.servings,
       price: pkg.price,
       extraGuestPrice: pkg.extraGuestPrice ?? 5,
       durationMins: pkg.durationMins,
       durationLabel: durationLabel.trim(),
       badge: pkg.badge,
-      badgeVariant: pkg.badge === "Most Popular" || pkg.badge?.includes("Value") ? "coral" : (pkg.badge === "Corporate Choice" || pkg.badge?.includes("Luxury") ? "gold" : "mint"),
+      badgeVariant:
+        pkg.badge === "Most Popular" || pkg.badge?.includes("Value")
+          ? "coral"
+          : pkg.badge === "Corporate Choice" || pkg.badge?.includes("Luxury")
+            ? "gold"
+            : "mint",
       features: featuresList,
       isPopular: pkg.badge === "Most Popular",
       isCustom: pkg.serviceType === "CUSTOM",
@@ -69,8 +83,8 @@ export default async function HomePage() {
     };
   });
 
-  const firstTruck = formattedPackages.find(p => p.vehicleType === "TRUCK");
-  const firstVan = formattedPackages.find(p => p.vehicleType === "VAN");
+  const firstTruck = formattedPackages.find((p) => p.vehicleType === "TRUCK");
+  const firstVan = formattedPackages.find((p) => p.vehicleType === "VAN");
   const featuredPackages = [firstTruck, firstVan].filter(Boolean);
 
   let recentPosts: any[] = [];
@@ -79,7 +93,7 @@ export default async function HomePage() {
       where: { status: "PUBLISHED", deletedAt: null },
       orderBy: { publishedAt: "desc" },
       take: 3,
-      include: { category: true }
+      include: { category: true },
     });
   } catch (err) {
     console.error("[Home] Failed to fetch posts:", err);
@@ -100,7 +114,7 @@ export default async function HomePage() {
         9. AI Concierge Teaser
         10. Cinematic Final CTA
       */}
-      
+
       <HeroSection />
       <TrustStats />
       <ServicesMarquee />
