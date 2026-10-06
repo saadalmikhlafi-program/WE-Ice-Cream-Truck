@@ -19,7 +19,7 @@ const SETTINGS: Record<string, string> = {
   // Company Info
   companyName: "WE Ice Cream Truck",
   businessHours: "Available 24 hours by reservation, 7 days a week",
-  companyPhone: "617-999-3803",
+  companyPhone: "781-824-7000",
   companyEmail: "info@weicecreamtruck.com",
   companyAddress: "38 Woodland Rd, Georgetown, MA 01833",
 
@@ -46,7 +46,7 @@ const SETTINGS: Record<string, string> = {
 
   // AI Concierge
   aiAssistantName: "WE Ice Cream Truck AI Concierge",
-  aiAssistantSystemPrompt: `You are the WE Ice Cream Truck AI Concierge — a helpful, warm, and professional assistant. Your role is to help customers learn about our services, packages, and pricing, and to guide them toward booking an ice cream truck for their event. Always be enthusiastic, warm, and professional. Company: WE Ice Cream Truck. Phone: 617-999-3803. Email: info@weicecreamtruck.com. Location: Georgetown, MA. Travel fee: First 10 miles FREE, then $2.50/mile.`,
+  aiAssistantSystemPrompt: `You are the WE Ice Cream Truck AI Concierge — a helpful, warm, and professional assistant. Your role is to help customers learn about our services, packages, and pricing, and to guide them toward booking an ice cream truck for their event. Always be enthusiastic, warm, and professional. Company: WE Ice Cream Truck. Phone: 781-824-7000. Email: info@weicecreamtruck.com. Location: Georgetown, MA. Travel fee: First 10 miles FREE, then $2.50/mile.`,
 };
 
 async function seedSettings() {

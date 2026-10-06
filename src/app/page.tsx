@@ -22,7 +22,7 @@ export const metadata: Metadata = constructMetadata({
     "Massachusetts' most trusted premium ice cream truck catering. Serving weddings, corporate events, and parties across all of MA. Book your unforgettable sweet moment today.",
 });
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300; // Cache for 5 minutes
 
 export default async function HomePage() {
   let dbPackages: any[] = [];
